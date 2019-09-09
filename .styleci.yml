@@ -1,2 +1,5 @@
 preset: laravel
 risky: true
+enabled:
+  - declare_strict_types
+  - unalign_double_arrow

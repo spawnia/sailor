@@ -1,18 +1,18 @@
-# php-library-template
+# sailor
 
-[![CI Status](https://github.com/spawnia/php-library-template/workflows/Continuous%20Integration/badge.svg)](https://github.com/spawnia/php-library-template/actions)
-[![codecov](https://codecov.io/gh/spawnia/php-library-template/branch/master/graph/badge.svg)](https://codecov.io/gh/spawnia/php-library-template)
-[![Latest Stable Version](https://poser.pugx.org/spawnia/php-library-template/v/stable)](https://packagist.org/packages/spawnia/php-library-template)
-[![Total Downloads](https://poser.pugx.org/spawnia/php-library-template/downloads)](https://packagist.org/packages/spawnia/php-library-template)
+[![CI Status](https://github.com/spawnia/sailor/workflows/Continuous%20Integration/badge.svg)](https://github.com/spawnia/sailor/actions)
+[![codecov](https://codecov.io/gh/spawnia/sailor/branch/master/graph/badge.svg)](https://codecov.io/gh/spawnia/sailor)
+[![Latest Stable Version](https://poser.pugx.org/spawnia/sailor/v/stable)](https://packagist.org/packages/spawnia/sailor)
+[![Total Downloads](https://poser.pugx.org/spawnia/sailor/downloads)](https://packagist.org/packages/spawnia/sailor)
 
-A template for starting a PHP library
+A GraphQL client for PHP
 
 ## Installation
 
 Install through composer
 
 ```bash
-composer require spawnia/php-library-template
+composer require spawnia/sailor
 ```
 
 ## Usage
