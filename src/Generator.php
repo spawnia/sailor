@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor;
 
-use GraphQL\Language\AST\DocumentNode;
-use GraphQL\Language\Visitor;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\TypeInfo;
+use GraphQL\Language\Visitor;
+use GraphQL\Language\AST\DocumentNode;
 
 class Generator
 {
@@ -36,13 +38,13 @@ class Generator
             Visitor::visitWithTypeInfo(
                 $typeInfo,
                 [
-                    'enter' => function ($node) use ($typeInfo){
+                    'enter' => function ($node) use ($typeInfo) {
                         //
                         $parent = $typeInfo->getParentType();
                         $type = $typeInfo->getType();
                         $argument = $typeInfo->getArgument();
                         echo 0;
-                    }
+                    },
                 ]
             )
         );
