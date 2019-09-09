@@ -12,7 +12,8 @@
   ],
   "require": {
     "php": "^7.3",
-    "thecodingmachine/safe": "^0.1.16"
+    "thecodingmachine/safe": "^0.1.16",
+    "webonyx/graphql-php": "^0.13.8"
   },
   "require-dev": {
     "infection/infection": "~0.13.6",
