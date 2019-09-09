@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor\Tests\Unit;
 
 use GraphQL\Language\Parser;
-use GraphQL\Utils\BuildSchema;
 use Spawnia\Sailor\Validator;
+use GraphQL\Utils\BuildSchema;
 use PHPUnit\Framework\TestCase;
 
 class ValidatorTest extends TestCase

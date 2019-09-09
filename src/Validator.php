@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor;
 
-use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Type\Schema;
+use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Validator\DocumentValidator;
 
 class Validator

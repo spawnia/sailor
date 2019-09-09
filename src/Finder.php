@@ -25,7 +25,7 @@ class Finder
     {
         $contents = [];
         /** @var \SplFileInfo $fileInfo */
-        foreach($this->fileIterator() as $fileInfo) {
+        foreach ($this->fileIterator() as $fileInfo) {
             $path = $fileInfo->getRealPath();
             $contents[$path] = \Safe\file_get_contents($path);
         }
