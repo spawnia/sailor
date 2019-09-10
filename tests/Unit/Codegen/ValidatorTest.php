@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Spawnia\Sailor\Tests\Unit;
+namespace Spawnia\Sailor\Tests\Unit\Codegen;
 
 use GraphQL\Language\Parser;
-use Spawnia\Sailor\Validator;
+use Spawnia\Sailor\Codegen\Validator;
 use GraphQL\Utils\BuildSchema;
 use PHPUnit\Framework\TestCase;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Spawnia\Sailor;
+namespace Spawnia\Sailor\Codegen;
 
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\NonNull;

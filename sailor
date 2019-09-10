@@ -1,0 +1,14 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+if (file_exists(__DIR__.'/../../autoload.php')) {
+    // The usual location, since this file will reside in vendor/bin
+    include __DIR__.'/../../autoload.php';
+} else {
+    // Useful when doing development on this package
+    include __DIR__.'/vendor/autoload.php';
+}
+
+

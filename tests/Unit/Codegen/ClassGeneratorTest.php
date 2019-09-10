@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Spawnia\Sailor\Tests\Unit;
+namespace Spawnia\Sailor\Tests\Unit\Codegen;
 
 use GraphQL\Language\Parser;
-use Spawnia\Sailor\Generator;
+use Nette\PhpGenerator\ClassType;
+use Spawnia\Sailor\Codegen\ClassGenerator;
 use GraphQL\Utils\BuildSchema;
 use PHPUnit\Framework\TestCase;
 
-class GeneratorTest extends TestCase
+class ClassGeneratorTest extends TestCase
 {
     public function testGenerate(): void
     {
@@ -18,7 +19,7 @@ class GeneratorTest extends TestCase
             foo: ID
         }  
         ');
-        $generator = new Generator($schema, 'Foo');
+        $generator = new ClassGenerator($schema, 'Foo');
 
         $document = Parser::parse('
         query Foo {
@@ -27,6 +28,7 @@ class GeneratorTest extends TestCase
         ', [
             'noLocations' => true,
         ]);
-        $generator->generate($document);
+        $operationClasses = $generator->generate($document);
+        $this->assertCount(1, $operationClasses);
     }
 }

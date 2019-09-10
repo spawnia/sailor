@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Spawnia\Sailor\Tests\Unit;
+namespace Spawnia\Sailor\Tests\Unit\Codegen;
 
 use PHPUnit\Framework;
-use Spawnia\Sailor\Finder;
+use Spawnia\Sailor\Codegen\Finder;
 
 class FinderTest extends Framework\TestCase
 {
     public function testGreetIncludesName(): void
     {
         $finder = new Finder(__DIR__.'/../../examples/foo');
-        $files = $finder->find();
+        $files = $finder->documents();
 
         $first = reset($files);
         self::assertStringEqualsFile(

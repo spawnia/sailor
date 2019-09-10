@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Spawnia\Sailor\Tests\Unit;
+namespace Spawnia\Sailor\Tests\Unit\Codegen;
 
-use Spawnia\Sailor\PhpDoc;
+use Spawnia\Sailor\Codegen\PhpDoc;
 use PHPUnit\Framework\TestCase;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ListOfType;

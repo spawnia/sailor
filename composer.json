@@ -40,9 +40,13 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Spawnia\\Sailor\\Tests\\": "tests/"
+      "Spawnia\\Sailor\\Tests\\": "tests/",
+      "Spawnia\\Sailor\\Foo\\": "examples/foo/generated"
     }
   },
+  "bin": [
+    "sailor"
+  ],
   "support": {
     "issues": "https://github.com/spawnia/sailor/issues",
     "source": "https://github.com/spawnia/sailor"

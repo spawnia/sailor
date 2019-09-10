@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Spawnia\Sailor;
+namespace Spawnia\Sailor\Codegen;
 
+use GraphQL\Language\AST\SelectionSetNode;
+use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\TypeInfo;
 use GraphQL\Language\Visitor;
@@ -17,8 +19,11 @@ use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\WrappingType;
 use GraphQL\Language\AST\OperationDefinitionNode;
+use Spawnia\Sailor\Operation;
+use Spawnia\Sailor\Codegen\OperationClasses;
+use Spawnia\Sailor\Codegen\PhpDoc;
 
-class Generator
+class ClassGenerator
 {
     /**
      * @var Schema
@@ -36,9 +41,19 @@ class Generator
     private $operation;
 
     /**
+     * @var OperationClasses[]
+     */
+    private $operationClassesStorage = [];
+
+    /**
      * @var ClassType[]
      */
     private $selectionStack = [];
+
+    /**
+     * @var ClassType[]
+     */
+    private $selectionClasses = [];
 
     public function __construct(Schema $schema, string $namespace)
     {
@@ -52,6 +67,7 @@ class Generator
     public function generate(DocumentNode $document)
     {
         $typeInfo = new TypeInfo($this->schema);
+
         Visitor::visit(
             $document,
             Visitor::visitWithTypeInfo(
@@ -78,8 +94,14 @@ class Generator
                             $this->selectionStack [] = $selection;
                         },
                         'leave' => function (OperationDefinitionNode $operationDefinition) {
-                            echo $this->operation->getNamespace();
-                            echo $this->operation->__toString();
+                            $operationClasses = new OperationClasses();
+
+                            $operationClasses->operation = $this->operation;
+                            $this->operation = null;
+                            $operationClasses->selection = $this->selectionClasses;
+                            $this->selectionClasses = [];
+
+                            $this->operationClassesStorage []= $operationClasses;
                         },
                     ],
                     NodeKind::FIELD => [
@@ -95,20 +117,26 @@ class Generator
                             $field->setComment('@var '.PhpDoc::forType($type));
                             $selection->addMember($field);
 
-                            $wrappedType = $type;
-                            if ($type instanceof WrappingType) {
-                                $wrappedType = $type->getWrappedType(true);
-                            }
+                            $namedType = Type::getNamedType($type);
 
-                            if ($wrappedType instanceof ObjectType) {
+                            if ($namedType instanceof ObjectType) {
                                 $namespace = new PhpNamespace($selection->getNamespace().'\\'.ucfirst($resultingName));
-                                $selection = new ClassType($wrappedType->name, $namespace);
-                                $this->selectionStack [] = $selection;
+                                $selection = new ClassType($namedType->name, $namespace);
+                                $this->selectionStack []= $selection;
                             }
                         },
                     ],
+                    NodeKind::SELECTION_SET => [
+                        'leave' => function (SelectionSetNode $selectionSet) use ($typeInfo) {
+                            // We are done with building this subtree of the selection set,
+                            // so we move the top-most element to the storage
+                            $this->selectionClasses []= array_pop($this->selectionStack);
+                        }
+                    ]
                 ]
             )
         );
+
+        return $this->operationClassesStorage;
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Spawnia\Sailor;
+namespace Spawnia\Sailor\Codegen;
 
 class Finder
 {
@@ -21,7 +21,7 @@ class Finder
      *
      * @return string[]
      */
-    public function find(): array
+    public function documents(): array
     {
         $contents = [];
         /** @var \SplFileInfo $fileInfo */
