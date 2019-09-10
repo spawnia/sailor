@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor\Tests\Unit\Codegen;
 
 use GraphQL\Language\Parser;
-use Spawnia\Sailor\Codegen\Merger;
 use PHPUnit\Framework\TestCase;
+use Spawnia\Sailor\Codegen\Merger;
 
 class MergerTest extends TestCase
 {

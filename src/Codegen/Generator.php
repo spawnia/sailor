@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor\Codegen;
 
 use GraphQL\Language\Parser;
 use GraphQL\Utils\BuildSchema;
 use Nette\PhpGenerator\ClassType;
-use Nette\PhpGenerator\PhpFile;
 
 class Generator
 {
@@ -37,14 +38,14 @@ class Generator
         $classGenerator = new ClassGenerator($schema, $this->options->namespace);
         $classes = $classGenerator->generate($document);
 
-        foreach($classes as $operationClasses) {
-            if(!file_exists($this->options->targetPath)){
+        foreach ($classes as $operationClasses) {
+            if (! file_exists($this->options->targetPath)) {
                 \Safe\mkdir($this->options->targetPath, 0777, true);
             }
 
             $operation = $operationClasses->operation;
             \Safe\file_put_contents(
-                $this->options->targetPath . '/' . $operation->getName() . '.php',
+                $this->options->targetPath.'/'.$operation->getName().'.php',
                 self::asPhpFile($operation)
             );
         }

@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Spawnia\Sailor\Tests\Unit\Codegen;
 
 use GraphQL\Language\Parser;
-use Nette\PhpGenerator\ClassType;
-use Spawnia\Sailor\Codegen\ClassGenerator;
 use GraphQL\Utils\BuildSchema;
 use PHPUnit\Framework\TestCase;
+use Spawnia\Sailor\Codegen\ClassGenerator;
 
 class ClassGeneratorTest extends TestCase
 {

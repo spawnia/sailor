@@ -4,24 +4,21 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
-use GraphQL\Language\AST\SelectionSetNode;
-use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\TypeInfo;
 use GraphQL\Language\Visitor;
+use Spawnia\Sailor\Operation;
 use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\Property;
+use GraphQL\Type\Definition\Type;
 use Nette\PhpGenerator\ClassType;
 use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\AST\FieldNode;
 use Nette\PhpGenerator\PhpNamespace;
 use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\WrappingType;
+use GraphQL\Language\AST\SelectionSetNode;
 use GraphQL\Language\AST\OperationDefinitionNode;
-use Spawnia\Sailor\Operation;
-use Spawnia\Sailor\Codegen\OperationClasses;
-use Spawnia\Sailor\Codegen\PhpDoc;
 
 class ClassGenerator
 {
@@ -101,7 +98,7 @@ class ClassGenerator
                             $operationClasses->selection = $this->selectionClasses;
                             $this->selectionClasses = [];
 
-                            $this->operationClassesStorage []= $operationClasses;
+                            $this->operationClassesStorage [] = $operationClasses;
                         },
                     ],
                     NodeKind::FIELD => [
@@ -122,7 +119,7 @@ class ClassGenerator
                             if ($namedType instanceof ObjectType) {
                                 $namespace = new PhpNamespace($selection->getNamespace().'\\'.ucfirst($resultingName));
                                 $selection = new ClassType($namedType->name, $namespace);
-                                $this->selectionStack []= $selection;
+                                $this->selectionStack [] = $selection;
                             }
                         },
                     ],
@@ -130,9 +127,9 @@ class ClassGenerator
                         'leave' => function (SelectionSetNode $selectionSet) use ($typeInfo) {
                             // We are done with building this subtree of the selection set,
                             // so we move the top-most element to the storage
-                            $this->selectionClasses []= array_pop($this->selectionStack);
-                        }
-                    ]
+                            $this->selectionClasses [] = array_pop($this->selectionStack);
+                        },
+                    ],
                 ]
             )
         );

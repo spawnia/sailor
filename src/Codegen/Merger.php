@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor\Codegen;
 
-use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\AST\NodeList;
+use GraphQL\Language\AST\DocumentNode;
 
 class Merger
 {

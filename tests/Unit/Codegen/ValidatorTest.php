@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Spawnia\Sailor\Tests\Unit\Codegen;
 
 use GraphQL\Language\Parser;
-use Spawnia\Sailor\Codegen\Validator;
 use GraphQL\Utils\BuildSchema;
 use PHPUnit\Framework\TestCase;
+use Spawnia\Sailor\Codegen\Validator;
 
 class ValidatorTest extends TestCase
 {
