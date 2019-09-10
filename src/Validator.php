@@ -20,7 +20,11 @@ class Validator
         $this->schema = $schema;
     }
 
-    public function validate(DocumentNode $document)
+    /**
+     * @param  DocumentNode  $document
+     * @return \GraphQL\Error\Error[]
+     */
+    public function validate(DocumentNode $document): array
     {
         return DocumentValidator::validate($this->schema, $document);
     }

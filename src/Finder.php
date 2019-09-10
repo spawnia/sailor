@@ -21,11 +21,12 @@ class Finder
      *
      * @return string[]
      */
-    public function find()
+    public function find(): array
     {
         $contents = [];
         /** @var \SplFileInfo $fileInfo */
         foreach ($this->fileIterator() as $fileInfo) {
+            /** @var string $path We know this file exists, since it was found in search. */
             $path = $fileInfo->getRealPath();
             $contents[$path] = \Safe\file_get_contents($path);
         }

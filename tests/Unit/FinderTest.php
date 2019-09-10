@@ -15,7 +15,7 @@ class FinderTest extends Framework\TestCase
         $files = $finder->find();
 
         $first = reset($files);
-        $this->assertStringEqualsFile(
+        self::assertStringEqualsFile(
             __DIR__.'/../../examples/foo/foo.graphql',
             $first
         );

@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 class ValidatorTest extends TestCase
 {
-    public function testValidateSuccess()
+    public function testValidateSuccess(): void
     {
         $schema = BuildSchema::build('
         type Query {
@@ -27,10 +27,10 @@ class ValidatorTest extends TestCase
         ');
         $errors = $validator->validate($document);
 
-        $this->assertCount(0, $errors);
+        self::assertCount(0, $errors);
     }
 
-    public function testValidateFailure()
+    public function testValidateFailure(): void
     {
         $schema = BuildSchema::build('
         type Query {
@@ -46,6 +46,6 @@ class ValidatorTest extends TestCase
         ');
         $errors = $validator->validate($document);
 
-        $this->assertCount(1, $errors);
+        self::assertCount(1, $errors);
     }
 }
