@@ -1,0 +1,10 @@
+version: '2.3'
+
+services:
+  php:
+    build: .
+    volumes:
+    - ./:/var/www
+    environment:
+      XDEBUG_CONFIG: "remote_enable=1 remote_mode=req remote_port=9000 remote_host=$XDEBUG_REMOTE_HOST remote_connect_back=0"
+      PHP_IDE_CONFIG: "serverName=sailor"
