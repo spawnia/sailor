@@ -12,6 +12,7 @@
   ],
   "require": {
     "php": "^7.3",
+    "nette/php-generator": "^3.2",
     "thecodingmachine/safe": "^0.1.16",
     "webonyx/graphql-php": "^0.13.8"
   },

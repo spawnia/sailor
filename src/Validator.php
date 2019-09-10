@@ -26,6 +26,8 @@ class Validator
      */
     public function validate(DocumentNode $document): array
     {
+        // TODO validate all operations are named (correctly)
+
         return DocumentValidator::validate($this->schema, $document);
     }
 }
