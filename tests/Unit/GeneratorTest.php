@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Spawnia\Sailor\Tests\Unit;
 
 use GraphQL\Language\Parser;
-use GraphQL\Type\Definition\ObjectType;
 use Spawnia\Sailor\Generator;
 use GraphQL\Utils\BuildSchema;
 use PHPUnit\Framework\TestCase;

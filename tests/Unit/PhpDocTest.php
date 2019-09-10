@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor\Tests\Unit;
 
-use GraphQL\Type\Definition\ListOfType;
-use GraphQL\Type\Definition\NonNull;
-use GraphQL\Type\Definition\ObjectType;
-use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\PhpDoc;
+use PHPUnit\Framework\TestCase;
+use GraphQL\Type\Definition\NonNull;
+use GraphQL\Type\Definition\ListOfType;
+use GraphQL\Type\Definition\ObjectType;
 
 /**
- * TODO https://github.com/spawnia/sailor/issues/1
+ * TODO https://github.com/spawnia/sailor/issues/1.
  */
 class PhpDocTest extends TestCase
 {
@@ -19,7 +21,7 @@ class PhpDocTest extends TestCase
             'Foo|null',
             PhpDoc::forType(
                 new ObjectType([
-                    'name' => 'Foo'
+                    'name' => 'Foo',
                 ])
             )
         );
@@ -32,7 +34,7 @@ class PhpDocTest extends TestCase
             PhpDoc::forType(
                 new NonNull(
                     new ObjectType([
-                        'name' => 'Foo'
+                        'name' => 'Foo',
                     ])
                 )
             )
@@ -46,7 +48,7 @@ class PhpDocTest extends TestCase
             PhpDoc::forType(
                 new ListOfType(
                     new ObjectType([
-                        'name' => 'Foo'
+                        'name' => 'Foo',
                     ])
                 )
             )
@@ -61,7 +63,7 @@ class PhpDocTest extends TestCase
                 new NonNull(
                     new ListOfType(
                         new ObjectType([
-                            'name' => 'Foo'
+                            'name' => 'Foo',
                         ])
                     )
                 )

@@ -4,23 +4,19 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor;
 
-use GraphQL\Language\AST\FieldNode;
-use GraphQL\Language\AST\Node;
-use GraphQL\Language\AST\NodeKind;
-use GraphQL\Language\AST\OperationDefinitionNode;
-use GraphQL\Type\Definition\ListOfType;
-use GraphQL\Type\Definition\NonNull;
-use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
-use GraphQL\Type\Definition\WrappingType;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\TypeInfo;
 use GraphQL\Language\Visitor;
-use GraphQL\Language\AST\DocumentNode;
-use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Method;
-use Nette\PhpGenerator\PhpNamespace;
 use Nette\PhpGenerator\Property;
+use Nette\PhpGenerator\ClassType;
+use GraphQL\Language\AST\NodeKind;
+use GraphQL\Language\AST\FieldNode;
+use Nette\PhpGenerator\PhpNamespace;
+use GraphQL\Language\AST\DocumentNode;
+use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\WrappingType;
+use GraphQL\Language\AST\OperationDefinitionNode;
 
 class Generator
 {
@@ -79,7 +75,7 @@ class Generator
                             $this->operation->addMember($run);
 
                             $selection = new ClassType($resultName, $namespace);
-                            $this->selectionStack []= $selection;
+                            $this->selectionStack [] = $selection;
                         },
                         'leave' => function (OperationDefinitionNode $operationDefinition) {
                             echo $this->operation->getNamespace();
@@ -96,21 +92,21 @@ class Generator
                             $field = new Property($resultingName);
 
                             $type = $typeInfo->getType();
-                            $field->setComment('@var ' . PhpDoc::forType($type));
+                            $field->setComment('@var '.PhpDoc::forType($type));
                             $selection->addMember($field);
 
                             $wrappedType = $type;
-                            if($type instanceof WrappingType) {
+                            if ($type instanceof WrappingType) {
                                 $wrappedType = $type->getWrappedType(true);
                             }
 
-                            if($wrappedType instanceof ObjectType) {
-                                $namespace = new PhpNamespace($selection->getNamespace() . '\\' . ucfirst($resultingName));
+                            if ($wrappedType instanceof ObjectType) {
+                                $namespace = new PhpNamespace($selection->getNamespace().'\\'.ucfirst($resultingName));
                                 $selection = new ClassType($wrappedType->name, $namespace);
-                                $this->selectionStack []= $selection;
+                                $this->selectionStack [] = $selection;
                             }
-                        }
-                    ]
+                        },
+                    ],
                 ]
             )
         );
