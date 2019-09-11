@@ -7,6 +7,7 @@ namespace Spawnia\Sailor\Codegen;
 use GraphQL\Language\Parser;
 use GraphQL\Utils\BuildSchema;
 use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\PsrPrinter;
 
 class Generator
 {
@@ -81,12 +82,15 @@ class Generator
 
     protected static function asPhpFile(ClassType $classType): string
     {
+        $printer = new PsrPrinter();
+        $phpNamespace = $classType->getNamespace();
+        $class = $printer->printClass($classType, $phpNamespace);
         return <<<PHP
             <?php
             
             declare(strict_types=1);
             
-            {$classType->getNamespace()}{$classType->__toString()}
+            {$phpNamespace}{$class}
             PHP;
     }
 }

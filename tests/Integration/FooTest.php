@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Integration;
 
+use Spawnia\PHPUnitAssertFiles\AssertDirectory;
 use Spawnia\Sailor\Foo\Foo;
 use Spawnia\Sailor\Operation;
 use PHPUnit\Framework\TestCase;
@@ -12,6 +13,8 @@ use Spawnia\Sailor\Codegen\GeneratorOptions;
 
 class FooTest extends TestCase
 {
+    use AssertDirectory;
+
     const EXAMPLES_PATH = __DIR__.'/../../examples/foo/';
 
     public function testGeneratesFooExample(): void
@@ -25,6 +28,6 @@ class FooTest extends TestCase
         $generator = new Generator($options);
         $generator->run();
 
-        self::assertTrue(is_a(Foo::class, Operation::class, true));
+        self::assertDirectoryEquals(self::EXAMPLES_PATH . 'expected', self::EXAMPLES_PATH . 'generated');
     }
 }

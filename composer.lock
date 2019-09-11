@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5127ab28139e88c8dd45acd810108cd6",
+    "content-hash": "b072d9db589d2cb69cdefb089f857b87",
     "packages": [
         {
             "name": "nette/php-generator",
@@ -3309,6 +3309,54 @@
             "description": "Library that helps with managing the version number of Git-hosted PHP projects",
             "homepage": "https://github.com/sebastianbergmann/version",
             "time": "2016-10-03T07:35:21+00:00"
+        },
+        {
+            "name": "spawnia/phpunit-assert-directory",
+            "version": "v0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spawnia/phpunit-assert-directory.git",
+                "reference": "1dcaa040cac62c8d532c7b82e9d8e14cbbbab9ad"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spawnia/phpunit-assert-directory/zipball/1dcaa040cac62c8d532c7b82e9d8e14cbbbab9ad",
+                "reference": "1dcaa040cac62c8d532c7b82e9d8e14cbbbab9ad",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.3",
+                "thecodingmachine/safe": "^0.1.16"
+            },
+            "require-dev": {
+                "infection/infection": "~0.13.6",
+                "jangregor/phpstan-prophecy": "~0.4.2",
+                "localheinz/composer-normalize": "^1.3.1",
+                "phpstan/phpstan": "~0.11.15",
+                "phpstan/phpstan-deprecation-rules": "~0.11.2",
+                "phpstan/phpstan-strict-rules": "~0.11.1",
+                "phpunit/phpunit": "^8.3.4",
+                "thecodingmachine/phpstan-safe-rule": "^0.1.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spawnia\\PHPUnitAssertFiles\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Benedikt Franke",
+                    "email": "benedikt@franke.tech"
+                }
+            ],
+            "description": "PHPUnit extension with assert methods for directories",
+            "homepage": "https://github.com/spawnia/phpunit-assert-directory",
+            "time": "2019-09-11T21:01:11+00:00"
         },
         {
             "name": "symfony/console",

@@ -24,6 +24,7 @@
     "phpstan/phpstan-deprecation-rules": "~0.11.2",
     "phpstan/phpstan-strict-rules": "~0.11.1",
     "phpunit/phpunit": "^8.3.4",
+    "spawnia/phpunit-assert-directory": "^0.1.0",
     "thecodingmachine/phpstan-safe-rule": "^0.1.4"
   },
   "config": {
@@ -41,7 +42,7 @@
   "autoload-dev": {
     "psr-4": {
       "Spawnia\\Sailor\\Tests\\": "tests/",
-      "Spawnia\\Sailor\\Foo": "examples/foo/expected/"
+      "Spawnia\\Sailor\\Foo\\": "examples/foo/expected/"
     }
   },
   "bin": [

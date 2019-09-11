@@ -63,7 +63,6 @@ class ClassGenerator
                     NodeKind::OPERATION_DEFINITION => [
                         'enter' => function (OperationDefinitionNode $operationDefinition) {
                             $operationName = $operationDefinition->name->value;
-                            $this->namespaceStack [] = $operationName;
 
                             // Generate a class to represent the query/mutation itself
                             $operation = new ClassType($operationName, $this->makeNamespace());
@@ -80,15 +79,18 @@ class ClassGenerator
                             $run->setStatic();
 
                             // It returns a typed result which is a new selection set class
-                            $run->setBody('return $this->runInternal(self::DOCUMENT);');
                             $run->setBody(<<<'PHP'
                             $instance = new self;
                             
-                            $instance->
+                            return $instance->runInternal(self::DOCUMENT);
                             PHP
                             );
                             $resultName = "{$operationName}Result";
+
+                            // Related classes are put into a nested namespace
+                            $this->namespaceStack [] = $operationName;
                             $run->setReturnType($this->currentNamespace().'\\'.$resultName);
+
                             $operationResult = new ClassType($resultName, $this->makeNamespace());
 
                             $this->operationSet = new OperationSet($operation);
