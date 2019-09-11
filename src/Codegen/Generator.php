@@ -36,19 +36,47 @@ class Generator
         $document = Merger::combine($documents);
 
         $classGenerator = new ClassGenerator($schema, $this->options->namespace);
-        $classes = $classGenerator->generate($document);
+        $operationSets = $classGenerator->generate($document);
 
-        foreach ($classes as $operationClasses) {
-            if (! file_exists($this->options->targetPath)) {
-                \Safe\mkdir($this->options->targetPath, 0777, true);
+        foreach ($operationSets as $operationSet) {
+            $this->writeFile($operationSet->operation);
+            foreach ($operationSet->selectionStorage as $selection) {
+                $this->writeFile($selection);
             }
-
-            $operation = $operationClasses->operation;
-            \Safe\file_put_contents(
-                $this->options->targetPath.'/'.$operation->getName().'.php',
-                self::asPhpFile($operation)
-            );
         }
+    }
+
+    protected function writeFile(ClassType $classType): void
+    {
+        $targetDirectory = $this->targetDirectory(
+            $classType->getNamespace()->getName()
+        );
+
+        if (! file_exists($targetDirectory)) {
+            \Safe\mkdir($targetDirectory, 0777, true);
+        }
+
+        \Safe\file_put_contents(
+            $targetDirectory.'/'.$classType->getName().'.php',
+            self::asPhpFile($classType)
+        );
+    }
+
+    protected function targetDirectory(string $namespace): string
+    {
+        $pathInTarget = self::after($namespace, $this->options->namespace);
+        $pathInTarget = str_replace('\\', '/', $pathInTarget);
+
+        return $this->options->targetPath . $pathInTarget;
+    }
+
+    public static function after(string $subject, string $search): string
+    {
+        return $search === ''
+            ? $subject
+            : array_reverse(
+                explode($search, $subject, 2)
+            )[0];
     }
 
     protected static function asPhpFile(ClassType $classType): string
@@ -58,9 +86,7 @@ class Generator
             
             declare(strict_types=1);
             
-            {$classType->getNamespace()}
-            
-            {$classType->__toString()}
+            {$classType->getNamespace()}{$classType->__toString()}
             PHP;
     }
 }

@@ -1,7 +1,7 @@
 {
   "name": "spawnia/sailor",
   "type": "library",
-  "description": "A GraphQL client for PHP",
+  "description": "A typesafe GraphQL client for PHP",
   "homepage": "https://github.com/spawnia/sailor",
   "license": "MIT",
   "authors": [
@@ -41,7 +41,7 @@
   "autoload-dev": {
     "psr-4": {
       "Spawnia\\Sailor\\Tests\\": "tests/",
-      "Spawnia\\Sailor\\Foo\\": "examples/foo/generated"
+      "Spawnia\\Sailor\\Foo": "examples/foo/expected/"
     }
   },
   "bin": [

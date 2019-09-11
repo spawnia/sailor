@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
+use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\TypeInfo;
 use GraphQL\Language\Visitor;
 use Spawnia\Sailor\Operation;
-use Nette\PhpGenerator\Method;
-use Nette\PhpGenerator\Property;
 use GraphQL\Type\Definition\Type;
 use Nette\PhpGenerator\ClassType;
 use GraphQL\Language\AST\NodeKind;
@@ -28,34 +27,24 @@ class ClassGenerator
     protected $schema;
 
     /**
-     * @var string
+     * @var OperationSet
      */
-    protected $namespace;
+    private $operationSet;
 
     /**
-     * @var ClassType
+     * @var OperationSet[]
      */
-    private $operation;
+    private $operationStorage = [];
 
     /**
-     * @var OperationClasses[]
+     * @var string[]
      */
-    private $operationClassesStorage = [];
-
-    /**
-     * @var ClassType[]
-     */
-    private $selectionStack = [];
-
-    /**
-     * @var ClassType[]
-     */
-    private $selectionClasses = [];
+    private $namespaceStack = [];
 
     public function __construct(Schema $schema, string $namespace)
     {
         $this->schema = $schema;
-        $this->namespace = $namespace;
+        $this->namespaceStack []= $namespace;
     }
 
     /**
@@ -74,66 +63,100 @@ class ClassGenerator
                     NodeKind::OPERATION_DEFINITION => [
                         'enter' => function (OperationDefinitionNode $operationDefinition) {
                             $operationName = $operationDefinition->name->value;
-                            $namespace = new PhpNamespace($this->namespace);
-                            $this->operation = new ClassType($operationName, $namespace);
-                            $this->operation->setExtends(Operation::class);
-                            $this->operation->addConstant('DOCUMENT', $operationDefinition->loc->source->body);
+                            $this->namespaceStack []= $operationName;
 
-                            $run = new Method('run');
+                            // Generate a class to represent the query/mutation itself
+                            $operation = new ClassType($operationName, $this->makeNamespace());
+
+                            // The base class contains most of the logic
+                            $operation->setExtends(Operation::class);
+
+                            // Store the actual query string in the operation
+                            // TODO minify the query string
+                            $operation->addConstant('DOCUMENT', $operationDefinition->loc->source->body);
+
+                            // The run method is the public API of the operation
+                            $run = $operation->addMethod('run');
+                            $run->setStatic();
+
+                            // It returns a typed result which is a new selection set class
                             $run->setBody('return $this->runInternal(self::DOCUMENT);');
+                            $run->setBody(<<<'PHP'
+                            $instance = new self;
+                            
+                            $instance->
+                            PHP
+                            );
                             $resultName = "{$operationName}Result";
-                            $run->setReturnType($resultName);
-                            $run->setVisibility(ClassType::VISIBILITY_PUBLIC);
+                            $run->setReturnType($this->currentNamespace() . '\\' . $resultName);
+                            $operationResult = new ClassType($resultName, $this->makeNamespace());
 
-                            $this->operation->addMember($run);
-
-                            $selection = new ClassType($resultName, $namespace);
-                            $this->selectionStack [] = $selection;
+                            $this->operationSet = new OperationSet($operation);
+                            $this->operationSet->pushSelection($operationResult);
                         },
                         'leave' => function (OperationDefinitionNode $operationDefinition) {
-                            $operationClasses = new OperationClasses();
-
-                            $operationClasses->operation = $this->operation;
-                            $this->operation = null;
-                            $operationClasses->selection = $this->selectionClasses;
-                            $this->selectionClasses = [];
-
-                            $this->operationClassesStorage [] = $operationClasses;
+                            // Store the current operation as we continue with the next one
+                            $this->operationStorage []= $this->operationSet;
                         },
                     ],
                     NodeKind::FIELD => [
                         'enter' => function (FieldNode $field) use ($typeInfo) {
-                            $resultingName = $field->alias
+                            // The key that the
+                            $resultKey = $field->alias
                                 ? $field->alias->value
                                 : $field->name->value;
 
-                            $selection = end($this->selectionStack);
-                            $field = new Property($resultingName);
-
+                            $selection = $this->operationSet->peekSelection();
+                            $field = $selection->addProperty($resultKey);
                             $type = $typeInfo->getType();
-                            $field->setComment('@var '.PhpDoc::forType($type));
-                            $selection->addMember($field);
 
                             $namedType = Type::getNamedType($type);
 
                             if ($namedType instanceof ObjectType) {
-                                $namespace = new PhpNamespace($selection->getNamespace().'\\'.ucfirst($resultingName));
-                                $selection = new ClassType($namedType->name, $namespace);
-                                $this->selectionStack [] = $selection;
+                                $className = ucfirst($resultKey);
+                                $typeReference = $this->currentNamespace() . '\\' . $className;
+                                $this->operationSet->pushSelection(
+                                    new ClassType(
+                                        $className,
+                                        $this->makeNamespace()
+                                    )
+                                );
+                                // We go one level deeper into the selection set
+                                // To avoid naming conflicts, we add on another namespace
+                                $this->namespaceStack []= $typeReference;
+                            } elseif ($namedType instanceof ScalarType) {
+                                $typeReference = PhpDoc::forScalar($namedType);
                             }
+
+                            $field->setComment('@var '.PhpDoc::forType($type, $typeReference));
                         },
                     ],
                     NodeKind::SELECTION_SET => [
                         'leave' => function (SelectionSetNode $selectionSet) use ($typeInfo) {
                             // We are done with building this subtree of the selection set,
                             // so we move the top-most element to the storage
-                            $this->selectionClasses [] = array_pop($this->selectionStack);
+                            $this->operationSet->popSelection();
+
+                            // The namespace moves up a level
+                            array_pop($this->namespaceStack);
                         },
                     ],
                 ]
             )
         );
 
-        return $this->operationClassesStorage;
+        return $this->operationStorage;
+    }
+
+    protected function makeNamespace(): PhpNamespace
+    {
+        return new PhpNamespace(
+            $this->currentNamespace()
+        );
+    }
+
+    protected function currentNamespace(): string
+    {
+        return implode('\\', $this->namespaceStack);
     }
 }

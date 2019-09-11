@@ -5,7 +5,7 @@
 [![Latest Stable Version](https://poser.pugx.org/spawnia/sailor/v/stable)](https://packagist.org/packages/spawnia/sailor)
 [![Total Downloads](https://poser.pugx.org/spawnia/sailor/downloads)](https://packagist.org/packages/spawnia/sailor)
 
-A GraphQL client for PHP
+A typesafe GraphQL client for PHP
 
 ## Installation
 
@@ -17,7 +17,12 @@ composer require spawnia/sailor
 
 ## Usage
 
-:bulb: This is a great place for showing a few usage examples!
+Sprinkle `.graphql` files throughout your app that contain the
+queries and mutations you use. The contained operations must have
+unique names.
+
+Run `vendor/bin/sailor` to generate PHP classes that offer typesafe
+access.
 
 ## Changelog
 
