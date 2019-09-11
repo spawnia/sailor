@@ -24,7 +24,7 @@ class OperationSet
 
     public function pushSelection(ClassType $selectionClass): void
     {
-        $this->selectionStack []= $selectionClass;
+        $this->selectionStack [] = $selectionClass;
     }
 
     /**
@@ -32,7 +32,7 @@ class OperationSet
      */
     public function popSelection(): void
     {
-        $this->selectionStorage []= array_pop($this->selectionStack);
+        $this->selectionStorage [] = array_pop($this->selectionStack);
     }
 
     public function peekSelection(): ClassType

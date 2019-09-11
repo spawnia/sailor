@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
-use GraphQL\Type\Definition\BooleanType;
-use GraphQL\Type\Definition\IDType;
-use GraphQL\Type\Definition\IntType;
-use GraphQL\Type\Definition\ScalarType;
+use PHPStan\Type\FloatType;
 use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\IntType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ListOfType;
-use PHPStan\Type\FloatType;
+use GraphQL\Type\Definition\ScalarType;
+use GraphQL\Type\Definition\BooleanType;
 
 class PhpDoc
 {
@@ -43,7 +42,7 @@ class PhpDoc
 
     public static function forScalar(ScalarType $type): string
     {
-        switch(get_class($type)) {
+        switch (get_class($type)) {
             case IntType::class:
                 return 'int';
             case FloatType::class:

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
-use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\TypeInfo;
 use GraphQL\Language\Visitor;
@@ -16,6 +15,7 @@ use GraphQL\Language\AST\FieldNode;
 use Nette\PhpGenerator\PhpNamespace;
 use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Language\AST\SelectionSetNode;
 use GraphQL\Language\AST\OperationDefinitionNode;
 
@@ -44,7 +44,7 @@ class ClassGenerator
     public function __construct(Schema $schema, string $namespace)
     {
         $this->schema = $schema;
-        $this->namespaceStack []= $namespace;
+        $this->namespaceStack [] = $namespace;
     }
 
     /**
@@ -63,7 +63,7 @@ class ClassGenerator
                     NodeKind::OPERATION_DEFINITION => [
                         'enter' => function (OperationDefinitionNode $operationDefinition) {
                             $operationName = $operationDefinition->name->value;
-                            $this->namespaceStack []= $operationName;
+                            $this->namespaceStack [] = $operationName;
 
                             // Generate a class to represent the query/mutation itself
                             $operation = new ClassType($operationName, $this->makeNamespace());
@@ -88,7 +88,7 @@ class ClassGenerator
                             PHP
                             );
                             $resultName = "{$operationName}Result";
-                            $run->setReturnType($this->currentNamespace() . '\\' . $resultName);
+                            $run->setReturnType($this->currentNamespace().'\\'.$resultName);
                             $operationResult = new ClassType($resultName, $this->makeNamespace());
 
                             $this->operationSet = new OperationSet($operation);
@@ -96,7 +96,7 @@ class ClassGenerator
                         },
                         'leave' => function (OperationDefinitionNode $operationDefinition) {
                             // Store the current operation as we continue with the next one
-                            $this->operationStorage []= $this->operationSet;
+                            $this->operationStorage [] = $this->operationSet;
                         },
                     ],
                     NodeKind::FIELD => [
@@ -114,7 +114,7 @@ class ClassGenerator
 
                             if ($namedType instanceof ObjectType) {
                                 $className = ucfirst($resultKey);
-                                $typeReference = $this->currentNamespace() . '\\' . $className;
+                                $typeReference = $this->currentNamespace().'\\'.$className;
                                 $this->operationSet->pushSelection(
                                     new ClassType(
                                         $className,
@@ -123,7 +123,7 @@ class ClassGenerator
                                 );
                                 // We go one level deeper into the selection set
                                 // To avoid naming conflicts, we add on another namespace
-                                $this->namespaceStack []= $typeReference;
+                                $this->namespaceStack [] = $typeReference;
                             } elseif ($namedType instanceof ScalarType) {
                                 $typeReference = PhpDoc::forScalar($namedType);
                             }

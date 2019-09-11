@@ -8,9 +8,9 @@ use Foo\Bar\Baz;
 
 class FooResult
 {
-	/** @var string|null */
-	public $foo;
+    /** @var string|null */
+    public $foo;
 
-	/** @var Baz */
-	public $baz;
+    /** @var Baz */
+    public $baz;
 }

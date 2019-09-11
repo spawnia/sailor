@@ -67,7 +67,7 @@ class Generator
         $pathInTarget = self::after($namespace, $this->options->namespace);
         $pathInTarget = str_replace('\\', '/', $pathInTarget);
 
-        return $this->options->targetPath . $pathInTarget;
+        return $this->options->targetPath.$pathInTarget;
     }
 
     public static function after(string $subject, string $search): string
