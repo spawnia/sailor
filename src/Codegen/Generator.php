@@ -85,6 +85,7 @@ class Generator
         $printer = new PsrPrinter();
         $phpNamespace = $classType->getNamespace();
         $class = $printer->printClass($classType, $phpNamespace);
+
         return <<<PHP
             <?php
             
