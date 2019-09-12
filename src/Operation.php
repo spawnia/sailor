@@ -28,14 +28,14 @@ abstract class Operation
      *
      * @return string
      */
-    protected abstract function endpoint(): string;
+    abstract protected function endpoint(): string;
 
     /**
      * The GraphQL query string.
      *
      * @return string
      */
-    protected abstract function document(): string;
+    abstract protected function document(): string;
 
     /**
      * Set the endpoint configuration.
@@ -76,9 +76,9 @@ abstract class Operation
         // Start with the FQCN of the child, e.g. Vendor\Generated\FooQuery
         return static::class
             // Add the name of the class itself as a namespace, e.g. \FooQuery
-            . '\\' . get_class($this)
+            .'\\'.get_class($this)
             // Finally add the expected name of the result class, e.g. \FooQueryResult
             // so we end up with Vendor\Generated\FooQuery\FooQuery\FooQueryResult
-            . '\\' . get_class($this) . 'Result';
+            .'\\'.get_class($this).'Result';
     }
 }

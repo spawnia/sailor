@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor\Tests\Unit;
 
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Spawnia\Sailor\GuzzleClient;
 use PHPUnit\Framework\TestCase;
+use Spawnia\Sailor\GuzzleClient;
+use GuzzleHttp\Handler\MockHandler;
 
 class GuzzleClientTest extends TestCase
 {
@@ -18,13 +20,13 @@ class GuzzleClientTest extends TestCase
         $history = Middleware::history($container);
 
         $mock = new MockHandler([
-            new Response(200, [], /** @lang JSON */ '{"data": {"foo": "bar"}}')
+            new Response(200, [], /* @lang JSON */ '{"data": {"foo": "bar"}}'),
         ]);
         $stack = HandlerStack::create($mock);
         $stack->push($history);
 
         $client = new GuzzleClient('http://foo.bar/graphql', ['handler' => $stack]);
-        $response = $client->request(/** @lang GraphQL */ '{foo}');
+        $response = $client->request(/* @lang GraphQL */ '{foo}');
 
         $this->assertEquals(
             (object) ['foo' => 'bar'],
@@ -35,6 +37,6 @@ class GuzzleClientTest extends TestCase
         $request = $container[0]['request'];
 
         $this->assertSame('POST', $request->getMethod());
-        $this->assertSame(/** @lang JSON */ '{"query":"{foo}"}', $request->getBody()->getContents());
+        $this->assertSame(/* @lang JSON */ '{"query":"{foo}"}', $request->getBody()->getContents());
     }
 }

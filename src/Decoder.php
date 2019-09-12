@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor;
 
 class Decoder
@@ -23,13 +25,11 @@ class Decoder
 
     protected static function recurse(?\stdClass $data, object &$instance): void
     {
-        foreach($data as $key => $value) {
-            if(is_array($value)) {
-                $instance->{$key} []= $value;
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $instance->{$key} [] = $value;
                 continue;
             }
-
-
         }
     }
 }
