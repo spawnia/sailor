@@ -13,10 +13,10 @@ return [
                 'http://example.com/graphql',
                 [
                     'headers' => [
-                        'Authorization' => 'Bearer foobarbaz'
-                    ]
+                        'Authorization' => 'Bearer foobarbaz',
+                    ],
                 ]
             );
         }
-    }
+    },
 ];
