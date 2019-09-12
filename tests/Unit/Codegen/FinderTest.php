@@ -17,7 +17,7 @@ class FinderTest extends Framework\TestCase
 
         $first = reset($files);
         self::assertStringEqualsFile(
-            $rootPath . '/foo.graphql',
+            $rootPath.'/foo.graphql',
             $first
         );
     }
