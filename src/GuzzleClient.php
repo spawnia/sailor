@@ -31,8 +31,6 @@ class GuzzleClient implements Client
 
         $response = $this->guzzle->post($this->uri, ['json' => $json]);
 
-        return Response::fromJson(
-            $response->getBody()
-        );
+        return Response::fromResponseInterface($response);
     }
 }

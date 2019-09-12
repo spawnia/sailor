@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor;
 
-interface EndpointConfiguration
+interface EndpointConfig
 {
     public function client(): Client;
 }

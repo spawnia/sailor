@@ -19,27 +19,47 @@ abstract class Operation
     const EXPECTED_CONFIG_LOCATION = __DIR__.'/../../../sailor.php';
 
     /**
-     * @var EndpointConfiguration[]|null
+     * @var EndpointConfig[]|null
      */
-    protected static $config;
+    protected static $endpointConfigMap;
 
-    protected function runInternal(string $endpoint, string $document, \stdClass $variables = null)
+    /**
+     * The configured endpoint the operation belongs to.
+     *
+     * @return string
+     */
+    protected abstract function endpoint(): string;
+
+    /**
+     * The GraphQL query string.
+     *
+     * @return string
+     */
+    protected abstract function document(): string;
+
+    /**
+     * Set the endpoint configuration.
+     *
+     * @param  EndpointConfig[]  $endpointConfigMap
+     */
+    public static function setEndpointConfigMap(array $endpointConfigMap): void
     {
-        if (! self::$config) {
+        self::$endpointConfigMap = $endpointConfigMap;
+    }
+
+    // TODO pass variables
+    protected function runInternal()
+    {
+        if (! self::$endpointConfigMap) {
             $this->loadConfig();
         }
 
-        $endpointConfig = self::$config[$endpoint];
+        $endpointConfig = self::$endpointConfigMap[$this->endpoint()];
 
         $client = $endpointConfig->client();
-        $response = $client->request($document, $variables);
+        $response = $client->request($this->document());
 
-        return $this->decode($response);
-    }
-
-    public static function setClientConfiguration(array $clientConfiguration): void
-    {
-        self::$config = $clientConfiguration;
+        return Decoder::into($response, $this->getResultClassName());
     }
 
     private function loadConfig(): void
@@ -48,11 +68,17 @@ abstract class Operation
             throw new \Exception('Place a configuration file called sailor.php in your project root.');
         }
 
-        self::$config = include self::EXPECTED_CONFIG_LOCATION;
+        self::$endpointConfigMap = include self::EXPECTED_CONFIG_LOCATION;
     }
 
-    private function decode(Response $response)
+    private function getResultClassName(): string
     {
-        $class = $this->resultClass();
+        // Start with the FQCN of the child, e.g. Vendor\Generated\FooQuery
+        return static::class
+            // Add the name of the class itself as a namespace, e.g. \FooQuery
+            . '\\' . get_class($this)
+            // Finally add the expected name of the result class, e.g. \FooQueryResult
+            // so we end up with Vendor\Generated\FooQuery\FooQuery\FooQueryResult
+            . '\\' . get_class($this) . 'Result';
     }
 }

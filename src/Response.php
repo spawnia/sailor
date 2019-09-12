@@ -31,7 +31,9 @@ class Response
 
     public static function fromResponseInterface(ResponseInterface $response): self
     {
-        return self::fromJson($response->getBody());
+        return self::fromJson(
+            $response->getBody()->getContents()
+        );
     }
 
     public static function fromJson(string $json): self
