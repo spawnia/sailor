@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor;
 
 class GuzzleClient implements Client
@@ -22,8 +24,8 @@ class GuzzleClient implements Client
 
     public function request(string $query, \stdClass $variables = null): Response
     {
-        $json = ['query' => $query,];
-        if (!is_null($variables)) {
+        $json = ['query' => $query];
+        if (! is_null($variables)) {
             $json['variables'] = $variables;
         }
 

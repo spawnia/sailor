@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor;
 
 use Psr\Http\Message\ResponseInterface;
@@ -36,7 +38,7 @@ class Response
     {
         $response = \Safe\json_decode($json);
 
-        if(! $response instanceof \stdClass) {
+        if (! $response instanceof \stdClass) {
             throw new \Exception('A response to a GraphQL operation must be a map.');
         }
 
@@ -48,13 +50,13 @@ class Response
         $hasData = property_exists($stdClass, 'data');
         $hasErrors = property_exists($stdClass, 'errors');
 
-        if(!$hasData && !$hasErrors) {
+        if (! $hasData && ! $hasErrors) {
             throw new \Exception('A valid GraphQL response must contain either "data" or "errors".');
         }
 
         $instance = new self;
 
-        if($hasErrors) {
+        if ($hasErrors) {
             $errors = $stdClass->errors;
 
             self::validateErrors($errors);
@@ -62,7 +64,7 @@ class Response
             $instance->errors = $errors;
         }
 
-        if($hasData) {
+        if ($hasData) {
             $data = $stdClass->data;
 
             self::validateData($data);
@@ -70,7 +72,7 @@ class Response
             $instance->data = $data;
         }
 
-        if(property_exists($stdClass, 'extensions')) {
+        if (property_exists($stdClass, 'extensions')) {
             $extensions = $stdClass->extensions;
 
             self::validateExtensions($extensions);
@@ -85,7 +87,7 @@ class Response
 
     protected static function validateErrors($errors): void
     {
-        if (!is_array($errors)) {
+        if (! is_array($errors)) {
             throw new \Exception('The response entry "errors" must be a list if present.');
         }
 
@@ -94,15 +96,15 @@ class Response
         }
 
         foreach ($errors as $error) {
-            if (!$error instanceof \stdClass) {
+            if (! $error instanceof \stdClass) {
                 throw new \Exception('Each error in the response must be a map.');
             }
 
-            if (!property_exists($error, 'message')) {
+            if (! property_exists($error, 'message')) {
                 throw new \Exception('Each error in the response must contain a key "message".');
             }
 
-            if (!is_string($error->message)) {
+            if (! is_string($error->message)) {
                 throw new \Exception('Each error in the response must contain a key "message" that is a string.');
             }
         }
@@ -110,7 +112,7 @@ class Response
 
     protected static function validateData($data): void
     {
-        if(
+        if (
             ! $data instanceof \stdClass
             || $data === null
         ) {
@@ -120,7 +122,7 @@ class Response
 
     protected static function validateExtensions($extensions): void
     {
-        if(! $extensions instanceof \stdClass) {
+        if (! $extensions instanceof \stdClass) {
             throw new \Exception('The response entry "extensions" must be a map.');
         }
     }

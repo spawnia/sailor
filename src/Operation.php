@@ -25,7 +25,7 @@ abstract class Operation
 
     protected function runInternal(string $endpoint, string $document, \stdClass $variables = null)
     {
-        if(!self::$config) {
+        if (! self::$config) {
             $this->loadConfig();
         }
 
@@ -44,7 +44,7 @@ abstract class Operation
 
     private function loadConfig(): void
     {
-        if(! file_exists(self::EXPECTED_CONFIG_LOCATION)) {
+        if (! file_exists(self::EXPECTED_CONFIG_LOCATION)) {
             throw new \Exception('Place a configuration file called sailor.php in your project root.');
         }
 
@@ -54,7 +54,5 @@ abstract class Operation
     private function decode(Response $response)
     {
         $class = $this->resultClass();
-
-
     }
 }

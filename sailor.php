@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use Spawnia\Sailor\Client;
-use Spawnia\Sailor\EndpointConfiguration;
 use Spawnia\Sailor\GuzzleClient;
+use Spawnia\Sailor\EndpointConfiguration;
 
 return [
     'example' => new class implements EndpointConfiguration {
@@ -12,5 +12,5 @@ return [
         {
             return new GuzzleClient('http://example.com/graphql');
         }
-    }
+    },
 ];
