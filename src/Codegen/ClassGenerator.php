@@ -49,8 +49,9 @@ class ClassGenerator
 
     /**
      * @param  DocumentNode  $document
+     * @return OperationSet[]
      */
-    public function generate(DocumentNode $document)
+    public function generate(DocumentNode $document): array
     {
         $typeInfo = new TypeInfo($this->schema);
 
