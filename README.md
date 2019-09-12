@@ -16,14 +16,15 @@ Install through composer
 composer require spawnia/sailor
 ```
 
+Run `vendor/bin/sailor` to set up a configuration file `sailor.php` in your project root.
+
 ## Usage
 
 Sprinkle `.graphql` files throughout your app that contain the
 queries and mutations you use. The contained operations must have
 unique names.
 
-Run `vendor/bin/sailor` to generate PHP classes that offer typesafe
-access.
+Run `vendor/bin/sailor` to generate PHP classes that offer typesafe access.
 
 ## Changelog
 
