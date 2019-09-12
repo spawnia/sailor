@@ -11,12 +11,13 @@ class FinderTest extends Framework\TestCase
 {
     public function testGreetIncludesName(): void
     {
-        $finder = new Finder(__DIR__.'/../../examples/foo');
+        $rootPath = __DIR__.'/../../../examples/foo';
+        $finder = new Finder($rootPath);
         $files = $finder->documents();
 
         $first = reset($files);
         self::assertStringEqualsFile(
-            __DIR__.'/../../examples/foo/foo.graphql',
+            $rootPath . '/foo.graphql',
             $first
         );
     }

@@ -9,7 +9,6 @@ use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Codegen\PhpDoc;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ListOfType;
-use GraphQL\Type\Definition\ObjectType;
 
 /**
  * TODO https://github.com/spawnia/sailor/issues/1.
