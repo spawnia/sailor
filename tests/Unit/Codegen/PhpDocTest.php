@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Unit\Codegen;
 
+use GraphQL\Type\Definition\Type;
 use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Codegen\PhpDoc;
 use GraphQL\Type\Definition\NonNull;
@@ -15,58 +16,54 @@ use GraphQL\Type\Definition\ObjectType;
  */
 class PhpDocTest extends TestCase
 {
-    public function testObjectType(): void
+    public function testSimpleType(): void
     {
         self::assertSame(
             'Foo|null',
             PhpDoc::forType(
-                new ObjectType([
-                    'name' => 'Foo',
-                ])
+                Type::id(),
+            'Foo'
             )
         );
     }
 
-    public function testNonNullObjectType(): void
+    public function testNonNullType(): void
     {
         self::assertSame(
             'Foo',
             PhpDoc::forType(
                 new NonNull(
-                    new ObjectType([
-                        'name' => 'Foo',
-                    ])
-                )
+                    Type::id()
+                ),
+                'Foo'
             )
         );
     }
 
-    public function testListObjectType(): void
+    public function testListOfType(): void
     {
         self::assertSame(
             'Foo[]|null',
             PhpDoc::forType(
                 new ListOfType(
-                    new ObjectType([
-                        'name' => 'Foo',
-                    ])
-                )
+                    Type::id()
+                ),
+                'Foo'
             )
         );
     }
 
-    public function testNonNullListObjectType(): void
+    public function testNonNullListOfType(): void
     {
         self::assertSame(
             'Foo[]',
             PhpDoc::forType(
                 new NonNull(
                     new ListOfType(
-                        new ObjectType([
-                            'name' => 'Foo',
-                        ])
+                        Type::id()
                     )
-                )
+                ),
+                'Foo'
             )
         );
     }
