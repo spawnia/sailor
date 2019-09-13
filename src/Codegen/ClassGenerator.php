@@ -111,7 +111,7 @@ class ClassGenerator
                             $document->setStatic();
                             $document->setReturnType('string');
                             $document->setBody(<<<PHP
-                            return '{$operationDefinition->loc->source->body}';
+                            return /** @lang GraphQL */ '{$operationDefinition->loc->source->body}';
                             PHP
                             );
 
