@@ -12,7 +12,7 @@ abstract class TypedObject
      * @param  \stdClass  $data
      * @return static
      */
-    public static function fromStdClass(\stdClass $data): self
+    public static function fromSelectionSet(\stdClass $data): self
     {
         $instance = new static;
 
@@ -20,7 +20,7 @@ abstract class TypedObject
             // The ClassGenerator placed methods for each property that return
             // a callable, which can map a value to its internal type
             $methodName = ClassGenerator::typeDiscriminatorMethodName($key);
-            $typeMapper = $instance->{$methodName}($key);
+            $typeMapper = $instance->{$methodName}();
 
             if (is_array($valueOrValues)) {
                 foreach ($valueOrValues as $value) {

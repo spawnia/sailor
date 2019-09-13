@@ -12,7 +12,7 @@ class ObjectTypeTest extends TestCase
     public function testDecode(): void
     {
         $data = (object) ['foo' => 'bar'];
-        $foo = Foo::fromStdClass($data);
+        $foo = Foo::fromSelectionSet($data);
 
         self::assertSame('bar', $foo->foo);
     }

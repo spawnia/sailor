@@ -9,7 +9,7 @@ class Foo extends \Spawnia\Sailor\TypedObject
     /** @var string|null */
     public $foo;
 
-    public function typeFoo(string $key): callable
+    public function typeFoo(): callable
     {
         return new \Spawnia\Sailor\Mapper\StringMapper();
     }

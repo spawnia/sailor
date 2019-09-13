@@ -133,7 +133,7 @@ class ClassGenerator
                             $setData->setReturnType('void');
                             $dataParam->setTypeHint('\\stdClass');
                             $setData->setBody(<<<PHP
-                            \$this->data = $operationName::fromStdClass(\$data);
+                            \$this->data = $operationName::fromSelectionSet(\$data);
                             PHP
                             );
 
@@ -179,10 +179,12 @@ class ClassGenerator
                                 $this->namespaceStack [] = $typeReference;
                                 $typeMapper = <<<PHP
                                 function (\\stcClass \$value): \Spawnia\Sailor\ObjectType {
-                                    return $typeReference::fromStdClass(\$value);
+                                    return $typeReference::fromSelectionSet(\$value);
                                 }
                                 PHP;
                             } elseif ($namedType instanceof ScalarType) {
+                                // TODO support Int, Boolean, Float, Enum
+
                                 $typeReference = PhpDoc::forScalar($namedType);
                                 $typeMapper = <<<PHP
                                 new \Spawnia\Sailor\Mapper\StringMapper()

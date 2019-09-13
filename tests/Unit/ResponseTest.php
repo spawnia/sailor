@@ -33,9 +33,9 @@ class ResponseTest extends TestCase
         self::assertResponseIsFooBar($response);
     }
 
-    public function testFromStdClass(): void
+    public function testfromSelectionSet(): void
     {
-        $response = Response::fromStdClass(
+        $response = Response::fromSelectionSet(
             (object) [
                 'data' => (object) [
                     'foo' => 'bar',

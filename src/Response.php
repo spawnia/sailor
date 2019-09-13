@@ -44,10 +44,10 @@ class Response
             throw new \Exception('A response to a GraphQL operation must be a map.');
         }
 
-        return self::fromStdClass($response);
+        return self::fromSelectionSet($response);
     }
 
-    public static function fromStdClass(\stdClass $stdClass): self
+    public static function fromSelectionSet(\stdClass $stdClass): self
     {
         $hasData = property_exists($stdClass, 'data');
         $hasErrors = property_exists($stdClass, 'errors');

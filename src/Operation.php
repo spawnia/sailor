@@ -54,19 +54,36 @@ abstract class Operation
             self::loadConfig();
         }
 
-        $endpointConfig = self::$endpointConfigMap[static::endpoint()];
-
-        $client = $endpointConfig->client();
-
-        return $client->request(static::document());
+        return self
+            ::getEndpointConfig()
+            ->client()
+            ->request(static::document());
     }
 
     protected static function loadConfig(): void
     {
         if (! file_exists(self::EXPECTED_CONFIG_LOCATION)) {
-            throw new \Exception('Place a configuration file called sailor.php in your project root.');
+            \Safe\copy(
+                __DIR__ . '/../sailor.php',
+                self::EXPECTED_CONFIG_LOCATION . '.example'
+            );
+
+            throw new \Exception(<<<EOF
+            Place a configuration file "sailor.php" in your project root.
+            
+            Created an example configuration "sailor.php.example".
+            Modify it to your needs and try again.
+            
+            EOF
+            );
         }
 
+        // The config should return an array
         self::$endpointConfigMap = include self::EXPECTED_CONFIG_LOCATION;
+    }
+
+    protected static function getEndpointConfig(): EndpointConfig
+    {
+        return self::$endpointConfigMap[static::endpoint()];
     }
 }
