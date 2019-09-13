@@ -8,7 +8,7 @@ namespace Spawnia\Sailor;
  * Subclasses of this class are automatically generated.
  *
  * They must implement the following abstract function:
- * public abstract function run(mixed[] ...$args): mixed
+ * public abstract function execute(mixed[] ...$args): mixed
  */
 abstract class Operation
 {
@@ -28,14 +28,14 @@ abstract class Operation
      *
      * @return string
      */
-    abstract protected function endpoint(): string;
+    abstract public static function endpoint(): string;
 
     /**
      * The GraphQL query string.
      *
      * @return string
      */
-    abstract protected function document(): string;
+    abstract public static function document(): string;
 
     /**
      * Set the endpoint configuration.
@@ -48,37 +48,25 @@ abstract class Operation
     }
 
     // TODO pass variables
-    protected function runInternal()
+    protected static function fetchResponse(): Response
     {
         if (! self::$endpointConfigMap) {
-            $this->loadConfig();
+            self::loadConfig();
         }
 
-        $endpointConfig = self::$endpointConfigMap[$this->endpoint()];
+        $endpointConfig = self::$endpointConfigMap[static::endpoint()];
 
         $client = $endpointConfig->client();
-        $response = $client->request($this->document());
 
-        return Decoder::into($response, $this->getResultClassName());
+        return $client->request(static::document());
     }
 
-    private function loadConfig(): void
+    protected static function loadConfig(): void
     {
         if (! file_exists(self::EXPECTED_CONFIG_LOCATION)) {
             throw new \Exception('Place a configuration file called sailor.php in your project root.');
         }
 
         self::$endpointConfigMap = include self::EXPECTED_CONFIG_LOCATION;
-    }
-
-    private function getResultClassName(): string
-    {
-        // Start with the FQCN of the child, e.g. Vendor\Generated\FooQuery
-        return static::class
-            // Add the name of the class itself as a namespace, e.g. \FooQuery
-            .'\\'.get_class($this)
-            // Finally add the expected name of the result class, e.g. \FooQueryResult
-            // so we end up with Vendor\Generated\FooQuery\FooQuery\FooQueryResult
-            .'\\'.get_class($this).'Result';
     }
 }

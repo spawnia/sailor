@@ -13,6 +13,7 @@
   "require": {
     "php": "^7.3",
     "nette/php-generator": "^3.2",
+    "phpstan/phpdoc-parser": "^0.3.5",
     "psr/http-client": "^1.0",
     "thecodingmachine/safe": "^0.1.16",
     "webonyx/graphql-php": "^0.13.8"

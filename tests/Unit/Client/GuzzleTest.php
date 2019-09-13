@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Spawnia\Sailor\Tests\Unit;
+namespace Spawnia\Sailor\Tests\Unit\Client;
 
 use GuzzleHttp\Middleware;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
-use Spawnia\Sailor\GuzzleClient;
+use Spawnia\Sailor\Client\Guzzle;
 use GuzzleHttp\Handler\MockHandler;
 
-class GuzzleClientTest extends TestCase
+class GuzzleTest extends TestCase
 {
     public function testRequest(): void
     {
@@ -25,7 +25,8 @@ class GuzzleClientTest extends TestCase
         $stack = HandlerStack::create($mock);
         $stack->push($history);
 
-        $client = new GuzzleClient('http://foo.bar/graphql', ['handler' => $stack]);
+        $uri = 'http://foo.bar/graphql';
+        $client = new Guzzle($uri, ['handler' => $stack]);
         $response = $client->request(/* @lang GraphQL */ '{foo}');
 
         $this->assertEquals(
@@ -38,5 +39,6 @@ class GuzzleClientTest extends TestCase
 
         $this->assertSame('POST', $request->getMethod());
         $this->assertSame(/* @lang JSON */ '{"query":"{foo}"}', $request->getBody()->getContents());
+        $this->assertSame($uri, $request->getUri()->__toString());
     }
 }

@@ -8,39 +8,50 @@ use GraphQL\Language\Parser;
 use GraphQL\Utils\BuildSchema;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PsrPrinter;
+use Spawnia\Sailor\EndpointConfig;
 
 class Generator
 {
     /**
-     * @var GeneratorOptions
+     * @var EndpointConfig
      */
-    protected $options;
+    protected $endpointConfig;
 
-    public function __construct(GeneratorOptions $options)
+    /**
+     * @var string
+     */
+    protected $endpointName;
+
+    public function __construct(EndpointConfig $endpointConfig, string $endpointName)
     {
-        $this->options = $options;
+        $this->endpointConfig = $endpointConfig;
+        $this->endpointName = $endpointName;
     }
 
     public function run()
     {
-        $finder = new Finder($this->options->searchPath);
+        $finder = new Finder($this->endpointConfig->searchPath());
         $documents = $finder->documents();
         $documents = array_map(
             [Parser::class, 'parse'],
             $documents
         );
 
-        $schemaString = \Safe\file_get_contents($this->options->schemaPath);
+        $schemaString = \Safe\file_get_contents(
+            $this->endpointConfig->targetPath() . '/schema.graphqls'
+        );
         $schema = BuildSchema::build($schemaString);
 
         // TODO call validator
         $document = Merger::combine($documents);
 
-        $classGenerator = new ClassGenerator($schema, $this->options->namespace);
+        $classGenerator = new ClassGenerator($schema, $this->endpointConfig, $this->endpointName);
         $operationSets = $classGenerator->generate($document);
 
         foreach ($operationSets as $operationSet) {
             $this->writeFile($operationSet->operation);
+            $this->writeFile($operationSet->result);
+
             foreach ($operationSet->selectionStorage as $selection) {
                 $this->writeFile($selection);
             }
@@ -65,10 +76,10 @@ class Generator
 
     protected function targetDirectory(string $namespace): string
     {
-        $pathInTarget = self::after($namespace, $this->options->namespace);
+        $pathInTarget = self::after($namespace, $this->endpointConfig->namespace());
         $pathInTarget = str_replace('\\', '/', $pathInTarget);
 
-        return $this->options->targetPath.$pathInTarget;
+        return $this->endpointConfig->targetPath().$pathInTarget;
     }
 
     public static function after(string $subject, string $search): string

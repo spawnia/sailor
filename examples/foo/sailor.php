@@ -5,33 +5,30 @@ declare(strict_types=1);
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\EndpointConfig;
 
+global $mock;
+$mock = new \Spawnia\Sailor\Testing\MockClient();
+
 return [
     'example' => new class implements EndpointConfig {
         public function client(): Client
         {
-            return new \Spawnia\Sailor\Client\Guzzle(
-                'http://example.com/graphql',
-                [
-                    'headers' => [
-                        'Authorization' => 'Bearer foobarbaz',
-                    ],
-                ]
-            );
+            global $mock;
+            return $mock;
         }
 
         public function namespace(): string
         {
-            return 'Vendor\\ExampleApi';
+            // TODO: Implement namespace() method.
         }
 
         public function targetPath(): string
         {
-            return 'generated/ExampleApi';
+            // TODO: Implement targetPath() method.
         }
 
         public function searchPath(): string
         {
-            return 'src';
+            // TODO: Implement searchPath() method.
         }
     },
 ];

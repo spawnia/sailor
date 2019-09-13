@@ -11,6 +11,9 @@ class OperationSet
     /** @var ClassType */
     public $operation;
 
+    /** @var ClassType */
+    public $result;
+
     /** @var ClassType[] */
     public $selectionStack = [];
 

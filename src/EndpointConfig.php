@@ -7,4 +7,10 @@ namespace Spawnia\Sailor;
 interface EndpointConfig
 {
     public function client(): Client;
+
+    public function namespace(): string;
+
+    public function targetPath(): string;
+
+    public function searchPath(): string;
 }

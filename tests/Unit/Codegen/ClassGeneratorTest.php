@@ -8,6 +8,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Utils\BuildSchema;
 use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Codegen\ClassGenerator;
+use Spawnia\Sailor\Testing\MockEndpointConfig;
 
 class ClassGeneratorTest extends TestCase
 {
@@ -18,7 +19,7 @@ class ClassGeneratorTest extends TestCase
             foo: ID
         }  
         ');
-        $generator = new ClassGenerator($schema, 'Foo');
+        $generator = new ClassGenerator($schema, $this->mockEndpoint('Foo'), 'foo');
 
         $document = Parser::parse('
         query Foo {
@@ -43,7 +44,7 @@ class ClassGeneratorTest extends TestCase
             bar: Int
         }
         ');
-        $generator = new ClassGenerator($schema, 'Foo');
+        $generator = new ClassGenerator($schema, $this->mockEndpoint('Foo'), 'foo');
 
         $document = Parser::parse('
         query Foo {
@@ -58,5 +59,13 @@ class ClassGeneratorTest extends TestCase
         $fooOperation = $operationsSets[0];
         $selections = $fooOperation->selectionStorage;
         self::assertCount(2, $selections);
+    }
+
+    protected function mockEndpoint(string $namespace): MockEndpointConfig
+    {
+        $endpoint = new MockEndpointConfig();
+        $endpoint->namespace = $namespace;
+
+        return $endpoint;
     }
 }

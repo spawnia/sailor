@@ -2,9 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Spawnia\Sailor;
+namespace Spawnia\Sailor\Client;
 
-class GuzzleClient implements Client
+use Spawnia\Sailor\Client;
+use Spawnia\Sailor\Response;
+
+class Guzzle implements Client
 {
     /**
      * @var \GuzzleHttp\Client

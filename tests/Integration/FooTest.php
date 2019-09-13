@@ -6,8 +6,11 @@ namespace Spawnia\Sailor\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Codegen\Generator;
-use Spawnia\Sailor\Codegen\GeneratorOptions;
 use Spawnia\PHPUnitAssertFiles\AssertDirectory;
+use Spawnia\Sailor\Foo\Foo;
+use Spawnia\Sailor\Operation;
+use Spawnia\Sailor\Response;
+use Spawnia\Sailor\Testing\MockEndpointConfig;
 
 class FooTest extends TestCase
 {
@@ -17,15 +20,40 @@ class FooTest extends TestCase
 
     public function testGeneratesFooExample(): void
     {
-        $options = new GeneratorOptions();
-        $options->namespace = 'Spawnia\\Sailor\\Foo';
-        $options->searchPath = self::EXAMPLES_PATH;
-        $options->targetPath = self::EXAMPLES_PATH.'generated';
-        $options->schemaPath = self::EXAMPLES_PATH.'schema.graphqls';
-
-        $generator = new Generator($options);
+        $generator = new Generator($this->fooMockEndpoint(), 'foo');
         $generator->run();
 
         self::assertDirectoryEquals(self::EXAMPLES_PATH.'expected', self::EXAMPLES_PATH.'generated');
+    }
+
+    public function testRequest(): void
+    {
+        $mockEndpoint = $this->fooMockEndpoint();
+
+        Operation::setEndpointConfigMap([
+            'foo' => $mockEndpoint
+        ]);
+
+        $mockEndpoint->mockClient->responseMocks []= function () {
+            $response = new Response();
+            $response->data = (object) ['foo' => 'bar'];
+
+            return $response;
+        };
+
+        $result = Foo::execute();
+        self::assertSame('bar', $result->data->foo);
+    }
+
+    protected function fooMockEndpoint(): MockEndpointConfig
+    {
+        $mockEndpoint = new MockEndpointConfig();
+
+        $mockEndpoint->namespace = 'Spawnia\\Sailor\\Foo';
+        $mockEndpoint->searchPath = self::EXAMPLES_PATH;
+        $mockEndpoint->targetPath = self::EXAMPLES_PATH.'generated';
+        $mockEndpoint->schemaPath = self::EXAMPLES_PATH.'schema.graphqls';
+
+        return $mockEndpoint;
     }
 }

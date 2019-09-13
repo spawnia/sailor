@@ -9,9 +9,9 @@ class Decoder
     /**
      * @param  Response  $response
      * @param  string  $class
-     * @return object of type $class
+     * @return TypedObject of type $class
      */
-    public static function into(Response $response, string $class)
+    public function into(Response $response, string $class): TypedObject
     {
         $instance = new $class;
 
@@ -23,13 +23,25 @@ class Decoder
         return $instance;
     }
 
-    protected static function recurse(?\stdClass $data, object &$instance): void
+    protected function recurse(?\stdClass $data, TypedObject &$instance): void
     {
-        foreach ($data as $key => $value) {
-            if (is_array($value)) {
-                $instance->{$key} [] = $value;
+        foreach ($data as $key => $valueOrValues) {
+            $typeMapper = $instance->type($key);
+
+            if (is_array($valueOrValues)) {
+                foreach ($valueOrValues as $value) {
+                    $converted = $typeMapper->map($value);
+
+                    if ($converted instanceof TypedObject) {
+                        $this->recurse($value, $converted);
+                    }
+
+                    $instance->{$key} [] = $converted;
+                }
                 continue;
             }
+
+            $instance->{$key} = $typeMapper->map($valueOrValues);
         }
     }
 }

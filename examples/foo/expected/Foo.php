@@ -6,12 +6,23 @@ namespace Spawnia\Sailor\Foo;
 
 class Foo extends \Spawnia\Sailor\Operation
 {
-    const DOCUMENT = "query Foo {\n    foo\n}\n";
-
-    public static function run(): Foo\FooResult
+    public static function execute(): Foo\FooResult
     {
-        $instance = new self;
+        $response = self::fetchResponse();
 
-        return $instance->runInternal(self::DOCUMENT);
+        return \Spawnia\Sailor\Foo\Foo\FooResult::fromResponse($response);
+    }
+
+    public static function document(): string
+    {
+        return 'query Foo {
+            foo
+        }
+        ';
+    }
+
+    public static function endpoint(): string
+    {
+        return 'foo';
     }
 }

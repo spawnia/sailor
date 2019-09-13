@@ -7,6 +7,9 @@ namespace Spawnia\Sailor\Codegen;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\TypeInfo;
 use GraphQL\Language\Visitor;
+use Nette\PhpGenerator\Parameter;
+use Spawnia\Sailor\EndpointConfig;
+use Spawnia\Sailor\TypedObject;
 use Spawnia\Sailor\Operation;
 use GraphQL\Type\Definition\Type;
 use Nette\PhpGenerator\ClassType;
@@ -18,6 +21,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Language\AST\SelectionSetNode;
 use GraphQL\Language\AST\OperationDefinitionNode;
+use Spawnia\Sailor\Result;
 
 class ClassGenerator
 {
@@ -25,6 +29,16 @@ class ClassGenerator
      * @var Schema
      */
     protected $schema;
+
+    /**
+     * @var EndpointConfig
+     */
+    protected $endpointConfig;
+
+    /**
+     * @var string
+     */
+    protected $endpoint;
 
     /**
      * @var OperationSet
@@ -41,10 +55,12 @@ class ClassGenerator
      */
     private $namespaceStack = [];
 
-    public function __construct(Schema $schema, string $namespace)
+    public function __construct(Schema $schema, EndpointConfig $endpointConfig, string $endpoint)
     {
         $this->schema = $schema;
-        $this->namespaceStack [] = $namespace;
+        $this->endpointConfig = $endpointConfig;
+        $this->endpoint = $endpoint;
+        $this->namespaceStack [] = $endpointConfig->namespace();
     }
 
     /**
@@ -71,31 +87,67 @@ class ClassGenerator
                             // The base class contains most of the logic
                             $operation->setExtends(Operation::class);
 
-                            // Store the actual query string in the operation
-                            // TODO minify the query string
-                            $operation->addConstant('DOCUMENT', $operationDefinition->loc->source->body);
-
-                            // The run method is the public API of the operation
-                            $run = $operation->addMethod('run');
-                            $run->setStatic();
+                            // The execute method is the public API of the operation
+                            $execute = $operation->addMethod('execute');
+                            $execute->setStatic();
 
                             // It returns a typed result which is a new selection set class
-                            $run->setBody(<<<'PHP'
-                            $instance = new self;
-                            
-                            return $instance->runInternal(self::DOCUMENT);
-                            PHP
-                            );
                             $resultName = "{$operationName}Result";
 
                             // Related classes are put into a nested namespace
                             $this->namespaceStack [] = $operationName;
-                            $run->setReturnType($this->currentNamespace().'\\'.$resultName);
+                            $resultClass = $this->currentNamespace().'\\'.$resultName;
+
+                            $execute->setReturnType($resultClass);
+                            $execute->setBody(<<<PHP
+                            \$response = self::fetchResponse();
+
+                            return \\$resultClass::fromResponse(\$response);
+                            PHP
+                            );
+
+                            // Store the actual query string in the operation
+                            // TODO minify the query string
+                            $document = $operation->addMethod('document');
+                            $document->setStatic();
+                            $document->setReturnType('string');
+                            $document->setBody(<<<PHP
+                            return '{$operationDefinition->loc->source->body}';
+                            PHP
+                            );
+
+                            // Set the endpoint this operation belongs to
+                            $document = $operation->addMethod('endpoint');
+                            $document->setStatic();
+                            $document->setReturnType('string');
+                            $document->setBody(<<<PHP
+                            return '{$this->endpoint}';
+                            PHP
+                            );
 
                             $operationResult = new ClassType($resultName, $this->makeNamespace());
+                            $operationResult->setExtends(Result::class);
+
+                            $setData = $operationResult->addMethod('setData');
+                            $setData->setVisibility('protected');
+                            $dataParam = $setData->addParameter('data');
+                            $setData->setReturnType('void');
+                            $dataParam->setTypeHint('\\stdClass');
+                            $setData->setBody(<<<PHP
+                            \$this->data = $operationName::fromStdClass(\$data);
+                            PHP
+                            );
+
+                            $dataProp = $operationResult->addProperty('data');
+                            $dataProp->setComment("@var $operationName|null");
 
                             $this->operationSet = new OperationSet($operation);
-                            $this->operationSet->pushSelection($operationResult);
+
+                            $this->operationSet->result = $operationResult;
+
+                            $this->operationSet->pushSelection(
+                                $this->makeTypedObject($operationName)
+                            );
                         },
                         'leave' => function (OperationDefinitionNode $operationDefinition) {
                             // Store the current operation as we continue with the next one
@@ -104,34 +156,51 @@ class ClassGenerator
                     ],
                     NodeKind::FIELD => [
                         'enter' => function (FieldNode $field) use ($typeInfo) {
-                            // The key that the
+                            // We are only interested in the key that will come from the server
                             $resultKey = $field->alias
                                 ? $field->alias->value
                                 : $field->name->value;
 
                             $selection = $this->operationSet->peekSelection();
-                            $field = $selection->addProperty($resultKey);
+
                             $type = $typeInfo->getType();
 
                             $namedType = Type::getNamedType($type);
 
                             if ($namedType instanceof ObjectType) {
-                                $className = ucfirst($resultKey);
-                                $typeReference = $this->currentNamespace().'\\'.$className;
+                                $typedObjectName = ucfirst($resultKey);
+                                $typeReference = $this->currentNamespace().'\\'.$typedObjectName;
+
                                 $this->operationSet->pushSelection(
-                                    new ClassType(
-                                        $className,
-                                        $this->makeNamespace()
-                                    )
+                                    $this->makeTypedObject($typedObjectName)
                                 );
+
                                 // We go one level deeper into the selection set
                                 // To avoid naming conflicts, we add on another namespace
                                 $this->namespaceStack [] = $typeReference;
+                                $typeMapper = <<<PHP
+                                function (\\stcClass \$value): \Spawnia\Sailor\ObjectType {
+                                    return $typeReference::fromStdClass(\$value);
+                                }
+                                PHP;
                             } elseif ($namedType instanceof ScalarType) {
                                 $typeReference = PhpDoc::forScalar($namedType);
+                                $typeMapper = <<<PHP
+                                new \Spawnia\Sailor\Mapper\StringMapper()
+                                PHP;
                             }
 
+                            $field = $selection->addProperty($resultKey);
                             $field->setComment('@var '.PhpDoc::forType($type, $typeReference));
+
+                            $typeField = $selection->addMethod(self::typeDiscriminatorMethodName($resultKey));
+                            $keyParam = $typeField->addParameter('key');
+                            $keyParam->setTypeHint('string');
+                            $typeField->setReturnType('callable');
+                            $typeField->setBody(<<<PHP
+                            return $typeMapper;
+                            PHP
+                            );
                         },
                     ],
                     NodeKind::SELECTION_SET => [
@@ -149,6 +218,22 @@ class ClassGenerator
         );
 
         return $this->operationStorage;
+    }
+
+    protected function makeTypedObject(string $name): ClassType
+    {
+        $typedObject = new ClassType(
+            $name,
+            $this->makeNamespace()
+        );
+        $typedObject->addExtend(TypedObject::class);
+
+        return $typedObject;
+    }
+
+    public static function typeDiscriminatorMethodName(string $propertyKey): string
+    {
+        return 'type' . ucfirst($propertyKey);
     }
 
     protected function makeNamespace(): PhpNamespace

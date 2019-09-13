@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Unit;
 
-use Spawnia\Sailor\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;
+use Spawnia\Sailor\Response;
 
 class ResponseTest extends TestCase
 {
@@ -15,7 +15,7 @@ class ResponseTest extends TestCase
     {
         $stream = self::createMock(StreamInterface::class);
         $stream->method('getContents')
-            ->willReturn(/* @lang JSON */ '{"data": {"foo": true}}');
+            ->willReturn(/* @lang JSON */ '{"data": {"foo": "bar"}}');
 
         $httpResponse = self::createMock(ResponseInterface::class);
         $httpResponse->method('getBody')
@@ -23,29 +23,31 @@ class ResponseTest extends TestCase
 
         $response = Response::fromResponseInterface($httpResponse);
 
-        $data = new \stdClass();
-        $data->foo = true;
-        $this->assertEquals($data, $response->data);
+        self::assertResponseIsFooBar($response);
     }
 
     public function testFromJson(): void
     {
-        $response = Response::fromJson(/* @lang JSON */ '{"data": {"foo": true}}');
+        $response = Response::fromJson(/* @lang JSON */ '{"data": {"foo": "bar"}}');
 
-        $data = new \stdClass();
-        $data->foo = true;
-        $this->assertEquals($data, $response->data);
+        self::assertResponseIsFooBar($response);
     }
 
     public function testFromStdClass(): void
     {
-        $data = new \stdClass();
-        $data->foo = true;
+        $response = Response::fromStdClass(
+            (object) [
+                'data' => (object) [
+                    'foo' => 'bar'
+                ]
+            ]
+        );
 
-        $payload = new \stdClass();
-        $payload->data = $data;
+        self::assertResponseIsFooBar($response);
+    }
 
-        $response = Response::fromStdClass($payload);
-        $this->assertEquals($data, $response->data);
+    public static function assertResponseIsFooBar(Response $response): void
+    {
+        self::assertSame('bar', $response->data->foo);
     }
 }
