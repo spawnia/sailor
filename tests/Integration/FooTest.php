@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Integration;
 
+use Spawnia\Sailor\Foo\Foo;
+use Spawnia\Sailor\Response;
+use Spawnia\Sailor\Operation;
 use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Codegen\Generator;
-use Spawnia\PHPUnitAssertFiles\AssertDirectory;
-use Spawnia\Sailor\Foo\Foo;
-use Spawnia\Sailor\Operation;
-use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockEndpointConfig;
+use Spawnia\PHPUnitAssertFiles\AssertDirectory;
 
 class FooTest extends TestCase
 {
@@ -31,10 +31,10 @@ class FooTest extends TestCase
         $mockEndpoint = $this->fooMockEndpoint();
 
         Operation::setEndpointConfigMap([
-            'foo' => $mockEndpoint
+            'foo' => $mockEndpoint,
         ]);
 
-        $mockEndpoint->mockClient->responseMocks []= function () {
+        $mockEndpoint->mockClient->responseMocks [] = function () {
             $response = new Response();
             $response->data = (object) ['foo' => 'bar'];
 

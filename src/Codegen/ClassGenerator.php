@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Spawnia\Sailor\Codegen;
 
 use GraphQL\Type\Schema;
+use Spawnia\Sailor\Result;
 use GraphQL\Utils\TypeInfo;
 use GraphQL\Language\Visitor;
-use Nette\PhpGenerator\Parameter;
-use Spawnia\Sailor\EndpointConfig;
-use Spawnia\Sailor\TypedObject;
 use Spawnia\Sailor\Operation;
+use Spawnia\Sailor\TypedObject;
 use GraphQL\Type\Definition\Type;
 use Nette\PhpGenerator\ClassType;
 use GraphQL\Language\AST\NodeKind;
+use Spawnia\Sailor\EndpointConfig;
 use GraphQL\Language\AST\FieldNode;
 use Nette\PhpGenerator\PhpNamespace;
 use GraphQL\Language\AST\DocumentNode;
@@ -21,7 +21,6 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Language\AST\SelectionSetNode;
 use GraphQL\Language\AST\OperationDefinitionNode;
-use Spawnia\Sailor\Result;
 
 class ClassGenerator
 {
@@ -233,7 +232,7 @@ class ClassGenerator
 
     public static function typeDiscriminatorMethodName(string $propertyKey): string
     {
-        return 'type' . ucfirst($propertyKey);
+        return 'type'.ucfirst($propertyKey);
     }
 
     protected function makeNamespace(): PhpNamespace

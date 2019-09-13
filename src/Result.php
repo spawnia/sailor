@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor;
 
 /**
@@ -27,7 +29,7 @@ abstract class Result
      * @param  \stdClass  $data
      * @return void
      */
-    protected abstract function setData(\stdClass $data): void;
+    abstract protected function setData(\stdClass $data): void;
 
     public static function fromResponse(Response $response)
     {
@@ -36,7 +38,7 @@ abstract class Result
         $instance->errors = $response->errors;
         $instance->extensions = $response->extensions;
 
-        if(is_null($response->data)){
+        if (is_null($response->data)) {
             $instance->data = null;
         } else {
             $instance->setData($response->data);

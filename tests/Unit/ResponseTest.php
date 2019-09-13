@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Unit;
 
+use Spawnia\Sailor\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;
-use Spawnia\Sailor\Response;
 
 class ResponseTest extends TestCase
 {
@@ -38,8 +38,8 @@ class ResponseTest extends TestCase
         $response = Response::fromStdClass(
             (object) [
                 'data' => (object) [
-                    'foo' => 'bar'
-                ]
+                    'foo' => 'bar',
+                ],
             ]
         );
 

@@ -13,6 +13,7 @@ return [
         public function client(): Client
         {
             global $mock;
+
             return $mock;
         }
 

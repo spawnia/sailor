@@ -38,7 +38,7 @@ class Generator
         );
 
         $schemaString = \Safe\file_get_contents(
-            $this->endpointConfig->targetPath() . '/schema.graphqls'
+            $this->endpointConfig->targetPath().'/schema.graphqls'
         );
         $schema = BuildSchema::build($schemaString);
 

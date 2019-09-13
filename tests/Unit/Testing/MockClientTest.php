@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor\Tests\Unit\Testing;
 
+use Spawnia\Sailor\Response;
 use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Testing\MockClient;
-use Spawnia\Sailor\Response;
 
 class MockClientTest extends TestCase
 {
@@ -22,7 +24,7 @@ class MockClientTest extends TestCase
             ->willReturn($response);
 
         $mockClient = new MockClient();
-        $mockClient->responseMocks []= $responseMock;
+        $mockClient->responseMocks [] = $responseMock;
 
         self::assertSame($response, $mockClient->request($query, $variables));
 

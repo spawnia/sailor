@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor\Testing;
 
 use Spawnia\Sailor\Client;
-use Spawnia\Sailor\Testing\MockRequest;
 use Spawnia\Sailor\Response;
 
 class MockClient implements Client
@@ -22,11 +23,11 @@ class MockClient implements Client
     {
         $request = new MockRequest($query, $variables);
 
-        $this->storedRequests []= $request;
+        $this->storedRequests [] = $request;
 
         $responseMock = array_shift($this->responseMocks);
 
-        if(!$responseMock) {
+        if (! $responseMock) {
             throw new \Exception('No mock left to handle the request.');
         }
 

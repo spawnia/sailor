@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor\Testing;
 
 use Spawnia\Sailor\Client;
@@ -7,10 +9,10 @@ use Spawnia\Sailor\EndpointConfig;
 
 class MockEndpointConfig implements EndpointConfig
 {
-    /** @var MockClient  */
+    /** @var MockClient */
     public $mockClient;
 
-    /** @var string  */
+    /** @var string */
     public $namespace = '';
 
     /** @var string */

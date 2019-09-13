@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor\Codegen;
 
 use GraphQL\Type\Introspection;
@@ -22,7 +24,7 @@ class Introspector
         $client = $this->endpointConfig->client();
         $response = $client->request(Introspection::getIntrospectionQuery());
 
-        if($response->errors) {
+        if ($response->errors) {
             throw new \Exception('Errors while running the introspection query.');
         }
 
