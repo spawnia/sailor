@@ -64,11 +64,11 @@ abstract class Operation
     {
         if (! file_exists(self::EXPECTED_CONFIG_LOCATION)) {
             \Safe\copy(
-                __DIR__ . '/../sailor.php',
-                self::EXPECTED_CONFIG_LOCATION . '.example'
+                __DIR__.'/../sailor.php',
+                self::EXPECTED_CONFIG_LOCATION.'.example'
             );
 
-            throw new \Exception(<<<EOF
+            throw new \Exception(<<<'EOF'
             Place a configuration file "sailor.php" in your project root.
             
             Created an example configuration "sailor.php.example".

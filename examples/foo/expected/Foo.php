@@ -15,7 +15,7 @@ class Foo extends \Spawnia\Sailor\Operation
 
     public static function document(): string
     {
-        return /** @lang GraphQL */ 'query Foo {
+        return /* @lang GraphQL */ 'query Foo {
             foo
         }
         ';
