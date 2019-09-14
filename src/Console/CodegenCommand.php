@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor\Console;
 
-use Spawnia\Sailor\Codegen\Generator;
 use Spawnia\Sailor\Configuration;
+use Spawnia\Sailor\Codegen\Generator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,8 +23,7 @@ class CodegenCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
-        if($endpoint = $input->getArgument('endpoint')) {
+        if ($endpoint = $input->getArgument('endpoint')) {
             $endpoints = [$endpoint];
         } else {
             $endpoints = array_keys(Configuration::$endpointConfigMap);

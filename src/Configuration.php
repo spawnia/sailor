@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Spawnia\Sailor;
-
 
 use Spawnia\Sailor\Console\ConsoleException;
 
@@ -52,7 +52,7 @@ class Configuration
     {
         self::loadConfigIfNotExists();
 
-        if(!isset(self::$endpointConfigMap[$endpoint])) {
+        if (! isset(self::$endpointConfigMap[$endpoint])) {
             throw ConsoleException::missingEndpoint();
         }
 
@@ -68,7 +68,7 @@ class Configuration
 
     protected static function loadConfigIfNotExists(): void
     {
-        if (!self::$endpointConfigMap) {
+        if (! self::$endpointConfigMap) {
             self::assertConfigFileExists();
 
             // The config should return an array

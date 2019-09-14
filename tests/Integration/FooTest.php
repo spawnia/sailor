@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Integration;
 
-use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\Foo\Foo;
 use Spawnia\Sailor\Response;
 use PHPUnit\Framework\TestCase;
+use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\Codegen\Generator;
 use Spawnia\Sailor\Testing\MockEndpointConfig;
 use Spawnia\PHPUnitAssertFiles\AssertDirectory;
