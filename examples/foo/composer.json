@@ -1,10 +1,4 @@
 {
-  "repositories": [
-    {
-      "type": "path",
-      "url": "../../"
-    }
-  ],
   "require": {
     "spawnia/sailor": "*"
   },
@@ -22,7 +16,7 @@
   "minimum-stability": "dev",
   "autoload": {
     "psr-4": {
-      "Spawnia\\Sailor\\Foo": "src/"
+      "Spawnia\\Sailor\\Foo\\": "src/"
     }
   },
   "autoload-dev": {
@@ -30,5 +24,16 @@
       "Spawnia\\Sailor\\Tests\\": "tests/",
       "Spawnia\\Sailor\\Foo\\": "examples/foo/expected/"
     }
+  },
+  "scripts": {
+    "require-from-local": [
+      "rm -rf vendor/spawnia/sailor && rsync -r ../../ vendor/spawnia/sailor --exclude examples --exclude vendor --exclude .idea --exclude .build"
+    ],
+    "post-install-cmd": [
+      "@require-from-local"
+    ],
+    "post-update-cmd": [
+      "@require-from-local"
+    ]
   }
 }

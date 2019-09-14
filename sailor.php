@@ -6,7 +6,7 @@ use Spawnia\Sailor\Client;
 use Spawnia\Sailor\EndpointConfig;
 
 return [
-    'limesApi' => new class implements EndpointConfig {
+    'example' => new class implements EndpointConfig {
         public function client(): Client
         {
             return new \Spawnia\Sailor\Client\Guzzle(

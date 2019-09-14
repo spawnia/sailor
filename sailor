@@ -3,6 +3,9 @@
 
 declare(strict_types=1);
 
+use Spawnia\Sailor\Console\CodegenCommand;
+use Symfony\Component\Console\Application;
+
 if (file_exists(__DIR__.'/../../autoload.php')) {
     // The usual location, since this file will reside in vendor/bin
     include __DIR__.'/../../autoload.php';
@@ -11,4 +14,8 @@ if (file_exists(__DIR__.'/../../autoload.php')) {
     include __DIR__.'/vendor/autoload.php';
 }
 
+$console = new Application();
 
+$console->add(new CodegenCommand());
+
+$console->run();

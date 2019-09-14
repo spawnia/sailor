@@ -15,6 +15,7 @@
     "guzzlehttp/guzzle": "^6.3",
     "nette/php-generator": "^3.2",
     "psr/http-client": "^1.0",
+    "symfony/console": "^4.3",
     "thecodingmachine/safe": "^0.1.16",
     "webonyx/graphql-php": "^0.13.8"
   },

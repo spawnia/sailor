@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Integration;
 
+use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\Foo\Foo;
 use Spawnia\Sailor\Response;
-use Spawnia\Sailor\Operation;
 use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Codegen\Generator;
 use Spawnia\Sailor\Testing\MockEndpointConfig;
@@ -30,7 +30,7 @@ class FooTest extends TestCase
     {
         $mockEndpoint = $this->fooMockEndpoint();
 
-        Operation::setEndpointConfigMap([
+        Configuration::setEndpointConfigMap([
             'foo' => $mockEndpoint,
         ]);
 
