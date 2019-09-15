@@ -16,9 +16,8 @@ class Foo extends \Spawnia\Sailor\Operation
     public static function document(): string
     {
         return /* @lang GraphQL */ 'query Foo {
-            foo
-        }
-        ';
+          foo
+        }';
     }
 
     public static function endpoint(): string

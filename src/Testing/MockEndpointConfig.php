@@ -7,10 +7,10 @@ namespace Spawnia\Sailor\Testing;
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\EndpointConfig;
 
-class MockEndpointConfig implements EndpointConfig
+class MockEndpointConfig extends EndpointConfig
 {
     /** @var MockClient */
-    public $mockClient;
+    public $client;
 
     /** @var string */
     public $namespace = '';
@@ -23,16 +23,6 @@ class MockEndpointConfig implements EndpointConfig
 
     /** @var string */
     public $schemaPath;
-
-    public function __construct()
-    {
-        $this->mockClient = new MockClient();
-    }
-
-    public function client(): Client
-    {
-        return $this->mockClient;
-    }
 
     public function namespace(): string
     {
@@ -52,5 +42,10 @@ class MockEndpointConfig implements EndpointConfig
     public function schemaPath(): string
     {
         return $this->schemaPath;
+    }
+
+    public function makeClient(): Client
+    {
+        return new MockClient();
     }
 }

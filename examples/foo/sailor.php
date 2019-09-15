@@ -8,22 +8,7 @@ use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Testing\MockClient;
 
 return [
-    'foo' => new class implements EndpointConfig {
-        public function client(): Client
-        {
-            $mock = new MockClient();
-
-            $mock->responseMocks [] = function (): Response {
-                return Response::fromStdClass((object) [
-                    'data' => (object) [
-                        'foo' => 'bar',
-                    ],
-                ]);
-            };
-
-            return $mock;
-        }
-
+    'foo' => new class extends EndpointConfig {
         public function namespace(): string
         {
             return 'Spawnia\Sailor\Foo';
@@ -31,17 +16,32 @@ return [
 
         public function targetPath(): string
         {
-            return 'generated';
+            return __DIR__ . '/generated';
         }
 
         public function searchPath(): string
         {
-            return '.';
+            return __DIR__;
         }
 
         public function schemaPath(): string
         {
-            return 'schema.graphqls';
+            return __DIR__ . '/schema.graphqls';
+        }
+
+        public function makeClient(): Client
+        {
+            $mockClient = new MockClient();
+
+            $mockClient->responseMocks [] = function (): Response {
+                return Response::fromStdClass((object) [
+                    'data' => (object) [
+                        'foo' => 'bar',
+                    ],
+                ]);
+            };
+
+            return $mockClient;
         }
     },
 ];

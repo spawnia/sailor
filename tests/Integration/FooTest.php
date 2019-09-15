@@ -8,8 +8,8 @@ use Spawnia\Sailor\Foo\Foo;
 use Spawnia\Sailor\Response;
 use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Configuration;
+use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Codegen\Generator;
-use Spawnia\Sailor\Testing\MockEndpointConfig;
 use Spawnia\PHPUnitAssertFiles\AssertDirectory;
 
 class FooTest extends TestCase
@@ -20,7 +20,7 @@ class FooTest extends TestCase
 
     public function testGeneratesFooExample(): void
     {
-        $generator = new Generator($this->fooMockEndpoint(), 'foo');
+        $generator = new Generator($this->fooEndpoint(), 'foo');
         $generator->run();
 
         self::assertDirectoryEquals(self::EXAMPLES_PATH.'expected', self::EXAMPLES_PATH.'generated');
@@ -28,7 +28,7 @@ class FooTest extends TestCase
 
     public function testRequest(): void
     {
-        $mockEndpoint = $this->fooMockEndpoint();
+        $mockEndpoint = $this->fooEndpoint();
 
         Configuration::setEndpointConfigMap([
             'foo' => $mockEndpoint,
@@ -45,7 +45,7 @@ class FooTest extends TestCase
         self::assertSame('bar', $result->data->foo);
     }
 
-    protected function fooMockEndpoint(): MockEndpointConfig
+    protected function fooEndpoint(): EndpointConfig
     {
         $fooConfig = include __DIR__.'/../../examples/foo/sailor.php';
 

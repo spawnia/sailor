@@ -6,8 +6,8 @@ use Spawnia\Sailor\Client;
 use Spawnia\Sailor\EndpointConfig;
 
 return [
-    'example' => new class implements EndpointConfig {
-        public function client(): Client
+    'example' => new class extends EndpointConfig {
+        public function makeClient(): Client
         {
             return new \Spawnia\Sailor\Client\Guzzle(
                 'http://example.com/graphql',
@@ -32,6 +32,11 @@ return [
         public function searchPath(): string
         {
             return 'src';
+        }
+
+        public function schemaPath(): string
+        {
+            return 'example.graphqls';
         }
     },
 ];

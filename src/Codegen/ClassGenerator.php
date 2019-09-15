@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
+use GraphQL\Language\Printer;
 use GraphQL\Type\Schema;
 use Spawnia\Sailor\Result;
 use GraphQL\Utils\TypeInfo;
@@ -110,8 +111,9 @@ class ClassGenerator
                             $document = $operation->addMethod('document');
                             $document->setStatic();
                             $document->setReturnType('string');
+                            $operationString = Printer::doPrint($operationDefinition);
                             $document->setBody(<<<PHP
-                            return /** @lang GraphQL */ '{$operationDefinition->loc->source->body}';
+                            return /* @lang GraphQL */ '{$operationString}';
                             PHP
                             );
 
