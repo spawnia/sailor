@@ -15,26 +15,26 @@ class CodegenCommand extends Command
 {
     protected static $defaultName = 'codegen';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setDescription('Generate code from your GraphQL files.');
         $this->addArgument('endpoint', InputArgument::OPTIONAL, 'You may choose a specific endpoint. Uses all by default.');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
-        if ($endpoint = $input->getArgument('endpoint')) {
-            $endpoints = [$endpoint];
+        if ($endpointArg = $input->getArgument('endpoint')) {
+            $endpointNames = [$endpointArg];
         } else {
-            $endpoints = array_keys(Configuration::getEndpointConfigMap());
+            $endpointNames = array_keys(Configuration::getEndpointConfigMap());
         }
 
-        foreach ($endpoints as $endpoint) {
+        foreach ($endpointNames as $endpointName) {
             $generator = new Generator(
-                Configuration::forEndpoint($endpoint),
-                $endpoint
+                Configuration::forEndpoint($endpointName),
+                $endpointName
             );
-            $generator->run();
+            $generator->generate();
         }
     }
 }

@@ -29,7 +29,7 @@ class GuzzleTest extends TestCase
         $client = new Guzzle($uri, ['handler' => $stack]);
         $response = $client->request(/* @lang GraphQL */ '{foo}');
 
-        $this->assertEquals(
+        self::assertEquals(
             (object) ['foo' => 'bar'],
             $response->data
         );
@@ -37,8 +37,8 @@ class GuzzleTest extends TestCase
         /** @var Request $request */
         $request = $container[0]['request'];
 
-        $this->assertSame('POST', $request->getMethod());
-        $this->assertSame(/* @lang JSON */ '{"query":"{foo}"}', $request->getBody()->getContents());
-        $this->assertSame($uri, $request->getUri()->__toString());
+        self::assertSame('POST', $request->getMethod());
+        self::assertSame(/* @lang JSON */ '{"query":"{foo}"}', $request->getBody()->getContents());
+        self::assertSame($uri, $request->getUri()->__toString());
     }
 }

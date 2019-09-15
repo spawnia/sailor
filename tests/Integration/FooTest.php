@@ -21,7 +21,7 @@ class FooTest extends TestCase
     public function testGeneratesFooExample(): void
     {
         $generator = new Generator($this->fooEndpoint(), 'foo');
-        $generator->run();
+        $generator->generate();
 
         self::assertDirectoryEquals(self::EXAMPLES_PATH.'expected', self::EXAMPLES_PATH.'generated');
     }

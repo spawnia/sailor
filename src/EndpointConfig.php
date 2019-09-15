@@ -4,25 +4,22 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor;
 
+use Spawnia\Sailor\Testing\MockClient;
+
 abstract class EndpointConfig
 {
-    /** @var Client */
-    public $client;
+    /** @var MockClient */
+    public $mockClient;
 
     public abstract function makeClient(): Client;
 
     public function client(): Client
     {
-        if (!$this->client) {
-            $this->client = $this->makeClient();
+        if (isset($this->mockClient)) {
+            return $this->mockClient;
         }
 
-        return $this->client;
-    }
-
-    public function mockClient(Client $client): void
-    {
-        $this->client = $client;
+        return $this->makeClient();
     }
 
     public abstract function namespace(): string;

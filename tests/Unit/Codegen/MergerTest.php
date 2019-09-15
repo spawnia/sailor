@@ -10,7 +10,7 @@ use Spawnia\Sailor\Codegen\Merger;
 
 class MergerTest extends TestCase
 {
-    public function testCombine()
+    public function testCombine(): void
     {
         $foo = Parser::parse('
         query Foo {
@@ -22,7 +22,9 @@ class MergerTest extends TestCase
             bar
         }
         ');
+
         $merged = Merger::combine([$foo, $bar]);
+
         self::assertCount(2, $merged->definitions);
     }
 }

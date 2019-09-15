@@ -12,7 +12,7 @@ class MockRequest
     public $query;
 
     /**
-     * @var \stdClass
+     * @var \stdClass|null
      */
     public $variables;
 

@@ -18,7 +18,7 @@ class MockClientTest extends TestCase
         $response = new Response();
 
         $responseMock = self::createPartialMock(\stdClass::class, ['__invoke']);
-        $responseMock->expects($this->once())
+        $responseMock->expects(self::once())
             ->method('__invoke')
             ->with($query, $variables)
             ->willReturn($response);

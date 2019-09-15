@@ -28,7 +28,7 @@ class Generator
         $this->endpointName = $endpointName;
     }
 
-    public function run()
+    public function generate(): void
     {
         $finder = new Finder($this->endpointConfig->searchPath());
         $documents = $finder->documents();
@@ -60,8 +60,12 @@ class Generator
 
     protected function writeFile(ClassType $classType): void
     {
+        $phpNamespace = $classType->getNamespace();
+        if(!$phpNamespace) {
+            throw new \Exception('Generated classes must have namespaces');
+        }
         $targetDirectory = $this->targetDirectory(
-            $classType->getNamespace()->getName()
+            $phpNamespace->getName()
         );
 
         if (! file_exists($targetDirectory)) {

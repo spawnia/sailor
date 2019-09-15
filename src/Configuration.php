@@ -68,7 +68,7 @@ class Configuration
 
     protected static function loadConfigIfNotExists(): void
     {
-        if (! self::$endpointConfigMap) {
+        if (! isset(self::$endpointConfigMap)) {
             self::assertConfigFileExists();
 
             // The config should return an array

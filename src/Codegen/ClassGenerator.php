@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
+use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\Printer;
 use GraphQL\Type\Schema;
 use Spawnia\Sailor\Result;
@@ -191,6 +192,8 @@ class ClassGenerator
                                 $typeMapper = <<<PHP
                                 new \Spawnia\Sailor\Mapper\StringMapper()
                                 PHP;
+                            } else {
+                                throw new \Exception('Unsupported type ' . get_class($namedType) . ' found.');
                             }
 
                             $field = $selection->addProperty($resultKey);
@@ -205,7 +208,7 @@ class ClassGenerator
                         },
                     ],
                     NodeKind::SELECTION_SET => [
-                        'leave' => function (SelectionSetNode $selectionSet) use ($typeInfo) {
+                        'leave' => function (SelectionSetNode $selectionSet) {
                             // We are done with building this subtree of the selection set,
                             // so we move the top-most element to the storage
                             $this->operationSet->popSelection();
