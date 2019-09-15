@@ -19,7 +19,7 @@ abstract class EndpointConfig
             return $this->mockClient;
         }
 
-        return $this->client();
+        return $this->makeClient();
     }
 
     abstract public function namespace(): string;
