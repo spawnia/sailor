@@ -46,4 +46,18 @@ abstract class Result
 
         return $instance;
     }
+
+    /**
+     * Throw if any errors are present in the result.
+     *
+     * @throws ResultErrorsException
+     */
+    public function throwErrors(): void
+    {
+        if(!$this->errors) {
+            return;
+        }
+
+        throw new ResultErrorsException($this->errors);
+    }
 }

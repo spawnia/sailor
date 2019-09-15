@@ -133,7 +133,7 @@ class ClassGenerator
                             $setData->setReturnType('void');
                             $dataParam->setTypeHint('\\stdClass');
                             $setData->setBody(<<<PHP
-                            \$this->data = $operationName::fromSelectionSet(\$data);
+                            \$this->data = $operationName::fromStdClass(\$data);
                             PHP
                             );
 
@@ -179,7 +179,7 @@ class ClassGenerator
                                 $this->namespaceStack [] = $typeReference;
                                 $typeMapper = <<<PHP
                                 function (\\stcClass \$value): \Spawnia\Sailor\ObjectType {
-                                    return $typeReference::fromSelectionSet(\$value);
+                                    return $typeReference::fromStdClass(\$value);
                                 }
                                 PHP;
                             } elseif ($namedType instanceof ScalarType) {
@@ -195,8 +195,6 @@ class ClassGenerator
                             $field->setComment('@var '.PhpDoc::forType($type, $typeReference));
 
                             $typeField = $selection->addMethod(self::typeDiscriminatorMethodName($resultKey));
-                            $keyParam = $typeField->addParameter('key');
-                            $keyParam->setTypeHint('string');
                             $typeField->setReturnType('callable');
                             $typeField->setBody(<<<PHP
                             return $typeMapper;

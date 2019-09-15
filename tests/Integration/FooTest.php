@@ -20,6 +20,7 @@ class FooTest extends TestCase
 
     public function testGeneratesFooExample(): void
     {
+
         $generator = new Generator($this->fooMockEndpoint(), 'foo');
         $generator->run();
 
@@ -47,13 +48,8 @@ class FooTest extends TestCase
 
     protected function fooMockEndpoint(): MockEndpointConfig
     {
-        $mockEndpoint = new MockEndpointConfig();
+        $fooConfig = include __DIR__ . '/../../examples/foo/sailor.php';
 
-        $mockEndpoint->namespace = 'Spawnia\\Sailor\\Foo';
-        $mockEndpoint->searchPath = self::EXAMPLES_PATH;
-        $mockEndpoint->targetPath = self::EXAMPLES_PATH.'generated';
-        $mockEndpoint->schemaPath = self::EXAMPLES_PATH.'schema.graphqls';
-
-        return $mockEndpoint;
+        return $fooConfig['foo'];
     }
 }

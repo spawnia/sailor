@@ -11,6 +11,6 @@ class FooResult extends \Spawnia\Sailor\Result
 
     protected function setData(\stdClass $data): void
     {
-        $this->data = Foo::fromSelectionSet($data);
+        $this->data = Foo::fromStdClass($data);
     }
 }

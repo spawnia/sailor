@@ -12,7 +12,7 @@ abstract class TypedObject
      * @param  \stdClass  $data
      * @return static
      */
-    public static function fromSelectionSet(\stdClass $data): self
+    public static function fromStdClass(\stdClass $data): self
     {
         $instance = new static;
 

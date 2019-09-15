@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor;
 
+use GraphQL\Executor\ExecutionResult;
 use Psr\Http\Message\ResponseInterface;
 
 class Response
@@ -36,6 +37,13 @@ class Response
         );
     }
 
+    public static function fromExecutionResult(ExecutionResult $executionResult): self
+    {
+        return self::fromJson(
+            \Safe\json_encode($executionResult->toArray())
+        );
+    }
+
     public static function fromJson(string $json): self
     {
         $response = \Safe\json_decode($json);
@@ -44,10 +52,10 @@ class Response
             throw new \Exception('A response to a GraphQL operation must be a map.');
         }
 
-        return self::fromSelectionSet($response);
+        return self::fromStdClass($response);
     }
 
-    public static function fromSelectionSet(\stdClass $stdClass): self
+    public static function fromStdClass(\stdClass $stdClass): self
     {
         $hasData = property_exists($stdClass, 'data');
         $hasErrors = property_exists($stdClass, 'errors');
