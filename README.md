@@ -1,4 +1,8 @@
-# sailor
+<div align="center">
+  <img src="sailor.png" alt=sailor-logo">
+</div>
+
+<div align="center">
 
 [![CI Status](https://github.com/spawnia/sailor/workflows/Continuous%20Integration/badge.svg)](https://github.com/spawnia/sailor/actions)
 [![codecov](https://codecov.io/gh/spawnia/sailor/branch/master/graph/badge.svg)](https://codecov.io/gh/spawnia/sailor)
@@ -7,6 +11,8 @@
 [![Total Downloads](https://poser.pugx.org/spawnia/sailor/downloads)](https://packagist.org/packages/spawnia/sailor)
 
 A typesafe GraphQL client for PHP
+
+</div>
 
 ## Installation
 

@@ -17,5 +17,6 @@ if (file_exists(__DIR__.'/../../autoload.php')) {
 $console = new Application();
 
 $console->add(new CodegenCommand());
+$console->setDefaultCommand('codegen');
 
 $console->run();

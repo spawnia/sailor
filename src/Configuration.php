@@ -53,13 +53,13 @@ class Configuration
         self::loadConfigIfNotExists();
 
         if (! isset(self::$endpointConfigMap[$endpoint])) {
-            throw ConsoleException::missingEndpoint();
+            throw ConsoleException::missingEndpoint($endpoint);
         }
 
         return self::$endpointConfigMap[$endpoint];
     }
 
-    public static function getEndpointConfigMap(string $endpoint): array
+    public static function getEndpointConfigMap(): array
     {
         self::loadConfigIfNotExists();
 

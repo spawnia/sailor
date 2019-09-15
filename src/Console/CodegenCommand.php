@@ -26,7 +26,7 @@ class CodegenCommand extends Command
         if ($endpoint = $input->getArgument('endpoint')) {
             $endpoints = [$endpoint];
         } else {
-            $endpoints = array_keys(Configuration::$endpointConfigMap);
+            $endpoints = array_keys(Configuration::getEndpointConfigMap());
         }
 
         foreach ($endpoints as $endpoint) {

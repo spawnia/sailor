@@ -15,12 +15,12 @@ return [
 
         public function namespace(): string
         {
-            return 'Foo';
+            return 'Spawnia\Sailor\Foo';
         }
 
         public function targetPath(): string
         {
-            return 'generated/Foo';
+            return 'generated';
         }
 
         public function searchPath(): string
