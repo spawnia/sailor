@@ -7,6 +7,8 @@
       "Spawnia\\Sailor\\Foo\\": "generated/"
     }
   },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "scripts": {
     "require-from-local": [
       "rm -rf vendor/spawnia/sailor && rsync -r ../../ vendor/spawnia/sailor --exclude examples --exclude vendor --exclude .idea --exclude .build"
