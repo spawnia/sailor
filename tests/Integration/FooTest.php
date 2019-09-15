@@ -10,8 +10,8 @@ use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Codegen\Generator;
-use Spawnia\PHPUnitAssertFiles\AssertDirectory;
 use Spawnia\Sailor\Testing\MockClient;
+use Spawnia\PHPUnitAssertFiles\AssertDirectory;
 
 class FooTest extends TestCase
 {
