@@ -38,5 +38,10 @@ return [
         {
             return '.';
         }
+
+        public function schemaPath(): string
+        {
+            return 'schema.graphqls';
+        }
     },
 ];

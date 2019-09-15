@@ -3,11 +3,6 @@
     "spawnia/sailor": "*"
   },
   "minimum-stability": "dev",
-  "autoload": {
-    "psr-4": {
-      "Spawnia\\Sailor\\Foo\\": "generated/"
-    }
-  },
   "scripts": {
     "require-from-local": [
       "rm -rf vendor/spawnia/sailor && rsync -r ../../ vendor/spawnia/sailor --exclude examples --exclude vendor --exclude .idea --exclude .build"

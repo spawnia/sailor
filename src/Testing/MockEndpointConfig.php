@@ -48,4 +48,9 @@ class MockEndpointConfig implements EndpointConfig
     {
         return $this->searchPath;
     }
+
+    public function schemaPath(): string
+    {
+        return $this->schemaPath;
+    }
 }

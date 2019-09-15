@@ -13,4 +13,6 @@ interface EndpointConfig
     public function targetPath(): string;
 
     public function searchPath(): string;
+
+    public function schemaPath(): string;
 }

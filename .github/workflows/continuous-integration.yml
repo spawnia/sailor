@@ -75,6 +75,24 @@ jobs:
       - name: "Run unit tests with phpunit/phpunit"
         run: ${{ matrix.php-binary }} vendor/bin/phpunit
 
+  examples:
+    name: "Examples"
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        example:
+          - foo
+          - install
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@master
+
+      - name: "Run the integration tests in each example"
+        run: cd ${{ matrix.example }} && ./test.sh
+
   code-coverage:
     name: "Code Coverage"
 
