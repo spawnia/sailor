@@ -11,7 +11,7 @@ abstract class EndpointConfig
     /** @var MockClient */
     public $mockClient;
 
-    public abstract function makeClient(): Client;
+    abstract public function makeClient(): Client;
 
     public function client(): Client
     {
@@ -22,11 +22,11 @@ abstract class EndpointConfig
         return $this->makeClient();
     }
 
-    public abstract function namespace(): string;
+    abstract public function namespace(): string;
 
-    public abstract function targetPath(): string;
+    abstract public function targetPath(): string;
 
-    public abstract function searchPath(): string;
+    abstract public function searchPath(): string;
 
-    public abstract function schemaPath(): string;
+    abstract public function schemaPath(): string;
 }

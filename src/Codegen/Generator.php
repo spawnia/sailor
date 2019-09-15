@@ -61,7 +61,7 @@ class Generator
     protected function writeFile(ClassType $classType): void
     {
         $phpNamespace = $classType->getNamespace();
-        if(!$phpNamespace) {
+        if (! $phpNamespace) {
             throw new \Exception('Generated classes must have namespaces');
         }
         $targetDirectory = $this->targetDirectory(

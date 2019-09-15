@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
-use GraphQL\Language\AST\NameNode;
-use GraphQL\Language\Printer;
 use GraphQL\Type\Schema;
 use Spawnia\Sailor\Result;
 use GraphQL\Utils\TypeInfo;
+use GraphQL\Language\Printer;
 use GraphQL\Language\Visitor;
 use Spawnia\Sailor\Operation;
 use Spawnia\Sailor\TypedObject;
@@ -193,7 +192,7 @@ class ClassGenerator
                                 new \Spawnia\Sailor\Mapper\StringMapper()
                                 PHP;
                             } else {
-                                throw new \Exception('Unsupported type ' . get_class($namedType) . ' found.');
+                                throw new \Exception('Unsupported type '.get_class($namedType).' found.');
                             }
 
                             $field = $selection->addProperty($resultKey);

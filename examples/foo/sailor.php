@@ -16,7 +16,7 @@ return [
 
         public function targetPath(): string
         {
-            return __DIR__ . '/generated';
+            return __DIR__.'/generated';
         }
 
         public function searchPath(): string
@@ -26,7 +26,7 @@ return [
 
         public function schemaPath(): string
         {
-            return __DIR__ . '/schema.graphqls';
+            return __DIR__.'/schema.graphqls';
         }
 
         public function makeClient(): Client
