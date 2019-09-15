@@ -8,7 +8,7 @@ use Spawnia\Sailor\Testing\MockClient;
 
 abstract class EndpointConfig
 {
-    /** @var MockClient */
+    /** @var MockClient|null */
     public $mockClient;
 
     abstract public function makeClient(): Client;
@@ -19,7 +19,7 @@ abstract class EndpointConfig
             return $this->mockClient;
         }
 
-        return $this->makeClient();
+        return $this->client();
     }
 
     abstract public function namespace(): string;

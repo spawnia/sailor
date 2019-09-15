@@ -11,6 +11,7 @@ use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Codegen\Generator;
 use Spawnia\PHPUnitAssertFiles\AssertDirectory;
+use Spawnia\Sailor\Testing\MockClient;
 
 class FooTest extends TestCase
 {
@@ -34,12 +35,14 @@ class FooTest extends TestCase
             'foo' => $mockEndpoint,
         ]);
 
-        $mockEndpoint->mockClient->responseMocks [] = function () {
+        $mockClient = new MockClient();
+        $mockClient->responseMocks [] = function () {
             $response = new Response();
             $response->data = (object) ['foo' => 'bar'];
 
             return $response;
         };
+        $mockEndpoint->mockClient = $mockClient;
 
         $result = Foo::execute();
         self::assertSame('bar', $result->data->foo);
