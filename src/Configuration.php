@@ -28,12 +28,12 @@ class Configuration
             );
 
             echo <<<'EOF'
-            Sailor requires a configuration file to run.
-            
-            Created an example configuration "sailor.php" in your project root.
-            Modify it to your needs and try again.
-            
-            EOF;
+Sailor requires a configuration file to run.
+
+Created an example configuration "sailor.php" in your project root.
+Modify it to your needs and try again.
+
+EOF;
             exit(1);
         }
     }

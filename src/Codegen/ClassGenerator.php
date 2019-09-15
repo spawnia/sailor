@@ -100,10 +100,10 @@ class ClassGenerator
 
                             $execute->setReturnType($resultClass);
                             $execute->setBody(<<<PHP
-                            \$response = self::fetchResponse();
+\$response = self::fetchResponse();
 
-                            return \\$resultClass::fromResponse(\$response);
-                            PHP
+return \\$resultClass::fromResponse(\$response);
+PHP
                             );
 
                             // Store the actual query string in the operation
@@ -113,8 +113,8 @@ class ClassGenerator
                             $document->setReturnType('string');
                             $operationString = Printer::doPrint($operationDefinition);
                             $document->setBody(<<<PHP
-                            return /* @lang GraphQL */ '{$operationString}';
-                            PHP
+return /* @lang GraphQL */ '{$operationString}';
+PHP
                             );
 
                             // Set the endpoint this operation belongs to
@@ -122,8 +122,8 @@ class ClassGenerator
                             $document->setStatic();
                             $document->setReturnType('string');
                             $document->setBody(<<<PHP
-                            return '{$this->endpoint}';
-                            PHP
+return '{$this->endpoint}';
+PHP
                             );
 
                             $operationResult = new ClassType($resultName, $this->makeNamespace());
@@ -135,8 +135,8 @@ class ClassGenerator
                             $setData->setReturnType('void');
                             $dataParam->setTypeHint('\\stdClass');
                             $setData->setBody(<<<PHP
-                            \$this->data = $operationName::fromStdClass(\$data);
-                            PHP
+\$this->data = $operationName::fromStdClass(\$data);
+PHP
                             );
 
                             $dataProp = $operationResult->addProperty('data');
@@ -180,17 +180,17 @@ class ClassGenerator
                                 // To avoid naming conflicts, we add on another namespace
                                 $this->namespaceStack [] = $typeReference;
                                 $typeMapper = <<<PHP
-                                function (\\stcClass \$value): \Spawnia\Sailor\ObjectType {
-                                    return $typeReference::fromStdClass(\$value);
-                                }
-                                PHP;
+function (\\stcClass \$value): \Spawnia\Sailor\ObjectType {
+    return $typeReference::fromStdClass(\$value);
+}
+PHP;
                             } elseif ($namedType instanceof ScalarType) {
                                 // TODO support Int, Boolean, Float, Enum
 
                                 $typeReference = PhpDoc::forScalar($namedType);
                                 $typeMapper = <<<PHP
-                                new \Spawnia\Sailor\Mapper\StringMapper()
-                                PHP;
+new \Spawnia\Sailor\Mapper\StringMapper()
+PHP;
                             } else {
                                 throw new \Exception('Unsupported type '.get_class($namedType).' found.');
                             }
@@ -201,8 +201,8 @@ class ClassGenerator
                             $typeField = $selection->addMethod(self::typeDiscriminatorMethodName($resultKey));
                             $typeField->setReturnType('callable');
                             $typeField->setBody(<<<PHP
-                            return $typeMapper;
-                            PHP
+return $typeMapper;
+PHP
                             );
                         },
                     ],
