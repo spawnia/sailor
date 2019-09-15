@@ -20,7 +20,6 @@ class FooTest extends TestCase
 
     public function testGeneratesFooExample(): void
     {
-
         $generator = new Generator($this->fooMockEndpoint(), 'foo');
         $generator->run();
 
@@ -48,7 +47,7 @@ class FooTest extends TestCase
 
     protected function fooMockEndpoint(): MockEndpointConfig
     {
-        $fooConfig = include __DIR__ . '/../../examples/foo/sailor.php';
+        $fooConfig = include __DIR__.'/../../examples/foo/sailor.php';
 
         return $fooConfig['foo'];
     }

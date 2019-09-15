@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use Spawnia\Sailor\Client;
-use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Response;
+use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Testing\MockClient;
 
 return [
@@ -13,13 +13,14 @@ return [
         {
             $mock = new MockClient();
 
-            $mock->responseMocks []= function(): Response {
+            $mock->responseMocks [] = function (): Response {
                 return Response::fromStdClass((object) [
                     'data' => (object) [
-                        'foo' => 'bar'
-                    ]
+                        'foo' => 'bar',
+                    ],
                 ]);
             };
+
             return $mock;
         }
 

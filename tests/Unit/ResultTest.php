@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Unit;
-
 
 use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Foo\Foo\FooResult;

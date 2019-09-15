@@ -54,7 +54,7 @@ abstract class Result
      */
     public function throwErrors(): void
     {
-        if(!$this->errors) {
+        if (! $this->errors) {
             return;
         }
 

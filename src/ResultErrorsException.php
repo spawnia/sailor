@@ -1,10 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Spawnia\Sailor;
-
-
-use Throwable;
 
 class ResultErrorsException extends \Exception
 {
