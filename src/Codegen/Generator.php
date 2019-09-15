@@ -102,11 +102,11 @@ class Generator
         $class = $printer->printClass($classType, $phpNamespace);
 
         return <<<PHP
-            <?php
-            
-            declare(strict_types=1);
-            
-            {$phpNamespace}{$class}
-            PHP;
+<?php
+
+declare(strict_types=1);
+
+{$phpNamespace}{$class}
+PHP;
     }
 }
