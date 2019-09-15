@@ -11,7 +11,7 @@
     }
   ],
   "require": {
-    "php": "^7.3",
+    "php": "^7.2",
     "guzzlehttp/guzzle": "^6.3",
     "nette/php-generator": "^3.2",
     "psr/http-client": "^1.0",
