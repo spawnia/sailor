@@ -206,7 +206,7 @@ PHP
                                 // We go one level deeper into the selection set
                                 // To avoid naming conflicts, we add on another namespace
                                 $this->namespaceStack [] = $typedObjectName;
-                                $typeReference = '\\' . $this->currentNamespace().'\\'.$typedObjectName;
+                                $typeReference = '\\'.$this->currentNamespace().'\\'.$typedObjectName;
 
                                 $this->operationSet->pushSelection(
                                     $this->makeTypedObject($typedObjectName)
