@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
-use GraphQL\Language\AST\ArgumentNode;
-use GraphQL\Language\AST\VariableDefinitionNode;
 use GraphQL\Type\Schema;
-use Nette\PhpGenerator\Parameter;
 use Spawnia\Sailor\Result;
 use GraphQL\Utils\TypeInfo;
 use GraphQL\Language\Printer;
@@ -16,6 +13,7 @@ use Spawnia\Sailor\Operation;
 use Spawnia\Sailor\TypedObject;
 use GraphQL\Type\Definition\Type;
 use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\Parameter;
 use GraphQL\Language\AST\NodeKind;
 use Spawnia\Sailor\EndpointConfig;
 use GraphQL\Language\AST\FieldNode;
@@ -24,6 +22,7 @@ use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Language\AST\SelectionSetNode;
+use GraphQL\Language\AST\VariableDefinitionNode;
 use GraphQL\Language\AST\OperationDefinitionNode;
 
 class ClassGenerator
@@ -162,7 +161,7 @@ PHP
                         'enter' => function (VariableDefinitionNode $variableDefinition) use ($typeInfo) {
                             $parameter = new Parameter($variableDefinition->variable->name->value);
 
-                            if($variableDefinition->defaultValue) {
+                            if ($variableDefinition->defaultValue) {
                                 // TODO support default values
                             }
 
@@ -172,21 +171,21 @@ PHP
                                 'list' => $list
                             ] = PhpType::wrappedTypeInfo($type);
 
-                            if($nullable) {
+                            if ($nullable) {
                                 $parameter->setNullable();
                                 $parameter->setDefaultValue(null);
                             }
 
-                            if($list) {
+                            if ($list) {
                                 $parameter->setTypeHint('array');
-                            } elseif($type instanceof ScalarType) {
+                            } elseif ($type instanceof ScalarType) {
                                 $parameter->setTypeHint(PhpType::forScalar($type));
                             } else {
                                 throw new \Exception('Unsupported type');
                             }
 
                             $this->operationSet->addParameterToOperation($parameter);
-                        }
+                        },
                     ],
                     NodeKind::FIELD => [
                         'enter' => function (FieldNode $field) use ($typeInfo) {

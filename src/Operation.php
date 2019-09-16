@@ -37,7 +37,7 @@ abstract class Operation
         $variables = new \stdClass();
         $executeMethod = new \ReflectionMethod(static::class, 'execute');
         $parameters = $executeMethod->getParameters();
-        foreach($args as $index => $arg) {
+        foreach ($args as $index => $arg) {
             $parameter = $parameters[$index];
             $variables->{$parameter->getName()} = $arg;
         }

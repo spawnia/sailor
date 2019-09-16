@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
-use GraphQL\Type\Definition\InputType;
 use PHPStan\Type\FloatType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\IntType;
