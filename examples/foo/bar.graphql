@@ -1,0 +1,5 @@
+query Bar {
+    bar {
+        baz
+    }
+}

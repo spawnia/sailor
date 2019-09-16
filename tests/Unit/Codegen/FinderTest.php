@@ -9,16 +9,17 @@ use Spawnia\Sailor\Codegen\Finder;
 
 class FinderTest extends Framework\TestCase
 {
-    public function testFindsSingleFile(): void
+    public function testFindsFiles(): void
     {
-        $rootPath = __DIR__.'/../../../examples/foo';
-        $finder = new Finder($rootPath);
-        $files = $finder->documents();
+        $finder = new Finder(__DIR__.'/../../../examples/foo');
 
-        self::assertCount(1, $files);
-        self::assertStringEqualsFile(
-            $rootPath.'/foo.graphql',
-            reset($files)
-        );
+        self::assertCount(2, $finder->documents());
+    }
+
+    public function testNoFiles(): void
+    {
+        $finder = new Finder(__DIR__);
+
+        self::assertCount(0, $finder->documents());
     }
 }

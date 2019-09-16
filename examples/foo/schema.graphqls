@@ -1,3 +1,8 @@
 type Query {
     foo(bar: String): ID
+    bar: Bar
+}
+
+type Bar {
+    baz: Int
 }
