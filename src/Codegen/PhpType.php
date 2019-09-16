@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
+use GraphQL\Type\Definition\InputType;
 use PHPStan\Type\FloatType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\IntType;
@@ -12,20 +13,14 @@ use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\BooleanType;
 
-class PhpDoc
+class PhpType
 {
-    public static function forType(Type $type, string $typeReference): string
+    public static function phpDoc(Type $type, string $typeReference): string
     {
-        $nullable = true;
-        if ($type instanceof NonNull) {
-            $nullable = false;
-            $type = $type->getWrappedType();
-        }
-
-        $list = false;
-        if ($type instanceof ListOfType) {
-            $list = true;
-        }
+        [
+            'nullable' => $nullable,
+            'list' => $list
+        ] = self::wrappedTypeInfo($type);
 
         // TODO https://github.com/spawnia/sailor/issues/1
 
@@ -53,5 +48,24 @@ class PhpDoc
                 // Includes ID, String and all other scalars
                 return 'string';
         }
+    }
+
+    public static function wrappedTypeInfo(Type $type): array
+    {
+        $nullable = true;
+        if ($type instanceof NonNull) {
+            $nullable = false;
+            $type = $type->getWrappedType();
+        }
+
+        $list = false;
+        if ($type instanceof ListOfType) {
+            $list = true;
+        }
+
+        return [
+            'nullable' => $nullable,
+            'list' => $list,
+        ];
     }
 }

@@ -6,20 +6,20 @@ namespace Spawnia\Sailor\Tests\Unit\Codegen;
 
 use PHPUnit\Framework\TestCase;
 use GraphQL\Type\Definition\Type;
-use Spawnia\Sailor\Codegen\PhpDoc;
+use Spawnia\Sailor\Codegen\PhpType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ListOfType;
 
 /**
  * TODO https://github.com/spawnia/sailor/issues/1.
  */
-class PhpDocTest extends TestCase
+class PhpTypeTest extends TestCase
 {
     public function testSimpleType(): void
     {
         self::assertSame(
             'Foo|null',
-            PhpDoc::forType(
+            PhpType::phpDoc(
                 Type::id(),
             'Foo'
             )
@@ -30,7 +30,7 @@ class PhpDocTest extends TestCase
     {
         self::assertSame(
             'Foo',
-            PhpDoc::forType(
+            PhpType::phpDoc(
                 new NonNull(
                     Type::id()
                 ),
@@ -43,7 +43,7 @@ class PhpDocTest extends TestCase
     {
         self::assertSame(
             'Foo[]|null',
-            PhpDoc::forType(
+            PhpType::phpDoc(
                 new ListOfType(
                     Type::id()
                 ),
@@ -56,7 +56,7 @@ class PhpDocTest extends TestCase
     {
         self::assertSame(
             'Foo[]',
-            PhpDoc::forType(
+            PhpType::phpDoc(
                 new NonNull(
                     new ListOfType(
                         Type::id()

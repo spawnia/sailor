@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Spawnia\Sailor\Codegen;
 
 use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\Parameter;
 
 class OperationSet
 {
@@ -41,5 +42,11 @@ class OperationSet
     public function peekSelection(): ClassType
     {
         return end($this->selectionStack);
+    }
+
+    public function addParameterToOperation(Parameter $parameter): void
+    {
+        $execute = $this->operation->getMethod('execute');
+        $execute->setParameters([$parameter]);
     }
 }

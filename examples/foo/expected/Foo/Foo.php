@@ -11,6 +11,6 @@ class Foo extends \Spawnia\Sailor\TypedObject
 
     public function typeFoo(): callable
     {
-        return new \Spawnia\Sailor\Mapper\StringMapper();
+        return new \Spawnia\Sailor\Mapper\DirectMapper();
     }
 }

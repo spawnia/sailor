@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
+use GraphQL\Language\AST\ArgumentNode;
+use GraphQL\Language\AST\VariableDefinitionNode;
 use GraphQL\Type\Schema;
+use Nette\PhpGenerator\Parameter;
 use Spawnia\Sailor\Result;
 use GraphQL\Utils\TypeInfo;
 use GraphQL\Language\Printer;
@@ -100,7 +103,7 @@ class ClassGenerator
 
                             $execute->setReturnType($resultClass);
                             $execute->setBody(<<<PHP
-\$response = self::fetchResponse();
+\$response = self::fetchResponse(...func_get_args());
 
 return \\$resultClass::fromResponse(\$response);
 PHP
@@ -155,6 +158,36 @@ PHP
                             $this->operationStorage [] = $this->operationSet;
                         },
                     ],
+                    NodeKind::VARIABLE_DEFINITION => [
+                        'enter' => function (VariableDefinitionNode $variableDefinition) use ($typeInfo) {
+                            $parameter = new Parameter($variableDefinition->variable->name->value);
+
+                            if($variableDefinition->defaultValue) {
+                                // TODO support default values
+                            }
+
+                            $type = $typeInfo->getInputType();
+                            [
+                                'nullable' => $nullable,
+                                'list' => $list
+                            ] = PhpType::wrappedTypeInfo($type);
+
+                            if($nullable) {
+                                $parameter->setNullable();
+                                $parameter->setDefaultValue(null);
+                            }
+
+                            if($list) {
+                                $parameter->setTypeHint('array');
+                            } elseif($type instanceof ScalarType) {
+                                $parameter->setTypeHint(PhpType::forScalar($type));
+                            } else {
+                                throw new \Exception('Unsupported type');
+                            }
+
+                            $this->operationSet->addParameterToOperation($parameter);
+                        }
+                    ],
                     NodeKind::FIELD => [
                         'enter' => function (FieldNode $field) use ($typeInfo) {
                             // We are only interested in the key that will come from the server
@@ -185,18 +218,18 @@ function (\\stcClass \$value): \Spawnia\Sailor\ObjectType {
 }
 PHP;
                             } elseif ($namedType instanceof ScalarType) {
-                                // TODO support Int, Boolean, Float, Enum
+                                // TODO support Enum and custom scalars
 
-                                $typeReference = PhpDoc::forScalar($namedType);
+                                $typeReference = PhpType::forScalar($namedType);
                                 $typeMapper = <<<PHP
-new \Spawnia\Sailor\Mapper\StringMapper()
+new \Spawnia\Sailor\Mapper\DirectMapper()
 PHP;
                             } else {
                                 throw new \Exception('Unsupported type '.get_class($namedType).' found.');
                             }
 
                             $field = $selection->addProperty($resultKey);
-                            $field->setComment('@var '.PhpDoc::forType($type, $typeReference));
+                            $field->setComment('@var '.PhpType::phpDoc($type, $typeReference));
 
                             $typeField = $selection->addMethod(self::typeDiscriminatorMethodName($resultKey));
                             $typeField->setReturnType('callable');

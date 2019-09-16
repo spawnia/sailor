@@ -26,12 +26,25 @@ abstract class Operation
      */
     abstract public static function document(): string;
 
-    // TODO pass variables
-    protected static function fetchResponse(): Response
+    /**
+     * Send an operation through the client and return the response.
+     *
+     * @param  mixed  ...$args
+     * @return Response
+     */
+    protected static function fetchResponse(...$args): Response
     {
+        $variables = new \stdClass();
+        $executeMethod = new \ReflectionMethod(static::class, 'execute');
+        $parameters = $executeMethod->getParameters();
+        foreach($args as $index => $arg) {
+            $parameter = $parameters[$index];
+            $variables->{$parameter->getName()} = $arg;
+        }
+
         return Configuration
             ::forEndpoint(static::endpoint())
             ->client()
-            ->request(static::document());
+            ->request(static::document(), $variables);
     }
 }

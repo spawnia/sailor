@@ -48,6 +48,27 @@ class FooTest extends TestCase
         self::assertSame('bar', $result->data->foo);
     }
 
+    public function testRequestWithVariable(): void
+    {
+        $mockEndpoint = $this->fooEndpoint();
+
+        Configuration::setEndpointConfigMap([
+            'foo' => $mockEndpoint,
+        ]);
+
+        $mockClient = new MockClient();
+        $mockClient->responseMocks [] = function (string $query, \stdClass $variables = null) {
+            $response = new Response();
+            $response->data = (object) ['foo' => $variables->bar];
+
+            return $response;
+        };
+        $mockEndpoint->mockClient = $mockClient;
+
+        $result = Foo::execute('baz');
+        self::assertSame('baz', $result->data->foo);
+    }
+
     protected function fooEndpoint(): EndpointConfig
     {
         $fooConfig = include __DIR__.'/../../examples/foo/sailor.php';
