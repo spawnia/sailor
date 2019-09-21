@@ -11,7 +11,7 @@ class Bar extends \Spawnia\Sailor\TypedObject
 
     public function typeBar(): callable
     {
-        return function (\stdClass $value): \Spawnia\Sailor\ObjectType {
+        return function (\stdClass $value): \Spawnia\Sailor\TypedObject {
             return \Spawnia\Sailor\Foo\Bar\Bar\Bar::fromStdClass($value);
         };
     }
