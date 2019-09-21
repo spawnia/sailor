@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b0a0d7d4c43099a46959f2d5cd7db573",
+    "content-hash": "f7ad598d7d8cdf153ece9cfe7a99fcb5",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -2816,6 +2816,50 @@
             "time": "2019-06-13T12:50:23+00:00"
         },
         {
+            "name": "phpstan/extension-installer",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpstan/extension-installer.git",
+                "reference": "b9f4c4e9fe93373a102c982bda5b8e57f901ce33"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpstan/extension-installer/zipball/b9f4c4e9fe93373a102c982bda5b8e57f901ce33",
+                "reference": "b9f4c4e9fe93373a102c982bda5b8e57f901ce33",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.1",
+                "php": "^7.1",
+                "phpstan/phpstan": ">=0.11.6"
+            },
+            "require-dev": {
+                "composer/composer": "^1.8",
+                "consistence/coding-standard": "^3.8",
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
+                "jakub-onderka/php-parallel-lint": "^1.0",
+                "phing/phing": "^2.16",
+                "phpstan/phpstan-strict-rules": "^0.11",
+                "slevomat/coding-standard": "^5.0.4"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "PHPStan\\ExtensionInstaller\\Plugin"
+            },
+            "autoload": {
+                "psr-4": {
+                    "PHPStan\\ExtensionInstaller\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Composer plugin for automatic installation of PHPStan extensions",
+            "time": "2019-09-13T19:07:11+00:00"
+        },
+        {
             "name": "phpstan/phpdoc-parser",
             "version": "0.3.5",
             "source": {
@@ -2864,16 +2908,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "0.11.15",
+            "version": "0.11.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "1be5b3a706db16ac472a4c40ec03cf4c810b118d"
+                "reference": "635cf20f3b92ce34ee94a8d2f282d62eb9dc6e1b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/1be5b3a706db16ac472a4c40ec03cf4c810b118d",
-                "reference": "1be5b3a706db16ac472a4c40ec03cf4c810b118d",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/635cf20f3b92ce34ee94a8d2f282d62eb9dc6e1b",
+                "reference": "635cf20f3b92ce34ee94a8d2f282d62eb9dc6e1b",
                 "shasum": ""
             },
             "require": {
@@ -2925,8 +2969,7 @@
             "autoload": {
                 "psr-4": {
                     "PHPStan\\": [
-                        "src/",
-                        "build/PHPStan"
+                        "src/"
                     ]
                 }
             },
@@ -2935,7 +2978,7 @@
                 "MIT"
             ],
             "description": "PHPStan - PHP Static Analysis Tool",
-            "time": "2019-08-18T20:51:53+00:00"
+            "time": "2019-09-17T11:19:51+00:00"
         },
         {
             "name": "phpstan/phpstan-deprecation-rules",
@@ -3041,16 +3084,16 @@
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "7.0.7",
+            "version": "7.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "7743bbcfff2a907e9ee4a25be13d0f8ec5e73800"
+                "reference": "aa0d179a13284c7420fc281fc32750e6cc7c9e2f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/7743bbcfff2a907e9ee4a25be13d0f8ec5e73800",
-                "reference": "7743bbcfff2a907e9ee4a25be13d0f8ec5e73800",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/aa0d179a13284c7420fc281fc32750e6cc7c9e2f",
+                "reference": "aa0d179a13284c7420fc281fc32750e6cc7c9e2f",
                 "shasum": ""
             },
             "require": {
@@ -3059,7 +3102,7 @@
                 "php": "^7.2",
                 "phpunit/php-file-iterator": "^2.0.2",
                 "phpunit/php-text-template": "^1.2.1",
-                "phpunit/php-token-stream": "^3.1.0",
+                "phpunit/php-token-stream": "^3.1.1",
                 "sebastian/code-unit-reverse-lookup": "^1.0.1",
                 "sebastian/environment": "^4.2.2",
                 "sebastian/version": "^2.0.1",
@@ -3100,7 +3143,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-07-25T05:31:54+00:00"
+            "time": "2019-09-17T06:24:36+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -3244,16 +3287,16 @@
         },
         {
             "name": "phpunit/php-token-stream",
-            "version": "3.1.0",
+            "version": "3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-token-stream.git",
-                "reference": "e899757bb3df5ff6e95089132f32cd59aac2220a"
+                "reference": "995192df77f63a59e47f025390d2d1fdf8f425ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/e899757bb3df5ff6e95089132f32cd59aac2220a",
-                "reference": "e899757bb3df5ff6e95089132f32cd59aac2220a",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/995192df77f63a59e47f025390d2d1fdf8f425ff",
+                "reference": "995192df77f63a59e47f025390d2d1fdf8f425ff",
                 "shasum": ""
             },
             "require": {
@@ -3289,7 +3332,7 @@
             "keywords": [
                 "tokenizer"
             ],
-            "time": "2019-07-25T05:29:42+00:00"
+            "time": "2019-09-17T06:23:10+00:00"
         },
         {
             "name": "phpunit/phpunit",
