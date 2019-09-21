@@ -34,14 +34,16 @@ class Finder
         return $contents;
     }
 
-    /**
-     * @return \RegexIterator
-     */
-    protected function fileIterator(): \RegexIterator
+    protected function fileIterator(): \IteratorIterator
     {
         $directory = new \RecursiveDirectoryIterator($this->rootPath);
         $iterator = new \RecursiveIteratorIterator($directory);
 
-        return new \RegexIterator($iterator, '/^.+\.graphql$/i', \RecursiveRegexIterator::MATCH);
+        return new \RegexIterator(
+            $iterator,
+            // Look for all .graphql files
+            '/^.+\.graphql$/',
+            \RecursiveRegexIterator::MATCH
+        );
     }
 }
