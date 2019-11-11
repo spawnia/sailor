@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Unit\Codegen;
 
-use PHPUnit\Framework\TestCase;
-use GraphQL\Type\Definition\Type;
-use Spawnia\Sailor\Codegen\PhpType;
-use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ListOfType;
+use GraphQL\Type\Definition\NonNull;
+use GraphQL\Type\Definition\Type;
+use PHPUnit\Framework\TestCase;
+use Spawnia\Sailor\Codegen\PhpType;
 
 /**
  * TODO https://github.com/spawnia/sailor/issues/1.

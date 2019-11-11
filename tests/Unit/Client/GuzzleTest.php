@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Unit\Client;
 
-use GuzzleHttp\Middleware;
+use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Client\Guzzle;
-use GuzzleHttp\Handler\MockHandler;
 
 class GuzzleTest extends TestCase
 {

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Integration;
 
-use Spawnia\Sailor\Foo\Foo;
-use Spawnia\Sailor\Response;
 use PHPUnit\Framework\TestCase;
+use Spawnia\PHPUnitAssertFiles\AssertDirectory;
+use Spawnia\Sailor\Codegen\Generator;
 use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\EndpointConfig;
-use Spawnia\Sailor\Codegen\Generator;
+use Spawnia\Sailor\Foo\Foo;
+use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
-use Spawnia\PHPUnitAssertFiles\AssertDirectory;
 
 class FooTest extends TestCase
 {

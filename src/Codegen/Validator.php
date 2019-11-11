@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
-use GraphQL\Type\Schema;
 use GraphQL\Language\AST\DocumentNode;
+use GraphQL\Type\Schema;
 use GraphQL\Validator\DocumentValidator;
 
 class Validator

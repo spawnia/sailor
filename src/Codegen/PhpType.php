@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
-use PHPStan\Type\FloatType;
-use GraphQL\Type\Definition\Type;
-use GraphQL\Type\Definition\IntType;
-use GraphQL\Type\Definition\NonNull;
-use GraphQL\Type\Definition\ListOfType;
-use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\BooleanType;
+use GraphQL\Type\Definition\IntType;
+use GraphQL\Type\Definition\ListOfType;
+use GraphQL\Type\Definition\NonNull;
+use GraphQL\Type\Definition\ScalarType;
+use GraphQL\Type\Definition\Type;
+use PHPStan\Type\FloatType;
 
 class PhpType
 {

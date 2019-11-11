@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use Spawnia\Sailor\Client;
-use Spawnia\Sailor\Response;
 use Spawnia\Sailor\EndpointConfig;
+use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
 
 return [

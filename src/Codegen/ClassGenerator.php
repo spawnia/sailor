@@ -4,26 +4,26 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
-use GraphQL\Type\Schema;
-use Spawnia\Sailor\Result;
-use GraphQL\Utils\TypeInfo;
-use GraphQL\Language\Printer;
-use GraphQL\Language\Visitor;
-use Spawnia\Sailor\Operation;
-use Spawnia\Sailor\TypedObject;
-use GraphQL\Type\Definition\Type;
-use Nette\PhpGenerator\ClassType;
-use Nette\PhpGenerator\Parameter;
-use GraphQL\Language\AST\NodeKind;
-use Spawnia\Sailor\EndpointConfig;
-use GraphQL\Language\AST\FieldNode;
-use Nette\PhpGenerator\PhpNamespace;
 use GraphQL\Language\AST\DocumentNode;
-use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\ScalarType;
+use GraphQL\Language\AST\FieldNode;
+use GraphQL\Language\AST\NodeKind;
+use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\AST\SelectionSetNode;
 use GraphQL\Language\AST\VariableDefinitionNode;
-use GraphQL\Language\AST\OperationDefinitionNode;
+use GraphQL\Language\Printer;
+use GraphQL\Language\Visitor;
+use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\ScalarType;
+use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Schema;
+use GraphQL\Utils\TypeInfo;
+use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\Parameter;
+use Nette\PhpGenerator\PhpNamespace;
+use Spawnia\Sailor\EndpointConfig;
+use Spawnia\Sailor\Operation;
+use Spawnia\Sailor\Result;
+use Spawnia\Sailor\TypedObject;
 
 class ClassGenerator
 {
