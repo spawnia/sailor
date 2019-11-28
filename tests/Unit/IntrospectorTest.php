@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor\Tests\Unit;
 
 use GraphQL\Type\Introspection;
@@ -14,7 +16,7 @@ use Spawnia\Sailor\Testing\MockClient;
 
 class IntrospectorTest extends TestCase
 {
-    const SCHEMA = /** @lang GraphQL */ <<<GRAPHQL
+    const SCHEMA = /* @lang GraphQL */ <<<'GRAPHQL'
 type Query {
   foo: ID
 }
@@ -29,7 +31,7 @@ GRAPHQL;
             public function makeClient(): Client
             {
                 $mockClient = new MockClient();
-                $mockClient->responseMocks[] = function() {
+                $mockClient->responseMocks[] = function () {
                     $schema = BuildSchema::build(IntrospectorTest::SCHEMA);
                     $introspection = Introspection::fromSchema($schema);
 
@@ -47,11 +49,17 @@ GRAPHQL;
                 return IntrospectorTest::PATH;
             }
 
-            public function namespace(): string {}
+            public function namespace(): string
+            {
+            }
 
-            public function targetPath(): string {}
+            public function targetPath(): string
+            {
+            }
 
-            public function searchPath(): string {}
+            public function searchPath(): string
+            {
+            }
         };
 
         $introspector = new Introspector($endpointConfig);

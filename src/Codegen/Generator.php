@@ -88,7 +88,7 @@ class Generator
 
     public static function after(string $subject, string $search): string
     {
-        if($search === '') {
+        if ($search === '') {
             return $subject;
         }
 

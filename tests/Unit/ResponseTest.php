@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Spawnia\Sailor\Tests\Unit;
 
 use PHPUnit\Framework\MockObject\MockObject;
-use Spawnia\Sailor\Response;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
+use Spawnia\Sailor\Response;
 
 class ResponseTest extends TestCase
 {

@@ -103,7 +103,7 @@ class Response
      */
     public function assertErrorFree(): self
     {
-        if(isset($this->errors)) {
+        if (isset($this->errors)) {
             throw new ResultErrorsException($this->errors);
         }
 

@@ -37,7 +37,7 @@ class OperationSet
     public function popSelection(): void
     {
         $selection = array_pop($this->selectionStack);
-        if($selection === null) {
+        if ($selection === null) {
             throw new \Exception('Emptied out the selection stack too quickly.');
         }
 
@@ -47,7 +47,7 @@ class OperationSet
     public function peekSelection(): ClassType
     {
         $selection = end($this->selectionStack);
-        if($selection === false) {
+        if ($selection === false) {
             throw new \Exception('The selection stack was unexpectedly empty.');
         }
 

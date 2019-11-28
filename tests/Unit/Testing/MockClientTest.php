@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Spawnia\Sailor\Tests\Unit\Testing;
 
 use PHPUnit\Framework\MockObject\MockObject;
-use Spawnia\Sailor\Response;
 use PHPUnit\Framework\TestCase;
+use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
 
 class MockClientTest extends TestCase
