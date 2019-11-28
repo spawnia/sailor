@@ -31,7 +31,7 @@ class Finder
 
             // When installing from source, the examples might end up in the critical path
             // so we exclude them from the search
-            if(mb_strpos($path, 'vendor/spawnia/sailor/') !== false) {
+            if (mb_strpos($path, 'vendor/spawnia/sailor/') !== false) {
                 continue;
             }
 
