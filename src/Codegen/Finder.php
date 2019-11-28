@@ -28,6 +28,13 @@ class Finder
         foreach ($this->fileIterator() as $fileInfo) {
             /** @var string $path We know this file exists, since it was found in search. */
             $path = $fileInfo->getRealPath();
+
+            // When installing from source, the examples might end up in the critical path
+            // so we exclude them from the search
+            if(mb_strpos($path, 'vendor/spawnia/sailor/') !== false) {
+                continue;
+            }
+
             $contents[$path] = \Safe\file_get_contents($path);
         }
 
@@ -42,9 +49,7 @@ class Finder
         return new \RegexIterator(
             $iterator,
             // Look for all .graphql files
-            // When installing from source, the examples might end up in the critical path
-            // so we exclude them from the search
-            '/^((?!vendor\/).).+\.graphql$/',
+            '/^.+\.graphql$/',
             \RecursiveRegexIterator::MATCH
         );
     }
