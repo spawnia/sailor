@@ -4,6 +4,7 @@
 declare(strict_types=1);
 
 use Spawnia\Sailor\Console\CodegenCommand;
+use Spawnia\Sailor\Console\IntrospectCommand;
 use Symfony\Component\Console\Application;
 
 if (file_exists(__DIR__.'/../../autoload.php')) {
@@ -18,5 +19,6 @@ $console = new Application();
 
 $console->add(new CodegenCommand());
 $console->setDefaultCommand('codegen');
+$console->add(new IntrospectCommand());
 
 $console->run();

@@ -17,7 +17,7 @@
     "psr/http-client": "^1.0",
     "symfony/console": "^4.3",
     "thecodingmachine/safe": "^0.1.16",
-    "webonyx/graphql-php": "^0.13.8"
+    "webonyx/graphql-php": "dev-BuildClientSchema"
   },
   "require-dev": {
     "composer/composer": "^1.9",
@@ -27,6 +27,7 @@
     "phpstan/extension-installer": "^1.0",
     "phpstan/phpstan": "~0.11.15",
     "phpstan/phpstan-deprecation-rules": "~0.11.2",
+    "phpstan/phpstan-phpunit": "^0.11.2",
     "phpstan/phpstan-strict-rules": "~0.11.1",
     "phpunit/phpunit": "^8.3.4",
     "spawnia/phpunit-assert-directory": "^0.1.0",
@@ -54,6 +55,12 @@
       "vendor/symfony/var-dumper/Resources/functions/dump.php"
     ]
   },
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/spawnia/graphql-php"
+    }
+  ],
   "bin": [
     "sailor"
   ],
