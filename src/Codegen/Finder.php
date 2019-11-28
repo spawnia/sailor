@@ -42,7 +42,9 @@ class Finder
         return new \RegexIterator(
             $iterator,
             // Look for all .graphql files
-            '/^.+\.graphql$/',
+            // When installing from source, the examples might end up in the critical path
+            // so we exclude them from the search
+            '/^((?!vendor\/).).+\.graphql$/',
             \RecursiveRegexIterator::MATCH
         );
     }
