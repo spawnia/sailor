@@ -11,8 +11,8 @@ class DirectMapper implements TypeMapper
     /**
      * Primitive scalar types do not require conversion.
      *
-     * @param  string|int|float|bool  $value
-     * @return string|int|float|bool
+     * @param  mixed  $value
+     * @return mixed
      */
     public function __invoke($value)
     {

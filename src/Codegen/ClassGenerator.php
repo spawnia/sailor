@@ -4,26 +4,28 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
-use GraphQL\Language\AST\DocumentNode;
-use GraphQL\Language\AST\FieldNode;
-use GraphQL\Language\AST\NodeKind;
-use GraphQL\Language\AST\OperationDefinitionNode;
-use GraphQL\Language\AST\SelectionSetNode;
-use GraphQL\Language\AST\VariableDefinitionNode;
+use GraphQL\Type\Definition\InputType;
+use GraphQL\Type\Definition\OutputType;
+use GraphQL\Type\Schema;
+use Spawnia\Sailor\Result;
+use GraphQL\Utils\TypeInfo;
 use GraphQL\Language\Printer;
 use GraphQL\Language\Visitor;
-use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\ScalarType;
+use Spawnia\Sailor\Operation;
+use Spawnia\Sailor\TypedObject;
 use GraphQL\Type\Definition\Type;
-use GraphQL\Type\Schema;
-use GraphQL\Utils\TypeInfo;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Parameter;
-use Nette\PhpGenerator\PhpNamespace;
+use GraphQL\Language\AST\NodeKind;
 use Spawnia\Sailor\EndpointConfig;
-use Spawnia\Sailor\Operation;
-use Spawnia\Sailor\Result;
-use Spawnia\Sailor\TypedObject;
+use GraphQL\Language\AST\FieldNode;
+use Nette\PhpGenerator\PhpNamespace;
+use GraphQL\Language\AST\DocumentNode;
+use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\ScalarType;
+use GraphQL\Language\AST\SelectionSetNode;
+use GraphQL\Language\AST\VariableDefinitionNode;
+use GraphQL\Language\AST\OperationDefinitionNode;
 
 class ClassGenerator
 {
@@ -135,7 +137,7 @@ PHP
                             $setData->setVisibility('protected');
                             $dataParam = $setData->addParameter('data');
                             $setData->setReturnType('void');
-                            $dataParam->setTypeHint('\\stdClass');
+                            $dataParam->setType('\\stdClass');
                             $setData->setBody(<<<PHP
 \$this->data = $operationName::fromStdClass(\$data);
 PHP
@@ -161,10 +163,11 @@ PHP
                         'enter' => function (VariableDefinitionNode $variableDefinition) use ($typeInfo) {
                             $parameter = new Parameter($variableDefinition->variable->name->value);
 
-                            if ($variableDefinition->defaultValue) {
+                            if ($variableDefinition->defaultValue !== null) {
                                 // TODO support default values
                             }
 
+                            /** @var Type & InputType $type */
                             $type = $typeInfo->getInputType();
                             [
                                 'nullable' => $nullable,
@@ -177,9 +180,9 @@ PHP
                             }
 
                             if ($list) {
-                                $parameter->setTypeHint('array');
+                                $parameter->setType('array');
                             } elseif ($type instanceof ScalarType) {
-                                $parameter->setTypeHint(PhpType::forScalar($type));
+                                $parameter->setType(PhpType::forScalar($type));
                             } else {
                                 throw new \Exception('Unsupported type');
                             }
@@ -190,14 +193,15 @@ PHP
                     NodeKind::FIELD => [
                         'enter' => function (FieldNode $field) use ($typeInfo) {
                             // We are only interested in the key that will come from the server
-                            $resultKey = $field->alias
+                            $resultKey = $field->alias !== null
                                 ? $field->alias->value
                                 : $field->name->value;
 
                             $selection = $this->operationSet->peekSelection();
 
+                            /** @var Type & OutputType $type */
                             $type = $typeInfo->getType();
-
+                            /** @var Type $namedType */
                             $namedType = Type::getNamedType($type);
 
                             if ($namedType instanceof ObjectType) {

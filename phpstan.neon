@@ -7,3 +7,9 @@ parameters:
 		- src
 		- tests
 	tmpDir: %currentWorkingDirectory%/.build/phpstan
+	excludes_analyse:
+	# This is where raw data is magically mapped to typed data
+	- %rootDir%/../../../src/TypedObject.php
+	ignoreErrors:
+		- '#Call to deprecated method getNamespace\(\) of class Nette\\PhpGenerator\\ClassType\.#'
+		- '#Method Spawnia\\Sailor\\Configuration::getEndpointConfigMap\(\) should return array but returns array<Spawnia\\Sailor\\EndpointConfig>|null\.#'

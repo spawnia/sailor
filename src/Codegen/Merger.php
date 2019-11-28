@@ -17,7 +17,10 @@ class Merger
         $root->definitions = array_reduce(
             $documents,
             function (NodeList $definitions, DocumentNode $document): NodeList {
-                return $definitions->merge($document->definitions);
+                /** @var NodeList $nodeList */
+                $nodeList = $document->definitions;
+
+                return $definitions->merge($nodeList);
             },
             $root->definitions
         );

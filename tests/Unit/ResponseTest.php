@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use Spawnia\Sailor\Response;
+use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class ResponseTest extends TestCase
 {
@@ -17,6 +18,7 @@ class ResponseTest extends TestCase
         $stream->method('getContents')
             ->willReturn(/* @lang JSON */ '{"data": {"foo": "bar"}}');
 
+        /** @var MockObject&ResponseInterface $httpResponse */
         $httpResponse = self::createMock(ResponseInterface::class);
         $httpResponse->method('getBody')
             ->willReturn($stream);

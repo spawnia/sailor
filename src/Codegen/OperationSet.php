@@ -36,12 +36,22 @@ class OperationSet
      */
     public function popSelection(): void
     {
-        $this->selectionStorage [] = array_pop($this->selectionStack);
+        $selection = array_pop($this->selectionStack);
+        if($selection === null) {
+            throw new \Exception('Emptied out the selection stack too quickly.');
+        }
+
+        $this->selectionStorage [] = $selection;
     }
 
     public function peekSelection(): ClassType
     {
-        return end($this->selectionStack);
+        $selection = end($this->selectionStack);
+        if($selection === false) {
+            throw new \Exception('The selection stack was unexpectedly empty.');
+        }
+
+        return $selection;
     }
 
     public function addParameterToOperation(Parameter $parameter): void

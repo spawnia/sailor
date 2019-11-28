@@ -15,11 +15,11 @@ class ResultTest extends TestCase
         $result = new FooResult();
 
         // No errors, so nothing happens
-        $result->throwErrors();
+        $result->assertErrorFree();
 
         $result->errors = [new \stdClass()];
 
         $this->expectException(ResultErrorsException::class);
-        $result->throwErrors();
+        $result->assertErrorFree();
     }
 }

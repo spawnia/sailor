@@ -21,14 +21,15 @@ class CodegenCommand extends Command
         $this->addArgument('endpoint', InputArgument::OPTIONAL, 'You may choose a specific endpoint. Uses all by default.');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if ($endpointArg = $input->getArgument('endpoint')) {
-            $endpointNames = [$endpointArg];
+        if ($input->hasArgument('endpoint')) {
+            $endpointNames = [$input->getArgument('endpoint')];
         } else {
             $endpointNames = array_keys(Configuration::getEndpointConfigMap());
         }
 
+        /** @var string $endpointName */
         foreach ($endpointNames as $endpointName) {
             $generator = new Generator(
                 Configuration::forEndpoint($endpointName),
@@ -36,5 +37,7 @@ class CodegenCommand extends Command
             );
             $generator->generate();
         }
+
+        return 0;
     }
 }

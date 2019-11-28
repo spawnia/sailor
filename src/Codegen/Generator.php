@@ -61,8 +61,8 @@ class Generator
     protected function writeFile(ClassType $classType): void
     {
         $phpNamespace = $classType->getNamespace();
-        if (! $phpNamespace) {
-            throw new \Exception('Generated classes must have namespaces');
+        if ($phpNamespace === null) {
+            throw new \Exception('Generated classes must have a namespace.');
         }
         $targetDirectory = $this->targetDirectory(
             $phpNamespace->getName()
@@ -88,11 +88,14 @@ class Generator
 
     public static function after(string $subject, string $search): string
     {
-        return $search === ''
-            ? $subject
-            : array_reverse(
-                explode($search, $subject, 2)
-            )[0];
+        if($search === '') {
+            return $subject;
+        }
+
+        /** @var string[] $parts */
+        $parts = explode($search, $subject, 2);
+
+        return array_reverse($parts)[0];
     }
 
     protected static function asPhpFile(ClassType $classType): string

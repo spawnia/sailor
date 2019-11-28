@@ -21,13 +21,10 @@ class MockClient implements Client
 
     public function request(string $query, \stdClass $variables = null): Response
     {
-        $request = new MockRequest($query, $variables);
-
-        $this->storedRequests [] = $request;
+        $this->storedRequests [] = new MockRequest($query, $variables);
 
         $responseMock = array_shift($this->responseMocks);
-
-        if (! $responseMock) {
+        if ($responseMock === null) {
             throw new \Exception('No mock left to handle the request.');
         }
 

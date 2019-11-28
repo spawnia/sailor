@@ -31,7 +31,7 @@ abstract class Result
      */
     abstract protected function setData(\stdClass $data): void;
 
-    public static function fromResponse(Response $response)
+    public static function fromResponse(Response $response): self
     {
         $instance = new static;
 
@@ -48,16 +48,17 @@ abstract class Result
     }
 
     /**
-     * Throw if any errors are present in the result.
+     * Throw an exception if errors are present in the result.
      *
-     * @throws ResultErrorsException
+     * @throws \Spawnia\Sailor\ResultErrorsException
+     * @return $this
      */
-    public function throwErrors(): void
+    public function assertErrorFree(): self
     {
-        if (! $this->errors) {
-            return;
+        if(isset($this->errors)) {
+            throw new ResultErrorsException($this->errors);
         }
 
-        throw new ResultErrorsException($this->errors);
+        return $this;
     }
 }

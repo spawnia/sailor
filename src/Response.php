@@ -95,6 +95,26 @@ class Response
         return $instance;
     }
 
+    /**
+     * Throw an exception if errors are present in the result.
+     *
+     * @throws \Spawnia\Sailor\ResultErrorsException
+     * @return $this
+     */
+    public function assertErrorFree(): self
+    {
+        if(isset($this->errors)) {
+            throw new ResultErrorsException($this->errors);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param mixed $errors
+     * @return void
+     * @throws \Exception
+     */
     protected static function validateErrors($errors): void
     {
         if (! is_array($errors)) {
@@ -120,16 +140,28 @@ class Response
         }
     }
 
+    /**
+     * @param mixed $data
+     * @return void
+     * @throws \Exception
+     */
     protected static function validateData($data): void
     {
         if (
-            ! $data instanceof \stdClass
+            $data instanceof \stdClass
             || $data === null
         ) {
-            throw new \Exception('The response entry "data" must be a map or "null".');
+            return;
         }
+
+        throw new \Exception('The response entry "data" must be a map or "null".');
     }
 
+    /**
+     * @param mixed $extensions
+     * @return void
+     * @throws \Exception
+     */
     protected static function validateExtensions($extensions): void
     {
         if (! $extensions instanceof \stdClass) {
