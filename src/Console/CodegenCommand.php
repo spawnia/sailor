@@ -23,8 +23,9 @@ class CodegenCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if ($input->hasArgument('endpoint')) {
-            $endpointNames = [$input->getArgument('endpoint')];
+        $endpoint = $input->getArgument('endpoint');
+        if ($endpoint !== null) {
+            $endpointNames = (array) $endpoint;
         } else {
             $endpointNames = array_keys(Configuration::getEndpointConfigMap());
         }
