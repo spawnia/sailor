@@ -177,7 +177,7 @@ PHP
                             if ($type instanceof NonNull) {
                                 $type = $type->getWrappedType();
                             }
-                            
+
                             if ($nullable) {
                                 $parameter->setNullable();
                                 $parameter->setDefaultValue(null);
