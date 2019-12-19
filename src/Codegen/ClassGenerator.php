@@ -174,6 +174,10 @@ PHP
                                 'list' => $list
                             ] = PhpType::wrappedTypeInfo($type);
 
+                            if ($type instanceof NonNull) {
+                                $type = $type->getWrappedType();
+                            }
+                            
                             if ($nullable) {
                                 $parameter->setNullable();
                                 $parameter->setDefaultValue(null);
