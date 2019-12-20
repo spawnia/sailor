@@ -12,6 +12,7 @@ use GraphQL\Language\AST\SelectionSetNode;
 use GraphQL\Language\AST\VariableDefinitionNode;
 use GraphQL\Language\Printer;
 use GraphQL\Language\Visitor;
+use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
@@ -188,6 +189,8 @@ PHP
                                 $parameter->setType('array');
                             } elseif ($type instanceof ScalarType) {
                                 $parameter->setType(PhpType::forScalar($type));
+                            } elseif ($type instanceof EnumType) {
+                                $parameter->setType(PhpType::forEnum($type));
                             } else {
                                 throw new \Exception('Unsupported type');
                             }
@@ -226,9 +229,13 @@ function (\\stdClass \$value): \Spawnia\Sailor\TypedObject {
 }
 PHP;
                             } elseif ($namedType instanceof ScalarType) {
-                                // TODO support Enum and custom scalars
-
                                 $typeReference = PhpType::forScalar($namedType);
+                                $typeMapper = <<<PHP
+new \Spawnia\Sailor\Mapper\DirectMapper()
+PHP;
+                            } elseif ($namedType instanceof EnumType) {
+                                $typeReference = PhpType::forEnum($namedType);
+                                // TODO consider mapping from enum instances
                                 $typeMapper = <<<PHP
 new \Spawnia\Sailor\Mapper\DirectMapper()
 PHP;

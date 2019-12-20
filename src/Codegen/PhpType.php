@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Spawnia\Sailor\Codegen;
 
 use GraphQL\Type\Definition\BooleanType;
+use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\IntType;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
@@ -47,6 +48,13 @@ class PhpType
                 // Includes ID, String and all other scalars
                 return 'string';
         }
+    }
+
+    public static function forEnum(EnumType $type): string
+    {
+        // TODO add a comment that lists the instances
+        // or do something even more fancy
+        return 'string';
     }
 
     public static function wrappedTypeInfo(Type $type): array

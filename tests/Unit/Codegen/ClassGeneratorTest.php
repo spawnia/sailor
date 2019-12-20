@@ -17,7 +17,7 @@ class ClassGeneratorTest extends TestCase
         $schema = BuildSchema::build('
         type Query {
             foo: ID
-        }  
+        }
         ');
         $generator = new ClassGenerator($schema, $this->mockEndpoint('Foo'), 'foo');
 
@@ -59,6 +59,32 @@ class ClassGeneratorTest extends TestCase
         $fooOperation = $operationsSets[0];
         $selections = $fooOperation->selectionStorage;
         self::assertCount(2, $selections);
+    }
+
+    public function testGenerateEnum(): void
+    {
+        $schema = BuildSchema::build('
+        type Query {
+            foo: Foo
+        }
+
+        enum Foo {
+            BAR
+        }
+        ');
+        $generator = new ClassGenerator($schema, $this->mockEndpoint('Foo'), 'foo');
+
+        $document = Parser::parse('
+        query Foo {
+            foo
+        }
+        ');
+        $operationsSets = $generator->generate($document);
+        self::assertCount(1, $operationsSets);
+
+        $fooOperation = $operationsSets[0];
+        $selections = $fooOperation->selectionStorage;
+        self::assertCount(1, $selections);
     }
 
     protected function mockEndpoint(string $namespace): MockEndpointConfig
