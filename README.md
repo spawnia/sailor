@@ -35,6 +35,10 @@ Run `vendor/bin/sailor` to generate PHP classes that offer typesafe access.
 Run `vendor/bin/sailor introspect` to update your schema with the latest changes
 from the server by running an introspection query.
 
+## Examples
+
+You can find examples of how a project would use Sailor within [examples](examples).
+
 ## Changelog
 
 Please have a look at [`CHANGELOG.md`](CHANGELOG.md).
