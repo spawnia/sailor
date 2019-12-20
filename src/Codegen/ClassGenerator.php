@@ -197,7 +197,7 @@ PHP
                                 // TODO create value objects to allow typing inputs strictly
                                 $parameter->setType('\stdClass');
                             } else {
-                                throw new \Exception('Unsupported type: ' . get_class($type));
+                                throw new \Exception('Unsupported type: '.get_class($type));
                             }
 
                             $this->operationSet->addParameterToOperation($parameter);
