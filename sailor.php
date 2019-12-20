@@ -41,7 +41,7 @@ return [
          */
         public function targetPath(): string
         {
-            return __DIR__ . 'generated/ExampleApi';
+            return __DIR__.'generated/ExampleApi';
         }
 
         /**
@@ -51,7 +51,7 @@ return [
          */
         public function searchPath(): string
         {
-            return __DIR__ . 'src';
+            return __DIR__.'src';
         }
 
         /**
@@ -61,7 +61,7 @@ return [
          */
         public function schemaPath(): string
         {
-            return __DIR__ . 'example.graphqls';
+            return __DIR__.'example.graphqls';
         }
     },
 ];
