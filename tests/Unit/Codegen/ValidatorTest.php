@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Unit\Codegen;
 
+use GraphQL\Error\Error;
 use GraphQL\Language\Parser;
 use GraphQL\Utils\BuildSchema;
 use PHPUnit\Framework\TestCase;
@@ -19,15 +20,14 @@ class ValidatorTest extends TestCase
         }
         ');
 
-        $validator = new Validator($schema);
         $document = Parser::parse('
         {
             foo
         }
         ');
-        $errors = $validator->validate($document);
+        Validator::validate($schema, $document);
 
-        self::assertCount(0, $errors);
+        self::assertTrue(true);
     }
 
     public function testValidateFailure(): void
@@ -38,14 +38,13 @@ class ValidatorTest extends TestCase
         }
         ');
 
-        $validator = new Validator($schema);
         $document = Parser::parse('
         {
             bar
         }
         ');
-        $errors = $validator->validate($document);
 
-        self::assertCount(1, $errors);
+        $this->expectException(\Exception::class);
+        Validator::validate($schema, $document);
     }
 }

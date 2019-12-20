@@ -19,6 +19,8 @@ class Finder
     /**
      * Finds all GraphQL documents in a given path.
      *
+     * Returns a map from the paths of the .graphql files to their contents.
+     *
      * @return string[]
      */
     public function documents(): array

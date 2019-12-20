@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
+use GraphQL\Error\Error;
+use GraphQL\Error\SyntaxError;
+use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\Parser;
+use GraphQL\Language\Printer;
 use GraphQL\Utils\BuildSchema;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PsrPrinter;
@@ -32,18 +36,17 @@ class Generator
     {
         $finder = new Finder($this->endpointConfig->searchPath());
         $documents = $finder->documents();
-        $documents = array_map(
-            [Parser::class, 'parse'],
-            $documents
-        );
+
+        $parsed = static::parseDocuments($documents);
+        static::ensureOperationsAreNamed($parsed);
 
         $schemaString = \Safe\file_get_contents(
             $this->endpointConfig->schemaPath()
         );
         $schema = BuildSchema::build($schemaString);
 
-        // TODO call validator
-        $document = Merger::combine($documents);
+        $document = Merger::combine($parsed);
+        Validator::validate($schema, $document);
 
         $classGenerator = new ClassGenerator($schema, $this->endpointConfig, $this->endpointName);
         $operationSets = $classGenerator->generate($document);
@@ -111,5 +114,48 @@ declare(strict_types=1);
 
 {$phpNamespace}{$class}
 PHP;
+    }
+
+    /**
+     * Parse the raw document contents.
+     *
+     * @param  string[]  $documents
+     * @return \GraphQL\Language\AST\DocumentNode[]
+     *
+     * @throws \GraphQL\Error\SyntaxError
+     */
+    public static function parseDocuments(array $documents): array
+    {
+        $parsed = [];
+        foreach ($documents as $path => $content) {
+            try {
+                $parsed[$path] = Parser::parse($content);
+            } catch (SyntaxError $error) {
+                // Inform the user which file the error occurred in.
+                $error->message .= ' in '.$path;
+                throw $error;
+            }
+        }
+
+        return $parsed;
+    }
+
+    /**
+     * @param  \GraphQL\Language\AST\DocumentNode[]  $parsed
+     * @return void
+     */
+    public static function ensureOperationsAreNamed(array $parsed): void
+    {
+        foreach($parsed as $path => $documentNode) {
+            foreach($documentNode->definitions as $definition) {
+                if(! $definition instanceof OperationDefinitionNode) {
+                    throw new Error('Found unsupported definition in ' . $path, $definition);
+                }
+
+                if($definition->name === null) {
+                    throw new Error('Found unnamed operation definition in ' . $path, $definition);
+                }
+            }
+        }
     }
 }
