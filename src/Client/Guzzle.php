@@ -10,19 +10,19 @@ use Spawnia\Sailor\Response;
 class Guzzle implements Client
 {
     /**
-     * @var \GuzzleHttp\Client
-     */
-    protected $guzzle;
-
-    /**
      * @var string
      */
     protected $uri;
 
+    /**
+     * @var \GuzzleHttp\Client
+     */
+    protected $guzzle;
+
     public function __construct(string $uri, array $config = [])
     {
-        $this->guzzle = new \GuzzleHttp\Client($config);
         $this->uri = $uri;
+        $this->guzzle = new \GuzzleHttp\Client($config);
     }
 
     public function request(string $query, \stdClass $variables = null): Response
