@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Unit\Codegen;
 
-use GraphQL\Error\Error;
 use GraphQL\Language\Parser;
 use GraphQL\Utils\BuildSchema;
 use PHPUnit\Framework\TestCase;

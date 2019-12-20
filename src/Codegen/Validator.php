@@ -16,19 +16,19 @@ class Validator
     {
         $errors = DocumentValidator::validate($schema, $document);
 
-        if(count($errors) === 0) {
+        if (count($errors) === 0) {
             return;
         }
 
         $formattedErrors = array_map(
-            function(Error $error): array {
+            function (Error $error): array {
                 return FormattedError::createFromException($error, true);
             },
             $errors
         );
 
         $errorStrings = array_map(
-            function(array $error): string {
+            function (array $error): string {
                 return \Safe\json_encode($error);
             },
             $formattedErrors

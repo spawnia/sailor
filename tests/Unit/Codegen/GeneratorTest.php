@@ -14,7 +14,7 @@ class GeneratorTest extends TestCase
     public function testParseDocumentsSuccessfully(): void
     {
         $documents = [
-            'path' => /** @lang GraphQL */ '
+            'path' => /* @lang GraphQL */ '
                 query Foo {
                     foo
                 }
@@ -29,7 +29,7 @@ class GeneratorTest extends TestCase
     {
         $path = 'thisShouldBeInTheMessage';
         $documents = [
-            $path => /** @lang GraphQL */
+            $path => /* @lang GraphQL */
                 'invalid GraphQL',
         ];
 
@@ -40,7 +40,7 @@ class GeneratorTest extends TestCase
     public function testEnsureOperationsAreNamedPasses(): void
     {
         $documents = [
-            'foo' => Parser::parse(/** @lang GraphQL */ '
+            'foo' => Parser::parse(/* @lang GraphQL */ '
             query Name {
                 foo
             }
@@ -55,7 +55,7 @@ class GeneratorTest extends TestCase
     {
         $path = 'thisShouldBeInTheMessage';
         $documents = [
-            $path => Parser::parse(/** @lang GraphQL */ '
+            $path => Parser::parse(/* @lang GraphQL */ '
             {
                 unnamedQuery
             }
