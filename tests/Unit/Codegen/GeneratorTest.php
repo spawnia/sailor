@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Unit\Codegen;
 
-use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\Parser;
 use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Codegen\Generator;
@@ -22,7 +21,7 @@ class GeneratorTest extends TestCase
         ];
 
         $parsed = Generator::parseDocuments($documents);
-        self::assertInstanceOf(DocumentNode::class, $parsed['path']);
+        self::assertSame('Foo', $parsed['path']->definitions[0]->name->value);
     }
 
     public function testParseDocumentsThrowsErrorWithPath(): void
@@ -33,12 +32,13 @@ class GeneratorTest extends TestCase
                 'invalid GraphQL',
         ];
 
-        $this->expectExceptionMessageMatches("/$path/");
+        self::expectExceptionMessageMatches("/$path/");
         Generator::parseDocuments($documents);
     }
 
     public function testEnsureOperationsAreNamedPasses(): void
     {
+        self::expectNotToPerformAssertions();
         $documents = [
             'foo' => Parser::parse(/* @lang GraphQL */ '
             query Name {
@@ -48,7 +48,6 @@ class GeneratorTest extends TestCase
         ];
 
         Generator::ensureOperationsAreNamed($documents);
-        self::assertTrue(true);
     }
 
     public function testEnsureOperationsAreNamedThrowsErrorWithPath(): void
@@ -62,7 +61,7 @@ class GeneratorTest extends TestCase
             '),
         ];
 
-        $this->expectExceptionMessageMatches("/$path/");
+        self::expectExceptionMessageMatches("/$path/");
         Generator::ensureOperationsAreNamed($documents);
     }
 }

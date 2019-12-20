@@ -13,6 +13,8 @@ class ValidatorTest extends TestCase
 {
     public function testValidateSuccess(): void
     {
+        self::expectNotToPerformAssertions();
+
         $schema = BuildSchema::build('
         type Query {
             foo: ID
@@ -25,8 +27,6 @@ class ValidatorTest extends TestCase
         }
         ');
         Validator::validate($schema, $document);
-
-        self::assertTrue(true);
     }
 
     public function testValidateFailure(): void
