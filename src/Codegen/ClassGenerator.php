@@ -13,6 +13,7 @@ use GraphQL\Language\AST\VariableDefinitionNode;
 use GraphQL\Language\Printer;
 use GraphQL\Language\Visitor;
 use GraphQL\Type\Definition\EnumType;
+use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InputType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
@@ -186,13 +187,17 @@ PHP
                             }
 
                             if ($list) {
+                                // TODO refine type in PHPDoc
                                 $parameter->setType('array');
                             } elseif ($type instanceof ScalarType) {
                                 $parameter->setType(PhpType::forScalar($type));
                             } elseif ($type instanceof EnumType) {
                                 $parameter->setType(PhpType::forEnum($type));
+                            } elseif ($type instanceof InputObjectType) {
+                                // TODO create value objects to allow typing inputs strictly
+                                $parameter->setType('\stdClass');
                             } else {
-                                throw new \Exception('Unsupported type');
+                                throw new \Exception('Unsupported type: ' . get_class($type));
                             }
 
                             $this->operationSet->addParameterToOperation($parameter);
