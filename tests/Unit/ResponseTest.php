@@ -8,7 +8,9 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
+use Spawnia\Sailor\InvalidResponseException;
 use Spawnia\Sailor\Response;
+use Spawnia\Sailor\ResultErrorsException;
 
 class ResponseTest extends TestCase
 {
@@ -35,7 +37,14 @@ class ResponseTest extends TestCase
         self::assertResponseIsFooBar($response);
     }
 
-    public function testfromStdClass(): void
+    public function testFromInvalidJson(): void
+    {
+        $invalidJSON = /** @lang JSON */ 'foobar';
+        self::expectExceptionMessageMatches("/$invalidJSON/");
+        Response::fromJson($invalidJSON);
+    }
+
+    public function testValidData(): void
     {
         $response = Response::fromStdClass(
             (object) [
@@ -46,6 +55,111 @@ class ResponseTest extends TestCase
         );
 
         self::assertResponseIsFooBar($response);
+    }
+
+    public function testInvalidData(): void
+    {
+        self::expectException(InvalidResponseException::class);
+        Response::fromStdClass(
+            (object) [
+                'data' => [],
+            ]
+        );
+    }
+
+    public function testValidErrors(): void
+    {
+        $response = Response::fromStdClass(
+            (object) [
+                'errors' => [
+                    (object) [
+                        'message' => 'foo',
+                    ],
+                ]
+            ]
+        );
+
+        self::assertSame('foo', $response->errors[0]->message);
+
+        self::expectException(ResultErrorsException::class);
+        $response->assertErrorFree();
+    }
+
+    public function testNotAMap(): void
+    {
+        $invalidJSON = /** @lang JSON */ '"foobar"';
+        self::expectExceptionMessageMatches("/$invalidJSON/");
+        Response::fromJson($invalidJSON);
+    }
+
+    public function testNoDataAndNoErrors(): void
+    {
+        self::expectException(InvalidResponseException::class);
+        Response::fromStdClass((object) []);
+    }
+
+    public function testErrorsAreNotAList(): void
+    {
+        self::expectException(InvalidResponseException::class);
+        Response::fromStdClass((object) ['errors' => 'foobar']);
+    }
+
+    public function testErrorsAreEmptyList(): void
+    {
+        self::expectException(InvalidResponseException::class);
+        Response::fromStdClass((object) ['errors' => []]);
+    }
+
+    public function testErrorIsNotAMap(): void
+    {
+        self::expectException(InvalidResponseException::class);
+        Response::fromStdClass((object) ['errors' => ['foo']]);
+    }
+
+    public function testErrorHasNoMessage(): void
+    {
+        self::expectException(InvalidResponseException::class);
+        Response::fromStdClass((object) [
+            'errors' => [
+                (object) [
+                    'foo' => 'bar'
+                ]
+            ]
+        ]);
+    }
+
+    public function testErrorMessageIsNotAString(): void
+    {
+        self::expectException(InvalidResponseException::class);
+        Response::fromStdClass((object) [
+            'errors' => [
+                (object) [
+                    'message' => 123
+                ]
+            ]
+        ]);
+    }
+
+    public function testValidExtensions(): void
+    {
+        $response = Response::fromStdClass((object) [
+            'data' => null,
+            'extensions' => (object) [
+                'foo' => 123
+            ]
+        ]);
+
+        self::assertNull($response->data);
+        self::assertSame(123, $response->extensions->foo);
+    }
+
+    public function testInvalidExtensions(): void
+    {
+        self::expectException(InvalidResponseException::class);
+        Response::fromStdClass((object) [
+            'data' => null,
+            'extensions' => 'not a map'
+        ]);
     }
 
     public static function assertResponseIsFooBar(Response $response): void

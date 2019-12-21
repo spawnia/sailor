@@ -6,7 +6,16 @@ namespace Spawnia\Sailor;
 
 use GraphQL\Executor\ExecutionResult;
 use Psr\Http\Message\ResponseInterface;
+use Safe\Exceptions\JsonException;
 
+/**
+ * Represents a response sent by a GraphQL server.
+ *
+ * During instantiation, the response structure is validated.
+ * That does guarantee the server at least sent a syntactically
+ * correct response, although it does not guarantee the content
+ * matches the sent query.
+ */
 class Response
 {
     /**
@@ -46,51 +55,50 @@ class Response
 
     public static function fromJson(string $json): self
     {
-        $response = \Safe\json_decode($json);
+        try {
+            $response = \Safe\json_decode($json);
+        } catch (JsonException $jsonException) {
+            throw new InvalidResponseException("Received a response that is invalid JSON: {$json}", 0, $jsonException);
+        }
 
         if (! $response instanceof \stdClass) {
-            throw new \Exception('A response to a GraphQL operation must be a map.');
+            throw new InvalidResponseException("A response to a GraphQL operation must be a map, got: {$json}");
         }
 
         return self::fromStdClass($response);
     }
 
-    public static function fromStdClass(\stdClass $stdClass): self
+    public static function fromStdClass(\stdClass $rawResponse): self
     {
-        $hasData = property_exists($stdClass, 'data');
-        $hasErrors = property_exists($stdClass, 'errors');
+        $hasData = property_exists($rawResponse, 'data');
+        $hasErrors = property_exists($rawResponse, 'errors');
 
         if (! $hasData && ! $hasErrors) {
-            throw new \Exception('A valid GraphQL response must contain either "data" or "errors".');
+            throw new InvalidResponseException('A valid GraphQL response must contain either "data" or "errors", got: ' . \Safe\json_encode($rawResponse));
         }
 
         $instance = new self;
 
         if ($hasErrors) {
-            $errors = $stdClass->errors;
-
+            $errors = $rawResponse->errors;
             self::validateErrors($errors);
 
             $instance->errors = $errors;
         }
 
         if ($hasData) {
-            $data = $stdClass->data;
-
+            $data = $rawResponse->data;
             self::validateData($data);
 
             $instance->data = $data;
         }
 
-        if (property_exists($stdClass, 'extensions')) {
-            $extensions = $stdClass->extensions;
-
+        if (property_exists($rawResponse, 'extensions')) {
+            $extensions = $rawResponse->extensions;
             self::validateExtensions($extensions);
 
             $instance->extensions = $extensions;
         }
-
-        // TODO validate that no other entries are in the response
 
         return $instance;
     }
@@ -118,24 +126,24 @@ class Response
     protected static function validateErrors($errors): void
     {
         if (! is_array($errors)) {
-            throw new \Exception('The response entry "errors" must be a list if present.');
+            throw new InvalidResponseException('The response entry "errors" must be a list if present, got: ' . \Safe\json_encode($errors));
         }
 
         if (count($errors) === 0) {
-            throw new \Exception('The response entry "errors" must not be empty if present.');
+            throw new InvalidResponseException('The response entry "errors" must not be empty if present, got: ' . \Safe\json_encode($errors));
         }
 
         foreach ($errors as $error) {
             if (! $error instanceof \stdClass) {
-                throw new \Exception('Each error in the response must be a map.');
+                throw new InvalidResponseException('Each error in the response must be a map, got: ' . \Safe\json_encode($error));
             }
 
             if (! property_exists($error, 'message')) {
-                throw new \Exception('Each error in the response must contain a key "message".');
+                throw new InvalidResponseException('Each error in the response must contain a key "message", got: ' . \Safe\json_encode($error));
             }
 
             if (! is_string($error->message)) {
-                throw new \Exception('Each error in the response must contain a key "message" that is a string.');
+                throw new InvalidResponseException('Each error in the response must contain a key "message" that is a string, got: ' . \Safe\json_encode($error));
             }
         }
     }
@@ -154,7 +162,7 @@ class Response
             return;
         }
 
-        throw new \Exception('The response entry "data" must be a map or "null".');
+        throw new InvalidResponseException('The response entry "data" must be a map or "null", got: ' . \Safe\json_encode($data));
     }
 
     /**
@@ -165,7 +173,7 @@ class Response
     protected static function validateExtensions($extensions): void
     {
         if (! $extensions instanceof \stdClass) {
-            throw new \Exception('The response entry "extensions" must be a map.');
+            throw new InvalidResponseException('The response entry "extensions" must be a map.');
         }
     }
 }
