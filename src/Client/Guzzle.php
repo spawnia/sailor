@@ -19,6 +19,9 @@ class Guzzle implements Client
      */
     protected $guzzle;
 
+    /**
+     * @param  array<string, mixed>  $config
+     */
     public function __construct(string $uri, array $config = [])
     {
         $this->uri = $uri;

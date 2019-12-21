@@ -9,6 +9,9 @@ use GraphQL\Language\AST\NodeList;
 
 class Merger
 {
+    /**
+     * @param  array<string, DocumentNode>  $documents
+     */
     public static function combine(array $documents): DocumentNode
     {
         /** @var DocumentNode $root */
@@ -17,7 +20,7 @@ class Merger
         $root->definitions = array_reduce(
             $documents,
             function (NodeList $definitions, DocumentNode $document): NodeList {
-                /** @var NodeList $nodeList */
+                /** @var NodeList<\GraphQL\Language\AST\OperationDefinitionNode> $nodeList */
                 $nodeList = $document->definitions;
 
                 return $definitions->merge($nodeList);

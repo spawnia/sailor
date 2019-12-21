@@ -85,7 +85,7 @@ class ClassGenerator
                 [
                     // A named operation, e.g. "mutation FooMutation", maps to a class
                     NodeKind::OPERATION_DEFINITION => [
-                        'enter' => function (OperationDefinitionNode $operationDefinition) {
+                        'enter' => function (OperationDefinitionNode $operationDefinition): void {
                             $operationName = $operationDefinition->name->value;
 
                             // Generate a class to represent the query/mutation itself
@@ -157,13 +157,13 @@ PHP
                                 $this->makeTypedObject($operationName)
                             );
                         },
-                        'leave' => function (OperationDefinitionNode $operationDefinition) {
+                        'leave' => function (OperationDefinitionNode $operationDefinition): void {
                             // Store the current operation as we continue with the next one
                             $this->operationStorage [] = $this->operationSet;
                         },
                     ],
                     NodeKind::VARIABLE_DEFINITION => [
-                        'enter' => function (VariableDefinitionNode $variableDefinition) use ($typeInfo) {
+                        'enter' => function (VariableDefinitionNode $variableDefinition) use ($typeInfo): void {
                             $parameter = new Parameter($variableDefinition->variable->name->value);
 
                             if ($variableDefinition->defaultValue !== null) {
@@ -204,7 +204,7 @@ PHP
                         },
                     ],
                     NodeKind::FIELD => [
-                        'enter' => function (FieldNode $field) use ($typeInfo) {
+                        'enter' => function (FieldNode $field) use ($typeInfo): void {
                             // We are only interested in the key that will come from the server
                             $resultKey = $field->alias !== null
                                 ? $field->alias->value
@@ -260,7 +260,7 @@ PHP
                         },
                     ],
                     NodeKind::SELECTION_SET => [
-                        'leave' => function (SelectionSetNode $selectionSet) {
+                        'leave' => function (SelectionSetNode $selectionSet): void {
                             // We are done with building this subtree of the selection set,
                             // so we move the top-most element to the storage
                             $this->operationSet->popSelection();

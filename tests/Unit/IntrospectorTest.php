@@ -31,7 +31,7 @@ GRAPHQL;
             public function makeClient(): Client
             {
                 $mockClient = new MockClient();
-                $mockClient->responseMocks[] = function () {
+                $mockClient->responseMocks[] = static function (): Response {
                     $schema = BuildSchema::build(IntrospectorTest::SCHEMA);
                     $introspection = Introspection::fromSchema($schema);
 
@@ -51,14 +51,17 @@ GRAPHQL;
 
             public function namespace(): string
             {
+                return 'Foo';
             }
 
             public function targetPath(): string
             {
+                return 'foo';
             }
 
             public function searchPath(): string
             {
+                return 'bar';
             }
         };
 

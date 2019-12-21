@@ -34,6 +34,9 @@ abstract class Result
      */
     abstract protected function setData(\stdClass $data): void;
 
+    /**
+     * @return static
+     */
     public static function fromResponse(Response $response): self
     {
         $instance = new static;

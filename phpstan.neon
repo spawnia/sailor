@@ -1,15 +1,16 @@
 includes:
 	- vendor/phpstan/phpstan/conf/bleedingEdge.neon
-	- vendor/phpstan/phpstan/conf/config.levelmax.neon
 parameters:
+	level: max
 	inferPrivatePropertyTypeFromConstructor: true
 	paths:
 		- src
 		- tests
 	tmpDir: %currentWorkingDirectory%/.build/phpstan
 	excludes_analyse:
-	# This is where raw data is magically mapped to typed data
-	- %rootDir%/../../../src/TypedObject.php
+		# This is where raw data is magically mapped to typed data
+		- %rootDir%/../../../src/TypedObject.php
 	ignoreErrors:
 		- '#Call to deprecated method getNamespace\(\) of class Nette\\PhpGenerator\\ClassType\.#'
 		- '#Method Spawnia\\Sailor\\Configuration::getEndpointConfigMap\(\) should return array but returns array<Spawnia\\Sailor\\EndpointConfig>|null\.#'
+		- '#Unsafe usage of new static*.#'

@@ -23,7 +23,7 @@ class MergerTest extends TestCase
         }
         ');
 
-        $merged = Merger::combine([$foo, $bar]);
+        $merged = Merger::combine(['foo' => $foo, 'bar' => $bar]);
 
         self::assertCount(2, $merged->definitions);
     }

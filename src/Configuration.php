@@ -15,7 +15,7 @@ class Configuration
     public const EXPECTED_CONFIG_LOCATION = __DIR__.'/../../../../sailor.php';
 
     /**
-     * @var EndpointConfig[]|null
+     * @var array<string, \Spawnia\Sailor\EndpointConfig>|null
      */
     public static $endpointConfigMap;
 
@@ -39,9 +39,7 @@ EOF;
     }
 
     /**
-     * Set the endpoint configuration.
-     *
-     * @param  EndpointConfig[]  $endpointConfigMap
+     * @param  array<string, \Spawnia\Sailor\EndpointConfig>  $endpointConfigMap
      */
     public static function setEndpointConfigMap(array $endpointConfigMap): void
     {
@@ -59,6 +57,9 @@ EOF;
         return self::$endpointConfigMap[$endpoint];
     }
 
+    /**
+     * @return array<string, \Spawnia\Sailor\EndpointConfig>
+     */
     public static function getEndpointConfigMap(): array
     {
         self::loadConfigIfNotExists();

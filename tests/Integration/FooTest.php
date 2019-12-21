@@ -36,7 +36,7 @@ class FooTest extends TestCase
         ]);
 
         $mockClient = new MockClient();
-        $mockClient->responseMocks [] = function () {
+        $mockClient->responseMocks [] = function (): Response {
             $response = new Response();
             $response->data = (object) ['foo' => 'bar'];
 
@@ -57,7 +57,7 @@ class FooTest extends TestCase
         ]);
 
         $mockClient = new MockClient();
-        $mockClient->responseMocks [] = function (string $query, \stdClass $variables = null) {
+        $mockClient->responseMocks [] = function (string $query, \stdClass $variables = null): Response {
             $response = new Response();
             $response->data = (object) ['foo' => $variables->bar];
 
