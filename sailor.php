@@ -5,12 +5,23 @@ declare(strict_types=1);
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\EndpointConfig;
 
+/**
+ * This must return a map from endpoint names to EndpointConfig classes.
+ */
 return [
     'example' => new class extends EndpointConfig {
+
         /**
-         * The namespace the generated classes will be created in.
+         * Instantiate a client for Sailor to use for querying.
          *
-         * @return string
+         * You may use one of the built-in clients, such as Guzzle, or
+         * bring your own implementation.
+         *
+         * Configuring the client is up to you. Since this configuration
+         * file is just PHP code, you can do anything. For example, you
+         * can use environment variables to enable a dynamic config.
+         *
+         * @return \Spawnia\Sailor\Client
          */
         public function makeClient(): Client
         {
@@ -41,7 +52,7 @@ return [
          */
         public function targetPath(): string
         {
-            return __DIR__.'generated/ExampleApi';
+            return __DIR__.'/generated/ExampleApi';
         }
 
         /**
@@ -51,7 +62,7 @@ return [
          */
         public function searchPath(): string
         {
-            return __DIR__.'src';
+            return __DIR__.'/src';
         }
 
         /**
@@ -61,7 +72,7 @@ return [
          */
         public function schemaPath(): string
         {
-            return __DIR__.'example.graphqls';
+            return __DIR__.'/example.graphqls';
         }
     },
 ];

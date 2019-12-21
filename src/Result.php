@@ -5,19 +5,22 @@ declare(strict_types=1);
 namespace Spawnia\Sailor;
 
 /**
- * @property TypedObject|null $data The result of the execution of the requested operation.
+ * @property TypedObject|null $data The result of executing the requested operation.
  */
 abstract class Result
 {
     /**
-     * A non‐empty list of errors, where each error is a map.
+     * A non‐empty list of errors or `null` if there are no errors.
+     *
+     * Each error is a map that is guaranteed to contain at least
+     * the key `message` and may contain arbitrary other keys.
      *
      * @var \stdClass[]|null
      */
     public $errors;
 
     /**
-     * This entry, if set, must have a map as its value.
+     * Optional, can be an arbitrary map if present.
      *
      * @var \stdClass|null
      */

@@ -14,26 +14,112 @@ A typesafe GraphQL client for PHP
 
 </div>
 
+## Motivation
+
+GraphQL provides typesafe API access through the schema definition each
+server provides through introspection. Sailor leverages that information
+to enable an ergonomic workflow and reduce type-related bugs in your code.
+
+The native GraphQL query language is the most universally used tool to formulate
+GraphQL queries and works natively with the entire ecosystem of GraphQL tools.
+Sailor takes the plain queries you write and generates executable PHP code,
+using the server schema to generate type safe operations and results.
+
 ## Installation
 
-Install through composer
+Install Sailor through composer by running:
 
 ```bash
 composer require spawnia/sailor
 ```
 
-Run `vendor/bin/sailor` to set up a configuration file `sailor.php` in your project root.
+## Configuration
+
+Run `vendor/bin/sailor` to set up the configuration.
+A file called `sailor.php` will be created in your project root.
+
+You can take a look at the example configuration to see what options
+are available for configuration: [`sailor.php`](sailor.php).
 
 ## Usage
 
-Sprinkle `.graphql` files throughout your app that contain the
-queries and mutations you use. The contained operations must have
-unique names.
-
-Run `vendor/bin/sailor` to generate PHP classes that offer typesafe access.
+### Introspection
 
 Run `vendor/bin/sailor introspect` to update your schema with the latest changes
-from the server by running an introspection query.
+from the server by running an introspection query. As an example, a very simple
+server might result in the following file being placed in your project:
+
+```graphql
+# schema.graphqls
+type Query {
+  hello(name: String): String
+}
+```
+
+### Define operations
+
+Put your queries and mutations into `.graphql` files and place them anywhere within your
+configured project directory. You are free to name and structure the files in any way.
+Let's query the example schema from above:
+
+```graphql
+# src/example.graphql
+query HelloSailor {
+  hello(name: "Sailor")
+}
+```
+
+The only requirement is that you must give all your operations unique names.
+
+```graphql
+# Invalid, operations have to be named
+query {
+  anonymous
+}
+
+# Invalid, names must be unique across all operations
+query Foo { ... }
+mutation Foo { ... }
+```
+
+### Generate code
+
+Run `vendor/bin/sailor` to generate PHP code for your operations.
+For the example above, Sailor will generate a class called `HelloSailor`,
+place it in the configured namespace and write it to the configured location.
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace Example\Api;
+
+class HelloSailor extends \Spawnia\Sailor\Operation { ... }
+```
+
+There are additional generated classes that represent the results of calling
+the operations. The plain data from the server is wrapped up and contained
+within those value classes so you can access them in a typesafe way.
+
+### Execute queries
+
+You are now set up to run a query
+against the server, just call the `execute()` function of the new query class:
+
+```php
+$result = \Example\Api\HelloSailor::execute();
+```
+
+The returned `$result` is going to be a class that extends `\Spawnia\Sailor\Result` and
+holds the decoded response returned from the server. You can just grab the `$data`, `$errors`
+or `$extensions` off of it.
+
+```php
+$result->data        // `null` or a generated subclass of `\Spawnia\Sailor\TypedObject`
+$result->errors      // `null` or a list of errors
+$result->extensions  // `null` or an arbitrary map
+```
 
 ## Examples
 

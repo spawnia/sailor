@@ -7,8 +7,10 @@ namespace Spawnia\Sailor;
 /**
  * Subclasses of this class are automatically generated.
  *
- * They must implement the following abstract function:
- * public abstract function execute(mixed[] ...$args): mixed
+ * They must implement a public function called `execute`.
+ * `execute` can not be made into an actual abstract function, since
+ * its arguments and return type should be strictly typed
+ * depending on the contents of the operation.
  */
 abstract class Operation
 {

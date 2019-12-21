@@ -9,6 +9,8 @@ use Spawnia\Sailor\Codegen\ClassGenerator;
 abstract class TypedObject
 {
     /**
+     * Construct a new instance of itself using plain data.
+     *
      * @param  \stdClass  $data
      * @return static
      */
