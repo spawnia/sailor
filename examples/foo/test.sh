@@ -6,6 +6,6 @@ vendor/bin/sailor
 
 foo=`php queryFoo.php`
 if [ $foo != "bar" ]; then
-  echo The result of executing queryFoo.php was not bar: $foo
+  echo The result of executing queryFoo.php was not bar, got: $foo
   exit 1
 fi
