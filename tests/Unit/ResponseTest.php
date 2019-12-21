@@ -39,7 +39,7 @@ class ResponseTest extends TestCase
 
     public function testFromInvalidJson(): void
     {
-        $invalidJSON = /** @lang JSON */ 'foobar';
+        $invalidJSON = /* @lang JSON */ 'foobar';
         self::expectExceptionMessageMatches("/$invalidJSON/");
         Response::fromJson($invalidJSON);
     }
@@ -75,7 +75,7 @@ class ResponseTest extends TestCase
                     (object) [
                         'message' => 'foo',
                     ],
-                ]
+                ],
             ]
         );
 
@@ -87,7 +87,7 @@ class ResponseTest extends TestCase
 
     public function testNotAMap(): void
     {
-        $invalidJSON = /** @lang JSON */ '"foobar"';
+        $invalidJSON = /* @lang JSON */ '"foobar"';
         self::expectExceptionMessageMatches("/$invalidJSON/");
         Response::fromJson($invalidJSON);
     }
@@ -122,9 +122,9 @@ class ResponseTest extends TestCase
         Response::fromStdClass((object) [
             'errors' => [
                 (object) [
-                    'foo' => 'bar'
-                ]
-            ]
+                    'foo' => 'bar',
+                ],
+            ],
         ]);
     }
 
@@ -134,9 +134,9 @@ class ResponseTest extends TestCase
         Response::fromStdClass((object) [
             'errors' => [
                 (object) [
-                    'message' => 123
-                ]
-            ]
+                    'message' => 123,
+                ],
+            ],
         ]);
     }
 
@@ -145,8 +145,8 @@ class ResponseTest extends TestCase
         $response = Response::fromStdClass((object) [
             'data' => null,
             'extensions' => (object) [
-                'foo' => 123
-            ]
+                'foo' => 123,
+            ],
         ]);
 
         self::assertNull($response->data);
@@ -158,7 +158,7 @@ class ResponseTest extends TestCase
         self::expectException(InvalidResponseException::class);
         Response::fromStdClass((object) [
             'data' => null,
-            'extensions' => 'not a map'
+            'extensions' => 'not a map',
         ]);
     }
 

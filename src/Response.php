@@ -74,7 +74,7 @@ class Response
         $hasErrors = property_exists($rawResponse, 'errors');
 
         if (! $hasData && ! $hasErrors) {
-            throw new InvalidResponseException('A valid GraphQL response must contain either "data" or "errors", got: ' . \Safe\json_encode($rawResponse));
+            throw new InvalidResponseException('A valid GraphQL response must contain either "data" or "errors", got: '.\Safe\json_encode($rawResponse));
         }
 
         $instance = new self;
@@ -126,24 +126,24 @@ class Response
     protected static function validateErrors($errors): void
     {
         if (! is_array($errors)) {
-            throw new InvalidResponseException('The response entry "errors" must be a list if present, got: ' . \Safe\json_encode($errors));
+            throw new InvalidResponseException('The response entry "errors" must be a list if present, got: '.\Safe\json_encode($errors));
         }
 
         if (count($errors) === 0) {
-            throw new InvalidResponseException('The response entry "errors" must not be empty if present, got: ' . \Safe\json_encode($errors));
+            throw new InvalidResponseException('The response entry "errors" must not be empty if present, got: '.\Safe\json_encode($errors));
         }
 
         foreach ($errors as $error) {
             if (! $error instanceof \stdClass) {
-                throw new InvalidResponseException('Each error in the response must be a map, got: ' . \Safe\json_encode($error));
+                throw new InvalidResponseException('Each error in the response must be a map, got: '.\Safe\json_encode($error));
             }
 
             if (! property_exists($error, 'message')) {
-                throw new InvalidResponseException('Each error in the response must contain a key "message", got: ' . \Safe\json_encode($error));
+                throw new InvalidResponseException('Each error in the response must contain a key "message", got: '.\Safe\json_encode($error));
             }
 
             if (! is_string($error->message)) {
-                throw new InvalidResponseException('Each error in the response must contain a key "message" that is a string, got: ' . \Safe\json_encode($error));
+                throw new InvalidResponseException('Each error in the response must contain a key "message" that is a string, got: '.\Safe\json_encode($error));
             }
         }
     }
@@ -162,7 +162,7 @@ class Response
             return;
         }
 
-        throw new InvalidResponseException('The response entry "data" must be a map or "null", got: ' . \Safe\json_encode($data));
+        throw new InvalidResponseException('The response entry "data" must be a map or "null", got: '.\Safe\json_encode($data));
     }
 
     /**
