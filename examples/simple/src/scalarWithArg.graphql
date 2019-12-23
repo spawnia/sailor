@@ -1,0 +1,3 @@
+query MyScalarQuery($arg: String) {
+    scalarWithArg(arg: $arg)
+}

@@ -8,10 +8,10 @@ use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
 
 return [
-    'foo' => new class extends EndpointConfig {
+    'simple' => new class extends EndpointConfig {
         public function namespace(): string
         {
-            return 'Spawnia\Sailor\Foo';
+            return 'Spawnia\Sailor\Simple';
         }
 
         public function targetPath(): string
@@ -21,7 +21,7 @@ return [
 
         public function searchPath(): string
         {
-            return __DIR__;
+            return __DIR__.'/src';
         }
 
         public function schemaPath(): string
@@ -36,7 +36,7 @@ return [
             $mockClient->responseMocks [] = function (): Response {
                 return Response::fromStdClass((object) [
                     'data' => (object) [
-                        'foo' => 'bar',
+                        'simple' => 'bar',
                     ],
                 ]);
             };

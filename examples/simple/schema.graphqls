@@ -1,0 +1,8 @@
+type Query {
+    scalarWithArg(arg: String): ID
+    singleObject: SomeObject
+}
+
+type SomeObject {
+    value: Int
+}
