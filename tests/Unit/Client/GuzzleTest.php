@@ -20,17 +20,17 @@ class GuzzleTest extends TestCase
         $history = Middleware::history($container);
 
         $mock = new MockHandler([
-            new Response(200, [], /* @lang JSON */ '{"data": {"foo": "bar"}}'),
+            new Response(200, [], /* @lang JSON */ '{"data": {"simple": "bar"}}'),
         ]);
         $stack = HandlerStack::create($mock);
         $stack->push($history);
 
-        $uri = 'http://foo.bar/graphql';
+        $uri = 'http://simple.bar/graphql';
         $client = new Guzzle($uri, ['handler' => $stack]);
-        $response = $client->request(/* @lang GraphQL */ '{foo}');
+        $response = $client->request(/* @lang GraphQL */ '{simple}');
 
         self::assertEquals(
-            (object) ['foo' => 'bar'],
+            (object) ['simple' => 'bar'],
             $response->data
         );
 
@@ -38,7 +38,7 @@ class GuzzleTest extends TestCase
         $request = $container[0]['request'];
 
         self::assertSame('POST', $request->getMethod());
-        self::assertSame(/* @lang JSON */ '{"query":"{foo}"}', $request->getBody()->getContents());
+        self::assertSame(/* @lang JSON */ '{"query":"{simple}"}', $request->getBody()->getContents());
         self::assertSame($uri, $request->getUri()->__toString());
     }
 }

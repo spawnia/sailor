@@ -91,7 +91,7 @@ jobs:
     strategy:
       matrix:
         example:
-          - foo
+          - simple
           - install
 
     steps:

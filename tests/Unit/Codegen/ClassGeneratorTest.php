@@ -16,14 +16,14 @@ class ClassGeneratorTest extends TestCase
     {
         $schema = BuildSchema::build('
         type Query {
-            foo: ID
+            simple: ID
         }
         ');
-        $generator = new ClassGenerator($schema, $this->mockEndpoint('Foo'), 'foo');
+        $generator = new ClassGenerator($schema, $this->mockEndpoint('MyScalarQuery'), 'simple');
 
         $document = Parser::parse('
-        query Foo {
-            foo
+        query MyScalarQuery {
+            simple
         }
         ');
         $operationsSets = $generator->generate($document);
@@ -37,18 +37,18 @@ class ClassGeneratorTest extends TestCase
     {
         $schema = BuildSchema::build('
         type Query {
-            foo: Foo
+            simple: MyScalarQuery
         }
 
-        type Foo {
+        type MyScalarQuery {
             bar: Int
         }
         ');
-        $generator = new ClassGenerator($schema, $this->mockEndpoint('Foo'), 'foo');
+        $generator = new ClassGenerator($schema, $this->mockEndpoint('MyScalarQuery'), 'simple');
 
         $document = Parser::parse('
-        query Foo {
-            foo {
+        query MyScalarQuery {
+            simple {
                 bar
             }
         }
@@ -65,18 +65,18 @@ class ClassGeneratorTest extends TestCase
     {
         $schema = BuildSchema::build('
         type Query {
-            foo: Foo
+            simple: MyScalarQuery
         }
 
-        enum Foo {
+        enum MyScalarQuery {
             BAR
         }
         ');
-        $generator = new ClassGenerator($schema, $this->mockEndpoint('Foo'), 'foo');
+        $generator = new ClassGenerator($schema, $this->mockEndpoint('MyScalarQuery'), 'simple');
 
         $document = Parser::parse('
-        query Foo {
-            foo
+        query MyScalarQuery {
+            simple
         }
         ');
         $operationsSets = $generator->generate($document);

@@ -17,13 +17,13 @@ class ValidatorTest extends TestCase
 
         $schema = BuildSchema::build('
         type Query {
-            foo: ID
+            simple: ID
         }
         ');
 
         $document = Parser::parse('
         {
-            foo
+            simple
         }
         ');
         Validator::validate($schema, $document);
@@ -33,7 +33,7 @@ class ValidatorTest extends TestCase
     {
         $schema = BuildSchema::build('
         type Query {
-            foo: ID
+            simple: ID
         }
         ');
 

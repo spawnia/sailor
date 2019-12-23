@@ -18,7 +18,7 @@ class IntrospectorTest extends TestCase
 {
     const SCHEMA = /* @lang GraphQL */ <<<'GRAPHQL'
 type Query {
-  foo: ID
+  simple: ID
 }
 
 GRAPHQL;
@@ -51,12 +51,12 @@ GRAPHQL;
 
             public function namespace(): string
             {
-                return 'Foo';
+                return 'MyScalarQuery';
             }
 
             public function targetPath(): string
             {
-                return 'foo';
+                return 'simple';
             }
 
             public function searchPath(): string

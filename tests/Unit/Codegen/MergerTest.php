@@ -13,8 +13,8 @@ class MergerTest extends TestCase
     public function testCombine(): void
     {
         $foo = Parser::parse('
-        query Foo {
-            foo
+        query MyScalarQuery {
+            simple
         }
         ');
         $bar = Parser::parse('
@@ -23,7 +23,7 @@ class MergerTest extends TestCase
         }
         ');
 
-        $merged = Merger::combine(['foo' => $foo, 'bar' => $bar]);
+        $merged = Merger::combine(['simple' => $foo, 'bar' => $bar]);
 
         self::assertCount(2, $merged->definitions);
     }

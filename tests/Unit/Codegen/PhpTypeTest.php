@@ -18,10 +18,10 @@ class PhpTypeTest extends TestCase
     public function testSimpleType(): void
     {
         self::assertSame(
-            'Foo|null',
+            'MyScalarQuery|null',
             PhpType::phpDoc(
                 Type::id(),
-            'Foo'
+            'MyScalarQuery'
             )
         );
     }
@@ -29,12 +29,12 @@ class PhpTypeTest extends TestCase
     public function testNonNullType(): void
     {
         self::assertSame(
-            'Foo',
+            'MyScalarQuery',
             PhpType::phpDoc(
                 new NonNull(
                     Type::id()
                 ),
-                'Foo'
+                'MyScalarQuery'
             )
         );
     }
@@ -42,12 +42,12 @@ class PhpTypeTest extends TestCase
     public function testListOfType(): void
     {
         self::assertSame(
-            'Foo[]|null',
+            'MyScalarQuery[]|null',
             PhpType::phpDoc(
                 new ListOfType(
                     Type::id()
                 ),
-                'Foo'
+                'MyScalarQuery'
             )
         );
     }
@@ -55,14 +55,14 @@ class PhpTypeTest extends TestCase
     public function testNonNullListOfType(): void
     {
         self::assertSame(
-            'Foo[]',
+            'MyScalarQuery[]',
             PhpType::phpDoc(
                 new NonNull(
                     new ListOfType(
                         Type::id()
                     )
                 ),
-                'Foo'
+                'MyScalarQuery'
             )
         );
     }

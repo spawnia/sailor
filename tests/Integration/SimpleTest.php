@@ -9,19 +9,19 @@ use Spawnia\PHPUnitAssertFiles\AssertDirectory;
 use Spawnia\Sailor\Codegen\Generator;
 use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\EndpointConfig;
-use Spawnia\Sailor\Foo\Foo;
+use Spawnia\Sailor\Simple\MyScalarQuery;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
 
-class FooTest extends TestCase
+class SimpleTest extends TestCase
 {
     use AssertDirectory;
 
-    const EXAMPLES_PATH = __DIR__.'/../../examples/foo/';
+    const EXAMPLES_PATH = __DIR__.'/../../examples/simple/';
 
     public function testGeneratesFooExample(): void
     {
-        $generator = new Generator($this->fooEndpoint(), 'foo');
+        $generator = new Generator($this->fooEndpoint(), 'simple');
         $generator->generate();
 
         self::assertDirectoryEquals(self::EXAMPLES_PATH.'expected', self::EXAMPLES_PATH.'generated');
@@ -32,20 +32,20 @@ class FooTest extends TestCase
         $mockEndpoint = $this->fooEndpoint();
 
         Configuration::setEndpointConfigMap([
-            'foo' => $mockEndpoint,
+            'simple' => $mockEndpoint,
         ]);
 
         $mockClient = new MockClient();
         $mockClient->responseMocks [] = function (): Response {
             $response = new Response();
-            $response->data = (object) ['foo' => 'bar'];
+            $response->data = (object) ['scalarWithArg' => 'bar'];
 
             return $response;
         };
         $mockEndpoint->mockClient = $mockClient;
 
-        $result = Foo::execute();
-        self::assertSame('bar', $result->data->foo);
+        $result = MyScalarQuery::execute();
+        self::assertSame('bar', $result->data->scalarWithArg);
     }
 
     public function testRequestWithVariable(): void
@@ -53,26 +53,26 @@ class FooTest extends TestCase
         $mockEndpoint = $this->fooEndpoint();
 
         Configuration::setEndpointConfigMap([
-            'foo' => $mockEndpoint,
+            'simple' => $mockEndpoint,
         ]);
 
         $mockClient = new MockClient();
         $mockClient->responseMocks [] = function (string $query, \stdClass $variables = null): Response {
             $response = new Response();
-            $response->data = (object) ['foo' => $variables->bar];
+            $response->data = (object) ['scalarWithArg' => $variables->arg];
 
             return $response;
         };
         $mockEndpoint->mockClient = $mockClient;
 
-        $result = Foo::execute('baz');
-        self::assertSame('baz', $result->data->foo);
+        $result = MyScalarQuery::execute('baz');
+        self::assertSame('baz', $result->data->scalarWithArg);
     }
 
     protected function fooEndpoint(): EndpointConfig
     {
-        $fooConfig = include __DIR__.'/../../examples/foo/sailor.php';
+        $fooConfig = include __DIR__.'/../../examples/simple/sailor.php';
 
-        return $fooConfig['foo'];
+        return $fooConfig['simple'];
     }
 }

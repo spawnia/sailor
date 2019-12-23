@@ -14,14 +14,14 @@ class GeneratorTest extends TestCase
     {
         $documents = [
             'path' => /* @lang GraphQL */ '
-                query Foo {
-                    foo
+                query MyScalarQuery {
+                    simple
                 }
             ',
         ];
 
         $parsed = Generator::parseDocuments($documents);
-        self::assertSame('Foo', $parsed['path']->definitions[0]->name->value);
+        self::assertSame('MyScalarQuery', $parsed['path']->definitions[0]->name->value);
     }
 
     public function testParseDocumentsThrowsErrorWithPath(): void
@@ -40,9 +40,9 @@ class GeneratorTest extends TestCase
     {
         self::expectNotToPerformAssertions();
         $documents = [
-            'foo' => Parser::parse(/* @lang GraphQL */ '
+            'simple' => Parser::parse(/* @lang GraphQL */ '
             query Name {
-                foo
+                simple
             }
             '),
         ];

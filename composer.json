@@ -49,7 +49,7 @@
   "autoload-dev": {
     "psr-4": {
       "Spawnia\\Sailor\\Tests\\": "tests/",
-      "Spawnia\\Sailor\\Foo\\": "examples/foo/expected/"
+      "Spawnia\\Sailor\\Simple\\": "examples/simple/expected/"
     },
     "files": [
       "vendor/symfony/var-dumper/Resources/functions/dump.php"

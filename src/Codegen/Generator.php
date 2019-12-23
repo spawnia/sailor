@@ -8,9 +8,11 @@ use GraphQL\Error\Error;
 use GraphQL\Error\SyntaxError;
 use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\Parser;
+use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PsrPrinter;
+use Nette\Utils\FileSystem;
 use Spawnia\Sailor\EndpointConfig;
 
 class Generator
@@ -33,22 +35,16 @@ class Generator
 
     public function generate(): void
     {
-        $finder = new Finder($this->endpointConfig->searchPath());
-        $documents = $finder->documents();
+        $parsedDocuments = $this->parsedDocuments();
+        $schema = $this->schema();
 
-        $parsed = static::parseDocuments($documents);
-        static::ensureOperationsAreNamed($parsed);
-
-        $schemaString = \Safe\file_get_contents(
-            $this->endpointConfig->schemaPath()
-        );
-        $schema = BuildSchema::build($schemaString);
-
-        $document = Merger::combine($parsed);
+        $document = Merger::combine($parsedDocuments);
         Validator::validate($schema, $document);
 
         $classGenerator = new ClassGenerator($schema, $this->endpointConfig, $this->endpointName);
         $operationSets = $classGenerator->generate($document);
+
+        $this->deleteGeneratedFiles();
 
         foreach ($operationSets as $operationSet) {
             $this->writeFile($operationSet->operation);
@@ -156,5 +152,33 @@ PHP;
                 }
             }
         }
+    }
+
+    protected function schema(): Schema
+    {
+        $schemaString = \Safe\file_get_contents(
+            $this->endpointConfig->schemaPath()
+        );
+
+        return BuildSchema::build($schemaString);
+    }
+
+    /**
+     * @return \GraphQL\Language\AST\DocumentNode[]
+     */
+    protected function parsedDocuments(): array
+    {
+        $finder = new Finder($this->endpointConfig->searchPath());
+        $documents = $finder->documents();
+
+        $parsed = static::parseDocuments($documents);
+        static::ensureOperationsAreNamed($parsed);
+
+        return $parsed;
+    }
+
+    protected function deleteGeneratedFiles(): void
+    {
+        FileSystem::delete($this->endpointConfig->targetPath());
     }
 }

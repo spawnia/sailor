@@ -13,7 +13,7 @@ class MockClientTest extends TestCase
 {
     public function testCallsMock(): void
     {
-        $query = 'foo';
+        $query = 'simple';
         $variables = new \stdClass();
 
         $response = new Response();
