@@ -41,6 +41,31 @@ A file called `sailor.php` will be created in your project root.
 You can take a look at the example configuration to see what options
 are available for configuration: [`sailor.php`](sailor.php).
 
+It is quite useful to include dynamic values in your configuration.
+You might use [PHP dotenv](https://github.com/vlucas/phpdotenv) to load
+environment variables (run `composer require vlucas/phpdotenv` if you do not have it installed already.).
+
+```diff
+# sailor.php
++$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
++$dotenv->load();
+
+...
+        public function makeClient(): Client
+        {
+            return new \Spawnia\Sailor\Client\Guzzle(
+-               'http://hardcoded.url/',
++               getenv('EXAMPLE_API_URL'),
+                [
+                    'headers' => [
+-                       'Authorization' => 'hardcoded-api-token',
++                       'Authorization' => getenv('EXAMPLE_API_TOKEN'),
+                    ],
+                ]
+            );
+        }
+```
+
 ## Usage
 
 ### Introspection
