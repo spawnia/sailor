@@ -9,8 +9,8 @@ use Spawnia\PHPUnitAssertFiles\AssertDirectory;
 use Spawnia\Sailor\Codegen\Generator;
 use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\EndpointConfig;
-use Spawnia\Sailor\Simple\MyScalarQuery;
 use Spawnia\Sailor\Response;
+use Spawnia\Sailor\Simple\MyScalarQuery;
 use Spawnia\Sailor\Testing\MockClient;
 
 class SimpleTest extends TestCase
