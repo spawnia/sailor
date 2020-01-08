@@ -21,7 +21,10 @@ class GeneratorTest extends TestCase
         ];
 
         $parsed = Generator::parseDocuments($documents);
-        self::assertSame('MyScalarQuery', $parsed['path']->definitions[0]->name->value);
+        /** @var \GraphQL\Language\AST\OperationDefinitionNode $query */
+        $query = $parsed['path']->definitions[0];
+
+        self::assertSame('MyScalarQuery', $query->name->value);
     }
 
     public function testParseDocumentsThrowsErrorWithPath(): void
