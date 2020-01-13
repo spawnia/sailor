@@ -119,6 +119,10 @@ class Response
     }
 
     /**
+     * Ensure that the "errors" are in a spec-compliant format.
+     *
+     * @param mixed $errors Whatever came from the API under the key "errors".
+     *
      * @throws \Exception
      */
     protected static function validateErrors($errors): void
@@ -147,6 +151,10 @@ class Response
     }
 
     /**
+     * Ensure that the "data" is in a spec-compliant format.
+     *
+     * @param mixed $data Whatever came from the API under the key "data".
+     *
      * @throws \Exception
      */
     protected static function validateData($data): void
@@ -162,6 +170,10 @@ class Response
     }
 
     /**
+     * Ensure that the "extensions" are in a spec-compliant format.
+     *
+     * @param mixed $extensions Whatever came from the API under the key "extensions".
+     *
      * @throws \Exception
      */
     protected static function validateExtensions($extensions): void
