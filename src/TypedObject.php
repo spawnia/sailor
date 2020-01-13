@@ -11,7 +11,6 @@ abstract class TypedObject
     /**
      * Construct a new instance of itself using plain data.
      *
-     * @param  \stdClass  $data
      * @return static
      */
     public static function fromStdClass(\stdClass $data): self

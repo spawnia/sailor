@@ -137,7 +137,6 @@ PHP;
 
     /**
      * @param  \GraphQL\Language\AST\DocumentNode[]  $parsed
-     * @return void
      */
     public static function ensureOperationsAreNamed(array $parsed): void
     {

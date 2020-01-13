@@ -119,8 +119,6 @@ class Response
     }
 
     /**
-     * @param mixed $errors
-     * @return void
      * @throws \Exception
      */
     protected static function validateErrors($errors): void
@@ -149,8 +147,6 @@ class Response
     }
 
     /**
-     * @param mixed $data
-     * @return void
      * @throws \Exception
      */
     protected static function validateData($data): void
@@ -166,8 +162,6 @@ class Response
     }
 
     /**
-     * @param mixed $extensions
-     * @return void
      * @throws \Exception
      */
     protected static function validateExtensions($extensions): void

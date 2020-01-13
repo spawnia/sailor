@@ -28,9 +28,6 @@ abstract class Result
 
     /**
      * Decode the raw data into proper types and set it.
-     *
-     * @param  \stdClass  $data
-     * @return void
      */
     abstract protected function setData(\stdClass $data): void;
 

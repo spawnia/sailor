@@ -16,15 +16,11 @@ abstract class Operation
 {
     /**
      * The configured endpoint the operation belongs to.
-     *
-     * @return string
      */
     abstract public static function endpoint(): string;
 
     /**
      * The GraphQL query string.
-     *
-     * @return string
      */
     abstract public static function document(): string;
 
@@ -32,7 +28,6 @@ abstract class Operation
      * Send an operation through the client and return the response.
      *
      * @param  mixed  ...$args
-     * @return Response
      */
     protected static function fetchResponse(...$args): Response
     {

@@ -10,7 +10,6 @@ interface TypeMapper
      * Map a value from JSON into a PHP type.
      *
      * @param \stdClass|string|float|int|bool|null $value
-     * @return mixed
      */
     public function __invoke($value);
 }
