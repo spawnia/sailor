@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Spawnia\Sailor\Client;
 use Spawnia\Sailor\EndpointConfig;
 
 /*
@@ -19,10 +18,8 @@ return [
          * Configuring the client is up to you. Since this configuration
          * file is just PHP code, you can do anything. For example, you
          * can use environment variables to enable a dynamic config.
-         *
-         * @return \Spawnia\Sailor\Client
          */
-        public function makeClient(): Client
+        public function makeClient(): \Spawnia\Sailor\Client
         {
             return new \Spawnia\Sailor\Client\Guzzle(
                 'http://example.com/graphql',
@@ -36,8 +33,6 @@ return [
 
         /**
          * The namespace the generated classes will be created in.
-         *
-         * @return string
          */
         public function namespace(): string
         {
@@ -46,8 +41,6 @@ return [
 
         /**
          * Path to the directory where the generated classes will be put.
-         *
-         * @return string
          */
         public function targetPath(): string
         {
@@ -56,8 +49,6 @@ return [
 
         /**
          * Where to look for .graphql files containing operations.
-         *
-         * @return string
          */
         public function searchPath(): string
         {
@@ -66,8 +57,6 @@ return [
 
         /**
          * The location of the schema file that describes the endpoint.
-         *
-         * @return string
          */
         public function schemaPath(): string
         {
