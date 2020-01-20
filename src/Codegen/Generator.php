@@ -36,6 +36,10 @@ class Generator
     public function generate(): void
     {
         $parsedDocuments = $this->parsedDocuments();
+        if($parsedDocuments === []) {
+            return;
+        }
+
         $schema = $this->schema();
 
         $document = Merger::combine($parsedDocuments);

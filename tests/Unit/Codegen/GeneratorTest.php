@@ -27,6 +27,11 @@ class GeneratorTest extends TestCase
         self::assertSame('MyScalarQuery', $query->name->value);
     }
 
+    public function testEmptyListOfDocuments(): void
+    {
+        self::assertSame([], Generator::parseDocuments([]));
+    }
+
     public function testParseDocumentsThrowsErrorWithPath(): void
     {
         $path = 'thisShouldBeInTheMessage';

@@ -14,14 +14,18 @@ class ClassGeneratorTest extends TestCase
 {
     public function testGenerateSimple(): void
     {
-        $schema = BuildSchema::build('
+        $schema = BuildSchema::build(/** @lang GraphQL */ '
         type Query {
             simple: ID
         }
         ');
-        $generator = new ClassGenerator($schema, $this->mockEndpoint('MyScalarQuery'), 'simple');
+        $generator = new ClassGenerator(
+            $schema,
+            $this->mockEndpoint('MyScalarQuery'),
+            'simple'
+        );
 
-        $document = Parser::parse('
+        $document = Parser::parse(/** @lang GraphQL */ '
         query MyScalarQuery {
             simple
         }
@@ -35,7 +39,7 @@ class ClassGeneratorTest extends TestCase
 
     public function testGenerateNested(): void
     {
-        $schema = BuildSchema::build('
+        $schema = BuildSchema::build(/** @lang GraphQL */ '
         type Query {
             simple: MyScalarQuery
         }
@@ -44,9 +48,13 @@ class ClassGeneratorTest extends TestCase
             bar: Int
         }
         ');
-        $generator = new ClassGenerator($schema, $this->mockEndpoint('MyScalarQuery'), 'simple');
+        $generator = new ClassGenerator(
+            $schema,
+            $this->mockEndpoint('MyScalarQuery'),
+            'simple'
+        );
 
-        $document = Parser::parse('
+        $document = Parser::parse(/** @lang GraphQL */ '
         query MyScalarQuery {
             simple {
                 bar
@@ -63,7 +71,7 @@ class ClassGeneratorTest extends TestCase
 
     public function testGenerateEnum(): void
     {
-        $schema = BuildSchema::build('
+        $schema = BuildSchema::build(/** @lang GraphQL */ '
         type Query {
             simple: MyScalarQuery
         }
@@ -72,9 +80,13 @@ class ClassGeneratorTest extends TestCase
             BAR
         }
         ');
-        $generator = new ClassGenerator($schema, $this->mockEndpoint('MyScalarQuery'), 'simple');
+        $generator = new ClassGenerator(
+            $schema,
+            $this->mockEndpoint('MyScalarQuery'),
+            'simple'
+        );
 
-        $document = Parser::parse('
+        $document = Parser::parse(/** @lang GraphQL */ '
         query MyScalarQuery {
             simple
         }
