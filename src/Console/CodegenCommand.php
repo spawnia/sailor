@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Console;
 
+use Nette\Utils\FileSystem;
+use Spawnia\Sailor\Codegen\File;
 use Spawnia\Sailor\Codegen\Generator;
 use Spawnia\Sailor\Configuration;
 use Symfony\Component\Console\Command\Command;
@@ -32,13 +34,26 @@ class CodegenCommand extends Command
 
         /** @var string $endpointName */
         foreach ($endpointNames as $endpointName) {
-            $generator = new Generator(
-                Configuration::forEndpoint($endpointName),
-                $endpointName
-            );
-            $generator->generate();
+            $endpointConfig = Configuration::forEndpoint($endpointName);
+            $generator = new Generator($endpointConfig, $endpointName);
+
+            $files = $generator->generate();
+            FileSystem::delete($endpointConfig->targetPath());
+            array_map([self::class, 'writeFile'], $files);
         }
 
         return 0;
+    }
+
+    public static function writeFile(File $file): void
+    {
+        if (! file_exists($file->directory)) {
+            \Safe\mkdir($file->directory, 0777, true);
+        }
+
+        \Safe\file_put_contents(
+            $file->directory.'/'.$file->name,
+            $file->content
+        );
     }
 }

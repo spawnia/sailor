@@ -21,7 +21,7 @@ class Finder
      *
      * Returns a map from the paths of the .graphql files to their contents.
      *
-     * @return string[]
+     * @return array<string, string>
      */
     public function documents(): array
     {

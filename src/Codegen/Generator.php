@@ -33,51 +33,55 @@ class Generator
         $this->endpointName = $endpointName;
     }
 
-    public function generate(): void
+    /**
+     * Generate a list of files to write.
+     *
+     * @return File[]
+     */
+    public function generate(): array
     {
         $parsedDocuments = $this->parsedDocuments();
-        if ($parsedDocuments === []) {
-            return;
+        if($parsedDocuments === []) {
+            return [];
         }
+        $document = Merger::combine($parsedDocuments);
 
         $schema = $this->schema();
 
-        $document = Merger::combine($parsedDocuments);
         Validator::validate($schema, $document);
 
         $classGenerator = new ClassGenerator($schema, $this->endpointConfig, $this->endpointName);
         $operationSets = $classGenerator->generate($document);
 
-        $this->deleteGeneratedFiles();
-
+        $files = [];
         foreach ($operationSets as $operationSet) {
-            $this->writeFile($operationSet->operation);
-            $this->writeFile($operationSet->result);
+            $files []= $this->makeFile($operationSet->operation);
+            $files []= $this->makeFile($operationSet->result);
 
             foreach ($operationSet->selectionStorage as $selection) {
-                $this->writeFile($selection);
+                $files []= $this->makeFile($selection);
             }
         }
+
+        return $files;
     }
 
-    protected function writeFile(ClassType $classType): void
+    protected function makeFile(ClassType $classType): File
     {
+        $file = new File();
+
         $phpNamespace = $classType->getNamespace();
         if ($phpNamespace === null) {
             throw new \Exception('Generated classes must have a namespace.');
         }
-        $targetDirectory = $this->targetDirectory(
+        $file->directory = $this->targetDirectory(
             $phpNamespace->getName()
         );
 
-        if (! file_exists($targetDirectory)) {
-            \Safe\mkdir($targetDirectory, 0777, true);
-        }
+        $file->name = $classType->getName() . '.php';
+        $file->content = self::asPhpFile($classType);
 
-        \Safe\file_put_contents(
-            $targetDirectory.'/'.$classType->getName().'.php',
-            self::asPhpFile($classType)
-        );
+        return $file;
     }
 
     protected function targetDirectory(string $namespace): string
@@ -118,8 +122,8 @@ PHP;
     /**
      * Parse the raw document contents.
      *
-     * @param  string[]  $documents
-     * @return \GraphQL\Language\AST\DocumentNode[]
+     * @param  array<string, string>  $documents
+     * @return array<string, \GraphQL\Language\AST\DocumentNode>
      *
      * @throws \GraphQL\Error\SyntaxError
      */
@@ -167,7 +171,7 @@ PHP;
     }
 
     /**
-     * @return \GraphQL\Language\AST\DocumentNode[]
+     * @return array<string, \GraphQL\Language\AST\DocumentNode>
      */
     protected function parsedDocuments(): array
     {
