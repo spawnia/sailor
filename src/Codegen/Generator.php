@@ -41,7 +41,7 @@ class Generator
     public function generate(): array
     {
         $parsedDocuments = $this->parsedDocuments();
-        if($parsedDocuments === []) {
+        if ($parsedDocuments === []) {
             return [];
         }
         $document = Merger::combine($parsedDocuments);
@@ -55,11 +55,11 @@ class Generator
 
         $files = [];
         foreach ($operationSets as $operationSet) {
-            $files []= $this->makeFile($operationSet->operation);
-            $files []= $this->makeFile($operationSet->result);
+            $files [] = $this->makeFile($operationSet->operation);
+            $files [] = $this->makeFile($operationSet->result);
 
             foreach ($operationSet->selectionStorage as $selection) {
-                $files []= $this->makeFile($selection);
+                $files [] = $this->makeFile($selection);
             }
         }
 
@@ -78,7 +78,7 @@ class Generator
             $phpNamespace->getName()
         );
 
-        $file->name = $classType->getName() . '.php';
+        $file->name = $classType->getName().'.php';
         $file->content = self::asPhpFile($classType);
 
         return $file;
