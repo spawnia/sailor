@@ -36,7 +36,7 @@ class Generator
     public function generate(): void
     {
         $parsedDocuments = $this->parsedDocuments();
-        if($parsedDocuments === []) {
+        if ($parsedDocuments === []) {
             return;
         }
 
