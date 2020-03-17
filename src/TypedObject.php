@@ -18,7 +18,7 @@ abstract class TypedObject
         $instance = new static;
 
         foreach ($data as $key => $valueOrValues) {
-            if(is_null($valueOrValues)) {
+            if (is_null($valueOrValues)) {
                 $converted = null;
             } else {
                 // The ClassGenerator placed methods for each property that return

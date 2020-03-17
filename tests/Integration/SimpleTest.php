@@ -87,7 +87,7 @@ class SimpleTest extends TestCase
             $response = new Response();
             $response->data = null;
             $response->errors = [
-                (object) ['message' => 'some error']
+                (object) ['message' => 'some error'],
             ];
 
             return $response;
@@ -115,8 +115,8 @@ class SimpleTest extends TestCase
                 'singleObject' => (object) [
                     'nested' => (object) [
                         'value' => 42,
-                    ]
-                ]
+                    ],
+                ],
             ];
 
             return $response;
@@ -146,7 +146,7 @@ class SimpleTest extends TestCase
             $response->data = (object) [
                 'singleObject' => (object) [
                     'nested' => null,
-                ]
+                ],
             ];
 
             return $response;

@@ -40,7 +40,6 @@ class CodegenCommand extends Command
 
             $writer = new Writer($endpointConfig);
             $writer->write($files);
-
         }
 
         return 0;
