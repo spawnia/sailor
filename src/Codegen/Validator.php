@@ -14,7 +14,15 @@ class Validator
 {
     public static function validate(Schema $schema, DocumentNode $document): void
     {
-        $errors = DocumentValidator::validate($schema, $document);
+        try {
+            $errors = DocumentValidator::validate($schema, $document);
+        } catch (\Throwable $e) {
+            throw new \Exception(
+                'Unexpected error while validating a query against the schema. Check if your schema is up to date.',
+                0,
+                $e
+            );
+        }
 
         if (count($errors) === 0) {
             return;
