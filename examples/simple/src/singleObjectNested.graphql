@@ -1,0 +1,7 @@
+query MyObjectNestedQuery {
+    singleObject {
+        nested {
+            value
+        }
+    }
+}

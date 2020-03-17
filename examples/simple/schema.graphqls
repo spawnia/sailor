@@ -5,4 +5,5 @@ type Query {
 
 type SomeObject {
     value: Int
+    nested: SomeObject
 }
