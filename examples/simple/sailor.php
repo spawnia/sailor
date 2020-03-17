@@ -37,7 +37,7 @@ return [
                 return Response::fromStdClass((object) [
                     'data' => (object) [
                         'singleObject' => (object) [
-                            'value' => 42
+                            'value' => 42,
                         ],
                     ],
                 ]);
