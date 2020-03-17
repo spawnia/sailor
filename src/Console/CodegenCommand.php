@@ -31,8 +31,11 @@ class CodegenCommand extends Command
             $endpointNames = array_keys(Configuration::getEndpointConfigMap());
         }
 
+
         /** @var string $endpointName */
         foreach ($endpointNames as $endpointName) {
+            echo "Generating code for endpoint {$endpointName}...\n";
+
             $endpointConfig = Configuration::forEndpoint($endpointName);
             $generator = new Generator($endpointConfig, $endpointName);
 
@@ -41,6 +44,8 @@ class CodegenCommand extends Command
             $writer = new Writer($endpointConfig);
             $writer->write($files);
         }
+
+        echo "Successfully generated code, query ahead!\n";
 
         return 0;
     }
