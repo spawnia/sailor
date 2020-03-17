@@ -31,7 +31,6 @@ class CodegenCommand extends Command
             $endpointNames = array_keys(Configuration::getEndpointConfigMap());
         }
 
-
         /** @var string $endpointName */
         foreach ($endpointNames as $endpointName) {
             echo "Generating code for endpoint {$endpointName}...\n";
