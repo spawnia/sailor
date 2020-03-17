@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@master
 
       - name: "Validate composer.json and composer.lock"
-        run: php7.3 /usr/bin/composer validate --strict
+        run: php7.3 /usr/bin/composer validate
 
       - name: "Install locked dependencies with composer"
         run: php7.3 /usr/bin/composer install --no-interaction --no-progress --no-suggest

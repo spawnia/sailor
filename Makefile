@@ -23,6 +23,6 @@ test: ## Runs auto-review, unit, and integration tests with phpunit
 	vendor/bin/phpunit
 
 vendor: composer.json composer.lock
-	composer validate --strict
+	composer validate
 	composer install
 	composer normalize
