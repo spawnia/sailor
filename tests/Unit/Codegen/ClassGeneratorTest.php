@@ -83,6 +83,7 @@ class ClassGeneratorTest extends TestCase
         $selections = $fooOperation->selectionStorage;
         self::assertCount(1, $selections);
     }
+
     protected function createTestGenerator(string $schema): ClassGenerator
     {
         $endpoint = new MockEndpointConfig();
