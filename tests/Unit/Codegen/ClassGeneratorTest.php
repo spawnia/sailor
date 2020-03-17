@@ -14,16 +14,11 @@ class ClassGeneratorTest extends TestCase
 {
     public function testGenerateSimple(): void
     {
-        $schema = BuildSchema::build(/** @lang GraphQL */ '
+        $generator = $this->createTestGenerator(/** @lang GraphQL */ '
         type Query {
             simple: ID
         }
         ');
-        $generator = new ClassGenerator(
-            $schema,
-            $this->mockEndpoint('MyScalarQuery'),
-            'simple'
-        );
 
         $document = Parser::parse(/** @lang GraphQL */ '
         query MyScalarQuery {
@@ -39,7 +34,7 @@ class ClassGeneratorTest extends TestCase
 
     public function testGenerateNested(): void
     {
-        $schema = BuildSchema::build(/** @lang GraphQL */ '
+        $generator = $this->createTestGenerator(/** @lang GraphQL */ '
         type Query {
             simple: MyScalarQuery
         }
@@ -48,11 +43,6 @@ class ClassGeneratorTest extends TestCase
             bar: Int
         }
         ');
-        $generator = new ClassGenerator(
-            $schema,
-            $this->mockEndpoint('MyScalarQuery'),
-            'simple'
-        );
 
         $document = Parser::parse(/** @lang GraphQL */ '
         query MyScalarQuery {
@@ -71,7 +61,7 @@ class ClassGeneratorTest extends TestCase
 
     public function testGenerateEnum(): void
     {
-        $schema = BuildSchema::build(/** @lang GraphQL */ '
+        $generator = $this->createTestGenerator(/** @lang GraphQL */ '
         type Query {
             simple: MyScalarQuery
         }
@@ -80,11 +70,6 @@ class ClassGeneratorTest extends TestCase
             BAR
         }
         ');
-        $generator = new ClassGenerator(
-            $schema,
-            $this->mockEndpoint('MyScalarQuery'),
-            'simple'
-        );
 
         $document = Parser::parse(/** @lang GraphQL */ '
         query MyScalarQuery {
@@ -98,12 +83,15 @@ class ClassGeneratorTest extends TestCase
         $selections = $fooOperation->selectionStorage;
         self::assertCount(1, $selections);
     }
-
-    protected function mockEndpoint(string $namespace): MockEndpointConfig
+    protected function createTestGenerator(string $schema): ClassGenerator
     {
         $endpoint = new MockEndpointConfig();
-        $endpoint->namespace = $namespace;
+        $endpoint->namespace = 'TestNamespace';
 
-        return $endpoint;
+        return new ClassGenerator(
+            BuildSchema::build($schema),
+            $endpoint,
+            'endpointName'
+        );
     }
 }

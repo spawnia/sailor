@@ -79,7 +79,9 @@ class ResponseTest extends TestCase
             ]
         );
 
-        self::assertSame('foo', $response->errors[0]->message);
+        $errors = $response->errors;
+        self::assertNotNull($errors);
+        self::assertSame('foo', $errors[0]->message);
 
         self::expectException(ResultErrorsException::class);
         $response->assertErrorFree();

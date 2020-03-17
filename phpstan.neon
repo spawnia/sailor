@@ -12,5 +12,6 @@ parameters:
 		- %rootDir%/../../../src/TypedObject.php
 	ignoreErrors:
 		- '#Call to deprecated method getNamespace\(\) of class Nette\\PhpGenerator\\ClassType#'
-		- '#Method Spawnia\\Sailor\\Configuration::getEndpointConfigMap\(\) should return array but returns array<Spawnia\\Sailor\\EndpointConfig>\|null\.#'
-		- '#Unsafe usage of new static*.#'
+		- '#Method Spawnia\\Sailor\\Configuration::getEndpointConfigMap\(\) should return array<string, Spawnia\\Sailor\\EndpointConfig> but returns array<string, Spawnia\\Sailor\\EndpointConfig>\|null\.#'
+		- '#Unsafe usage of new static.*#'
+		- '#Cannot access property .* on .*\|null#'

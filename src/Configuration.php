@@ -15,6 +15,10 @@ class Configuration
     public const EXPECTED_CONFIG_LOCATION = __DIR__.'/../../../../sailor.php';
 
     /**
+     * Since loading the config is a bit expensive and might happen
+     * often, the result is cached here. Make sure to always call
+     * self::loadConfigIfNotExists() before accessing this.
+     *
      * @var array<string, \Spawnia\Sailor\EndpointConfig>|null
      */
     public static $endpointConfigMap;
