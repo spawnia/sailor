@@ -33,19 +33,8 @@ Install Sailor through composer by running:
 composer require spawnia/sailor
 ```
 
-Caveat: As long as `webonyx/graphql-php` has not merged https://github.com/webonyx/graphql-php/pull/539,
-you need to add the following repository to your `composer.json`:
-
-```diff
-    ...
-    "repositories": [
-+       {
-+           "type": "vcs",
-+           "url": "https://github.com/spawnia/graphql-php.git"
-+       }
-    ],
-    ...
-```
+Caveat: This library requires bleeding edge features of `webonyx/graphql-php`, see https://github.com/webonyx/graphql-php/pull/539,
+so `dev-master` is required for now.
 
 ## Configuration
 
