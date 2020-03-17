@@ -6,4 +6,4 @@ include __DIR__.'/../vendor/autoload.php';
 
 $result = \Spawnia\Sailor\Simple\MyObjectQuery::execute();
 
-echo $result->data->singleObject->value;
+assert($result->data->singleObject->value === 42);
