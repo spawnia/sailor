@@ -36,7 +36,9 @@ return [
             $mockClient->responseMocks [] = function (): Response {
                 return Response::fromStdClass((object) [
                     'data' => (object) [
-                        'simple' => 'bar',
+                        'singleObject' => (object) [
+                            'value' => 42
+                        ],
                     ],
                 ]);
             };

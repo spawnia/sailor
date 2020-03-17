@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 include __DIR__.'/../vendor/autoload.php';
 
-$result = \Spawnia\Sailor\Simple\MyScalarQuery::execute();
+$result = \Spawnia\Sailor\Simple\MyObjectQuery::execute();
 
-echo $result->data->scalarWithArg;
+echo $result->data->singleObject->value;
