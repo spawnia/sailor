@@ -21,7 +21,6 @@
   },
   "require-dev": {
     "composer/composer": "^1.9",
-    "ergebnis/composer-normalize": "^2.2.0",
     "infection/infection": "~0.13.6",
     "jangregor/phpstan-prophecy": "~0.6.0",
     "phpstan/extension-installer": "^1.0",
