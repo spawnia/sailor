@@ -1,12 +1,33 @@
 # https://help.github.com/en/categories/automating-your-workflow-with-github-actions
 
 on:
-  - pull_request
-  - push
+  pull_request:
+  push:
+    branches:
+      - "master"
 
 name: "Continuous Integration"
 
 jobs:
+  composer-normalize:
+    name: "composer-normalize"
+
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2.0.0"
+        with:
+          ref: "${{ github.head_ref }}"
+
+      - name: "Run composer normalize"
+        uses: "docker://ergebnis/composer-normalize-action:0.8.0"
+
+      - uses: "stefanzweifel/git-auto-commit-action@v4.1.6"
+        with:
+          commit_message: "Normalize composer.json"
+          branch: "${{ github.head_ref }}"
+
   coding-standards:
     name: "Coding Standards"
 
@@ -21,9 +42,6 @@ jobs:
 
       - name: "Install locked dependencies with composer"
         run: php7.3 /usr/bin/composer install --no-interaction --no-progress --no-suggest
-
-      - name: "Run localheinz/composer-normalize"
-        run: php7.3 /usr/bin/composer normalize --dry-run
 
   static-code-analysis:
     name: "Static Code Analysis"
