@@ -134,9 +134,13 @@ PHP;
             try {
                 $parsed[$path] = Parser::parse($content);
             } catch (SyntaxError $error) {
-                // Inform the user which file the error occurred in.
-                $error->message .= ' in '.$path;
-                throw $error;
+                throw new Error(
+                    // Inform the user which file the error occurred in.
+                    $error->getMessage() . ' in '.$path,
+                    null,
+                    $error->getSource(),
+                    $error->getPositions()
+                );
             }
         }
 

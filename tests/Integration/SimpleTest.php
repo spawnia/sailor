@@ -41,7 +41,7 @@ class SimpleTest extends TestCase
         ]);
 
         $mockClient = new MockClient();
-        $mockClient->responseMocks [] = function (): Response {
+        $mockClient->responseMocks [] = static function (): Response {
             $response = new Response();
             $response->data = (object) ['scalarWithArg' => 'bar'];
 
@@ -62,7 +62,7 @@ class SimpleTest extends TestCase
         ]);
 
         $mockClient = new MockClient();
-        $mockClient->responseMocks [] = function (string $query, \stdClass $variables = null): Response {
+        $mockClient->responseMocks [] = static function (string $query, \stdClass $variables = null): Response {
             $response = new Response();
             $response->data = (object) ['scalarWithArg' => $variables->arg];
 
@@ -83,7 +83,7 @@ class SimpleTest extends TestCase
         ]);
 
         $mockClient = new MockClient();
-        $mockClient->responseMocks [] = function (): Response {
+        $mockClient->responseMocks [] = static function (): Response {
             $response = new Response();
             $response->data = null;
             $response->errors = [
@@ -109,7 +109,7 @@ class SimpleTest extends TestCase
         ]);
 
         $mockClient = new MockClient();
-        $mockClient->responseMocks [] = function (): Response {
+        $mockClient->responseMocks [] = static function (): Response {
             $response = new Response();
             $response->data = (object) [
                 'singleObject' => (object) [
@@ -141,7 +141,7 @@ class SimpleTest extends TestCase
         ]);
 
         $mockClient = new MockClient();
-        $mockClient->responseMocks [] = function (): Response {
+        $mockClient->responseMocks [] = static function (): Response {
             $response = new Response();
             $response->data = (object) [
                 'singleObject' => (object) [

@@ -33,7 +33,7 @@ return [
         {
             $mockClient = new MockClient();
 
-            $mockClient->responseMocks [] = function (): Response {
+            $mockClient->responseMocks [] = static function (): Response {
                 return Response::fromStdClass((object) [
                     'data' => (object) [
                         'singleObject' => (object) [

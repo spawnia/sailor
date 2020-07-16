@@ -11,7 +11,7 @@ class MyObjectQuery extends \Spawnia\Sailor\TypedObject
 
     public function typeSingleObject(): callable
     {
-        return function (\stdClass $value): \Spawnia\Sailor\TypedObject {
+        return static function (\stdClass $value): \Spawnia\Sailor\TypedObject {
             return \Spawnia\Sailor\Simple\MyObjectQuery\SingleObject\SingleObject::fromStdClass($value);
         };
     }

@@ -4,6 +4,12 @@ We are using [GitHub Actions](https://github.com/features/actions) as a continuo
 
 For details, see [`workflows/continuous-integration.yml`](workflows/continuous-integration.yml).
 
+## Setup
+
+Make sure you have PHP and composer installed, as well as:
+
+    composer global require ergebnis/composer-normalize
+
 ## Code Style
 
 The code style is automatically fixed through [StyleCI](https://styleci.io/).

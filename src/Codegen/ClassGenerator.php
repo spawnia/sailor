@@ -228,7 +228,7 @@ PHP
                                     $this->makeTypedObject($typedObjectName)
                                 );
                                 $typeMapper = <<<PHP
-function (\\stdClass \$value): \Spawnia\Sailor\TypedObject {
+static function (\\stdClass \$value): \Spawnia\Sailor\TypedObject {
     return $typeReference::fromStdClass(\$value);
 }
 PHP;

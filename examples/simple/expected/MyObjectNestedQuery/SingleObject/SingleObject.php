@@ -11,7 +11,7 @@ class SingleObject extends \Spawnia\Sailor\TypedObject
 
     public function typeNested(): callable
     {
-        return function (\stdClass $value): \Spawnia\Sailor\TypedObject {
+        return static function (\stdClass $value): \Spawnia\Sailor\TypedObject {
             return \Spawnia\Sailor\Simple\MyObjectNestedQuery\SingleObject\Nested\Nested::fromStdClass($value);
         };
     }

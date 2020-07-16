@@ -20,7 +20,7 @@ class Merger
 
         $root->definitions = array_reduce(
             $documents,
-            function (NodeList $definitions, DocumentNode $document): NodeList {
+            static function (NodeList $definitions, DocumentNode $document): NodeList {
                 /** @var NodeList<Node> $nodeList */
                 $nodeList = $document->definitions;
 

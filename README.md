@@ -33,9 +33,6 @@ Install Sailor through composer by running:
 composer require spawnia/sailor
 ```
 
-Caveat: This library requires bleeding edge features of `webonyx/graphql-php`, see https://github.com/webonyx/graphql-php/pull/539,
-so `dev-master` is required for now.
-
 ## Configuration
 
 Run `vendor/bin/sailor` to set up the configuration.

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
+use GraphQL\Error\DebugFlag;
 use GraphQL\Error\Error;
 use GraphQL\Error\FormattedError;
 use GraphQL\Language\AST\DocumentNode;
@@ -29,14 +30,14 @@ class Validator
         }
 
         $formattedErrors = array_map(
-            function (Error $error): array {
-                return FormattedError::createFromException($error, true);
+            static function (Error $error): array {
+                return FormattedError::createFromException($error, DebugFlag::INCLUDE_DEBUG_MESSAGE);
             },
             $errors
         );
 
         $errorStrings = array_map(
-            function (array $error): string {
+            static function (array $error): string {
                 return \Safe\json_encode($error);
             },
             $formattedErrors
