@@ -136,7 +136,7 @@ PHP;
             } catch (SyntaxError $error) {
                 throw new Error(
                     // Inform the user which file the error occurred in.
-                    $error->getMessage() . ' in '.$path,
+                    $error->getMessage().' in '.$path,
                     null,
                     $error->getSource(),
                     $error->getPositions()
