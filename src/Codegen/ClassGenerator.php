@@ -6,6 +6,8 @@ namespace Spawnia\Sailor\Codegen;
 
 use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\AST\FieldNode;
+use GraphQL\Language\AST\FragmentDefinitionNode;
+use GraphQL\Language\AST\FragmentSpreadNode;
 use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\AST\SelectionSetNode;
@@ -77,6 +79,7 @@ class ClassGenerator
     public function generate(DocumentNode $document): array
     {
         $typeInfo = new TypeInfo($this->schema);
+        $definitions = $document->definitions;
 
         Visitor::visit(
             $document,
@@ -251,6 +254,15 @@ return $typeMapper;
 PHP
                             );
                         },
+                    ],
+                    NodeKind::FRAGMENT_SPREAD => [
+                        'enter' => function (FragmentSpreadNode $fragmentSpread) use ($definitions): void {
+                            $fragmentName = $fragmentSpread->name->value;
+                            /** @var FragmentDefinitionNode $fragmentDefinition */
+                            $fragmentDefinition = $definitions[$fragmentName];
+
+                            // TODO handle the new selection set
+                        }
                     ],
                     NodeKind::SELECTION_SET => [
                         'leave' => function (SelectionSetNode $_): void {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Spawnia\Sailor\Codegen;
 
 use GraphQL\Language\AST\DocumentNode;
+use GraphQL\Language\AST\ExecutableDefinitionNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NodeList;
 
@@ -15,20 +16,21 @@ class Merger
      */
     public static function combine(array $documents): DocumentNode
     {
-        /** @var DocumentNode $root */
-        $root = array_pop($documents);
+        $definitions = new NodeList([]);
 
-        $root->definitions = array_reduce(
-            $documents,
-            static function (NodeList $definitions, DocumentNode $document): NodeList {
-                /** @var NodeList<Node> $nodeList */
-                $nodeList = $document->definitions;
+        /** @var DocumentNode $document */
+        foreach ($documents as $document) {
+            /** @var ExecutableDefinitionNode&Node $definition */
+            foreach ($document->definitions as $definition) {
+                /** @var string $name We validated that operations are always named */
+                $name = $definition->name->value;
 
-                return $definitions->merge($nodeList);
-            },
-            $root->definitions
-        );
+                $definitions[$name] = $definition;
+            }
+        }
 
-        return $root;
+        return new DocumentNode([
+            'definitions' => $definitions,
+        ]);
     }
 }
