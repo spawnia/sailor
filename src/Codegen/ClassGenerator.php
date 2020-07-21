@@ -261,8 +261,8 @@ PHP
                             /** @var FragmentDefinitionNode $fragmentDefinition */
                             $fragmentDefinition = $definitions[$fragmentName];
 
-                            // TODO handle the new selection set
-                        }
+                        // TODO handle the new selection set
+                        },
                     ],
                     NodeKind::SELECTION_SET => [
                         'leave' => function (SelectionSetNode $_): void {
