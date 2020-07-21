@@ -6,6 +6,7 @@ namespace Spawnia\Sailor\Codegen;
 
 use GraphQL\Error\Error;
 use GraphQL\Error\SyntaxError;
+use GraphQL\Language\AST\FragmentDefinitionNode;
 use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
@@ -36,7 +37,7 @@ class Generator
     /**
      * Generate a list of files to write.
      *
-     * @return File[]
+     * @return array<int, File>
      */
     public function generate(): array
     {
@@ -98,7 +99,7 @@ class Generator
             return $subject;
         }
 
-        /** @var string[] $parts */
+        /** @var array<int, string> $parts */
         $parts = explode($search, $subject, 2);
 
         return array_reverse($parts)[0];
@@ -148,19 +149,24 @@ PHP;
     }
 
     /**
-     * @param  \GraphQL\Language\AST\DocumentNode[]  $parsed
+     * @param  array<string, \GraphQL\Language\AST\DocumentNode>  $parsed
      */
-    public static function ensureOperationsAreNamed(array $parsed): void
+    public static function validateDocuments(array $parsed): void
     {
         foreach ($parsed as $path => $documentNode) {
             foreach ($documentNode->definitions as $definition) {
-                if (! $definition instanceof OperationDefinitionNode) {
-                    throw new Error('Found unsupported definition in '.$path, $definition);
+                if ($definition instanceof OperationDefinitionNode) {
+                    if ($definition->name === null) {
+                        throw new Error('Found unnamed operation definition in '.$path, $definition);
+                    }
+                    continue;
                 }
 
-                if ($definition->name === null) {
-                    throw new Error('Found unnamed operation definition in '.$path, $definition);
+                if ($definition instanceof FragmentDefinitionNode) {
+                    continue;
                 }
+
+                throw new Error('Found unsupported definition in '.$path, $definition);
             }
         }
     }
@@ -183,7 +189,7 @@ PHP;
         $documents = $finder->documents();
 
         $parsed = static::parseDocuments($documents);
-        static::ensureOperationsAreNamed($parsed);
+        static::validateDocuments($parsed);
 
         return $parsed;
     }

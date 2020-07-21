@@ -32,6 +32,30 @@ class ClassGeneratorTest extends TestCase
         self::assertCount(1, $fooOperation->selectionStorage);
     }
 
+    public function testGenerateWithFragment(): void
+    {
+        $generator = $this->createTestGenerator(/** @lang GraphQL */ '
+        type Query {
+            simple: ID
+        }
+        ');
+
+        $document = Parser::parse(/** @lang GraphQL */ '
+        query MyScalarQuery {
+            ...MyFragment
+        }
+
+        fragment MyFragment on Query {
+            simple
+        }
+        ');
+        $operationsSets = $generator->generate($document);
+        self::assertCount(1, $operationsSets);
+
+        $fooOperation = $operationsSets[0];
+        self::assertCount(1, $fooOperation->selectionStorage);
+    }
+
     public function testGenerateNested(): void
     {
         $generator = $this->createTestGenerator(/** @lang GraphQL */ '

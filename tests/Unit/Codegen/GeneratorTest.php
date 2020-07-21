@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Unit\Codegen;
 
+use GraphQL\Error\Error;
 use GraphQL\Language\Parser;
 use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Codegen\Generator;
 
 class GeneratorTest extends TestCase
 {
-    public function testParseDocumentsSuccessfully(): void
+    public function testParseNamedOperationSuccessfully(): void
     {
+        $somePath = 'path';
         $documents = [
-            'path' => /* @lang GraphQL */ '
+            $somePath => /* @lang GraphQL */ '
                 query MyScalarQuery {
                     simple
                 }
@@ -22,9 +24,54 @@ class GeneratorTest extends TestCase
 
         $parsed = Generator::parseDocuments($documents);
         /** @var \GraphQL\Language\AST\OperationDefinitionNode $query */
-        $query = $parsed['path']->definitions[0];
+        $query = $parsed[$somePath]->definitions[0];
 
         self::assertSame('MyScalarQuery', $query->name->value);
+    }
+
+    public function testParseFragmentSuccessfully(): void
+    {
+        $somePath = 'path';
+        $documents = [
+            $somePath => /* @lang GraphQL */ '
+                fragment Foo on Bar {
+                    simple
+                }
+            ',
+        ];
+
+        $parsed = Generator::parseDocuments($documents);
+        /** @var \GraphQL\Language\AST\FragmentDefinitionNode $fragment */
+        $fragment = $parsed[$somePath]->definitions[0];
+
+        self::assertSame('Foo', $fragment->name->value);
+    }
+
+    public function testParseOperationsAndFragmentsSuccessfully(): void
+    {
+        $somePath = 'path';
+        $documents = [
+            $somePath => /* @lang GraphQL */ '
+                query FooQuery {
+                    ...Foo
+                }
+
+                fragment Foo on Bar {
+                    simple
+                }
+            ',
+        ];
+
+        $parsed = Generator::parseDocuments($documents);
+        /** @var \GraphQL\Language\AST\OperationDefinitionNode $query */
+        $query = $parsed[$somePath]->definitions[0];
+
+        self::assertSame('FooQuery', $query->name->value);
+
+        /** @var \GraphQL\Language\AST\FragmentDefinitionNode $fragment */
+        $fragment = $parsed[$somePath]->definitions[1];
+
+        self::assertSame('Foo', $fragment->name->value);
     }
 
     public function testEmptyListOfDocuments(): void
@@ -44,6 +91,21 @@ class GeneratorTest extends TestCase
         Generator::parseDocuments($documents);
     }
 
+    public function testFailsOnNonExecutableDefinitions(): void
+    {
+        $somePath = 'path';
+        $documents = [
+            $somePath => Parser::parse(/* @lang GraphQL */'
+                type Query {
+                    foo: ID
+                }
+            '),
+        ];
+
+        $this->expectException(Error::class);
+        Generator::validateDocuments($documents);
+    }
+
     public function testEnsureOperationsAreNamedPasses(): void
     {
         self::expectNotToPerformAssertions();
@@ -55,7 +117,7 @@ class GeneratorTest extends TestCase
             '),
         ];
 
-        Generator::ensureOperationsAreNamed($documents);
+        Generator::validateDocuments($documents);
     }
 
     public function testEnsureOperationsAreNamedThrowsErrorWithPath(): void
@@ -70,6 +132,6 @@ class GeneratorTest extends TestCase
         ];
 
         self::expectExceptionMessageMatches("/$path/");
-        Generator::ensureOperationsAreNamed($documents);
+        Generator::validateDocuments($documents);
     }
 }
