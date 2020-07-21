@@ -10,9 +10,6 @@ use GraphQL\Type\Definition\Type;
 use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Codegen\PhpType;
 
-/**
- * TODO https://github.com/spawnia/sailor/issues/1.
- */
 class PhpTypeTest extends TestCase
 {
     public function testSimpleType(): void
@@ -42,7 +39,7 @@ class PhpTypeTest extends TestCase
     public function testListOfType(): void
     {
         self::assertSame(
-            'MyScalarQuery[]|null',
+            'array<MyScalarQuery|null>|null',
             PhpType::phpDoc(
                 new ListOfType(
                     Type::id()
@@ -52,14 +49,33 @@ class PhpTypeTest extends TestCase
         );
     }
 
-    public function testNonNullListOfType(): void
+    public function testNonNullListOfNonNullTypes(): void
     {
         self::assertSame(
-            'MyScalarQuery[]',
+            'array<MyScalarQuery>',
             PhpType::phpDoc(
                 new NonNull(
                     new ListOfType(
-                        Type::id()
+                        new NonNull(
+                            Type::id()
+                        )
+                    )
+                ),
+                'MyScalarQuery'
+            )
+        );
+    }
+
+    public function testNonNullListOfListOfTypes(): void
+    {
+        self::assertSame(
+            'array<array<MyScalarQuery|null>|null>',
+            PhpType::phpDoc(
+                new NonNull(
+                    new ListOfType(
+                        new ListOfType(
+                            Type::id()
+                        )
                     )
                 ),
                 'MyScalarQuery'

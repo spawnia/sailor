@@ -15,6 +15,7 @@ use GraphQL\Language\Visitor;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InputType;
+use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\OutputType;
@@ -171,22 +172,15 @@ PHP
 
                             /** @var Type & InputType $type */
                             $type = $typeInfo->getInputType();
-                            [
-                                'nullable' => $nullable,
-                                'list' => $list
-                            ] = PhpType::wrappedTypeInfo($type);
 
                             if ($type instanceof NonNull) {
                                 $type = $type->getWrappedType();
-                            }
-
-                            if ($nullable) {
+                            } else {
                                 $parameter->setNullable();
                                 $parameter->setDefaultValue(null);
                             }
 
-                            if ($list) {
-                                // TODO refine type in PHPDoc
+                            if ($type instanceof ListOfType) {
                                 $parameter->setType('array');
                             } elseif ($type instanceof ScalarType) {
                                 $parameter->setType(PhpType::forScalar($type));
