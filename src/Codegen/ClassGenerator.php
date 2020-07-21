@@ -48,12 +48,12 @@ class ClassGenerator
     protected $endpoint;
 
     /**
-     * @var OperationSet
+     * @var OperationStack
      */
-    private $operationSet;
+    private $operationStack;
 
     /**
-     * @var OperationSet[]
+     * @var OperationStack[]
      */
     private $operationStorage = [];
 
@@ -71,7 +71,7 @@ class ClassGenerator
     }
 
     /**
-     * @return OperationSet[]
+     * @return OperationStack[]
      */
     public function generate(DocumentNode $document): array
     {
@@ -148,17 +148,17 @@ PHP
                             $dataProp = $operationResult->addProperty('data');
                             $dataProp->setComment("@var $operationName|null");
 
-                            $this->operationSet = new OperationSet($operation);
+                            $this->operationStack = new OperationStack($operation);
 
-                            $this->operationSet->result = $operationResult;
+                            $this->operationStack->result = $operationResult;
 
-                            $this->operationSet->pushSelection(
+                            $this->operationStack->pushSelection(
                                 $this->makeTypedObject($operationName)
                             );
                         },
-                        'leave' => function (OperationDefinitionNode $operationDefinition): void {
+                        'leave' => function (OperationDefinitionNode $_): void {
                             // Store the current operation as we continue with the next one
-                            $this->operationStorage [] = $this->operationSet;
+                            $this->operationStorage [] = $this->operationStack;
                         },
                     ],
                     NodeKind::VARIABLE_DEFINITION => [
@@ -199,7 +199,7 @@ PHP
                                 throw new \Exception('Unsupported type: '.get_class($type));
                             }
 
-                            $this->operationSet->addParameterToOperation($parameter);
+                            $this->operationStack->addParameterToOperation($parameter);
                         },
                     ],
                     NodeKind::FIELD => [
@@ -209,7 +209,7 @@ PHP
                                 ? $field->alias->value
                                 : $field->name->value;
 
-                            $selection = $this->operationSet->peekSelection();
+                            $selection = $this->operationStack->peekSelection();
 
                             /** @var Type & OutputType $type */
                             $type = $typeInfo->getType();
@@ -224,7 +224,7 @@ PHP
                                 $this->namespaceStack [] = $typedObjectName;
                                 $typeReference = '\\'.$this->currentNamespace().'\\'.$typedObjectName;
 
-                                $this->operationSet->pushSelection(
+                                $this->operationStack->pushSelection(
                                     $this->makeTypedObject($typedObjectName)
                                 );
                                 $typeMapper = <<<PHP
@@ -259,10 +259,10 @@ PHP
                         },
                     ],
                     NodeKind::SELECTION_SET => [
-                        'leave' => function (SelectionSetNode $selectionSet): void {
+                        'leave' => function (SelectionSetNode $_): void {
                             // We are done with building this subtree of the selection set,
                             // so we move the top-most element to the storage
-                            $this->operationSet->popSelection();
+                            $this->operationStack->popSelection();
 
                             // The namespace moves up a level
                             array_pop($this->namespaceStack);

@@ -7,7 +7,7 @@ namespace Spawnia\Sailor\Codegen;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Parameter;
 
-class OperationSet
+class OperationStack
 {
     /** @var ClassType */
     public $operation;
