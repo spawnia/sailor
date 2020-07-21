@@ -15,21 +15,26 @@ use GraphQL\Type\Definition\Type;
 
 class PhpType
 {
-    public static function phpDoc(Type $type, string $typeReference): string
+    public static function phpDoc(Type $type, string $typeReference, bool $shouldWrapWithNull = true): string
     {
-        [
-            'nullable' => $nullable,
-            'list' => $list
-        ] = self::wrappedTypeInfo($type);
-
-        // TODO https://github.com/spawnia/sailor/issues/1
-
-        if ($list) {
-            $typeReference .= '[]';
+        if ($type instanceof NonNull) {
+            return self::phpDoc(
+                $type->getWrappedType(),
+                $typeReference,
+                false
+            );
         }
 
-        if ($nullable) {
-            $typeReference .= '|null';
+        if ($shouldWrapWithNull) {
+            $nullable = self::phpDoc($type, $typeReference, false);
+
+            return "{$nullable}|null";
+        }
+
+        if ($type instanceof ListOfType) {
+            $inArray = self::phpDoc($type->getWrappedType(), $typeReference);
+
+            return "array<{$inArray}>";
         }
 
         return $typeReference;
@@ -55,27 +60,5 @@ class PhpType
         // TODO add a comment that lists the instances
         // or do something even more fancy
         return 'string';
-    }
-
-    /**
-     * @return array<string, bool>
-     */
-    public static function wrappedTypeInfo(Type $type): array
-    {
-        $nullable = true;
-        if ($type instanceof NonNull) {
-            $nullable = false;
-            $type = $type->getWrappedType();
-        }
-
-        $list = false;
-        if ($type instanceof ListOfType) {
-            $list = true;
-        }
-
-        return [
-            'nullable' => $nullable,
-            'list' => $list,
-        ];
     }
 }
