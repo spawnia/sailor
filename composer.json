@@ -13,7 +13,7 @@
   "require": {
     "php": "^7.4 || ^8",
     "guzzlehttp/guzzle": "^7",
-    "nette/php-generator": "^3",
+    "nette/php-generator": "^3.5",
     "psr/http-client": "^1",
     "symfony/console": "^5",
     "thecodingmachine/safe": "^1",

@@ -23,7 +23,8 @@ jobs:
       - name: "Run composer normalize"
         uses: docker://ergebnis/composer-normalize-action:0.8.0
 
-      - uses: "stefanzweifel/git-auto-commit-action@v4"
+      - name: "Commit normalized composer.json"
+        uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Normalize composer.json
           branch: ${{ github.head_ref }}
@@ -127,14 +128,18 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
 
-      - name: "Install locked dependencies with composer"
-        run: php7.4 /usr/bin/composer install --no-interaction --no-progress
+      - name: "Install PHP with extensions"
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: pcov
+          extensions: mbstring
+          php-version: 7.4
 
-      - name: "Dump Xdebug filter with phpunit/phpunit"
-        run: php7.4 vendor/bin/phpunit --dump-xdebug-filter=.build/phpunit/xdebug-filter.php
+      - name: "Install locked dependencies with composer"
+        run: composer install --no-interaction --no-progress
 
       - name: "Collect code coverage with Xdebug and phpunit/phpunit"
-        run: php7.4 vendor/bin/phpunit --coverage-clover=build/logs/clover.xml --prepend=.build/phpunit/xdebug-filter.php
+        run: vendor/bin/phpunit --coverage-clover=build/logs/clover.xml
 
       # Not using codecov/codecov-action for now, as the build is prohibitively slow
       - name: "Download code coverage uploader for Codecov.io"
@@ -152,8 +157,15 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
 
+      - name: "Install PHP with extensions"
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: xdebug
+          extensions: mbstring
+          php-version: 7.4
+
       - name: "Install locked dependencies with composer"
-        run: php7.4 /usr/bin/composer install --no-interaction --no-progress
+        run: composer install --no-interaction --no-progress
 
       - name: "Run mutation tests with infection/infection"
-        run: php7.4 vendor/bin/infection --ignore-msi-with-no-mutations --min-covered-msi=70 --min-msi=70
+        run: vendor/bin/infection --ignore-msi-with-no-mutations --min-covered-msi=70 --min-msi=70
