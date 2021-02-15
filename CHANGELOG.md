@@ -8,24 +8,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 
-*
+- Support PHP 8
 
 ### Changed
 
-*
+- Require PHP 7.4 or 8
+- Require newer versions of various dependencies
 
-### Deprecated
+## v0.1.0
 
-*
+### Added
 
-### Removed
-
-*
-
-### Fixed
-
-*
-
-### Security
-
-*
+- Fetch introspection results via `vendor/bin/sailor introspect`
+- Define operations in `.graphql` files and automatically generate client code
+- Statically validate correctness of defined operations

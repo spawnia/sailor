@@ -7,7 +7,7 @@ parameters:
 	- src
 	- tests
 	tmpDir: %currentWorkingDirectory%/.build/phpstan
-	excludes_analyse:
+	excludePaths:
 	# This is where raw data is magically mapped to typed data
 	- %rootDir%/../../../src/TypedObject.php
 	ignoreErrors:

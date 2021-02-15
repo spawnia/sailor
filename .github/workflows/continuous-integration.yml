@@ -16,17 +16,18 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v2.0.0"
+        uses: actions/checkout@v2
         with:
-          ref: "${{ github.head_ref }}"
+          ref: ${{ github.head_ref }}
 
       - name: "Run composer normalize"
-        uses: "docker://ergebnis/composer-normalize-action:0.8.0"
+        uses: docker://ergebnis/composer-normalize-action:0.8.0
 
-      - uses: "stefanzweifel/git-auto-commit-action@v4.1.6"
+      - name: "Commit normalized composer.json"
+        uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: "Normalize composer.json"
-          branch: "${{ github.head_ref }}"
+          commit_message: Normalize composer.json
+          branch: ${{ github.head_ref }}
 
   coding-standards:
     name: "Coding Standards"
@@ -35,13 +36,13 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
 
       - name: "Validate composer.json and composer.lock"
-        run: php7.3 /usr/bin/composer validate
+        run: php7.4 /usr/bin/composer validate
 
       - name: "Install locked dependencies with composer"
-        run: php7.3 /usr/bin/composer install --no-interaction --no-progress --no-suggest
+        run: php7.4 /usr/bin/composer install --no-interaction --no-progress
 
   static-code-analysis:
     name: "Static Code Analysis"
@@ -50,13 +51,13 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
 
       - name: "Install locked dependencies with composer"
-        run: php7.3 /usr/bin/composer install --no-interaction --no-progress --no-suggest
+        run: php7.4 /usr/bin/composer install --no-interaction --no-progress
 
       - name: "Run phpstan/phpstan"
-        run: php7.3 vendor/bin/phpstan analyse --configuration=phpstan.neon
+        run: php7.4 vendor/bin/phpstan analyse --configuration=phpstan.neon
 
   tests:
     name: "Tests"
@@ -66,9 +67,8 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - 7.2
-          - 7.3
           - 7.4
+          - 8.0
 
         dependencies:
           - lowest
@@ -77,26 +77,26 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
 
-      - name: "Install PHP with extensions"
-        uses: shivammathur/setup-php@1.6.1
+      - name: "Setup PHP"
+        uses: shivammathur/setup-php@v2
         with:
           coverage: none
-          extensions: "mbstring"
+          extensions: mbstring
           php-version: ${{ matrix.php-version }}
 
       - name: "Install lowest dependencies with composer"
         if: matrix.dependencies == 'lowest'
-        run: composer update --prefer-lowest --no-interaction --no-progress --no-suggest
+        run: composer update --prefer-lowest --no-interaction --no-progress
 
       - name: "Install locked dependencies with composer"
         if: matrix.dependencies == 'locked'
-        run: composer install --no-interaction --no-progress --no-suggest
+        run: composer install --no-interaction --no-progress
 
       - name: "Install highest dependencies with composer"
         if: matrix.dependencies == 'highest'
-        run: composer update --no-interaction --no-progress --no-suggest
+        run: composer update --no-interaction --no-progress
 
       - name: "Run unit tests with phpunit/phpunit"
         run: vendor/bin/phpunit
@@ -114,7 +114,16 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
+
+      - name: "Setup PHP"
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: none
+          extensions: mbstring
+          php-version: 7.4
+        env:
+          COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "Run the integration tests in each example"
         run: cd examples/${{ matrix.example }} && ./test.sh
@@ -126,16 +135,20 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
+
+      - name: "Setup PHP"
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: pcov
+          extensions: mbstring
+          php-version: 7.4
 
       - name: "Install locked dependencies with composer"
-        run: php7.3 /usr/bin/composer install --no-interaction --no-progress --no-suggest
-
-      - name: "Dump Xdebug filter with phpunit/phpunit"
-        run: php7.3 vendor/bin/phpunit --dump-xdebug-filter=.build/phpunit/xdebug-filter.php
+        run: composer install --no-interaction --no-progress
 
       - name: "Collect code coverage with Xdebug and phpunit/phpunit"
-        run: php7.3 vendor/bin/phpunit --coverage-clover=build/logs/clover.xml --prepend=.build/phpunit/xdebug-filter.php
+        run: vendor/bin/phpunit --coverage-clover=build/logs/clover.xml
 
       # Not using codecov/codecov-action for now, as the build is prohibitively slow
       - name: "Download code coverage uploader for Codecov.io"
@@ -151,10 +164,17 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
+
+      - name: "Setup PHP"
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: xdebug
+          extensions: mbstring
+          php-version: 7.4
 
       - name: "Install locked dependencies with composer"
-        run: php7.3 /usr/bin/composer install --no-interaction --no-progress --no-suggest
+        run: composer install --no-interaction --no-progress
 
       - name: "Run mutation tests with infection/infection"
-        run: php7.3 vendor/bin/infection --ignore-msi-with-no-mutations --min-covered-msi=70 --min-msi=70
+        run: vendor/bin/infection
