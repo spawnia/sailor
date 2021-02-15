@@ -6,26 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## v0.1.0
+
 ### Added
 
-*
-
-### Changed
-
-*
-
-### Deprecated
-
-*
-
-### Removed
-
-*
-
-### Fixed
-
-*
-
-### Security
-
-*
+- Fetch introspection results via `vendor/bin/sailor introspect`
+- Define operations in `.graphql` files and automatically generate client code
+- Statically validate correctness of defined operations
