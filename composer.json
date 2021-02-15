@@ -11,31 +11,31 @@
     }
   ],
   "require": {
-    "php": "^7.2",
-    "guzzlehttp/guzzle": "^6.3",
-    "nette/php-generator": "^3.3.1",
-    "psr/http-client": "^1.0",
-    "symfony/console": "^4.3",
-    "thecodingmachine/safe": "^1.0.0",
-    "webonyx/graphql-php": "^14.0.2"
+    "php": "^7.4 || ^8",
+    "guzzlehttp/guzzle": "^7",
+    "nette/php-generator": "^3",
+    "psr/http-client": "^1",
+    "symfony/console": "^5",
+    "thecodingmachine/safe": "^1",
+    "webonyx/graphql-php": "^14"
   },
   "require-dev": {
-    "composer/composer": "^1.9",
-    "infection/infection": "~0.13.6",
-    "jangregor/phpstan-prophecy": "~0.8.0",
-    "phpstan/extension-installer": "^1.0",
-    "phpstan/phpstan": "~0.12.4",
-    "phpstan/phpstan-deprecation-rules": "~0.12.5",
-    "phpstan/phpstan-phpunit": "~0.12.5",
-    "phpstan/phpstan-strict-rules": "~0.12.1",
-    "phpunit/phpunit": "^8.5.2",
-    "spawnia/phpunit-assert-directory": "^2.0.0",
-    "symfony/var-dumper": "^4.4.2",
-    "thecodingmachine/phpstan-safe-rule": "^1.0.0"
+    "composer/composer": "^2",
+    "infection/infection": "~0.21",
+    "jangregor/phpstan-prophecy": "~0.8.1",
+    "phpstan/extension-installer": "^1",
+    "phpstan/phpstan": "~0.12.76",
+    "phpstan/phpstan-deprecation-rules": "~0.12.6",
+    "phpstan/phpstan-phpunit": "~0.12.17",
+    "phpstan/phpstan-strict-rules": "~0.12.9",
+    "phpunit/phpunit": "^9.5.2",
+    "spawnia/phpunit-assert-directory": "^2",
+    "symfony/var-dumper": "^5.2.3",
+    "thecodingmachine/phpstan-safe-rule": "^1"
   },
   "config": {
     "platform": {
-      "php": "7.3.9"
+      "php": "7.4.15"
     },
     "preferred-install": "dist",
     "sort-packages": true
