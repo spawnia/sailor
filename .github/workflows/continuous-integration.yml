@@ -79,7 +79,7 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
 
-      - name: "Install PHP with extensions"
+      - name: "Setup PHP"
         uses: shivammathur/setup-php@v2
         with:
           coverage: none
@@ -116,6 +116,15 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
 
+      - name: "Setup PHP"
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: none
+          extensions: mbstring
+          php-version: 7.4
+        env:
+          COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: "Run the integration tests in each example"
         run: cd examples/${{ matrix.example }} && ./test.sh
 
@@ -128,7 +137,7 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
 
-      - name: "Install PHP with extensions"
+      - name: "Setup PHP"
         uses: shivammathur/setup-php@v2
         with:
           coverage: pcov
@@ -157,7 +166,7 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
 
-      - name: "Install PHP with extensions"
+      - name: "Setup PHP"
         uses: shivammathur/setup-php@v2
         with:
           coverage: xdebug
