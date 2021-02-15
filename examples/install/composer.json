@@ -1,10 +1,4 @@
 {
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/spawnia/graphql-php.git"
-    }
-  ],
   "require": {
     "spawnia/sailor": "*"
   },
