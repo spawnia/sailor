@@ -6,8 +6,10 @@ namespace Spawnia\Sailor\Codegen;
 
 use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\AST\ExecutableDefinitionNode;
+use GraphQL\Language\AST\FragmentDefinitionNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NodeList;
+use GraphQL\Language\AST\OperationDefinitionNode;
 
 class Merger
 {
@@ -20,7 +22,7 @@ class Merger
 
         /** @var DocumentNode $document */
         foreach ($documents as $document) {
-            /** @var ExecutableDefinitionNode&Node $definition */
+            /** @var OperationDefinitionNode|FragmentDefinitionNode $definition */
             foreach ($document->definitions as $definition) {
                 /** @var string $name We validated that operations are always named */
                 $name = $definition->name->value;
