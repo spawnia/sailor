@@ -168,4 +168,4 @@ jobs:
         run: composer install --no-interaction --no-progress
 
       - name: "Run mutation tests with infection/infection"
-        run: vendor/bin/infection --ignore-msi-with-no-mutations --min-covered-msi=70 --min-msi=70
+        run: vendor/bin/infection
