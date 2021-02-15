@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Spawnia\Sailor\Codegen;
 
 use GraphQL\Language\AST\DocumentNode;
-use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NodeList;
 
 class Merger
@@ -18,13 +17,12 @@ class Merger
         /** @var DocumentNode $root */
         $root = array_pop($documents);
 
+        // @phpstan-ignore-next-line Contravariance
         $root->definitions = array_reduce(
             $documents,
             static function (NodeList $definitions, DocumentNode $document): NodeList {
-                /** @var NodeList<Node> $nodeList */
-                $nodeList = $document->definitions;
-
-                return $definitions->merge($nodeList);
+                // @phpstan-ignore-next-line Contravariance
+                return $definitions->merge($document->definitions);
             },
             $root->definitions
         );
