@@ -120,7 +120,9 @@ PHP
                             $document->setReturnType('string');
                             $operationString = Printer::doPrint($operationDefinition);
                             $document->setBody(<<<PHP
-return /* @lang GraphQL */ '{$operationString}';
+return <<<GRAPHQL
+{$operationString}
+GRAPHQL;
 PHP
                             );
 

@@ -27,7 +27,10 @@ class GuzzleTest extends TestCase
 
         $uri = 'http://simple.bar/graphql';
         $client = new Guzzle($uri, ['handler' => $stack]);
-        $response = $client->request(/* @lang GraphQL */ '{simple}');
+        $response = $client->request(<<<GRAPHQL
+        {simple}
+        GRAPHQL
+        );
 
         self::assertEquals(
             (object) ['simple' => 'bar'],

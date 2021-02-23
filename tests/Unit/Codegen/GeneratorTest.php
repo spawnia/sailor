@@ -13,11 +13,11 @@ class GeneratorTest extends TestCase
     public function testParseDocumentsSuccessfully(): void
     {
         $documents = [
-            'path' => /* @lang GraphQL */ '
+            'path' => <<<GRAPHQL
                 query MyScalarQuery {
                     simple
                 }
-            ',
+            GRAPHQL,
         ];
 
         $parsed = Generator::parseDocuments($documents);
@@ -36,8 +36,9 @@ class GeneratorTest extends TestCase
     {
         $path = 'thisShouldBeInTheMessage';
         $documents = [
-            $path => /* @lang GraphQL */
-                'invalid GraphQL',
+            $path => <<<GRAPHQL
+            invalid GraphQL
+            GRAPHQL
         ];
 
         self::expectExceptionMessageMatches("/$path/");
@@ -48,11 +49,12 @@ class GeneratorTest extends TestCase
     {
         self::expectNotToPerformAssertions();
         $documents = [
-            'simple' => Parser::parse(/* @lang GraphQL */ '
+            'simple' => Parser::parse(<<<GRAPHQL
             query Name {
                 simple
             }
-            '),
+            GRAPHQL
+            ),
         ];
 
         Generator::ensureOperationsAreNamed($documents);
@@ -62,11 +64,12 @@ class GeneratorTest extends TestCase
     {
         $path = 'thisShouldBeInTheMessage';
         $documents = [
-            $path => Parser::parse(/* @lang GraphQL */ '
+            $path => Parser::parse(<<<GRAPHQL
             {
                 unnamedQuery
             }
-            '),
+            GRAPHQL
+            ),
         ];
 
         self::expectExceptionMessageMatches("/$path/");

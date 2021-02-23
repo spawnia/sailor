@@ -15,11 +15,13 @@ class MyObjectQuery extends \Spawnia\Sailor\Operation
 
     public static function document(): string
     {
-        return /* @lang GraphQL */ 'query MyObjectQuery {
+        return <<<GRAPHQL
+        query MyObjectQuery {
           singleObject {
             value
           }
-        }';
+        }
+        GRAPHQL;
     }
 
     public static function endpoint(): string

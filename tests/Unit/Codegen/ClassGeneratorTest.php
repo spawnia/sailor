@@ -14,17 +14,19 @@ class ClassGeneratorTest extends TestCase
 {
     public function testGenerateSimple(): void
     {
-        $generator = $this->createTestGenerator(/** @lang GraphQL */ '
+        $generator = $this->createTestGenerator(<<<GRAPHQL
         type Query {
             simple: ID
         }
-        ');
+        GRAPHQL
+        );
 
-        $document = Parser::parse(/** @lang GraphQL */ '
+        $document = Parser::parse(<<<GRAPHQL
         query MyScalarQuery {
             simple
         }
-        ');
+        GRAPHQL
+        );
         $operationsSets = $generator->generate($document);
         self::assertCount(1, $operationsSets);
 
@@ -34,7 +36,7 @@ class ClassGeneratorTest extends TestCase
 
     public function testGenerateNested(): void
     {
-        $generator = $this->createTestGenerator(/** @lang GraphQL */ '
+        $generator = $this->createTestGenerator(<<<GRAPHQL
         type Query {
             simple: MyScalarQuery
         }
@@ -42,15 +44,17 @@ class ClassGeneratorTest extends TestCase
         type MyScalarQuery {
             bar: Int
         }
-        ');
+        GRAPHQL
+        );
 
-        $document = Parser::parse(/** @lang GraphQL */ '
+        $document = Parser::parse(<<<GRAPHQL
         query MyScalarQuery {
             simple {
                 bar
             }
         }
-        ');
+        GRAPHQL
+        );
         $operationsSets = $generator->generate($document);
         self::assertCount(1, $operationsSets);
 
@@ -61,7 +65,7 @@ class ClassGeneratorTest extends TestCase
 
     public function testGenerateEnum(): void
     {
-        $generator = $this->createTestGenerator(/** @lang GraphQL */ '
+        $generator = $this->createTestGenerator(<<<GRAPHQL
         type Query {
             simple: MyScalarQuery
         }
@@ -69,13 +73,15 @@ class ClassGeneratorTest extends TestCase
         enum MyScalarQuery {
             BAR
         }
-        ');
+        GRAPHQL
+        );
 
-        $document = Parser::parse(/** @lang GraphQL */ '
+        $document = Parser::parse(<<<GRAPHQL
         query MyScalarQuery {
             simple
         }
-        ');
+        GRAPHQL
+        );
         $operationsSets = $generator->generate($document);
         self::assertCount(1, $operationsSets);
 

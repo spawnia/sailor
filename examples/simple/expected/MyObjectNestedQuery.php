@@ -15,13 +15,15 @@ class MyObjectNestedQuery extends \Spawnia\Sailor\Operation
 
     public static function document(): string
     {
-        return /* @lang GraphQL */ 'query MyObjectNestedQuery {
+        return <<<GRAPHQL
+        query MyObjectNestedQuery {
           singleObject {
             nested {
               value
             }
           }
-        }';
+        }
+        GRAPHQL;
     }
 
     public static function endpoint(): string

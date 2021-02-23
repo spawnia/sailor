@@ -16,7 +16,7 @@ use Spawnia\Sailor\Testing\MockClient;
 
 class IntrospectorTest extends TestCase
 {
-    const SCHEMA = /* @lang GraphQL */ <<<'GRAPHQL'
+    const SCHEMA = <<<GRAPHQL
 type Query {
   simple: ID
 }
