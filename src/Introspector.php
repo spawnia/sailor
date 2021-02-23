@@ -24,7 +24,11 @@ class Introspector
     {
         $client = $this->endpointConfig->client();
 
-        $introspectionResult = $client->request(Introspection::getIntrospectionQuery());
+        $introspectionResult = $client->request(
+            Introspection::getIntrospectionQuery([
+                'directiveIsRepeatable' => true,
+            ])
+        );
         $introspectionResult->assertErrorFree();
 
         $schema = BuildClientSchema::build(
