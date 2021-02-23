@@ -9,26 +9,6 @@ on:
 name: "Continuous Integration"
 
 jobs:
-  composer-normalize:
-    name: "composer-normalize"
-
-    runs-on: "ubuntu-latest"
-
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.head_ref }}
-
-      - name: "Run composer normalize"
-        uses: docker://ergebnis/composer-normalize-action:0.8.0
-
-      - name: "Commit normalized composer.json"
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Normalize composer.json
-          branch: ${{ github.head_ref }}
-
   coding-standards:
     name: "Coding Standards"
 
