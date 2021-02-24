@@ -9,20 +9,15 @@ use Spawnia\Sailor\EndpointConfig;
 
 class MockEndpointConfig extends EndpointConfig
 {
-    /** @var MockClient */
-    public $client;
+    public MockClient $client;
 
-    /** @var string */
-    public $namespace = '';
+    public string $namespace = '';
 
-    /** @var string */
-    public $targetPath;
+    public string $targetPath;
 
-    /** @var string */
-    public $searchPath;
+    public string $searchPath;
 
-    /** @var string */
-    public $schemaPath;
+    public string $schemaPath;
 
     public function namespace(): string
     {

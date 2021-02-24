@@ -15,13 +15,13 @@ class ValidatorTest extends TestCase
     {
         self::expectNotToPerformAssertions();
 
-        $schema = BuildSchema::build('
+        $schema = BuildSchema::build(/** @lang GraphQL */ '
         type Query {
             simple: ID
         }
         ');
 
-        $document = Parser::parse('
+        $document = Parser::parse(/** @lang GraphQL */ '
         {
             simple
         }
@@ -31,13 +31,13 @@ class ValidatorTest extends TestCase
 
     public function testValidateFailure(): void
     {
-        $schema = BuildSchema::build('
+        $schema = BuildSchema::build(/** @lang GraphQL */ '
         type Query {
             simple: ID
         }
         ');
 
-        $document = Parser::parse('
+        $document = Parser::parse(/** @lang GraphQL */ '
         {
             bar
         }

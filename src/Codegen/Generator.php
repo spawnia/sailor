@@ -17,15 +17,9 @@ use Spawnia\Sailor\EndpointConfig;
 
 class Generator
 {
-    /**
-     * @var EndpointConfig
-     */
-    protected $endpointConfig;
+    protected EndpointConfig $endpointConfig;
 
-    /**
-     * @var string
-     */
-    protected $endpointName;
+    protected string $endpointName;
 
     public function __construct(EndpointConfig $endpointConfig, string $endpointName)
     {
@@ -36,7 +30,7 @@ class Generator
     /**
      * Generate a list of files to write.
      *
-     * @return File[]
+     * @return array<int, File>
      */
     public function generate(): array
     {
@@ -98,7 +92,11 @@ class Generator
             return $subject;
         }
 
-        /** @var string[] $parts */
+        /**
+         * We validated that $search is not empty, so this can not be false.
+         *
+         * @var array<int, string> $parts
+         */
         $parts = explode($search, $subject, 2);
 
         return array_reverse($parts)[0];
@@ -111,12 +109,12 @@ class Generator
         $class = $printer->printClass($classType, $phpNamespace);
 
         return <<<PHP
-<?php
+        <?php
 
-declare(strict_types=1);
+        declare(strict_types=1);
 
-{$phpNamespace}{$class}
-PHP;
+        {$phpNamespace}{$class}
+        PHP;
     }
 
     /**

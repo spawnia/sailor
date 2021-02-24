@@ -20,24 +20,20 @@ class Response
 {
     /**
      * The result of the execution of the requested operation.
-     *
-     * @var \stdClass|null
      */
-    public $data;
+    public ?\stdClass $data;
 
     /**
      * A non‐empty list of errors, where each error is a map.
      *
-     * @var \stdClass[]|null
+     * @var array<int, \stdClass>|null
      */
-    public $errors;
+    public ?array $errors;
 
     /**
      * This entry, if set, must have a map as its value.
-     *
-     * @var \stdClass|null
      */
-    public $extensions;
+    public ?\stdClass $extensions;
 
     public static function fromResponseInterface(ResponseInterface $response): self
     {

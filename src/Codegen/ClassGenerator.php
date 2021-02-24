@@ -33,35 +33,23 @@ use Spawnia\Sailor\TypedObject;
 
 class ClassGenerator
 {
-    /**
-     * @var Schema
-     */
-    protected $schema;
+    protected Schema $schema;
+
+    protected EndpointConfig $endpointConfig;
+
+    protected string $endpoint;
+
+    protected OperationStack $operationStack;
 
     /**
-     * @var EndpointConfig
+     * @var array<int, OperationStack>
      */
-    protected $endpointConfig;
+    protected array $operationStorage = [];
 
     /**
-     * @var string
+     * @var array<int, string>
      */
-    protected $endpoint;
-
-    /**
-     * @var OperationStack
-     */
-    private $operationStack;
-
-    /**
-     * @var OperationStack[]
-     */
-    private $operationStorage = [];
-
-    /**
-     * @var string[]
-     */
-    private $namespaceStack = [];
+    protected array $namespaceStack = [];
 
     public function __construct(Schema $schema, EndpointConfig $endpointConfig, string $endpoint)
     {
@@ -72,7 +60,7 @@ class ClassGenerator
     }
 
     /**
-     * @return OperationStack[]
+     * @return array<int, OperationStack>
      */
     public function generate(DocumentNode $document): array
     {
@@ -107,10 +95,10 @@ class ClassGenerator
 
                             $execute->setReturnType($resultClass);
                             $execute->setBody(<<<PHP
-\$response = self::fetchResponse(...func_get_args());
+                            \$response = self::fetchResponse(...func_get_args());
 
-return \\$resultClass::fromResponse(\$response);
-PHP
+                            return \\{$resultClass}::fromResponse(\$response);
+                            PHP
                             );
 
                             // Store the actual query string in the operation
@@ -120,8 +108,8 @@ PHP
                             $document->setReturnType('string');
                             $operationString = Printer::doPrint($operationDefinition);
                             $document->setBody(<<<PHP
-return /* @lang GraphQL */ '{$operationString}';
-PHP
+                            return /* @lang GraphQL */ '{$operationString}';
+                            PHP
                             );
 
                             // Set the endpoint this operation belongs to
@@ -129,8 +117,8 @@ PHP
                             $document->setStatic();
                             $document->setReturnType('string');
                             $document->setBody(<<<PHP
-return '{$this->endpoint}';
-PHP
+                            return '{$this->endpoint}';
+                            PHP
                             );
 
                             $operationResult = new ClassType($resultName, $this->makeNamespace());
@@ -142,8 +130,8 @@ PHP
                             $setData->setReturnType('void');
                             $dataParam->setType('\\stdClass');
                             $setData->setBody(<<<PHP
-\$this->data = $operationName::fromStdClass(\$data);
-PHP
+                            \$this->data = {$operationName}::fromStdClass(\$data);
+                            PHP
                             );
 
                             $dataProp = $operationResult->addProperty('data');
@@ -222,21 +210,21 @@ PHP
                                     $this->makeTypedObject($typedObjectName)
                                 );
                                 $typeMapper = <<<PHP
-static function (\\stdClass \$value): \Spawnia\Sailor\TypedObject {
-    return $typeReference::fromStdClass(\$value);
-}
-PHP;
+                                static function (\\stdClass \$value): \Spawnia\Sailor\TypedObject {
+                                    return {$typeReference}::fromStdClass(\$value);
+                                }
+                                PHP;
                             } elseif ($namedType instanceof ScalarType) {
                                 $typeReference = PhpType::forScalar($namedType);
                                 $typeMapper = <<<PHP
-new \Spawnia\Sailor\Mapper\DirectMapper()
-PHP;
+                                new \Spawnia\Sailor\Mapper\DirectMapper()
+                                PHP;
                             } elseif ($namedType instanceof EnumType) {
                                 $typeReference = PhpType::forEnum($namedType);
                                 // TODO consider mapping from enum instances
                                 $typeMapper = <<<PHP
-new \Spawnia\Sailor\Mapper\DirectMapper()
-PHP;
+                                new \Spawnia\Sailor\Mapper\DirectMapper()
+                                PHP;
                             } else {
                                 throw new \Exception('Unsupported type '.get_class($namedType).' found.');
                             }
@@ -247,8 +235,8 @@ PHP;
                             $typeField = $selection->addMethod(self::typeDiscriminatorMethodName($resultKey));
                             $typeField->setReturnType('callable');
                             $typeField->setBody(<<<PHP
-return $typeMapper;
-PHP
+                            return {$typeMapper};
+                            PHP
                             );
                         },
                     ],

@@ -34,7 +34,7 @@ class PhpType
         if ($type instanceof ListOfType) {
             $inArray = self::phpDoc($type->getWrappedType(), $typeReference);
 
-            return "array<{$inArray}>";
+            return "array<int, {$inArray}>";
         }
 
         return $typeReference;

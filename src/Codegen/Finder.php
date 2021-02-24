@@ -6,10 +6,7 @@ namespace Spawnia\Sailor\Codegen;
 
 class Finder
 {
-    /**
-     * @var string
-     */
-    protected $rootPath;
+    protected string $rootPath;
 
     public function __construct(string $rootPath)
     {

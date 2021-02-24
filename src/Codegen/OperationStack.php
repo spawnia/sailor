@@ -9,17 +9,15 @@ use Nette\PhpGenerator\Parameter;
 
 class OperationStack
 {
-    /** @var ClassType */
-    public $operation;
+    public ClassType $operation;
 
-    /** @var ClassType */
-    public $result;
+    public ClassType $result;
 
-    /** @var ClassType[] */
-    public $selectionStack = [];
+    /** @var array<int, ClassType> */
+    public array $selectionStack = [];
 
-    /** @var ClassType[] */
-    public $selectionStorage = [];
+    /** @var array<int, ClassType> */
+    public array $selectionStorage = [];
 
     public function __construct(ClassType $operation)
     {
