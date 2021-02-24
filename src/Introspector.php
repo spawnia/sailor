@@ -10,10 +10,7 @@ use GraphQL\Utils\SchemaPrinter;
 
 class Introspector
 {
-    /**
-     * @var EndpointConfig
-     */
-    protected $endpointConfig;
+    protected EndpointConfig $endpointConfig;
 
     public function __construct(EndpointConfig $endpointConfig)
     {

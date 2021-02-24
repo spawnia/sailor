@@ -17,11 +17,11 @@ class Configuration
     /**
      * Since loading the config is a bit expensive and might happen
      * often, the result is cached here. Make sure to always call
-     * self::loadConfigIfNotExists() before accessing this.
+     * @see Configuration::loadConfigIfNotExists() before accessing this.
      *
-     * @var array<string, \Spawnia\Sailor\EndpointConfig>|null
+     * @var array<string, \Spawnia\Sailor\EndpointConfig>
      */
-    public static $endpointConfigMap;
+    public static array $endpointConfigMap;
 
     public static function assertConfigFileExists(): void
     {

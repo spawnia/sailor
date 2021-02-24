@@ -12,12 +12,12 @@ class MergerTest extends TestCase
 {
     public function testCombine(): void
     {
-        $foo = Parser::parse('
+        $foo = Parser::parse(/** @lang GraphQL */ '
         query MyScalarQuery {
             simple
         }
         ');
-        $bar = Parser::parse('
+        $bar = Parser::parse(/** @lang GraphQL */ '
         query Bar {
             bar
         }

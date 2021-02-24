@@ -4,20 +4,15 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Client;
 
+use GuzzleHttp\Client as GuzzleClient;
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\Response;
 
 class Guzzle implements Client
 {
-    /**
-     * @var string
-     */
-    protected $uri;
+    protected string $uri;
 
-    /**
-     * @var \GuzzleHttp\Client
-     */
-    protected $guzzle;
+    protected GuzzleClient $guzzle;
 
     /**
      * @param  array<string, mixed>  $config
@@ -25,7 +20,7 @@ class Guzzle implements Client
     public function __construct(string $uri, array $config = [])
     {
         $this->uri = $uri;
-        $this->guzzle = new \GuzzleHttp\Client($config);
+        $this->guzzle = new GuzzleClient($config);
     }
 
     public function request(string $query, \stdClass $variables = null): Response

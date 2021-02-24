@@ -39,7 +39,7 @@ class PhpTypeTest extends TestCase
     public function testListOfType(): void
     {
         self::assertSame(
-            'array<MyScalarQuery|null>|null',
+            'array<int, MyScalarQuery|null>|null',
             PhpType::phpDoc(
                 new ListOfType(
                     Type::id()
@@ -52,7 +52,7 @@ class PhpTypeTest extends TestCase
     public function testNonNullListOfNonNullTypes(): void
     {
         self::assertSame(
-            'array<MyScalarQuery>',
+            'array<int, MyScalarQuery>',
             PhpType::phpDoc(
                 new NonNull(
                     new ListOfType(
@@ -69,7 +69,7 @@ class PhpTypeTest extends TestCase
     public function testNonNullListOfListOfTypes(): void
     {
         self::assertSame(
-            'array<array<MyScalarQuery|null>|null>',
+            'array<int, array<int, MyScalarQuery|null>|null>',
             PhpType::phpDoc(
                 new NonNull(
                     new ListOfType(

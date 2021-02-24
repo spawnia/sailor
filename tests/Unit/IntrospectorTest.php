@@ -17,11 +17,11 @@ use Spawnia\Sailor\Testing\MockClient;
 class IntrospectorTest extends TestCase
 {
     const SCHEMA = /* @lang GraphQL */ <<<'GRAPHQL'
-type Query {
-  simple: ID
-}
+    type Query {
+      simple: ID
+    }
 
-GRAPHQL;
+    GRAPHQL;
 
     const PATH = __DIR__.'/schema.graphql';
 

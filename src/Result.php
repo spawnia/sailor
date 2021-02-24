@@ -15,16 +15,14 @@ abstract class Result
      * Each error is a map that is guaranteed to contain at least
      * the key `message` and may contain arbitrary other keys.
      *
-     * @var \stdClass[]|null
+     * @var array<int, \stdClass>|null
      */
-    public $errors;
+    public ?array $errors;
 
     /**
      * Optional, can be an arbitrary map if present.
-     *
-     * @var \stdClass|null
      */
-    public $extensions;
+    public ?\stdClass $extensions;
 
     /**
      * Decode the raw data into proper types and set it.
@@ -38,8 +36,8 @@ abstract class Result
     {
         $instance = new static;
 
-        $instance->errors = $response->errors;
-        $instance->extensions = $response->extensions;
+        $instance->errors = $response->errors ?? null;
+        $instance->extensions = $response->extensions ?? null;
 
         if (is_null($response->data)) {
             $instance->data = null;

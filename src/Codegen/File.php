@@ -9,12 +9,9 @@ namespace Spawnia\Sailor\Codegen;
  */
 class File
 {
-    /** @var string */
-    public $content;
+    public string $content;
 
-    /** @var string */
-    public $directory;
+    public string $directory;
 
-    /** @var string */
-    public $name;
+    public string $name;
 }

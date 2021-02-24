@@ -9,10 +9,7 @@ use Spawnia\Sailor\EndpointConfig;
 
 class Writer
 {
-    /**
-     * @var \Spawnia\Sailor\EndpointConfig
-     */
-    protected $endpointConfig;
+    protected EndpointConfig $endpointConfig;
 
     public function __construct(EndpointConfig $endpointConfig)
     {
