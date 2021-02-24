@@ -92,6 +92,11 @@ class Generator
             return $subject;
         }
 
+        /**
+         * We validated that $search is not empty, so this can not be false.
+         *
+         * @var array<int, string> $parts
+         */
         $parts = explode($search, $subject, 2);
 
         return array_reverse($parts)[0];
