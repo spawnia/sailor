@@ -27,6 +27,9 @@ infection: ## Runs mutation tests with infection
 	vendor/bin/infection --ignore-msi-with-no-mutations --min-covered-msi=100 --min-msi=100
 
 vendor: composer.json composer.lock
-	composer validate
 	composer install
+	composer validate
 	composer normalize
+
+composer.lock: composer.json
+	composer update

@@ -152,11 +152,11 @@ You can find examples of how a project would use Sailor within [examples](exampl
 
 ## Changelog
 
-Please have a look at [`CHANGELOG.md`](CHANGELOG.md).
+See [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Contributing
 
-Please have a look at [`CONTRIBUTING.md`](.github/CONTRIBUTING.md).
+See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## License
 
