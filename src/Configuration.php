@@ -16,7 +16,7 @@ class Configuration
 
     /**
      * Since loading the config is a bit expensive and might happen
-     * often, the result is cached here. Make sure to always call
+     * often, the result is cached here. Make sure to always call.
      * @see Configuration::loadConfigIfNotExists() before accessing this.
      *
      * @var array<string, \Spawnia\Sailor\EndpointConfig>
