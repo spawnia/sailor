@@ -94,7 +94,7 @@ class ClassGenerator
                             $resultClass = $this->currentNamespace().'\\'.$resultName;
 
                             $execute->setReturnType($resultClass);
-                            $execute->setBody(<<<PHP
+                            $execute->setBody(<<<'PHP'
                             return self::executeOperation(...func_get_args());
                             PHP
                             );

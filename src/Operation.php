@@ -52,7 +52,7 @@ abstract class Operation
         $basename = end($parts);
 
         /** @var class-string<\Spawnia\Sailor\Result> $resultClass */
-        $resultClass = $child . '\\' . $basename . 'Result';
+        $resultClass = $child.'\\'.$basename.'Result';
 
         return $resultClass::fromResponse($response);
     }

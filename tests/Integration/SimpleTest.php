@@ -63,7 +63,7 @@ class SimpleTest extends TestCase
             ->with()
             ->andReturn(MyScalarQueryResult::fromStdClass((object) [
                 'data' => (object) [
-                    'scalarWithArg' => $bar
+                    'scalarWithArg' => $bar,
                 ],
             ]));
 
