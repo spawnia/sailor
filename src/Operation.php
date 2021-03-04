@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor;
 
+use Mockery;
+use Mockery\MockInterface;
+
 /**
  * Subclasses of this class are automatically generated.
  *
@@ -15,6 +18,13 @@ namespace Spawnia\Sailor;
 abstract class Operation
 {
     /**
+     * Map from child classes to their registered mocks.
+     *
+     * @var array<class-string<static>, static&MockInterface>
+     */
+    protected static array $mocks = [];
+
+    /**
      * The configured endpoint the operation belongs to.
      */
     abstract public static function endpoint(): string;
@@ -25,11 +35,34 @@ abstract class Operation
     abstract public static function document(): string;
 
     /**
+     * @param mixed ...$args
+     */
+    protected static function executeOperation(...$args): Result
+    {
+        $mock = static::$mocks[static::class] ?? null;
+        if ($mock !== null) {
+            // @phpstan-ignore-next-line This function is only present on child classes
+            return $mock::execute(...$args);
+        }
+
+        $response = self::fetchResponse($args);
+
+        $child = static::class;
+        $parts = explode('\\', $child);
+        $basename = end($parts);
+
+        /** @var class-string<\Spawnia\Sailor\Result> $resultClass */
+        $resultClass = $child . '\\' . $basename . 'Result';
+
+        return $resultClass::fromResponse($response);
+    }
+
+    /**
      * Send an operation through the client and return the response.
      *
-     * @param  mixed  ...$args
+     * @param  array<int, mixed>  $args
      */
-    protected static function fetchResponse(...$args): Response
+    protected static function fetchResponse(array $args): Response
     {
         $variables = new \stdClass();
         $executeMethod = new \ReflectionMethod(static::class, 'execute');
@@ -43,5 +76,22 @@ abstract class Operation
             ::forEndpoint(static::endpoint())
             ->client()
             ->request(static::document(), $variables);
+    }
+
+    /**
+     * @return static&MockInterface
+     */
+    public static function mock(): MockInterface
+    {
+        /** @var static&MockInterface $mock */
+        $mock = Mockery::mock(static::class);
+        self::$mocks[static::class] = $mock;
+
+        return $mock;
+    }
+
+    public static function clearMocks(): void
+    {
+        static::$mocks = [];
     }
 }

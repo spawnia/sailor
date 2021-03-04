@@ -95,9 +95,7 @@ class ClassGenerator
 
                             $execute->setReturnType($resultClass);
                             $execute->setBody(<<<PHP
-                            \$response = self::fetchResponse(...func_get_args());
-
-                            return \\{$resultClass}::fromResponse(\$response);
+                            return self::executeOperation(...func_get_args());
                             PHP
                             );
 

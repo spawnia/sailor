@@ -24,15 +24,20 @@
     "ergebnis/composer-normalize": "^2.13",
     "infection/infection": "~0.21",
     "jangregor/phpstan-prophecy": "~0.8.1",
+    "mockery/mockery": "^1.4",
     "phpstan/extension-installer": "^1",
     "phpstan/phpstan": "~0.12.76",
     "phpstan/phpstan-deprecation-rules": "~0.12.6",
+    "phpstan/phpstan-mockery": "^0.12.12",
     "phpstan/phpstan-phpunit": "~0.12.17",
     "phpstan/phpstan-strict-rules": "~0.12.9",
     "phpunit/phpunit": "^9.5.2",
     "spawnia/phpunit-assert-directory": "^2",
     "symfony/var-dumper": "^5.2.3",
     "thecodingmachine/phpstan-safe-rule": "^1"
+  },
+  "suggest": {
+    "mockery/mockery": "Used in Operation::mock()"
   },
   "config": {
     "platform": {

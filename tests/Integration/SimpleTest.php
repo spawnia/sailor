@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Integration;
 
-use PHPUnit\Framework\TestCase;
 use Spawnia\PHPUnitAssertFiles\AssertDirectory;
 use Spawnia\Sailor\Codegen\Generator;
 use Spawnia\Sailor\Codegen\Writer;
@@ -13,7 +12,9 @@ use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Simple\MyObjectNestedQuery;
 use Spawnia\Sailor\Simple\MyScalarQuery;
+use Spawnia\Sailor\Simple\MyScalarQuery\MyScalarQueryResult;
 use Spawnia\Sailor\Testing\MockClient;
+use Spawnia\Sailor\Tests\TestCase;
 
 class SimpleTest extends TestCase
 {
@@ -51,6 +52,22 @@ class SimpleTest extends TestCase
 
         $result = MyScalarQuery::execute();
         self::assertSame('bar', $result->data->scalarWithArg);
+    }
+
+    public function testMockResult(): void
+    {
+        $bar = 'bar';
+
+        MyScalarQuery::mock()
+            ->expects('execute')
+            ->with()
+            ->andReturn(MyScalarQueryResult::fromStdClass((object) [
+                'data' => (object) [
+                    'scalarWithArg' => $bar
+                ],
+            ]));
+
+        self::assertSame($bar, MyScalarQuery::execute()->data->scalarWithArg);
     }
 
     public function testRequestWithVariable(): void
