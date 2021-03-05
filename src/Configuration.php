@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor;
 
-use Spawnia\Sailor\Console\ConsoleException;
-
 class Configuration
 {
     /**
