@@ -28,14 +28,14 @@ class CodegenCommand extends Command
         if ($endpoint !== null) {
             $endpointNames = (array) $endpoint;
         } else {
-            $endpointNames = array_keys(Configuration::getEndpointConfigMap());
+            $endpointNames = array_keys(Configuration::endpoints());
         }
 
         /** @var string $endpointName */
         foreach ($endpointNames as $endpointName) {
             echo "Generating code for endpoint {$endpointName}...\n";
 
-            $endpointConfig = Configuration::forEndpoint($endpointName);
+            $endpointConfig = Configuration::endpoint($endpointName);
             $generator = new Generator($endpointConfig, $endpointName);
 
             $files = $generator->generate();

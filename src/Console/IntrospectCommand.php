@@ -28,14 +28,14 @@ class IntrospectCommand extends Command
         if ($endpoint !== null) {
             $endpointNames = (array) $endpoint;
         } else {
-            $endpointNames = array_keys(Configuration::getEndpointConfigMap());
+            $endpointNames = array_keys(Configuration::endpoints());
         }
 
         /** @var string $endpointName */
         foreach ($endpointNames as $endpointName) {
             echo "Running introspection on endpoint {$endpointName}...\n";
             $generator = new Introspector(
-                Configuration::forEndpoint($endpointName)
+                Configuration::endpoint($endpointName)
             );
             $generator->introspect();
         }

@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Integration;
 
+use Mockery;
 use Spawnia\PHPUnitAssertFiles\AssertDirectory;
+use Spawnia\Sailor\Client;
 use Spawnia\Sailor\Codegen\Generator;
 use Spawnia\Sailor\Codegen\Writer;
 use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Simple\MyObjectNestedQuery;
+use Spawnia\Sailor\Simple\MyObjectNestedQuery\MyObjectNestedQueryResult;
 use Spawnia\Sailor\Simple\MyScalarQuery;
 use Spawnia\Sailor\Simple\MyScalarQuery\MyScalarQueryResult;
-use Spawnia\Sailor\Testing\MockClient;
 use Spawnia\Sailor\Tests\TestCase;
 
 class SimpleTest extends TestCase
@@ -24,34 +26,78 @@ class SimpleTest extends TestCase
 
     public function testGeneratesFooExample(): void
     {
-        $endpoint = $this->fooEndpoint();
+        $endpoint = self::fooEndpoint();
+
         $generator = new Generator($endpoint, 'simple');
         $files = $generator->generate();
+
         $writer = new Writer($endpoint);
         $writer->write($files);
 
         self::assertDirectoryEquals(self::EXAMPLES_PATH.'expected', self::EXAMPLES_PATH.'generated');
     }
 
+    protected static function fooEndpoint(): EndpointConfig
+    {
+        $fooConfig = include __DIR__.'/../../examples/simple/sailor.php';
+
+        return $fooConfig['simple'];
+    }
+
     public function testRequest(): void
     {
-        $mockEndpoint = $this->fooEndpoint();
+        $value = 'bar';
 
-        Configuration::setEndpointConfigMap([
-            'simple' => $mockEndpoint,
-        ]);
+        $client = Mockery::mock(Client::class);
+        $client->expects('request')
+            ->once()
+            ->withArgs(function (string $query, \stdClass $variables): bool {
+                return $query === MyScalarQuery::document()
+                    && $variables == new \stdClass();
+            })
+            ->andReturn(Response::fromStdClass((object) [
+                'data' => (object) [
+                    'scalarWithArg' => $value,
+                ]
+            ]));
 
-        $mockClient = new MockClient();
-        $mockClient->responseMocks [] = static function (): Response {
-            $response = new Response();
-            $response->data = (object) ['scalarWithArg' => 'bar'];
+        $endpoint = Mockery::mock(EndpointConfig::class);
+        $endpoint->expects('makeClient')
+            ->once()
+            ->withNoArgs()
+            ->andReturn($client);
 
-            return $response;
-        };
-        $mockEndpoint->mockClient = $mockClient;
+        Configuration::setEndpoint('simple', $endpoint);
 
         $result = MyScalarQuery::execute();
-        self::assertSame('bar', $result->data->scalarWithArg);
+        self::assertSame($value, $result->data->scalarWithArg);
+    }
+
+    public function testRequestWithVariable(): void
+    {
+        $value = 'bar';
+
+        $client = Mockery::mock(Client::class);
+        $client->expects('request')
+            ->once()
+            ->withArgs(function (string $query, \stdClass $variables) use ($value): bool {
+                return $query === MyScalarQuery::document()
+                    && $variables->arg === $value;
+            })
+            ->andReturn(Response::fromStdClass((object) [
+                'data' => null
+            ]));
+
+        $endpoint = Mockery::mock(EndpointConfig::class);
+        $endpoint->expects('makeClient')
+            ->once()
+            ->withNoArgs()
+            ->andReturn($client);
+
+        Configuration::setEndpoint('simple', $endpoint);
+
+        $result = MyScalarQuery::execute($value);
+        self::assertNull($result->data);
     }
 
     public function testMockResult(): void
@@ -70,46 +116,21 @@ class SimpleTest extends TestCase
         self::assertSame($bar, MyScalarQuery::execute()->data->scalarWithArg);
     }
 
-    public function testRequestWithVariable(): void
+    public function testMockError(): void
     {
-        $mockEndpoint = $this->fooEndpoint();
+        $message = 'some error';
 
-        Configuration::setEndpointConfigMap([
-            'simple' => $mockEndpoint,
-        ]);
-
-        $mockClient = new MockClient();
-        $mockClient->responseMocks [] = static function (string $query, \stdClass $variables = null): Response {
-            $response = new Response();
-            $response->data = (object) ['scalarWithArg' => $variables->arg];
-
-            return $response;
-        };
-        $mockEndpoint->mockClient = $mockClient;
-
-        $result = MyScalarQuery::execute('baz');
-        self::assertSame('baz', $result->data->scalarWithArg);
-    }
-
-    public function testRequestError(): void
-    {
-        $mockEndpoint = $this->fooEndpoint();
-
-        Configuration::setEndpointConfigMap([
-            'simple' => $mockEndpoint,
-        ]);
-
-        $mockClient = new MockClient();
-        $mockClient->responseMocks [] = static function (): Response {
-            $response = new Response();
-            $response->data = null;
-            $response->errors = [
-                (object) ['message' => 'some error'],
-            ];
-
-            return $response;
-        };
-        $mockEndpoint->mockClient = $mockClient;
+        MyScalarQuery::mock()
+            ->expects('execute')
+            ->with()
+            ->andReturn(MyScalarQueryResult::fromStdClass((object)[
+                'data' => null,
+                'errors' => [
+                    (object)[
+                        'message' => $message,
+                    ],
+                ],
+            ]));
 
         $result = MyScalarQuery::execute();
         $errors = $result->errors;
@@ -119,26 +140,21 @@ class SimpleTest extends TestCase
 
     public function testNestedObject(): void
     {
-        $mockEndpoint = $this->fooEndpoint();
+        $value = 42;
 
-        Configuration::setEndpointConfigMap([
-            'simple' => $mockEndpoint,
-        ]);
-
-        $mockClient = new MockClient();
-        $mockClient->responseMocks [] = static function (): Response {
-            $response = new Response();
-            $response->data = (object) [
-                'singleObject' => (object) [
-                    'nested' => (object) [
-                        'value' => 42,
+        MyObjectNestedQuery::mock()
+            ->expects('execute')
+            ->once()
+            ->with()
+            ->andReturn(MyObjectNestedQueryResult::fromStdClass((object) [
+                'data' => (object) [
+                    'singleObject' => (object) [
+                        'nested' => (object) [
+                            'value' => $value,
+                        ],
                     ],
                 ],
-            ];
-
-            return $response;
-        };
-        $mockEndpoint->mockClient = $mockClient;
+            ]));
 
         $result = MyObjectNestedQuery::execute();
         $object = $result->data->singleObject;
@@ -146,40 +162,26 @@ class SimpleTest extends TestCase
 
         $nested = $object->nested;
         self::assertNotNull($nested);
-        self::assertSame(42, $nested->value);
+        self::assertSame($value, $nested->value);
     }
 
     public function testNestedObjectNull(): void
     {
-        $mockEndpoint = $this->fooEndpoint();
-
-        Configuration::setEndpointConfigMap([
-            'simple' => $mockEndpoint,
-        ]);
-
-        $mockClient = new MockClient();
-        $mockClient->responseMocks [] = static function (): Response {
-            $response = new Response();
-            $response->data = (object) [
-                'singleObject' => (object) [
-                    'nested' => null,
+        MyObjectNestedQuery::mock()
+            ->expects('execute')
+            ->once()
+            ->with()
+            ->andReturn(MyObjectNestedQueryResult::fromStdClass((object) [
+                'data' => (object) [
+                    'singleObject' => (object) [
+                        'nested' => null,
+                    ],
                 ],
-            ];
-
-            return $response;
-        };
-        $mockEndpoint->mockClient = $mockClient;
+            ]));
 
         $result = MyObjectNestedQuery::execute();
         $object = $result->data->singleObject;
         self::assertNotNull($object);
         self::assertNull($object->nested);
-    }
-
-    protected function fooEndpoint(): EndpointConfig
-    {
-        $fooConfig = include __DIR__.'/../../examples/simple/sailor.php';
-
-        return $fooConfig['simple'];
     }
 }

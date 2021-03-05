@@ -10,74 +10,70 @@ class Configuration
 {
     /**
      * We expect this file to reside in vendor/sailor/src/Operation.php,
-     * and assume the user to place a config file in the project root.
+     * and expect users to place a config file in the project root.
      */
     public const EXPECTED_CONFIG_LOCATION = __DIR__.'/../../../../sailor.php';
 
     /**
      * Since loading the config is a bit expensive and might happen
      * often, the result is cached here. Make sure to always call.
-     * @see Configuration::loadConfigIfNotExists() before accessing this.
+     * @see Configuration::ensureEndpointsAreLoaded() before accessing this.
      *
      * @var array<string, \Spawnia\Sailor\EndpointConfig>
      */
-    public static array $endpointConfigMap;
+    protected static array $endpoints;
 
-    public static function assertConfigFileExists(): void
+    public static function endpoint(string $name): EndpointConfig
     {
-        if (! file_exists(self::EXPECTED_CONFIG_LOCATION)) {
-            \Safe\copy(
-                __DIR__.'/../sailor.php',
-                self::EXPECTED_CONFIG_LOCATION
-            );
+        self::ensureEndpointsAreLoaded();
 
-            echo <<<'EOF'
-Sailor requires a configuration file to run.
-
-Created an example configuration "sailor.php" in your project root.
-Modify it to your needs and try again.
-
-EOF;
-            exit(1);
-        }
-    }
-
-    /**
-     * @param  array<string, \Spawnia\Sailor\EndpointConfig>  $endpointConfigMap
-     */
-    public static function setEndpointConfigMap(array $endpointConfigMap): void
-    {
-        self::$endpointConfigMap = $endpointConfigMap;
-    }
-
-    public static function forEndpoint(string $endpoint): EndpointConfig
-    {
-        self::loadConfigIfNotExists();
-
-        if (! isset(self::$endpointConfigMap[$endpoint])) {
-            throw ConsoleException::missingEndpoint($endpoint);
+        if (! isset(self::$endpoints[$name])) {
+            throw ConsoleException::missingEndpoint($name);
         }
 
-        return self::$endpointConfigMap[$endpoint];
+        return self::$endpoints[$name];
     }
 
     /**
      * @return array<string, \Spawnia\Sailor\EndpointConfig>
      */
-    public static function getEndpointConfigMap(): array
+    public static function endpoints(): array
     {
-        self::loadConfigIfNotExists();
+        self::ensureEndpointsAreLoaded();
 
-        return self::$endpointConfigMap;
+        return self::$endpoints;
     }
 
-    protected static function loadConfigIfNotExists(): void
+    public static function setEndpoint(string $name, EndpointConfig $endpointConfig): void
     {
-        if (! isset(self::$endpointConfigMap)) {
-            self::assertConfigFileExists();
+        self::$endpoints[$name] = $endpointConfig;
+    }
 
-            // The config should return an array
-            self::$endpointConfigMap = include self::EXPECTED_CONFIG_LOCATION;
+    protected static function ensureEndpointsAreLoaded(): void
+    {
+        if (! isset(self::$endpoints)) {
+            if (! file_exists(self::EXPECTED_CONFIG_LOCATION)) {
+                \Safe\copy(
+                    __DIR__.'/../sailor.php',
+                    self::EXPECTED_CONFIG_LOCATION
+                );
+
+                echo <<<'EOF'
+    Sailor requires a configuration file to run.
+
+    Created an example configuration "sailor.php" in your project root.
+    Modify it to your needs and try again.
+
+    EOF;
+                exit(1);
+            }
+
+            $endpoints = include self::EXPECTED_CONFIG_LOCATION;
+            if (! is_array($endpoints)) {
+                throw new ConfigurationException('Expected config file at ' . self::EXPECTED_CONFIG_LOCATION . ' to return an array.');
+            }
+
+            self::$endpoints = $endpoints;
         }
     }
 }

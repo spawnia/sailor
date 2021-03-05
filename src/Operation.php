@@ -22,7 +22,7 @@ abstract class Operation
      *
      * @var array<class-string<static>, static&MockInterface>
      */
-    protected static array $mocks = [];
+    private static array $mocks = [];
 
     /**
      * The configured endpoint the operation belongs to.
@@ -39,7 +39,7 @@ abstract class Operation
      */
     protected static function executeOperation(...$args): Result
     {
-        $mock = static::$mocks[static::class] ?? null;
+        $mock = self::$mocks[static::class] ?? null;
         if ($mock !== null) {
             // @phpstan-ignore-next-line This function is only present on child classes
             return $mock::execute(...$args);
@@ -73,8 +73,8 @@ abstract class Operation
         }
 
         return Configuration
-            ::forEndpoint(static::endpoint())
-            ->client()
+            ::endpoint(static::endpoint())
+            ->makeClient()
             ->request(static::document(), $variables);
     }
 
@@ -92,6 +92,6 @@ abstract class Operation
 
     public static function clearMocks(): void
     {
-        static::$mocks = [];
+        self::$mocks = [];
     }
 }

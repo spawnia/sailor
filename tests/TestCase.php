@@ -4,15 +4,12 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests;
 
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
-use Spawnia\Sailor\Operation;
+use Spawnia\Sailor\Testing\UsesSailorMocks;
 
 abstract class TestCase extends PHPUnitTestCase
 {
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        Operation::clearMocks();
-    }
+    use MockeryPHPUnitIntegration;
+    use UsesSailorMocks;
 }
