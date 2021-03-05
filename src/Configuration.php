@@ -28,7 +28,7 @@ class Configuration
         self::ensureEndpointsAreLoaded();
 
         if (! isset(self::$endpoints[$name])) {
-            throw ConsoleException::missingEndpoint($name);
+            throw ConfigurationException::missingEndpoint($name);
         }
 
         return self::$endpoints[$name];
@@ -70,7 +70,7 @@ class Configuration
 
             $endpoints = include self::EXPECTED_CONFIG_LOCATION;
             if (! is_array($endpoints)) {
-                throw new ConfigurationException('Expected config file at '.self::EXPECTED_CONFIG_LOCATION.' to return an array.');
+                ConfigurationException::wrongReturnType(gettype($endpoints));
             }
 
             self::$endpoints = $endpoints;
