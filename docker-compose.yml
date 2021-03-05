@@ -1,10 +1,12 @@
-version: '2.3'
+version: '3.7'
 
 services:
   php:
     build: .
     volumes:
-    - ./:/var/www
+      - ./:/var/www
     environment:
-      XDEBUG_CONFIG: "remote_enable=1 remote_mode=req remote_port=9000 remote_host=$XDEBUG_REMOTE_HOST remote_connect_back=0"
-      PHP_IDE_CONFIG: "serverName=sailor"
+      XDEBUG_CONFIG: client_host=$XDEBUG_REMOTE_HOST client_port=9000
+      XDEBUG_MODE: develop,debug
+      XDEBUG_TRIGGER: 1
+      PHP_IDE_CONFIG: serverName=nemo-api
