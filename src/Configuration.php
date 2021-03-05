@@ -70,7 +70,7 @@ class Configuration
 
             $endpoints = include self::EXPECTED_CONFIG_LOCATION;
             if (! is_array($endpoints)) {
-                throw new ConfigurationException('Expected config file at ' . self::EXPECTED_CONFIG_LOCATION . ' to return an array.');
+                throw new ConfigurationException('Expected config file at '.self::EXPECTED_CONFIG_LOCATION.' to return an array.');
             }
 
             self::$endpoints = $endpoints;

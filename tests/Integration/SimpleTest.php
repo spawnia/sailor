@@ -58,7 +58,7 @@ class SimpleTest extends TestCase
             ->andReturn(Response::fromStdClass((object) [
                 'data' => (object) [
                     'scalarWithArg' => $value,
-                ]
+                ],
             ]));
 
         $endpoint = Mockery::mock(EndpointConfig::class);
@@ -85,7 +85,7 @@ class SimpleTest extends TestCase
                     && $variables->arg === $value;
             })
             ->andReturn(Response::fromStdClass((object) [
-                'data' => null
+                'data' => null,
             ]));
 
         $endpoint = Mockery::mock(EndpointConfig::class);
@@ -123,10 +123,10 @@ class SimpleTest extends TestCase
         MyScalarQuery::mock()
             ->expects('execute')
             ->with()
-            ->andReturn(MyScalarQueryResult::fromStdClass((object)[
+            ->andReturn(MyScalarQueryResult::fromStdClass((object) [
                 'data' => null,
                 'errors' => [
-                    (object)[
+                    (object) [
                         'message' => $message,
                     ],
                 ],
