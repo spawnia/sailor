@@ -49,6 +49,16 @@ abstract class Result
     }
 
     /**
+     * @return static
+     */
+    public static function fromStdClass(\stdClass $stdClass): self
+    {
+        return static::fromResponse(
+            Response::fromStdClass($stdClass)
+        );
+    }
+
+    /**
      * Throw an exception if errors are present in the result.
      *
      * @throws \Spawnia\Sailor\ResultErrorsException

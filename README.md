@@ -29,9 +29,7 @@ using the server schema to generate type safe operations and results.
 
 Install Sailor through composer by running:
 
-```bash
-composer require spawnia/sailor
-```
+    composer require spawnia/sailor
 
 ## Configuration
 
@@ -144,6 +142,59 @@ or `$extensions` off of it.
 $result->data        // `null` or a generated subclass of `\Spawnia\Sailor\TypedObject`
 $result->errors      // `null` or a list of errors
 $result->extensions  // `null` or an arbitrary map
+```
+
+## Testing
+
+Sailor provides first class support for testing by allowing you to mock operations.
+
+### Setup
+
+It is assumed you are using [PHPUnit](https://phpunit.de/) and [Mockery](http://docs.mockery.io/en/latest/).
+
+    composer require --dev phpunit/phpunit mockery/mockery
+
+Make sure your test class - or one of its parents - uses the following traits:
+
+```php
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use PHPUnit\Framework\TestCase as PHPUnitTestCase;
+use Spawnia\Sailor\Testing\UsesSailorMocks;
+
+abstract class TestCase extends PHPUnitTestCase
+{
+    use MockeryPHPUnitIntegration;
+    use UsesSailorMocks;
+}
+```
+
+### Mock results
+
+Mocks are registered per operation class:
+
+```php
+/** @var \Mockery\MockInterface&\Example\Api\HelloSailor */
+$mock = \Example\Api\HelloSailor::mock();
+```
+
+Now, any subsequent calls to `HelloSailor::execute()` will be passed on to `$mock`.
+Use it to build up expectations for what calls it should receive and mock returned results:
+
+```php
+$mock
+    ->expects('execute')
+    ->once()
+    ->with('Sailor')
+    ->andReturn(HelloSailorResult::fromStdClass((object) [
+        'data' => (object) [
+            'hello' => 'Hello, Sailor!',
+        ],
+    ]));
+
+self::assertSame(
+    'Hello, Sailor!',
+    HelloSailor::execute('Sailor')->data->hello
+);
 ```
 
 ## Examples
