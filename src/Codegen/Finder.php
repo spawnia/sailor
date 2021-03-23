@@ -40,7 +40,7 @@ class Finder
         return $contents;
     }
 
-    protected function fileIterator(): \IteratorIterator
+    protected function fileIterator(): \RegexIterator
     {
         $directory = new \RecursiveDirectoryIterator($this->rootPath);
         $iterator = new \RecursiveIteratorIterator($directory);

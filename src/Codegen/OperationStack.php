@@ -13,6 +13,8 @@ class OperationStack
 
     public ClassType $result;
 
+    public ClassType $errorFreeResult;
+
     /** @var array<int, ClassType> */
     public array $selectionStack = [];
 
@@ -55,6 +57,10 @@ class OperationStack
     public function addParameterToOperation(Parameter $parameter): void
     {
         $execute = $this->operation->getMethod('execute');
-        $execute->setParameters([$parameter]);
+
+        $parameters = $execute->getParameters();
+        $parameters[] = $parameter;
+
+        $execute->setParameters($parameters);
     }
 }

@@ -4,19 +4,17 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Simple;
 
-class MyObjectQuery extends \Spawnia\Sailor\Operation
+class TwoArgs extends \Spawnia\Sailor\Operation
 {
-    public static function execute(): MyObjectQuery\MyObjectQueryResult
+    public static function execute(?string $first = null, ?int $second = null): TwoArgs\TwoArgsResult
     {
         return self::executeOperation(...func_get_args());
     }
 
     public static function document(): string
     {
-        return /* @lang GraphQL */ 'query MyObjectQuery {
-          singleObject {
-            value
-          }
+        return /* @lang GraphQL */ 'query TwoArgs($first: String, $second: Int) {
+          twoArgs(first: $first, second: $second)
         }';
     }
 

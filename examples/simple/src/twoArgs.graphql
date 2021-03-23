@@ -1,0 +1,3 @@
+query TwoArgs($first: String, $second: Int) {
+    twoArgs(first: $first, second: $second)
+}

@@ -51,6 +51,7 @@ class Generator
         foreach ($operationSets as $operationSet) {
             $files [] = $this->makeFile($operationSet->operation);
             $files [] = $this->makeFile($operationSet->result);
+            $files [] = $this->makeFile($operationSet->errorFreeResult);
 
             foreach ($operationSet->selectionStorage as $selection) {
                 $files [] = $this->makeFile($selection);

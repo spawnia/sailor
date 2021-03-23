@@ -19,7 +19,7 @@ class Introspector
 
     public function introspect(): void
     {
-        $client = $this->endpointConfig->client();
+        $client = $this->endpointConfig->makeClient();
 
         $introspectionResult = $client->request(
             Introspection::getIntrospectionQuery([

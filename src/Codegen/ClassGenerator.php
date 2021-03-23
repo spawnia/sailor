@@ -27,6 +27,7 @@ use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Parameter;
 use Nette\PhpGenerator\PhpNamespace;
 use Spawnia\Sailor\EndpointConfig;
+use Spawnia\Sailor\ErrorFreeResult;
 use Spawnia\Sailor\Operation;
 use Spawnia\Sailor\Result;
 use Spawnia\Sailor\TypedObject;
@@ -91,13 +92,11 @@ class ClassGenerator
 
                             // Related classes are put into a nested namespace
                             $this->namespaceStack [] = $operationName;
-                            $resultClass = $this->currentNamespace().'\\'.$resultName;
+                            $resultClass = $this->withCurrentNamespace($resultName);
 
                             $execute->setReturnType($resultClass);
-                            $execute->setBody(<<<PHP
-                            \$response = self::fetchResponse(...func_get_args());
-
-                            return \\{$resultClass}::fromResponse(\$response);
+                            $execute->setBody(<<<'PHP'
+                            return self::executeOperation(...func_get_args());
                             PHP
                             );
 
@@ -121,26 +120,49 @@ class ClassGenerator
                             PHP
                             );
 
-                            $operationResult = new ClassType($resultName, $this->makeNamespace());
-                            $operationResult->setExtends(Result::class);
+                            $result = new ClassType($resultName, $this->makeNamespace());
+                            $result->setExtends(Result::class);
 
-                            $setData = $operationResult->addMethod('setData');
+                            $setData = $result->addMethod('setData');
                             $setData->setVisibility('protected');
                             $dataParam = $setData->addParameter('data');
-                            $setData->setReturnType('void');
                             $dataParam->setType('\\stdClass');
+                            $setData->setReturnType('void');
                             $setData->setBody(<<<PHP
                             \$this->data = {$operationName}::fromStdClass(\$data);
                             PHP
                             );
 
-                            $dataProp = $operationResult->addProperty('data');
-                            $dataProp->setComment("@var $operationName|null");
+                            $dataProp = $result->addProperty('data');
+                            $dataProp->setType(
+                                $this->withCurrentNamespace($operationName)
+                            );
+                            $dataProp->setNullable(true);
+
+                            $errorFreeResultName = "{$operationName}ErrorFreeResult";
+
+                            $errorFree = $result->addMethod('errorFree');
+                            $errorFree->setVisibility('public');
+                            $errorFree->setReturnType(
+                                $this->withCurrentNamespace($errorFreeResultName)
+                            );
+                            $errorFree->setBody(<<<PHP
+                            return {$errorFreeResultName}::fromResult(\$this);
+                            PHP
+                            );
+
+                            $errorFreeResult = new ClassType($errorFreeResultName, $this->makeNamespace());
+                            $errorFreeResult->setExtends(ErrorFreeResult::class);
+
+                            $errorFreeDataProp = $errorFreeResult->addProperty('data');
+                            $errorFreeDataProp->setType(
+                                $this->withCurrentNamespace($operationName)
+                            );
+                            $errorFreeDataProp->setNullable(false);
 
                             $this->operationStack = new OperationStack($operation);
-
-                            $this->operationStack->result = $operationResult;
-
+                            $this->operationStack->result = $result;
+                            $this->operationStack->errorFreeResult = $errorFreeResult;
                             $this->operationStack->pushSelection(
                                 $this->makeTypedObject($operationName)
                             );
@@ -204,7 +226,7 @@ class ClassGenerator
                                 // We go one level deeper into the selection set
                                 // To avoid naming conflicts, we add on another namespace
                                 $this->namespaceStack [] = $typedObjectName;
-                                $typeReference = '\\'.$this->currentNamespace().'\\'.$typedObjectName;
+                                $typeReference = "\\{$this->withCurrentNamespace($typedObjectName)}";
 
                                 $this->operationStack->pushSelection(
                                     $this->makeTypedObject($typedObjectName)
@@ -278,6 +300,11 @@ class ClassGenerator
         return new PhpNamespace(
             $this->currentNamespace()
         );
+    }
+
+    protected function withCurrentNamespace(string $type): string
+    {
+        return "{$this->currentNamespace()}\\{$type}";
     }
 
     protected function currentNamespace(): string
