@@ -1,9 +1,10 @@
 FROM php:7.4-cli
 
-WORKDIR /var/www
+WORKDIR /workdir
 
 RUN apt-get update -y \
     && apt-get install -y \
+        make \
         git \
         libzip-dev \
         zip \
