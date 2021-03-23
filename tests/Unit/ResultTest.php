@@ -32,7 +32,8 @@ class ResultTest extends TestCase
             'scalarWithArg' => null,
         ]);
 
-        $this->assertInstanceOf(ErrorFreeResult::class, $result->errorFree());
+        // No errors
+        $result->errorFree();
 
         $result->errors = [new \stdClass()];
 

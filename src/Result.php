@@ -31,8 +31,6 @@ abstract class Result
 
     /**
      * Throws if errors are present in the result or returns an error free result.
-     *
-     * @return $this
      */
     abstract public function errorFree(): ErrorFreeResult;
 
