@@ -13,6 +13,8 @@ class OperationStack
 
     public ClassType $result;
 
+    public ClassType $errorFreeResult;
+
     /** @var array<int, ClassType> */
     public array $selectionStack = [];
 

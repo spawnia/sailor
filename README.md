@@ -136,12 +136,18 @@ $result = \Example\Api\HelloSailor::execute();
 
 The returned `$result` is going to be a class that extends `\Spawnia\Sailor\Result` and
 holds the decoded response returned from the server. You can just grab the `$data`, `$errors`
-or `$extensions` off of it.
+or `$extensions` off of it:
 
 ```php
 $result->data        // `null` or a generated subclass of `\Spawnia\Sailor\TypedObject`
 $result->errors      // `null` or a list of errors
 $result->extensions  // `null` or an arbitrary map
+```
+
+You can ensure your query returned the proper data and contained no errors:
+
+```php
+$errorFreeResult = $result->errorFree(); // Throws if there are errors
 ```
 
 ## Testing

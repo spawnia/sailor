@@ -30,6 +30,11 @@ abstract class Result
     abstract protected function setData(\stdClass $data): void;
 
     /**
+     * Throws if errors are present in the result or returns an error free result.
+     */
+    abstract public function errorFree(): ErrorFreeResult;
+
+    /**
      * @return static
      */
     public static function fromResponse(Response $response): self

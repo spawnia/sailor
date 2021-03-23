@@ -6,11 +6,15 @@ namespace Spawnia\Sailor\Simple\MyObjectNestedQuery;
 
 class MyObjectNestedQueryResult extends \Spawnia\Sailor\Result
 {
-    /** @var MyObjectNestedQuery|null */
-    public $data;
+    public ?MyObjectNestedQuery $data;
 
     protected function setData(\stdClass $data): void
     {
         $this->data = MyObjectNestedQuery::fromStdClass($data);
+    }
+
+    public function errorFree(): MyObjectNestedQueryErrorFreeResult
+    {
+        return MyObjectNestedQueryErrorFreeResult::fromResult($this);
     }
 }

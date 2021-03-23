@@ -6,11 +6,15 @@ namespace Spawnia\Sailor\Simple\TwoArgs;
 
 class TwoArgsResult extends \Spawnia\Sailor\Result
 {
-    /** @var TwoArgs|null */
-    public $data;
+    public ?TwoArgs $data;
 
     protected function setData(\stdClass $data): void
     {
         $this->data = TwoArgs::fromStdClass($data);
+    }
+
+    public function errorFree(): TwoArgsErrorFreeResult
+    {
+        return TwoArgsErrorFreeResult::fromResult($this);
     }
 }
