@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+### Added
+
+- Add method `Result::errorFree()` to ease safe access to a result class without errors
+
 ## v0.3.0
 
 ### Added
