@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Spawnia\Sailor\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Spawnia\Sailor\ErrorFreeResult;
 use Spawnia\Sailor\ResultErrorsException;
 use Spawnia\Sailor\Simple\MyScalarQuery\MyScalarQuery;
 use Spawnia\Sailor\Simple\MyScalarQuery\MyScalarQueryResult;
