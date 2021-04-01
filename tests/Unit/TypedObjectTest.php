@@ -13,7 +13,7 @@ class TypedObjectTest extends TestCase
     public function testDecode(): void
     {
         $foo = MyScalarQuery::fromStdClass((object) [
-            'scalarWithArg' => 'bar'
+            'scalarWithArg' => 'bar',
         ]);
 
         self::assertSame('bar', $foo->scalarWithArg);
@@ -24,7 +24,7 @@ class TypedObjectTest extends TestCase
         $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage('Unknown field nonExistent, available fields: scalarWithArg.');
         MyScalarQuery::fromStdClass((object) [
-            'nonExistent' => 'foo'
+            'nonExistent' => 'foo',
         ]);
     }
 }
