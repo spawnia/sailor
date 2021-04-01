@@ -26,6 +26,11 @@ infection: ## Runs mutation tests with infection
 	mkdir -p .build/infection
 	vendor/bin/infection --ignore-msi-with-no-mutations --min-covered-msi=100 --min-msi=100
 
+.PHONY: approve
+approve: ## Accept the current generated code as expected
+	rm -r examples/simple/expected
+	cp -r examples/simple/generated examples/simple/expected
+
 vendor: composer.json composer.lock
 	composer install
 	composer validate

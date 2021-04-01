@@ -9,7 +9,7 @@ class MyObjectNestedQuery extends \Spawnia\Sailor\TypedObject
     /** @var \Spawnia\Sailor\Simple\MyObjectNestedQuery\SingleObject\SingleObject|null */
     public $singleObject;
 
-    public function typeSingleObject(): callable
+    public function singleObjectTypeMapper(): callable
     {
         return static function (\stdClass $value): \Spawnia\Sailor\TypedObject {
             return \Spawnia\Sailor\Simple\MyObjectNestedQuery\SingleObject\SingleObject::fromStdClass($value);

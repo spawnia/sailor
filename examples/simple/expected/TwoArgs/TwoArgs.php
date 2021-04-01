@@ -9,7 +9,7 @@ class TwoArgs extends \Spawnia\Sailor\TypedObject
     /** @var string|null */
     public $twoArgs;
 
-    public function typeTwoArgs(): callable
+    public function twoArgsTypeMapper(): callable
     {
         return new \Spawnia\Sailor\Mapper\DirectMapper();
     }
