@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## v0.4.1
+
+### Changed
+
+- Improve error message when trying to map unknown fields onto result classes
+
 ## v0.4.0
 
 ### Added

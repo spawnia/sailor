@@ -9,7 +9,7 @@ class SingleObject extends \Spawnia\Sailor\TypedObject
     /** @var int|null */
     public $value;
 
-    public function typeValue(): callable
+    public function valueTypeMapper(): callable
     {
         return new \Spawnia\Sailor\Mapper\DirectMapper();
     }

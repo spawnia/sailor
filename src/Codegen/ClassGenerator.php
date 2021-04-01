@@ -208,8 +208,8 @@ class ClassGenerator
                     ],
                     NodeKind::FIELD => [
                         'enter' => function (FieldNode $field) use ($typeInfo): void {
-                            // We are only interested in the key that will come from the server
-                            $resultKey = $field->alias !== null
+                            // We are only interested in the name that will come from the server
+                            $fieldName = $field->alias !== null
                                 ? $field->alias->value
                                 : $field->name->value;
 
@@ -221,7 +221,7 @@ class ClassGenerator
                             $namedType = Type::getNamedType($type);
 
                             if ($namedType instanceof ObjectType) {
-                                $typedObjectName = ucfirst($resultKey);
+                                $typedObjectName = ucfirst($fieldName);
 
                                 // We go one level deeper into the selection set
                                 // To avoid naming conflicts, we add on another namespace
@@ -251,12 +251,12 @@ class ClassGenerator
                                 throw new \Exception('Unsupported type '.get_class($namedType).' found.');
                             }
 
-                            $field = $selection->addProperty($resultKey);
-                            $field->setComment('@var '.PhpType::phpDoc($type, $typeReference));
+                            $fieldProperty = $selection->addProperty($fieldName);
+                            $fieldProperty->setComment('@var '.PhpType::phpDoc($type, $typeReference));
 
-                            $typeField = $selection->addMethod(self::typeDiscriminatorMethodName($resultKey));
-                            $typeField->setReturnType('callable');
-                            $typeField->setBody(<<<PHP
+                            $fieldTypeMapper = $selection->addMethod(FieldTypeMapper::methodName($fieldName));
+                            $fieldTypeMapper->setReturnType('callable');
+                            $fieldTypeMapper->setBody(<<<PHP
                             return {$typeMapper};
                             PHP
                             );
@@ -288,11 +288,6 @@ class ClassGenerator
         $typedObject->addExtend(TypedObject::class);
 
         return $typedObject;
-    }
-
-    public static function typeDiscriminatorMethodName(string $propertyKey): string
-    {
-        return 'type'.ucfirst($propertyKey);
     }
 
     protected function makeNamespace(): PhpNamespace
