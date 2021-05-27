@@ -49,8 +49,9 @@ class ResultTest extends TestCase
                 ],
             ],
         ]);
-        $this->assertNull($result->data);
-        $this->assertCount(1, $result->errors);
-        $this->assertNull($result->extensions);
+        self::assertNull($result->data);
+        self::assertNotNull($result->errors);
+        self::assertCount(1, $result->errors);
+        self::assertNull($result->extensions);
     }
 }
