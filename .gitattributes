@@ -7,8 +7,6 @@
 /.gitignore export-ignore
 /.styleci.yml export-ignore
 /.composer.lock export-ignore
-/docker-compose.yml export-ignore
-/Dockerfile export-ignore
 /infection.json export-ignore
 /Makefile export-ignore
 /phpstan.neon export-ignore
