@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Spawnia\Sailor\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use Spawnia\Sailor\Response;
 use Spawnia\Sailor\ResultErrorsException;
 use Spawnia\Sailor\Simple\MyScalarQuery\MyScalarQuery;
 use Spawnia\Sailor\Simple\MyScalarQuery\MyScalarQueryResult;
@@ -38,5 +39,19 @@ class ResultTest extends TestCase
 
         $this->expectException(ResultErrorsException::class);
         $result->errorFree();
+    }
+
+    public function testWithErrors(): void
+    {
+        $result = MyScalarQueryResult::fromStdClass((object) [
+            'errors' => [
+                (object) [
+                    'message' => 'foo'
+                ]
+            ]
+        ]);
+        $this->assertNull($result->data);
+        $this->assertCount(1, $result->errors);
+        $this->assertNull($result->extensions);
     }
 }
