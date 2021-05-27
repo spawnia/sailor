@@ -8,7 +8,8 @@ use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
 
 return [
-    'simple' => new class extends EndpointConfig {
+    'simple' => new class extends EndpointConfig
+    {
         public function namespace(): string
         {
             return 'Spawnia\Sailor\Simple';

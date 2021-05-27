@@ -39,4 +39,19 @@ class ResultTest extends TestCase
         $this->expectException(ResultErrorsException::class);
         $result->errorFree();
     }
+
+    public function testWithErrors(): void
+    {
+        $result = MyScalarQueryResult::fromStdClass((object) [
+            'errors' => [
+                (object) [
+                    'message' => 'foo',
+                ],
+            ],
+        ]);
+        self::assertNull($result->data);
+        self::assertNotNull($result->errors);
+        self::assertCount(1, $result->errors);
+        self::assertNull($result->extensions);
+    }
 }

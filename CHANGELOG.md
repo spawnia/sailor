@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## v0.4.2
+
+### Fixed
+
+- Fix initialization of Result from Response
+
 ## v0.4.1
 
 ### Changed

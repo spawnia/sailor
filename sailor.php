@@ -8,7 +8,8 @@ use Spawnia\Sailor\EndpointConfig;
  * This must return a map from endpoint names to EndpointConfig classes.
  */
 return [
-    'example' => new class extends EndpointConfig {
+    'example' => new class extends EndpointConfig
+    {
         /**
          * Instantiate a client for Sailor to use for querying.
          *

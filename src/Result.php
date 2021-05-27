@@ -44,10 +44,10 @@ abstract class Result
         $instance->errors = $response->errors ?? null;
         $instance->extensions = $response->extensions ?? null;
 
-        if (is_null($response->data)) {
-            $instance->data = null;
-        } else {
+        if (isset($response->data)) {
             $instance->setData($response->data);
+        } else {
+            $instance->data = null;
         }
 
         return $instance;
