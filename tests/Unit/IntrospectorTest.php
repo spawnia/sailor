@@ -27,7 +27,8 @@ class IntrospectorTest extends TestCase
 
     public function testPrintsIntrospection(): void
     {
-        $endpointConfig = new class extends EndpointConfig {
+        $endpointConfig = new class extends EndpointConfig
+        {
             public function makeClient(): Client
             {
                 $mockClient = new MockClient();
