@@ -174,6 +174,8 @@ abstract class TestCase extends PHPUnitTestCase
 }
 ```
 
+Otherwise, mocks are not reset between test methods, you might run into very confusing bugs.
+
 ### Mock results
 
 Mocks are registered per operation class:
@@ -183,7 +185,7 @@ Mocks are registered per operation class:
 $mock = \Example\Api\HelloSailor::mock();
 ```
 
-Now, any subsequent calls to `HelloSailor::execute()` will be passed on to `$mock`.
+When registered, the mock captures all calls to `HelloSailor::execute()`.
 Use it to build up expectations for what calls it should receive and mock returned results:
 
 ```php
@@ -201,6 +203,14 @@ self::assertSame(
     'Hello, Sailor!',
     HelloSailor::execute('Sailor')->data->hello
 );
+```
+
+Subsequent calls to `::mock()` will return the initially registered mock instance.
+
+```php
+$mock1 = HelloSailor::mock();
+$mock2 = HelloSailor::mock();
+assert($mock1 === $mock2); // true
 ```
 
 ## Examples
