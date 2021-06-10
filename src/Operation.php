@@ -83,11 +83,9 @@ abstract class Operation
      */
     public static function mock(): MockInterface
     {
-        /** @var static&MockInterface $mock */
-        $mock = Mockery::mock(static::class);
-        self::$mocks[static::class] = $mock;
-
-        return $mock;
+        // @phpstan-ignore-next-line The type of MockInterface matches up, I promise
+        return self::$mocks[static::class]
+            ??= Mockery::mock(static::class);
     }
 
     public static function clearMocks(): void

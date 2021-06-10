@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.5.0
+
+### Changed
+
+- Return the first registered mock instance for each operation class
+  on subsequent calls to `Operation::mock()`
+
 ## v0.4.2
 
 ### Fixed
