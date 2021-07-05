@@ -22,7 +22,7 @@ abstract class Operation
      *
      * @var array<class-string<static>, static&MockInterface>
      */
-    private static array $mocks = [];
+    protected static array $mocks = [];
 
     /**
      * The configured endpoint the operation belongs to.
