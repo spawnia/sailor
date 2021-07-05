@@ -217,8 +217,16 @@ assert($mock1 === $mock2); // true
 
 If you want to perform integration testing for a service that uses Sailor without actually
 hitting an external API, you can swap out your client with the `Log` client.
-
 It writes all requests made through Sailor to a file of your choice.
+
+```php
+# sailor.php
+public function makeClient(): Client
+{
+    return new \Spawnia\Sailor\Client\Log(__DIR__ . '/sailor-requests.log');
+}
+```
+
 Each request goes on a new line and contains a JSON string that holds the `query` and `variables`:
 
 ```json
@@ -227,7 +235,7 @@ Each request goes on a new line and contains a JSON string that holds the `query
 ```
 
 This allows you to perform assertions on the calls that were made.
-However, the Log client can not know what constitutes a valid response for a given response,
+However, the `Log` client can not know what constitutes a valid response for a given response,
 so it always responds with an error.
 
 ## Examples
