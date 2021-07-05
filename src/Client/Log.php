@@ -25,9 +25,9 @@ class Log implements Client
             'variables' => $variables,
         ]);
 
-        $file = fopen($this->filename, 'a');
-        fwrite($file, "{$log}\n");
-        fclose($file);
+        $file = \Safe\fopen($this->filename, 'a');
+        \Safe\fwrite($file, "{$log}\n");
+        \Safe\fclose($file);
 
         return Response::fromStdClass((object) [
             'errors' => [

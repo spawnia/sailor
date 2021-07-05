@@ -15,7 +15,7 @@ class LogTest extends TestCase
     protected function tearDown(): void
     {
         if (file_exists(self::FILENAME)) {
-            unlink(self::FILENAME);
+            \Safe\unlink(self::FILENAME);
         }
 
         parent::tearDown();
@@ -28,12 +28,12 @@ class LogTest extends TestCase
         $log = new Log(self::FILENAME);
         $log->request(/** @lang GraphQL */ '{ foo }', (object) ['bar' => 42]);
 
-        $contents = file_get_contents(self::FILENAME);
-        $this->assertSame(self::EXPECTED_JSON, $contents);
+        $contents = \Safe\file_get_contents(self::FILENAME);
+        self::assertSame(self::EXPECTED_JSON, $contents);
 
         $log->request(/** @lang GraphQL */ '{ foo }', (object) ['bar' => 42]);
 
-        $contents = file_get_contents(self::FILENAME);
-        $this->assertSame(self::EXPECTED_JSON.self::EXPECTED_JSON, $contents);
+        $contents = \Safe\file_get_contents(self::FILENAME);
+        self::assertSame(self::EXPECTED_JSON.self::EXPECTED_JSON, $contents);
     }
 }
