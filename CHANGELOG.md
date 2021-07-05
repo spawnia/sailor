@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Add `Log` client for integration testing https://github.com/spawnia/sailor/pull/24
+
 ## v0.5.0
 
 ### Changed
