@@ -55,4 +55,11 @@ class Log implements Client
 
         \Safe\fclose($file);
     }
+
+    public function clear(): void
+    {
+        if (file_exists($this->filename)) {
+            \Safe\unlink($this->filename);
+        }
+    }
 }

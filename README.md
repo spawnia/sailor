@@ -263,6 +263,8 @@ array(2) {
 }
 ```
 
+To clean up the log after performing tests, use `Log::clear()`.
+
 ## Examples
 
 You can find examples of how a project would use Sailor within [examples](examples).

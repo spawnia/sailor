@@ -31,6 +31,7 @@ class LogTest extends TestCase
         $log = new Log(self::FILENAME);
         $log->request(/** @lang GraphQL */ self::QUERY, (object) self::VARIABLES);
 
+        self::assertFileExists(self::FILENAME);
         $contents = \Safe\file_get_contents(self::FILENAME);
         self::assertSame(self::EXPECTED_JSON, $contents);
 
@@ -38,6 +39,13 @@ class LogTest extends TestCase
 
         $contents = \Safe\file_get_contents(self::FILENAME);
         self::assertSame(self::EXPECTED_JSON.self::EXPECTED_JSON, $contents);
+    }
+
+    public function testRequests(): void
+    {
+        $log = new Log(self::FILENAME);
+        $log->request(/** @lang GraphQL */ self::QUERY, (object) self::VARIABLES);
+        $log->request(/** @lang GraphQL */ self::QUERY, null);
 
         $decoded = iterator_to_array($log->requests());
         self::assertSame([
@@ -47,8 +55,18 @@ class LogTest extends TestCase
             ],
             [
                 'query' => self::QUERY,
-                'variables' => self::VARIABLES,
+                'variables' => null,
             ],
         ], $decoded);
+    }
+
+    public function testClear(): void
+    {
+        \Safe\file_put_contents(self::FILENAME, 'foo');
+
+        $log = new Log(self::FILENAME);
+        $log->clear();
+
+        self::assertFileDoesNotExist(self::FILENAME);
     }
 }
