@@ -49,7 +49,7 @@ class Log implements Client
     {
         $file = \Safe\fopen($this->filename, 'r');
 
-        while($line = fgets($file)) {
+        while ($line = fgets($file)) {
             yield \Safe\json_decode($line, true);
         }
 
