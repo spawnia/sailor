@@ -39,7 +39,7 @@ class LogTest extends TestCase
         $contents = \Safe\file_get_contents(self::FILENAME);
         self::assertSame(self::EXPECTED_JSON.self::EXPECTED_JSON, $contents);
 
-        $decoded = iterator_to_array($log->decode());
+        $decoded = iterator_to_array($log->requests());
         self::assertSame([
             [
                 'query' => self::QUERY,

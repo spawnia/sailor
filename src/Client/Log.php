@@ -45,7 +45,7 @@ class Log implements Client
      *      variables: array<string, mixed>|null,
      * }>
      */
-    public function decode(): Generator
+    public function requests(): Generator
     {
         $file = \Safe\fopen($this->filename, 'r');
 
