@@ -123,7 +123,7 @@ class HelloSailor extends \Spawnia\Sailor\Operation { ... }
 
 There are additional generated classes that represent the results of calling
 the operations. The plain data from the server is wrapped up and contained
-within those value classes so you can access them in a typesafe way.
+within those value classes, so you can access them in a typesafe way.
 
 ### Execute queries
 
@@ -219,6 +219,9 @@ If you want to perform integration testing for a service that uses Sailor withou
 hitting an external API, you can swap out your client with the `Log` client.
 It writes all requests made through Sailor to a file of your choice.
 
+> The `Log` client can not know what constitutes a valid response for a given request,
+> so it always responds with an error.
+
 ```php
 # sailor.php
 public function makeClient(): Client
@@ -235,8 +238,32 @@ Each request goes on a new line and contains a JSON string that holds the `query
 ```
 
 This allows you to perform assertions on the calls that were made.
-However, the `Log` client can not know what constitutes a valid response for a given response,
-so it always responds with an error.
+The `Log` client offers a convenient method of reading the requests as structured data:
+
+```php
+$log = new \Spawnia\Sailor\Client\Log(__DIR__ . '/sailor-requests.log');
+foreach($log->requests() as $request) {
+    var_dump($request);
+}
+
+array(2) {
+  ["query"]=>
+  string(7) "{ foo }"
+  ["variables"]=>
+  array(1) {
+    ["bar"]=>
+    int(42)
+  }
+}
+array(2) {
+  ["query"]=>
+  string(7) "mutation { baz }"
+  ["variables"]=>
+  NULL
+}
+```
+
+To clean up the log after performing tests, use `Log::clear()`.
 
 ## Examples
 

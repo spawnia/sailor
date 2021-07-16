@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Client;
 
+use Generator;
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\Response;
 
@@ -36,5 +37,29 @@ class Log implements Client
                 ],
             ],
         ]);
+    }
+
+    /**
+     * @return Generator<int, array{
+     *      query: string,
+     *      variables: array<string, mixed>|null,
+     * }>
+     */
+    public function requests(): Generator
+    {
+        $file = \Safe\fopen($this->filename, 'r');
+
+        while ($line = fgets($file)) {
+            yield \Safe\json_decode($line, true);
+        }
+
+        \Safe\fclose($file);
+    }
+
+    public function clear(): void
+    {
+        if (file_exists($this->filename)) {
+            \Safe\unlink($this->filename);
+        }
     }
 }
