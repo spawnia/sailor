@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add method `Log::requests()` to ease assertions on Log client
+- Add method `Log::requests()` to ease assertions on Log client https://github.com/spawnia/sailor/pull/25
 
 ## v0.6.0
 
