@@ -31,6 +31,10 @@ Install Sailor through composer by running:
 
     composer require spawnia/sailor
 
+If you want to use the built-in default Client (see [Client](#client)):
+
+    composer require guzzle/guzzle
+
 ## Configuration
 
 Run `vendor/bin/sailor` to set up the configuration.
@@ -149,6 +153,14 @@ You can ensure your query returned the proper data and contained no errors:
 ```php
 $errorFreeResult = $result->errorFree(); // Throws if there are errors
 ```
+
+### Client
+
+Sailor provides a few built-in clients:
+- `Spawnia\Sailor\Client\Guzzle`: Default HTTP client
+- `Spawnia\Sailor\Client\Log`: Used for testing
+
+You can bring your own by implementing the interface `Spawnia\Sailor\Client`.
 
 ## Testing
 

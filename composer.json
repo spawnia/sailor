@@ -12,7 +12,6 @@
   ],
   "require": {
     "php": "^7.4 || ^8",
-    "guzzlehttp/guzzle": "^7",
     "nette/php-generator": "^3.5",
     "psr/http-client": "^1",
     "symfony/console": "^5",
@@ -22,6 +21,7 @@
   "require-dev": {
     "composer/composer": "^2",
     "ergebnis/composer-normalize": "^2.13",
+    "guzzlehttp/guzzle": "^7",
     "infection/infection": "~0.21",
     "jangregor/phpstan-prophecy": "~0.8.1",
     "mockery/mockery": "^1.4",
@@ -37,6 +37,7 @@
     "thecodingmachine/phpstan-safe-rule": "^1"
   },
   "suggest": {
+    "guzzle/guzzle": "Enables using the built-in default Client",
     "mockery/mockery": "Used in Operation::mock()"
   },
   "config": {
