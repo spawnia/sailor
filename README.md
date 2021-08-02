@@ -35,6 +35,13 @@ If you want to use the built-in default Client (see [Client](#client)):
 
     composer require guzzle/guzzle
 
+If you want to use the Psr-18 Client and don't have 
+PSR-17 Request and Stream factory implementations (see [Client](#client)):
+
+```sh
+composer require nyholm/psr7
+```
+
 ## Configuration
 
 Run `vendor/bin/sailor` to set up the configuration.
@@ -158,6 +165,7 @@ $errorFreeResult = $result->errorFree(); // Throws if there are errors
 
 Sailor provides a few built-in clients:
 - `Spawnia\Sailor\Client\Guzzle`: Default HTTP client
+- `Spawnia\Sailor\Client\Psr18`: PSR-18 HTTP client
 - `Spawnia\Sailor\Client\Log`: Used for testing
 
 You can bring your own by implementing the interface `Spawnia\Sailor\Client`.
