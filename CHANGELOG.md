@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.9.0
+
+### Added
+
+- Add PSR-18 client
+
+### Changed
+
+- `Response::fromResponseInterface()` no longer accepts non-200 status codes
+
 ## v0.8.0
 
 ### Changed
@@ -17,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add methods `Log::requests()` and `Log::clear()` to ease assertions on Log client https://github.com/spawnia/sailor/pull/25
+- Add methods `Log::requests()` and `Log::clear()` to ease assertions on `Log` client https://github.com/spawnia/sailor/pull/25
 
 ## v0.6.0
 
