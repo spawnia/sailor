@@ -9,7 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v0.9.0
 
+### Added
+
 - Add PSR-18 client
+
+### Changed
+
+- `Response::fromResponseInterface()` no longer accepts non-200 status codes
 
 ## v0.8.0
 
