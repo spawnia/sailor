@@ -37,6 +37,10 @@ class Response
 
     public static function fromResponseInterface(ResponseInterface $response): self
     {
+        if ($response->getStatusCode() !== 200) {
+            throw new InvalidResponseException("Response must have status code 200, got: {$response->getStatusCode()}");
+        }
+
         return self::fromJson(
             $response->getBody()->getContents()
         );

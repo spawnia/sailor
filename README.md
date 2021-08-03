@@ -35,12 +35,10 @@ If you want to use the built-in default Client (see [Client](#client)):
 
     composer require guzzle/guzzle
 
-If you want to use the Psr-18 Client and don't have 
+If you want to use the PSR-18 Client and don't have
 PSR-17 Request and Stream factory implementations (see [Client](#client)):
 
-```sh
-composer require nyholm/psr7
-```
+    composer require nyholm/psr7
 
 ## Configuration
 

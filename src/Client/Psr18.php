@@ -11,18 +11,17 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use function Safe\json_encode;
 use Spawnia\Sailor\Client;
-use Spawnia\Sailor\InvalidResponseException;
 use Spawnia\Sailor\Response;
 
-final class Psr18 implements Client
+class Psr18 implements Client
 {
-    private ClientInterface $client;
+    protected ClientInterface $client;
 
-    private string $url;
+    protected string $url;
 
-    private RequestFactoryInterface $requestFactory;
+    protected RequestFactoryInterface $requestFactory;
 
-    private StreamFactoryInterface $streamFactory;
+    protected StreamFactoryInterface $streamFactory;
 
     public function __construct(
         ClientInterface $client,
@@ -42,28 +41,21 @@ final class Psr18 implements Client
             $this->composeRequest($query, $variables)
         );
 
-        if ($response->getStatusCode() !== 200) {
-            throw new InvalidResponseException('Response must have status code 200, got '.$response->getStatusCode());
-        }
-
         return Response::fromResponseInterface($response);
     }
 
-    private function composeRequest(string $query, ?\stdClass $variables = null): RequestInterface
+    protected function composeRequest(string $query, ?\stdClass $variables = null): RequestInterface
     {
         $request = $this->requestFactory->createRequest('POST', $this->url);
 
         $body = ['query' => $query];
-        if ($variables !== null) {
-            /** @var array<string, mixed> $variablesArray */
-            $variablesArray = (array) $variables;
-            $body['variables'] = $variablesArray;
+        if (! is_null($variables)) {
+            $body['variables'] = $variables;
         }
+        $bodyStream = $this->streamFactory->createStream(json_encode($body));
 
         return $request
             ->withHeader('Content-Type', 'application/json')
-            ->withBody(
-                $this->streamFactory->createStream(json_encode($body))
-            );
+            ->withBody($bodyStream);
     }
 }

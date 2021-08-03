@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-- Add PSR-18 built-in client
+## v0.9.0
+
+- Add PSR-18 client
 
 ## v0.8.0
 

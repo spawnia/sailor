@@ -16,7 +16,7 @@ final class Psr18Test extends TestCase
         $mockClient = new Client();
         $mockClient->addResponse(new Response(200, [], /* @lang JSON */ '{"data": {"simple": "bar"}}'));
 
-        $url = 'http://simple.bar/graphql';
+        $url = 'https://simple.bar/graphql';
         $client = new Psr18($mockClient, $url);
         $response = $client->request(/* @lang GraphQL */ '{simple}', (object) ['key' => 'value']);
 
@@ -28,7 +28,7 @@ final class Psr18Test extends TestCase
         $request = $mockClient->getRequests()[0];
 
         self::assertSame('POST', $request->getMethod());
-        self::assertSame(/* @lang JSON */ '{"query":"{simple}","variables":{"key":"value"}}', (string) $request->getBody());
+        self::assertSame(/* @lang JSON */ '{"query":"{simple}","variables":{"key":"value"}}', $request->getBody()->__toString());
         self::assertSame($url, $request->getUri()->__toString());
     }
 }
