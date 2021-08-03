@@ -56,7 +56,7 @@ environment variables (run `composer require vlucas/phpdotenv` if you do not hav
         public function makeClient(): Client
         {
             return new \Spawnia\Sailor\Client\Guzzle(
--               'http://hardcoded.url/',
+-               'https://hardcoded.url',
 +               getenv('EXAMPLE_API_URL'),
                 [
                     'headers' => [
@@ -168,7 +168,7 @@ Sailor provides first class support for testing by allowing you to mock operatio
 
 ### Setup
 
-It is assumed you are using [PHPUnit](https://phpunit.de/) and [Mockery](http://docs.mockery.io/en/latest/).
+It is assumed you are using [PHPUnit](https://phpunit.de) and [Mockery](https://docs.mockery.io/en/latest).
 
     composer require --dev phpunit/phpunit mockery/mockery
 

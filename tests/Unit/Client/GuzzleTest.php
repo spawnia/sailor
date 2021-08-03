@@ -25,7 +25,7 @@ class GuzzleTest extends TestCase
         $stack = HandlerStack::create($mock);
         $stack->push($history);
 
-        $uri = 'http://simple.bar/graphql';
+        $uri = 'https://simple.bar/graphql';
         $client = new Guzzle($uri, ['handler' => $stack]);
         $response = $client->request(/* @lang GraphQL */ '{simple}');
 

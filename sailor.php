@@ -23,7 +23,7 @@ return [
         public function makeClient(): \Spawnia\Sailor\Client
         {
             return new \Spawnia\Sailor\Client\Guzzle(
-                'http://example.com/graphql',
+                'https://example.com/graphql',
                 [
                     'headers' => [
                         'Authorization' => 'Bearer foobarbaz',
