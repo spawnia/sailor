@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add PSR-18 client
+- Add PSR-18 client https://github.com/spawnia/sailor/pull/28
 
 ### Changed
 
