@@ -6,7 +6,7 @@ For details, see [`workflows/continuous-integration.yml`](workflows/continuous-i
 
 ## Setup
 
-Make sure you have PHP and composer installed, as well as:
+Make sure you have `PHP`, `composer` and `make` installed, as well as:
 
     composer global require ergebnis/composer-normalize
 
@@ -14,56 +14,15 @@ Make sure you have PHP and composer installed, as well as:
 
 The code style is automatically fixed through [StyleCI](https://styleci.io/).
 
-## Static Code Analysis
+## Commands
 
-We are using [`phpstan/phpstan`](https://github.com/phpstan/phpstan) to statically analyze the code.
+Run the following  to display a list of available targets with corresponding descriptions:
 
-Run
+    make help
 
-```bash
-make stan
-```
+## Code guidelines
 
-to run a static code analysis.
+### `protected` over `private`
 
-## Tests
-
-We are using [`phpunit/phpunit`](https://github.com/sebastianbergmann/phpunit) to drive the development.
-
-Run
-
-```bash
-make test
-```
-
-to run all the tests.
-
-## Mutation Tests
-
-We are using [`infection/infection`](https://github.com/infection/infection) to ensure a minimum quality of the tests.
-
-Enable `Xdebug` and run
-
-```bash
-make infection
-```
-
-to run mutation tests.
-
-## Extra lazy?
-
-Run
-
-```bash
-make
-```
-
-to enforce coding standards, perform a static code analysis, and run tests!
-
-:bulb: Run
-
-```bash
-make help
-```
-
-to display a list of available targets with corresponding descriptions.
+Always use class member visibility `protected` over `private`. We cannot foresee every
+possible use case in advance, extending the code should remain possible.

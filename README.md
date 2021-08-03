@@ -23,7 +23,7 @@ to enable an ergonomic workflow and reduce type-related bugs in your code.
 The native GraphQL query language is the most universally used tool to formulate
 GraphQL queries and works natively with the entire ecosystem of GraphQL tools.
 Sailor takes the plain queries you write and generates executable PHP code,
-using the server schema to generate type safe operations and results.
+using the server schema to generate typesafe operations and results.
 
 ## Installation
 
