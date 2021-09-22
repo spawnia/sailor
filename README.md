@@ -58,7 +58,7 @@ environment variables (run `composer require vlucas/phpdotenv` if you do not hav
 +$dotenv->load();
 
 ...
-        public function makeClient(): Client
+        public function makeClient(array $options = []): Client
         {
             return new \Spawnia\Sailor\Client\Guzzle(
 -               'https://hardcoded.url',

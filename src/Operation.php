@@ -56,7 +56,7 @@ abstract class Operation
     }
 
     /**
-     * @param mixed ...$args
+     * @param  mixed  ...$args
      */
     protected static function executeOperation(...$args): Result
     {
@@ -97,8 +97,6 @@ abstract class Operation
     }
 
     /**
-     * @param stdClass $variables
-     * @return Response
      * @throws ConfigurationException
      */
     protected static function executeRequest(stdClass $variables): Response
