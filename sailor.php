@@ -24,11 +24,7 @@ return [
         {
             return new \Spawnia\Sailor\Client\Guzzle(
                 'https://example.com/graphql',
-                [
-                    'headers' => [
-                        'Authorization' => 'Bearer foobarbaz',
-                    ],
-                ]
+                $options
             );
         }
 
