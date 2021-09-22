@@ -81,7 +81,7 @@ class ClassGenerator
                             $operation = new ClassType($operationName, $this->makeNamespace());
 
                             // The base class contains most of the logic
-                            $operation->setExtends(Operation::class);
+                            $operation->setExtends($this->endpointConfig->getOperationClass());
 
                             // The execute method is the public API of the operation
                             $execute = $operation->addMethod('execute');

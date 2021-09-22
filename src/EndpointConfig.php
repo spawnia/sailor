@@ -31,4 +31,10 @@ abstract class EndpointConfig
      * The location of the schema file that describes the endpoint.
      */
     abstract public function schemaPath(): string;
+
+
+    public function getOperationClass(): string
+    {
+        return Operation::class;
+    }
 }
