@@ -30,7 +30,7 @@ return [
             return __DIR__.'/schema.graphqls';
         }
 
-        public function makeClient(): Client
+        public function makeClient(array $options = []): Client
         {
             $mockClient = new MockClient();
 

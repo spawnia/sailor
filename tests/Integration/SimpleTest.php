@@ -64,7 +64,7 @@ class SimpleTest extends TestCase
         $endpoint = Mockery::mock(EndpointConfig::class);
         $endpoint->expects('makeClient')
             ->once()
-            ->withNoArgs()
+            ->with([])
             ->andReturn($client);
 
         Configuration::setEndpoint('simple', $endpoint);
@@ -91,7 +91,7 @@ class SimpleTest extends TestCase
         $endpoint = Mockery::mock(EndpointConfig::class);
         $endpoint->expects('makeClient')
             ->once()
-            ->withNoArgs()
+            ->with([])
             ->andReturn($client);
 
         Configuration::setEndpoint('simple', $endpoint);

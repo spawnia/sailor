@@ -39,7 +39,7 @@ class MockEndpointConfig extends EndpointConfig
         return $this->schemaPath;
     }
 
-    public function makeClient(): Client
+    public function makeClient(array $options = []): Client
     {
         return new MockClient();
     }

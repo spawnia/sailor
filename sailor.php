@@ -20,7 +20,7 @@ return [
          * file is just PHP code, you can do anything. For example, you
          * can use environment variables to enable a dynamic config.
          */
-        public function makeClient(): \Spawnia\Sailor\Client
+        public function makeClient(array $options = []): \Spawnia\Sailor\Client
         {
             return new \Spawnia\Sailor\Client\Guzzle(
                 'https://example.com/graphql',

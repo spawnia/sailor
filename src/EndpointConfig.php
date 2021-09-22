@@ -8,8 +8,9 @@ abstract class EndpointConfig
 {
     /**
      * Instantiate a client that will resolve the GraphQL operations.
+     * @param array<string> $options
      */
-    abstract public function makeClient(): Client;
+    abstract public function makeClient(array $options = []): Client;
 
     /**
      * The namespace the generated classes will be created in.

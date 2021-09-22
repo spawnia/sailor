@@ -6,6 +6,7 @@ namespace Spawnia\Sailor;
 
 use Mockery;
 use Mockery\MockInterface;
+use stdClass;
 
 /**
  * Subclasses of this class are automatically generated.
@@ -25,6 +26,13 @@ abstract class Operation
     protected static array $mocks = [];
 
     /**
+     * Options to configure the http client.
+     *
+     * @var array<string>
+     */
+    protected static array $options = [];
+
+    /**
      * The configured endpoint the operation belongs to.
      */
     abstract public static function endpoint(): string;
@@ -33,6 +41,19 @@ abstract class Operation
      * The GraphQL query string.
      */
     abstract public static function document(): string;
+
+    /**
+     * Configure http client.
+     *
+     * @param array<string> $options
+     * @return static
+     */
+    public static function withOptions(array $options): Operation
+    {
+        static::$options = array_merge(static::$options, $options);
+
+        return new static;
+    }
 
     /**
      * @param mixed ...$args
@@ -64,7 +85,7 @@ abstract class Operation
      */
     protected static function fetchResponse(array $args): Response
     {
-        $variables = new \stdClass();
+        $variables = new stdClass();
         $executeMethod = new \ReflectionMethod(static::class, 'execute');
         $parameters = $executeMethod->getParameters();
         foreach ($args as $index => $arg) {
@@ -72,9 +93,18 @@ abstract class Operation
             $variables->{$parameter->getName()} = $arg;
         }
 
-        return Configuration
-            ::endpoint(static::endpoint())
-            ->makeClient()
+        return static::executeRequest($variables);
+    }
+
+    /**
+     * @param stdClass $variables
+     * @return Response
+     * @throws ConfigurationException
+     */
+    protected static function executeRequest(stdClass $variables): Response
+    {
+        return Configuration::endpoint(static::endpoint())
+            ->makeClient(static::$options)
             ->request(static::document(), $variables);
     }
 

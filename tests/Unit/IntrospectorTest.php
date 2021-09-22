@@ -29,7 +29,7 @@ class IntrospectorTest extends TestCase
     {
         $endpointConfig = new class extends EndpointConfig
         {
-            public function makeClient(): Client
+            public function makeClient(array $options = []): Client
             {
                 $mockClient = new MockClient();
                 $mockClient->responseMocks[] = static function (): Response {
