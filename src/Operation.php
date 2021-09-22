@@ -45,10 +45,10 @@ abstract class Operation
     /**
      * Configure http client.
      *
-     * @param array<string> $options
+     * @param  array<string>  $options
      * @return static
      */
-    public static function withOptions(array $options): Operation
+    public static function withOptions(array $options): self
     {
         static::$options = array_merge(static::$options, $options);
 

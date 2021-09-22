@@ -9,7 +9,7 @@ abstract class EndpointConfig
     /**
      * Instantiate a client that will resolve the GraphQL operations.
      *
-     * @param array<string> $options
+     * @param  array<string>  $options
      */
     abstract public function makeClient(array $options = []): Client;
 
@@ -32,7 +32,6 @@ abstract class EndpointConfig
      * The location of the schema file that describes the endpoint.
      */
     abstract public function schemaPath(): string;
-
 
     public function getOperationClass(): string
     {
