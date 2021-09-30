@@ -67,7 +67,7 @@ class SimpleTest extends TestCase
             ->withNoArgs()
             ->andReturn($client);
 
-        Configuration::setEndpoint('simple', $endpoint);
+        Configuration::setEndpoint(MyScalarQuery::endpoint(), $endpoint);
 
         $result = MyScalarQuery::execute();
         self::assertSame($value, $result->data->scalarWithArg);
@@ -94,10 +94,31 @@ class SimpleTest extends TestCase
             ->withNoArgs()
             ->andReturn($client);
 
-        Configuration::setEndpoint('simple', $endpoint);
+        Configuration::setEndpoint(MyScalarQuery::endpoint(), $endpoint);
 
         $result = MyScalarQuery::execute($value);
         self::assertNull($result->data);
+    }
+
+    public function testRequestWithClient(): void
+    {
+        $value = 'bar';
+
+        $client = Mockery::mock(Client::class);
+        $client->expects('request')
+            ->once()
+            ->withArgs(function (string $query, \stdClass $variables) use ($value): bool {
+                return $query === MyScalarQuery::document()
+                    && $variables->arg === $value;
+            });
+
+        $endpoint = Mockery::mock(EndpointConfig::class);
+        $endpoint->expects('makeClient')
+            ->never();
+        Configuration::setEndpoint(MyScalarQuery::endpoint(), $endpoint);
+
+        MyScalarQuery::setClient($client);
+        MyScalarQuery::execute($value);
     }
 
     public function testMockResult(): void

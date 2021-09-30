@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.10.0
+
+### Added
+
+- Allow overwriting the client from EndpointConfig for specific operations or per request
+
 ## v0.9.0
 
 ### Added

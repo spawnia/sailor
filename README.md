@@ -31,12 +31,12 @@ Install Sailor through composer by running:
 
     composer require spawnia/sailor
 
-If you want to use the built-in default Client (see [Client](#client)):
+If you want to use the built-in default Client (see [Client implementations](#client-implementations)):
 
     composer require guzzle/guzzle
 
 If you want to use the PSR-18 Client and don't have
-PSR-17 Request and Stream factory implementations (see [Client](#client)):
+PSR-17 Request and Stream factory implementations (see [Client implementations](#client-implementations)):
 
     composer require nyholm/psr7
 
@@ -159,7 +159,7 @@ You can ensure your query returned the proper data and contained no errors:
 $errorFreeResult = $result->errorFree(); // Throws if there are errors
 ```
 
-### Client
+### Client implementations
 
 Sailor provides a few built-in clients:
 - `Spawnia\Sailor\Client\Guzzle`: Default HTTP client
@@ -167,6 +167,21 @@ Sailor provides a few built-in clients:
 - `Spawnia\Sailor\Client\Log`: Used for testing
 
 You can bring your own by implementing the interface `Spawnia\Sailor\Client`.
+
+### Dynamic clients
+
+You can configure clients dynamically for specific operations or per request:
+
+```php
+/** @var \Spawnia\Sailor\Client $client Somehow instantiated dynamically */
+\Example\Api\HelloSailor::setClient($client);
+
+// Will use $client over the client from EndpointConfig
+$result = HelloSailor::execute();
+
+// Reverts to using the client from EndpointConfig
+HelloSailor::setClient(null);
+```
 
 ## Testing
 

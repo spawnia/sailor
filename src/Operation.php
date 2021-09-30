@@ -25,6 +25,13 @@ abstract class Operation
     protected static array $mocks = [];
 
     /**
+     * A client to use over the client from the endpoint config.
+     *
+     * @var array<class-string<static>, Client|null>
+     */
+    protected static array $clients = [];
+
+    /**
      * The configured endpoint the operation belongs to.
      */
     abstract public static function endpoint(): string;
@@ -72,10 +79,12 @@ abstract class Operation
             $variables->{$parameter->getName()} = $arg;
         }
 
-        return Configuration
+        $client = self::$clients[static::class]
+            ?? Configuration
             ::endpoint(static::endpoint())
-            ->makeClient()
-            ->request(static::document(), $variables);
+            ->makeClient();
+
+        return $client->request(static::document(), $variables);
     }
 
     /**
@@ -91,5 +100,10 @@ abstract class Operation
     public static function clearMocks(): void
     {
         self::$mocks = [];
+    }
+
+    public static function setClient(?Client $client): void
+    {
+        self::$clients[static::class] = $client;
     }
 }
