@@ -66,8 +66,9 @@ abstract class Result
     /**
      * Throw an exception if errors are present in the result.
      *
-     * @throws \Spawnia\Sailor\ResultErrorsException
      * @return $this
+     *
+     * @throws \Spawnia\Sailor\ResultErrorsException
      */
     public function assertErrorFree(): self
     {

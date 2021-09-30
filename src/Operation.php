@@ -35,7 +35,7 @@ abstract class Operation
     abstract public static function document(): string;
 
     /**
-     * @param mixed ...$args
+     * @param  mixed  ...$args
      */
     protected static function executeOperation(...$args): Result
     {

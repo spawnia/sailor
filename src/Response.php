@@ -106,8 +106,9 @@ class Response
     /**
      * Throw an exception if errors are present in the result.
      *
-     * @throws \Spawnia\Sailor\ResultErrorsException
      * @return $this
+     *
+     * @throws \Spawnia\Sailor\ResultErrorsException
      */
     public function assertErrorFree(): self
     {
@@ -121,7 +122,7 @@ class Response
     /**
      * Ensure that the "errors" are in a spec-compliant format.
      *
-     * @param mixed $errors Whatever came from the API under the key "errors".
+     * @param  mixed  $errors  Whatever came from the API under the key "errors".
      *
      * @throws \Exception
      */
@@ -153,7 +154,7 @@ class Response
     /**
      * Ensure that the "data" is in a spec-compliant format.
      *
-     * @param mixed $data Whatever came from the API under the key "data".
+     * @param  mixed  $data  Whatever came from the API under the key "data".
      *
      * @throws \Exception
      */
@@ -172,7 +173,7 @@ class Response
     /**
      * Ensure that the "extensions" are in a spec-compliant format.
      *
-     * @param mixed $extensions Whatever came from the API under the key "extensions".
+     * @param  mixed  $extensions  Whatever came from the API under the key "extensions".
      *
      * @throws \Exception
      */

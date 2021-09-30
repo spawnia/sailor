@@ -15,8 +15,9 @@ abstract class ErrorFreeResult
     public ?\stdClass $extensions;
 
     /**
-     * @throws \Spawnia\Sailor\ResultErrorsException
      * @return static
+     *
+     * @throws \Spawnia\Sailor\ResultErrorsException
      */
     public static function fromResult(Result $result): self
     {
