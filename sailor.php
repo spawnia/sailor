@@ -61,7 +61,7 @@ return [
          */
         public function schemaPath(): string
         {
-            return __DIR__.'/example.graphqls';
+            return __DIR__.'/example.graphql';
         }
     },
 ];

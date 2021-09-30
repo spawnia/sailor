@@ -82,7 +82,7 @@ from the server by running an introspection query. As an example, a very simple
 server might result in the following file being placed in your project:
 
 ```graphql
-# schema.graphqls
+# schema.graphql
 type Query {
   hello(name: String): String
 }

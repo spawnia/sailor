@@ -27,7 +27,7 @@ return [
 
         public function schemaPath(): string
         {
-            return __DIR__.'/schema.graphqls';
+            return __DIR__.'/schema.graphql';
         }
 
         public function makeClient(): Client
