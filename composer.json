@@ -16,7 +16,7 @@
     "psr/http-client": "^1",
     "symfony/console": "^5",
     "thecodingmachine/safe": "^1",
-    "webonyx/graphql-php": "^14"
+    "webonyx/graphql-php": "dev-master"
   },
   "require-dev": {
     "composer/composer": "^2",
