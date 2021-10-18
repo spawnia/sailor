@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.10.1
+
+### Fixed
+
+- Allow `"nette/php-generator": "^3.6.3"`
+
 ## v0.10.0
 
 ### Added
