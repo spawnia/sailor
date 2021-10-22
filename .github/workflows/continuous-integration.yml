@@ -130,12 +130,8 @@ jobs:
       - name: "Collect code coverage with Xdebug and phpunit/phpunit"
         run: vendor/bin/phpunit --coverage-clover=build/logs/clover.xml
 
-      # Not using codecov/codecov-action for now, as the build is prohibitively slow
-      - name: "Download code coverage uploader for Codecov.io"
-        run: curl -s https://codecov.io/bash -o codecov
-
-      - name: "Send code coverage report to Codecov.io"
-        run: bash codecov -t ${{ secrets.CODECOV_TOKEN }}
+      - name: "Send code coverage report to codecov.io"
+        uses: codecov/codecov-action@v2
 
   mutation-tests:
     name: "Mutation Tests"
