@@ -40,9 +40,6 @@ class Introspector
         );
     }
 
-    /**
-     * @throws ResultErrorsException
-     */
     protected function fetchIntrospectionResult(Client $client, bool $directiveIsRepeatable): Response
     {
         return $client
