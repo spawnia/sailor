@@ -34,7 +34,7 @@ class IntrospectorTest extends TestCase
             {
                 $mockClient = new MockClient();
                 $mockClient->responseMocks = [
-                    IntrospectorTest::successfulIntrospectionMock()
+                    IntrospectorTest::successfulIntrospectionMock(),
                 ];
 
                 return $mockClient;
@@ -59,7 +59,6 @@ class IntrospectorTest extends TestCase
             {
                 return 'bar';
             }
-
         };
 
         self::assertIntrospectionWorks($endpointConfig);
@@ -112,7 +111,7 @@ class IntrospectorTest extends TestCase
     public static function successfulIntrospectionMock(): \Closure
     {
         return static function (): Response {
-            $schema = BuildSchema::build(IntrospectorTest::SCHEMA);
+            $schema = BuildSchema::build(self::SCHEMA);
             $introspection = Introspection::fromSchema($schema);
 
             $response = new Response();
