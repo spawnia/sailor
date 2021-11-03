@@ -7,6 +7,7 @@ namespace Spawnia\Sailor;
 use GraphQL\Type\Introspection;
 use GraphQL\Utils\BuildClientSchema;
 use GraphQL\Utils\SchemaPrinter;
+use Throwable;
 
 class Introspector
 {
@@ -21,13 +22,11 @@ class Introspector
     {
         $client = $this->endpointConfig->makeClient();
 
-        $introspectionResult = $this->fetchIntrospectionResult($client, true);
-
-        if (isset($introspectionResult->errors)) {
+        try {
+            $introspectionResult = $this->fetchIntrospectionResult($client, true);
+        } catch (Throwable $_) {
             $introspectionResult = $this->fetchIntrospectionResult($client, false);
         }
-
-        $introspectionResult->assertErrorFree();
 
         $schema = BuildClientSchema::build(
             Json::stdClassToAssoc($introspectionResult->data)
@@ -41,12 +40,20 @@ class Introspector
         );
     }
 
+    /**
+     * @param Client $client
+     * @param bool $directiveIsRepeatable
+     * @return Response
+     * @throws ResultErrorsException
+     */
     protected function fetchIntrospectionResult(Client $client, bool $directiveIsRepeatable): Response
     {
-        return $client->request(
-            Introspection::getIntrospectionQuery([
-                'directiveIsRepeatable' => $directiveIsRepeatable,
-            ])
-        );
+        return $client
+            ->request(
+                Introspection::getIntrospectionQuery([
+                    'directiveIsRepeatable' => $directiveIsRepeatable,
+                ])
+            )
+            ->assertErrorFree();
     }
 }

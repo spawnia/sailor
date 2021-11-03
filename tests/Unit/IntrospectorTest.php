@@ -10,11 +10,18 @@ use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Introspector;
+use Spawnia\Sailor\InvalidResponseException;
 use Spawnia\Sailor\Json;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
 use stdClass;
 
+use function Safe\file_get_contents;
+use function Safe\unlink;
+
+/**
+ * @phpstan-import-type ResponseMock from MockClient
+ */
 class IntrospectorTest extends TestCase
 {
     const SCHEMA = /* @lang GraphQL */ <<<'GRAPHQL'
@@ -26,16 +33,29 @@ class IntrospectorTest extends TestCase
 
     const PATH = __DIR__.'/schema.graphql';
 
-    public function testPrintsIntrospection(): void
+    /**
+     * @dataProvider validResponseMocks
+     * @param array<int, ResponseMock> $responseMocks
+     */
+    public function testPrintsIntrospection(array $responseMocks): void
     {
-        $endpointConfig = new class extends EndpointConfig
+        $endpointConfig = new class($responseMocks) extends EndpointConfig
         {
+            /** @var array<int, callable> */
+            private array $responseMocks;
+
+            /**
+             * @param array<int, callable> $responseMocks
+             */
+            public function __construct(array $responseMocks)
+            {
+                $this->responseMocks = $responseMocks;
+            }
+
             public function makeClient(): Client
             {
                 $mockClient = new MockClient();
-                $mockClient->responseMocks = [
-                    IntrospectorTest::successfulIntrospectionMock(),
-                ];
+                $mockClient->responseMocks = $this->responseMocks;
 
                 return $mockClient;
             }
@@ -61,51 +81,12 @@ class IntrospectorTest extends TestCase
             }
         };
 
-        self::assertIntrospectionWorks($endpointConfig);
-    }
+        (new Introspector($endpointConfig))->introspect();
 
-    public function testRetriesWithoutDirectiveIsRepeatable(): void
-    {
-        $endpointConfig = new class extends EndpointConfig
-        {
-            public function makeClient(): Client
-            {
-                $mockClient = new MockClient();
-                $mockClient->responseMocks = [
-                    static function (): Response {
-                        $response = new Response();
-                        $response->errors = [new stdClass];
+        IntrospectorTest::assertFileExists(IntrospectorTest::PATH);
+        IntrospectorTest::assertSame(IntrospectorTest::SCHEMA, file_get_contents(IntrospectorTest::PATH));
 
-                        return $response;
-                    },
-                    IntrospectorTest::successfulIntrospectionMock(),
-                ];
-
-                return $mockClient;
-            }
-
-            public function schemaPath(): string
-            {
-                return IntrospectorTest::PATH;
-            }
-
-            public function namespace(): string
-            {
-                return 'MyScalarQuery';
-            }
-
-            public function targetPath(): string
-            {
-                return 'simple';
-            }
-
-            public function searchPath(): string
-            {
-                return 'bar';
-            }
-        };
-
-        self::assertIntrospectionWorks($endpointConfig);
+        unlink(IntrospectorTest::PATH);
     }
 
     public static function successfulIntrospectionMock(): \Closure
@@ -121,13 +102,36 @@ class IntrospectorTest extends TestCase
         };
     }
 
-    protected static function assertIntrospectionWorks(EndpointConfig $endpointConfig): void
+    /**
+     * @return iterable<array{array<int, ResponseMock>}>
+     */
+    public function validResponseMocks(): iterable
     {
-        (new Introspector($endpointConfig))->introspect();
+        yield [
+            [
+                self::successfulIntrospectionMock()
+            ]
+        ];
 
-        self::assertFileExists(self::PATH);
-        self::assertSame(self::SCHEMA, \Safe\file_get_contents(self::PATH));
+        yield [
+            [
+                static function (): Response {
+                    $response = new Response();
+                    $response->errors = [new stdClass];
 
-        \Safe\unlink(self::PATH);
+                    return $response;
+                },
+                IntrospectorTest::successfulIntrospectionMock(),
+            ]
+        ];
+
+        yield [
+            [
+                static function (): Response {
+                    throw new InvalidResponseException('misbehaved server');
+                },
+                IntrospectorTest::successfulIntrospectionMock(),
+            ]
+        ];
     }
 }
