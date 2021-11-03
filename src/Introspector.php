@@ -41,9 +41,6 @@ class Introspector
     }
 
     /**
-     * @param Client $client
-     * @param bool $directiveIsRepeatable
-     * @return Response
      * @throws ResultErrorsException
      */
     protected function fetchIntrospectionResult(Client $client, bool $directiveIsRepeatable): Response

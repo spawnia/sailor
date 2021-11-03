@@ -7,6 +7,8 @@ namespace Spawnia\Sailor\Tests\Unit;
 use GraphQL\Type\Introspection;
 use GraphQL\Utils\BuildSchema;
 use PHPUnit\Framework\TestCase;
+use function Safe\file_get_contents;
+use function Safe\unlink;
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Introspector;
@@ -15,9 +17,6 @@ use Spawnia\Sailor\Json;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
 use stdClass;
-
-use function Safe\file_get_contents;
-use function Safe\unlink;
 
 /**
  * @phpstan-import-type ResponseMock from MockClient
@@ -35,7 +34,8 @@ class IntrospectorTest extends TestCase
 
     /**
      * @dataProvider validResponseMocks
-     * @param array<int, ResponseMock> $responseMocks
+     *
+     * @param  array<int, ResponseMock>  $responseMocks
      */
     public function testPrintsIntrospection(array $responseMocks): void
     {
@@ -45,7 +45,7 @@ class IntrospectorTest extends TestCase
             private array $responseMocks;
 
             /**
-             * @param array<int, callable> $responseMocks
+             * @param  array<int, callable>  $responseMocks
              */
             public function __construct(array $responseMocks)
             {
@@ -83,10 +83,10 @@ class IntrospectorTest extends TestCase
 
         (new Introspector($endpointConfig))->introspect();
 
-        IntrospectorTest::assertFileExists(IntrospectorTest::PATH);
-        IntrospectorTest::assertSame(IntrospectorTest::SCHEMA, file_get_contents(IntrospectorTest::PATH));
+        self::assertFileExists(self::PATH);
+        self::assertSame(self::SCHEMA, file_get_contents(self::PATH));
 
-        unlink(IntrospectorTest::PATH);
+        unlink(self::PATH);
     }
 
     public static function successfulIntrospectionMock(): \Closure
@@ -109,8 +109,8 @@ class IntrospectorTest extends TestCase
     {
         yield [
             [
-                self::successfulIntrospectionMock()
-            ]
+                self::successfulIntrospectionMock(),
+            ],
         ];
 
         yield [
@@ -121,8 +121,8 @@ class IntrospectorTest extends TestCase
 
                     return $response;
                 },
-                IntrospectorTest::successfulIntrospectionMock(),
-            ]
+                self::successfulIntrospectionMock(),
+            ],
         ];
 
         yield [
@@ -130,8 +130,8 @@ class IntrospectorTest extends TestCase
                 static function (): Response {
                     throw new InvalidResponseException('misbehaved server');
                 },
-                IntrospectorTest::successfulIntrospectionMock(),
-            ]
+                self::successfulIntrospectionMock(),
+            ],
         ];
     }
 }
