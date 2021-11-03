@@ -10,7 +10,7 @@ use Spawnia\Sailor\Response;
 class MockClient implements Client
 {
     /**
-     * @var array<int, callable>
+     * @var array<int, callable(string $query, \stdClass|null $variables): Response>
      */
     public array $responseMocks = [];
 

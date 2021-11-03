@@ -13,6 +13,7 @@ use Spawnia\Sailor\Introspector;
 use Spawnia\Sailor\Json;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
+use stdClass;
 
 class IntrospectorTest extends TestCase
 {
@@ -32,15 +33,54 @@ class IntrospectorTest extends TestCase
             public function makeClient(): Client
             {
                 $mockClient = new MockClient();
-                $mockClient->responseMocks[] = static function (): Response {
-                    $schema = BuildSchema::build(IntrospectorTest::SCHEMA);
-                    $introspection = Introspection::fromSchema($schema);
+                $mockClient->responseMocks = [
+                    IntrospectorTest::successfulIntrospectionMock()
+                ];
 
-                    $response = new Response();
-                    $response->data = Json::assocToStdClass($introspection);
+                return $mockClient;
+            }
 
-                    return $response;
-                };
+            public function schemaPath(): string
+            {
+                return IntrospectorTest::PATH;
+            }
+
+            public function namespace(): string
+            {
+                return 'MyScalarQuery';
+            }
+
+            public function targetPath(): string
+            {
+                return 'simple';
+            }
+
+            public function searchPath(): string
+            {
+                return 'bar';
+            }
+
+        };
+
+        self::assertIntrospectionWorks($endpointConfig);
+    }
+
+    public function testRetriesWithoutDirectiveIsRepeatable(): void
+    {
+        $endpointConfig = new class extends EndpointConfig
+        {
+            public function makeClient(): Client
+            {
+                $mockClient = new MockClient();
+                $mockClient->responseMocks = [
+                    static function (): Response {
+                        $response = new Response();
+                        $response->errors = [new stdClass];
+
+                        return $response;
+                    },
+                    IntrospectorTest::successfulIntrospectionMock(),
+                ];
 
                 return $mockClient;
             }
@@ -66,8 +106,25 @@ class IntrospectorTest extends TestCase
             }
         };
 
-        $introspector = new Introspector($endpointConfig);
-        $introspector->introspect();
+        self::assertIntrospectionWorks($endpointConfig);
+    }
+
+    public static function successfulIntrospectionMock(): \Closure
+    {
+        return static function (): Response {
+            $schema = BuildSchema::build(IntrospectorTest::SCHEMA);
+            $introspection = Introspection::fromSchema($schema);
+
+            $response = new Response();
+            $response->data = Json::assocToStdClass($introspection);
+
+            return $response;
+        };
+    }
+
+    protected static function assertIntrospectionWorks(EndpointConfig $endpointConfig): void
+    {
+        (new Introspector($endpointConfig))->introspect();
 
         self::assertFileExists(self::PATH);
         self::assertSame(self::SCHEMA, \Safe\file_get_contents(self::PATH));
