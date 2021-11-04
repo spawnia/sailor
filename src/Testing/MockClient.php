@@ -7,10 +7,13 @@ namespace Spawnia\Sailor\Testing;
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\Response;
 
+/**
+ * @phpstan-type ResponseMock callable(string, \stdClass|null): Response
+ */
 class MockClient implements Client
 {
     /**
-     * @var array<int, callable>
+     * @var array<int, ResponseMock>
      */
     public array $responseMocks = [];
 
