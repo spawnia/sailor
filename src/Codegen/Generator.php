@@ -44,6 +44,8 @@ class Generator
 
         Validator::validate($schema, $document);
 
+        // TODO add __typename to every object subselect
+
         $classGenerator = new ClassGenerator($schema, $this->endpointConfig, $this->endpointName);
         $operationSets = $classGenerator->generate($document);
 
