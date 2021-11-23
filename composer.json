@@ -58,7 +58,8 @@
   "autoload-dev": {
     "psr-4": {
       "Spawnia\\Sailor\\Tests\\": "tests/",
-      "Spawnia\\Sailor\\Simple\\": "examples/simple/expected/"
+      "Spawnia\\Sailor\\Simple\\": "examples/simple/expected/",
+      "Spawnia\\Sailor\\Polymorphic\\": "examples/polymorphic/expected/"
     },
     "files": [
       "vendor/symfony/var-dumper/Resources/functions/dump.php"

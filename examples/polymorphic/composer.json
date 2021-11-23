@@ -1,0 +1,23 @@
+{
+  "require": {
+    "spawnia/sailor": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Spawnia\\Sailor\\Polymorphic\\": "generated/"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "scripts": {
+    "require-from-local": [
+      "rm -rf vendor/spawnia/sailor && rsync -r ../../ vendor/spawnia/sailor --exclude examples --exclude vendor --exclude .idea --exclude .build"
+    ],
+    "post-install-cmd": [
+      "@require-from-local"
+    ],
+    "post-update-cmd": [
+      "@require-from-local"
+    ]
+  }
+}
