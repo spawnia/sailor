@@ -6,7 +6,7 @@ help: ## Displays this list of targets with descriptions
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[32m%-30s\033[0m %s\n", $$1, $$2}'
 
 .PHONY: stan
-stan: ## Runs a static analysis with phpstan
+stan: ## Runs static analysis with phpstan
 	mkdir -p .build/phpstan
 	vendor/bin/phpstan analyse --configuration=phpstan.neon
 
@@ -26,7 +26,15 @@ infection: ## Runs mutation tests with infection
 	mkdir -p .build/infection
 	vendor/bin/infection --ignore-msi-with-no-mutations --min-covered-msi=100 --min-msi=100
 
+.PHONY: approve
+approve: ## Accept the current generated code as expected
+	rm -r examples/simple/expected
+	cp -r examples/simple/generated examples/simple/expected
+
 vendor: composer.json composer.lock
-	composer validate
 	composer install
+	composer validate
 	composer normalize
+
+composer.lock: composer.json
+	composer update

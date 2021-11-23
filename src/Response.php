@@ -20,27 +20,27 @@ class Response
 {
     /**
      * The result of the execution of the requested operation.
-     *
-     * @var \stdClass|null
      */
-    public $data;
+    public ?\stdClass $data;
 
     /**
      * A non‐empty list of errors, where each error is a map.
      *
-     * @var \stdClass[]|null
+     * @var array<int, \stdClass>|null
      */
-    public $errors;
+    public ?array $errors;
 
     /**
      * This entry, if set, must have a map as its value.
-     *
-     * @var \stdClass|null
      */
-    public $extensions;
+    public ?\stdClass $extensions;
 
     public static function fromResponseInterface(ResponseInterface $response): self
     {
+        if ($response->getStatusCode() !== 200) {
+            throw new InvalidResponseException("Response must have status code 200, got: {$response->getStatusCode()}");
+        }
+
         return self::fromJson(
             $response->getBody()->getContents()
         );
@@ -106,8 +106,9 @@ class Response
     /**
      * Throw an exception if errors are present in the result.
      *
-     * @throws \Spawnia\Sailor\ResultErrorsException
      * @return $this
+     *
+     * @throws \Spawnia\Sailor\ResultErrorsException
      */
     public function assertErrorFree(): self
     {
@@ -121,7 +122,7 @@ class Response
     /**
      * Ensure that the "errors" are in a spec-compliant format.
      *
-     * @param mixed $errors Whatever came from the API under the key "errors".
+     * @param  mixed  $errors  Whatever came from the API under the key "errors".
      *
      * @throws \Exception
      */
@@ -153,7 +154,7 @@ class Response
     /**
      * Ensure that the "data" is in a spec-compliant format.
      *
-     * @param mixed $data Whatever came from the API under the key "data".
+     * @param  mixed  $data  Whatever came from the API under the key "data".
      *
      * @throws \Exception
      */
@@ -172,7 +173,7 @@ class Response
     /**
      * Ensure that the "extensions" are in a spec-compliant format.
      *
-     * @param mixed $extensions Whatever came from the API under the key "extensions".
+     * @param  mixed  $extensions  Whatever came from the API under the key "extensions".
      *
      * @throws \Exception
      */

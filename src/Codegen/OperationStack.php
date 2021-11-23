@@ -9,17 +9,17 @@ use Nette\PhpGenerator\Parameter;
 
 class OperationStack
 {
-    /** @var ClassType */
-    public $operation;
+    public ClassType $operation;
 
-    /** @var ClassType */
-    public $result;
+    public ClassType $result;
 
-    /** @var ClassType[] */
-    public $selectionStack = [];
+    public ClassType $errorFreeResult;
 
-    /** @var ClassType[] */
-    public $selectionStorage = [];
+    /** @var array<int, ClassType> */
+    public array $selectionStack = [];
+
+    /** @var array<int, ClassType> */
+    public array $selectionStorage = [];
 
     public function __construct(ClassType $operation)
     {
@@ -57,6 +57,10 @@ class OperationStack
     public function addParameterToOperation(Parameter $parameter): void
     {
         $execute = $this->operation->getMethod('execute');
-        $execute->setParameters([$parameter]);
+
+        $parameters = $execute->getParameters();
+        $parameters[] = $parameter;
+
+        $execute->setParameters($parameters);
     }
 }

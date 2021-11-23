@@ -15,21 +15,24 @@ abstract class Result
      * Each error is a map that is guaranteed to contain at least
      * the key `message` and may contain arbitrary other keys.
      *
-     * @var \stdClass[]|null
+     * @var array<int, \stdClass>|null
      */
-    public $errors;
+    public ?array $errors;
 
     /**
      * Optional, can be an arbitrary map if present.
-     *
-     * @var \stdClass|null
      */
-    public $extensions;
+    public ?\stdClass $extensions;
 
     /**
      * Decode the raw data into proper types and set it.
      */
     abstract protected function setData(\stdClass $data): void;
+
+    /**
+     * Throws if errors are present in the result or returns an error free result.
+     */
+    abstract public function errorFree(): ErrorFreeResult;
 
     /**
      * @return static
@@ -38,23 +41,34 @@ abstract class Result
     {
         $instance = new static;
 
-        $instance->errors = $response->errors;
-        $instance->extensions = $response->extensions;
+        $instance->errors = $response->errors ?? null;
+        $instance->extensions = $response->extensions ?? null;
 
-        if (is_null($response->data)) {
-            $instance->data = null;
-        } else {
+        if (isset($response->data)) {
             $instance->setData($response->data);
+        } else {
+            $instance->data = null;
         }
 
         return $instance;
     }
 
     /**
+     * @return static
+     */
+    public static function fromStdClass(\stdClass $stdClass): self
+    {
+        return static::fromResponse(
+            Response::fromStdClass($stdClass)
+        );
+    }
+
+    /**
      * Throw an exception if errors are present in the result.
      *
-     * @throws \Spawnia\Sailor\ResultErrorsException
      * @return $this
+     *
+     * @throws \Spawnia\Sailor\ResultErrorsException
      */
     public function assertErrorFree(): self
     {

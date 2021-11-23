@@ -8,7 +8,8 @@ use Spawnia\Sailor\EndpointConfig;
  * This must return a map from endpoint names to EndpointConfig classes.
  */
 return [
-    'example' => new class extends EndpointConfig {
+    'example' => new class extends EndpointConfig
+    {
         /**
          * Instantiate a client for Sailor to use for querying.
          *
@@ -22,7 +23,7 @@ return [
         public function makeClient(): \Spawnia\Sailor\Client
         {
             return new \Spawnia\Sailor\Client\Guzzle(
-                'http://example.com/graphql',
+                'https://example.com/graphql',
                 [
                     'headers' => [
                         'Authorization' => 'Bearer foobarbaz',
@@ -60,7 +61,7 @@ return [
          */
         public function schemaPath(): string
         {
-            return __DIR__.'/example.graphqls';
+            return __DIR__.'/example.graphql';
         }
     },
 ];

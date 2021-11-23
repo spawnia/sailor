@@ -23,15 +23,22 @@ to enable an ergonomic workflow and reduce type-related bugs in your code.
 The native GraphQL query language is the most universally used tool to formulate
 GraphQL queries and works natively with the entire ecosystem of GraphQL tools.
 Sailor takes the plain queries you write and generates executable PHP code,
-using the server schema to generate type safe operations and results.
+using the server schema to generate typesafe operations and results.
 
 ## Installation
 
 Install Sailor through composer by running:
 
-```bash
-composer require spawnia/sailor
-```
+    composer require spawnia/sailor
+
+If you want to use the built-in default Client (see [Client implementations](#client-implementations)):
+
+    composer require guzzle/guzzle
+
+If you want to use the PSR-18 Client and don't have
+PSR-17 Request and Stream factory implementations (see [Client implementations](#client-implementations)):
+
+    composer require nyholm/psr7
 
 ## Configuration
 
@@ -54,7 +61,7 @@ environment variables (run `composer require vlucas/phpdotenv` if you do not hav
         public function makeClient(): Client
         {
             return new \Spawnia\Sailor\Client\Guzzle(
--               'http://hardcoded.url/',
+-               'https://hardcoded.url',
 +               getenv('EXAMPLE_API_URL'),
                 [
                     'headers' => [
@@ -75,7 +82,7 @@ from the server by running an introspection query. As an example, a very simple
 server might result in the following file being placed in your project:
 
 ```graphql
-# schema.graphqls
+# schema.graphql
 type Query {
   hello(name: String): String
 }
@@ -125,7 +132,7 @@ class HelloSailor extends \Spawnia\Sailor\Operation { ... }
 
 There are additional generated classes that represent the results of calling
 the operations. The plain data from the server is wrapped up and contained
-within those value classes so you can access them in a typesafe way.
+within those value classes, so you can access them in a typesafe way.
 
 ### Execute queries
 
@@ -138,7 +145,7 @@ $result = \Example\Api\HelloSailor::execute();
 
 The returned `$result` is going to be a class that extends `\Spawnia\Sailor\Result` and
 holds the decoded response returned from the server. You can just grab the `$data`, `$errors`
-or `$extensions` off of it.
+or `$extensions` off of it:
 
 ```php
 $result->data        // `null` or a generated subclass of `\Spawnia\Sailor\TypedObject`
@@ -146,17 +153,162 @@ $result->errors      // `null` or a list of errors
 $result->extensions  // `null` or an arbitrary map
 ```
 
+You can ensure your query returned the proper data and contained no errors:
+
+```php
+$errorFreeResult = $result->errorFree(); // Throws if there are errors
+```
+
+### Client implementations
+
+Sailor provides a few built-in clients:
+- `Spawnia\Sailor\Client\Guzzle`: Default HTTP client
+- `Spawnia\Sailor\Client\Psr18`: PSR-18 HTTP client
+- `Spawnia\Sailor\Client\Log`: Used for testing
+
+You can bring your own by implementing the interface `Spawnia\Sailor\Client`.
+
+### Dynamic clients
+
+You can configure clients dynamically for specific operations or per request:
+
+```php
+/** @var \Spawnia\Sailor\Client $client Somehow instantiated dynamically */
+\Example\Api\HelloSailor::setClient($client);
+
+// Will use $client over the client from EndpointConfig
+$result = HelloSailor::execute();
+
+// Reverts to using the client from EndpointConfig
+HelloSailor::setClient(null);
+```
+
+## Testing
+
+Sailor provides first class support for testing by allowing you to mock operations.
+
+### Setup
+
+It is assumed you are using [PHPUnit](https://phpunit.de) and [Mockery](https://docs.mockery.io/en/latest).
+
+    composer require --dev phpunit/phpunit mockery/mockery
+
+Make sure your test class - or one of its parents - uses the following traits:
+
+```php
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use PHPUnit\Framework\TestCase as PHPUnitTestCase;
+use Spawnia\Sailor\Testing\UsesSailorMocks;
+
+abstract class TestCase extends PHPUnitTestCase
+{
+    use MockeryPHPUnitIntegration;
+    use UsesSailorMocks;
+}
+```
+
+Otherwise, mocks are not reset between test methods, you might run into very confusing bugs.
+
+### Mock results
+
+Mocks are registered per operation class:
+
+```php
+/** @var \Mockery\MockInterface&\Example\Api\HelloSailor */
+$mock = \Example\Api\HelloSailor::mock();
+```
+
+When registered, the mock captures all calls to `HelloSailor::execute()`.
+Use it to build up expectations for what calls it should receive and mock returned results:
+
+```php
+$mock
+    ->expects('execute')
+    ->once()
+    ->with('Sailor')
+    ->andReturn(HelloSailorResult::fromStdClass((object) [
+        'data' => (object) [
+            'hello' => 'Hello, Sailor!',
+        ],
+    ]));
+
+self::assertSame(
+    'Hello, Sailor!',
+    HelloSailor::execute('Sailor')->data->hello
+);
+```
+
+Subsequent calls to `::mock()` will return the initially registered mock instance.
+
+```php
+$mock1 = HelloSailor::mock();
+$mock2 = HelloSailor::mock();
+assert($mock1 === $mock2); // true
+```
+
+### Integration
+
+If you want to perform integration testing for a service that uses Sailor without actually
+hitting an external API, you can swap out your client with the `Log` client.
+It writes all requests made through Sailor to a file of your choice.
+
+> The `Log` client can not know what constitutes a valid response for a given request,
+> so it always responds with an error.
+
+```php
+# sailor.php
+public function makeClient(): Client
+{
+    return new \Spawnia\Sailor\Client\Log(__DIR__ . '/sailor-requests.log');
+}
+```
+
+Each request goes on a new line and contains a JSON string that holds the `query` and `variables`:
+
+```json
+{"query":"{ foo }","variables":{"bar":42}}
+{"query":"mutation { baz }","variables":null}
+```
+
+This allows you to perform assertions on the calls that were made.
+The `Log` client offers a convenient method of reading the requests as structured data:
+
+```php
+$log = new \Spawnia\Sailor\Client\Log(__DIR__ . '/sailor-requests.log');
+foreach($log->requests() as $request) {
+    var_dump($request);
+}
+
+array(2) {
+  ["query"]=>
+  string(7) "{ foo }"
+  ["variables"]=>
+  array(1) {
+    ["bar"]=>
+    int(42)
+  }
+}
+array(2) {
+  ["query"]=>
+  string(7) "mutation { baz }"
+  ["variables"]=>
+  NULL
+}
+```
+
+To clean up the log after performing tests, use `Log::clear()`.
+
 ## Examples
 
 You can find examples of how a project would use Sailor within [examples](examples).
 
 ## Changelog
 
-Please have a look at [`CHANGELOG.md`](CHANGELOG.md).
+See [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Contributing
 
-Please have a look at [`CONTRIBUTING.md`](.github/CONTRIBUTING.md).
+See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## License
 

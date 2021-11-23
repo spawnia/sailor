@@ -8,9 +8,7 @@ class MyObjectNestedQuery extends \Spawnia\Sailor\Operation
 {
     public static function execute(): MyObjectNestedQuery\MyObjectNestedQueryResult
     {
-        $response = self::fetchResponse(...func_get_args());
-
-        return \Spawnia\Sailor\Simple\MyObjectNestedQuery\MyObjectNestedQueryResult::fromResponse($response);
+        return self::executeOperation(...func_get_args());
     }
 
     public static function document(): string

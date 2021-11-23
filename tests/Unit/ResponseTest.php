@@ -24,10 +24,23 @@ class ResponseTest extends TestCase
         $httpResponse = self::createMock(ResponseInterface::class);
         $httpResponse->method('getBody')
             ->willReturn($stream);
+        $httpResponse->method('getStatusCode')
+            ->willReturn(200);
 
         $response = Response::fromResponseInterface($httpResponse);
 
         self::assertResponseIsFooBar($response);
+    }
+
+    public function testFromResponseInterfaceNon200(): void
+    {
+        /** @var MockObject&ResponseInterface $httpResponse */
+        $httpResponse = self::createMock(ResponseInterface::class);
+        $httpResponse->method('getStatusCode')
+            ->willReturn(500);
+
+        self::expectException(InvalidResponseException::class);
+        Response::fromResponseInterface($httpResponse);
     }
 
     public function testFromJson(): void

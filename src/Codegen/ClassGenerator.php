@@ -29,41 +29,30 @@ use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Parameter;
 use Nette\PhpGenerator\PhpNamespace;
 use Spawnia\Sailor\EndpointConfig;
+use Spawnia\Sailor\ErrorFreeResult;
 use Spawnia\Sailor\Operation;
 use Spawnia\Sailor\Result;
 use Spawnia\Sailor\TypedObject;
 
 class ClassGenerator
 {
-    /**
-     * @var Schema
-     */
-    protected $schema;
+    protected Schema $schema;
+
+    protected EndpointConfig $endpointConfig;
+
+    protected string $endpoint;
+
+    protected OperationStack $operationStack;
 
     /**
-     * @var EndpointConfig
+     * @var array<int, OperationStack>
      */
-    protected $endpointConfig;
+    protected array $operationStorage = [];
 
     /**
-     * @var string
+     * @var array<int, string>
      */
-    protected $endpoint;
-
-    /**
-     * @var OperationStack
-     */
-    private $operationStack;
-
-    /**
-     * @var OperationStack[]
-     */
-    private $operationStorage = [];
-
-    /**
-     * @var string[]
-     */
-    private $namespaceStack = [];
+    protected array $namespaceStack = [];
 
     public function __construct(Schema $schema, EndpointConfig $endpointConfig, string $endpoint)
     {
@@ -74,7 +63,7 @@ class ClassGenerator
     }
 
     /**
-     * @return OperationStack[]
+     * @return array<int, OperationStack>
      */
     public function generate(DocumentNode $document): array
     {
@@ -106,14 +95,12 @@ class ClassGenerator
 
                             // Related classes are put into a nested namespace
                             $this->namespaceStack [] = $operationName;
-                            $resultClass = $this->currentNamespace().'\\'.$resultName;
+                            $resultClass = $this->withCurrentNamespace($resultName);
 
                             $execute->setReturnType($resultClass);
-                            $execute->setBody(<<<PHP
-\$response = self::fetchResponse(...func_get_args());
-
-return \\$resultClass::fromResponse(\$response);
-PHP
+                            $execute->setBody(<<<'PHP'
+                            return self::executeOperation(...func_get_args());
+                            PHP
                             );
 
                             // Store the actual query string in the operation
@@ -123,8 +110,8 @@ PHP
                             $document->setReturnType('string');
                             $operationString = Printer::doPrint($operationDefinition);
                             $document->setBody(<<<PHP
-return /* @lang GraphQL */ '{$operationString}';
-PHP
+                            return /* @lang GraphQL */ '{$operationString}';
+                            PHP
                             );
 
                             // Set the endpoint this operation belongs to
@@ -132,30 +119,53 @@ PHP
                             $document->setStatic();
                             $document->setReturnType('string');
                             $document->setBody(<<<PHP
-return '{$this->endpoint}';
-PHP
+                            return '{$this->endpoint}';
+                            PHP
                             );
 
-                            $operationResult = new ClassType($resultName, $this->makeNamespace());
-                            $operationResult->setExtends(Result::class);
+                            $result = new ClassType($resultName, $this->makeNamespace());
+                            $result->setExtends(Result::class);
 
-                            $setData = $operationResult->addMethod('setData');
+                            $setData = $result->addMethod('setData');
                             $setData->setVisibility('protected');
                             $dataParam = $setData->addParameter('data');
-                            $setData->setReturnType('void');
                             $dataParam->setType('\\stdClass');
+                            $setData->setReturnType('void');
                             $setData->setBody(<<<PHP
-\$this->data = $operationName::fromStdClass(\$data);
-PHP
+                            \$this->data = {$operationName}::fromStdClass(\$data);
+                            PHP
                             );
 
-                            $dataProp = $operationResult->addProperty('data');
-                            $dataProp->setComment("@var $operationName|null");
+                            $dataProp = $result->addProperty('data');
+                            $dataProp->setType(
+                                $this->withCurrentNamespace($operationName)
+                            );
+                            $dataProp->setNullable(true);
+
+                            $errorFreeResultName = "{$operationName}ErrorFreeResult";
+
+                            $errorFree = $result->addMethod('errorFree');
+                            $errorFree->setVisibility('public');
+                            $errorFree->setReturnType(
+                                $this->withCurrentNamespace($errorFreeResultName)
+                            );
+                            $errorFree->setBody(<<<PHP
+                            return {$errorFreeResultName}::fromResult(\$this);
+                            PHP
+                            );
+
+                            $errorFreeResult = new ClassType($errorFreeResultName, $this->makeNamespace());
+                            $errorFreeResult->setExtends(ErrorFreeResult::class);
+
+                            $errorFreeDataProp = $errorFreeResult->addProperty('data');
+                            $errorFreeDataProp->setType(
+                                $this->withCurrentNamespace($operationName)
+                            );
+                            $errorFreeDataProp->setNullable(false);
 
                             $this->operationStack = new OperationStack($operation);
-
-                            $this->operationStack->result = $operationResult;
-
+                            $this->operationStack->result = $result;
+                            $this->operationStack->errorFreeResult = $errorFreeResult;
                             $this->operationStack->pushSelection(
                                 $this->makeTypedObject($operationName)
                             );
@@ -201,8 +211,8 @@ PHP
                     ],
                     NodeKind::FIELD => [
                         'enter' => function (FieldNode $field) use ($typeInfo): void {
-                            // We are only interested in the key that will come from the server
-                            $resultKey = $field->alias !== null
+                            // We are only interested in the name that will come from the server
+                            $fieldName = $field->alias !== null
                                 ? $field->alias->value
                                 : $field->name->value;
 
@@ -214,44 +224,44 @@ PHP
                             $namedType = Type::getNamedType($type);
 
                             if ($namedType instanceof ObjectType) {
-                                $typedObjectName = ucfirst($resultKey);
+                                $typedObjectName = ucfirst($fieldName);
 
                                 // We go one level deeper into the selection set
                                 // To avoid naming conflicts, we add on another namespace
                                 $this->namespaceStack [] = $typedObjectName;
-                                $typeReference = '\\'.$this->currentNamespace().'\\'.$typedObjectName;
+                                $typeReference = "\\{$this->withCurrentNamespace($typedObjectName)}";
 
                                 $this->operationStack->pushSelection(
                                     $this->makeTypedObject($typedObjectName)
                                 );
                                 $typeMapper = <<<PHP
-static function (\\stdClass \$value): \Spawnia\Sailor\TypedObject {
-    return $typeReference::fromStdClass(\$value);
-}
-PHP;
+                                static function (\\stdClass \$value): \Spawnia\Sailor\TypedObject {
+                                    return {$typeReference}::fromStdClass(\$value);
+                                }
+                                PHP;
                             } elseif ($namedType instanceof ScalarType) {
                                 $typeReference = PhpType::forScalar($namedType);
                                 $typeMapper = <<<PHP
-new \Spawnia\Sailor\Mapper\DirectMapper()
-PHP;
+                                new \Spawnia\Sailor\Mapper\DirectMapper()
+                                PHP;
                             } elseif ($namedType instanceof EnumType) {
                                 $typeReference = PhpType::forEnum($namedType);
                                 // TODO consider mapping from enum instances
                                 $typeMapper = <<<PHP
-new \Spawnia\Sailor\Mapper\DirectMapper()
-PHP;
+                                new \Spawnia\Sailor\Mapper\DirectMapper()
+                                PHP;
                             } else {
                                 throw new \Exception('Unsupported type '.get_class($namedType).' found.');
                             }
 
-                            $field = $selection->addProperty($resultKey);
-                            $field->setComment('@var '.PhpType::phpDoc($type, $typeReference));
+                            $fieldProperty = $selection->addProperty($fieldName);
+                            $fieldProperty->setComment('@var '.PhpType::phpDoc($type, $typeReference));
 
-                            $typeField = $selection->addMethod(self::typeDiscriminatorMethodName($resultKey));
-                            $typeField->setReturnType('callable');
-                            $typeField->setBody(<<<PHP
-return $typeMapper;
-PHP
+                            $fieldTypeMapper = $selection->addMethod(FieldTypeMapper::methodName($fieldName));
+                            $fieldTypeMapper->setReturnType('callable');
+                            $fieldTypeMapper->setBody(<<<PHP
+                            return {$typeMapper};
+                            PHP
                             );
                         },
                     ],
@@ -292,16 +302,16 @@ PHP
         return $typedObject;
     }
 
-    public static function typeDiscriminatorMethodName(string $propertyKey): string
-    {
-        return 'type'.ucfirst($propertyKey);
-    }
-
     protected function makeNamespace(): PhpNamespace
     {
         return new PhpNamespace(
             $this->currentNamespace()
         );
+    }
+
+    protected function withCurrentNamespace(string $type): string
+    {
+        return "{$this->currentNamespace()}\\{$type}";
     }
 
     protected function currentNamespace(): string

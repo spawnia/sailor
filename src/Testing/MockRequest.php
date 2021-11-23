@@ -6,15 +6,9 @@ namespace Spawnia\Sailor\Testing;
 
 class MockRequest
 {
-    /**
-     * @var string
-     */
-    public $query;
+    public string $query;
 
-    /**
-     * @var \stdClass|null
-     */
-    public $variables;
+    public ?\stdClass $variables;
 
     public function __construct(string $query, \stdClass $variables = null)
     {

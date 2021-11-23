@@ -6,10 +6,7 @@ namespace Spawnia\Sailor\Codegen;
 
 class Finder
 {
-    /**
-     * @var string
-     */
-    protected $rootPath;
+    protected string $rootPath;
 
     public function __construct(string $rootPath)
     {
@@ -43,7 +40,7 @@ class Finder
         return $contents;
     }
 
-    protected function fileIterator(): \IteratorIterator
+    protected function fileIterator(): \RegexIterator
     {
         $directory = new \RecursiveDirectoryIterator($this->rootPath);
         $iterator = new \RecursiveIteratorIterator($directory);

@@ -4,13 +4,8 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor;
 
-use Spawnia\Sailor\Testing\MockClient;
-
 abstract class EndpointConfig
 {
-    /** @var MockClient|null */
-    public $mockClient;
-
     /**
      * Instantiate a client that will resolve the GraphQL operations.
      */
@@ -35,13 +30,4 @@ abstract class EndpointConfig
      * The location of the schema file that describes the endpoint.
      */
     abstract public function schemaPath(): string;
-
-    public function client(): Client
-    {
-        if (isset($this->mockClient)) {
-            return $this->mockClient;
-        }
-
-        return $this->makeClient();
-    }
 }

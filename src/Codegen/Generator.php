@@ -18,15 +18,9 @@ use Spawnia\Sailor\EndpointConfig;
 
 class Generator
 {
-    /**
-     * @var EndpointConfig
-     */
-    protected $endpointConfig;
+    protected EndpointConfig $endpointConfig;
 
-    /**
-     * @var string
-     */
-    protected $endpointName;
+    protected string $endpointName;
 
     public function __construct(EndpointConfig $endpointConfig, string $endpointName)
     {
@@ -58,6 +52,7 @@ class Generator
         foreach ($operationSets as $operationSet) {
             $files [] = $this->makeFile($operationSet->operation);
             $files [] = $this->makeFile($operationSet->result);
+            $files [] = $this->makeFile($operationSet->errorFreeResult);
 
             foreach ($operationSet->selectionStorage as $selection) {
                 $files [] = $this->makeFile($selection);
@@ -99,7 +94,11 @@ class Generator
             return $subject;
         }
 
-        /** @var array<int, string> $parts */
+        /**
+         * We validated that $search is not empty, so this can not be false.
+         *
+         * @var array<int, string> $parts
+         */
         $parts = explode($search, $subject, 2);
 
         return array_reverse($parts)[0];
@@ -112,12 +111,12 @@ class Generator
         $class = $printer->printClass($classType, $phpNamespace);
 
         return <<<PHP
-<?php
+        <?php
 
-declare(strict_types=1);
+        declare(strict_types=1);
 
-{$phpNamespace}{$class}
-PHP;
+        {$phpNamespace}{$class}
+        PHP;
     }
 
     /**

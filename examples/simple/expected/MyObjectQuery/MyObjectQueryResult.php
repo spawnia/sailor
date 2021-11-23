@@ -6,11 +6,15 @@ namespace Spawnia\Sailor\Simple\MyObjectQuery;
 
 class MyObjectQueryResult extends \Spawnia\Sailor\Result
 {
-    /** @var MyObjectQuery|null */
-    public $data;
+    public ?MyObjectQuery $data;
 
     protected function setData(\stdClass $data): void
     {
         $this->data = MyObjectQuery::fromStdClass($data);
+    }
+
+    public function errorFree(): MyObjectQueryErrorFreeResult
+    {
+        return MyObjectQueryErrorFreeResult::fromResult($this);
     }
 }
