@@ -54,7 +54,7 @@ class AddTypename
         foreach ($selections as $i => $selection) {
             if ($selection instanceof FieldNode) {
                 if ($selection->name->value === Introspection::TYPE_NAME_FIELD_NAME) {
-                   unset($selections[$i]);
+                    unset($selections[$i]);
                 }
 
                 $subSelectionSet = $selection->selectionSet;
