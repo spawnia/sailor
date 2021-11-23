@@ -19,28 +19,26 @@ class AddTypename
     {
         foreach ($document->definitions as $definition) {
             if ($definition instanceof OperationDefinitionNode) {
-                static::ensure($definition->selectionSet);
+                static::ensurePresent($definition->selectionSet);
             }
         }
     }
 
-    protected static function ensure(SelectionSetNode $selectionSetNode): void
+    protected static function ensurePresent(SelectionSetNode $selectionSetNode): void
     {
         $hasTypename = false;
         foreach ($selectionSetNode->selections as $selection) {
-            if (static::isTypenameField($selection)) {
-                $hasTypename = true;
-            }
-
-            if ($selection instanceof InlineFragmentNode) {
-                static::purge($selection->selectionSet);
-            }
-
             if ($selection instanceof FieldNode) {
+                if ($selection->name->value === Introspection::TYPE_NAME_FIELD_NAME) {
+                    $hasTypename = true;
+                }
+
                 $subSelectionSet = $selection->selectionSet;
                 if ($subSelectionSet !== null) {
-                    static::ensure($subSelectionSet);
+                    static::ensurePresent($subSelectionSet);
                 }
+            } elseif ($selection instanceof InlineFragmentNode) {
+                static::purgeRedundant($selection);
             }
         }
 
@@ -49,26 +47,23 @@ class AddTypename
         }
     }
 
-    protected static function purge(SelectionSetNode $selectionSet): void
+    protected static function purgeRedundant(InlineFragmentNode $inlineFragmentNode): void
     {
-        $selections = $selectionSet->selections;
-        foreach ($selections as $i => $selection) {
-            if (self::isTypenameField($selection)) {
-                unset($selections[$i]);
-            }
+        $selections = $inlineFragmentNode->selectionSet->selections;
 
+        foreach ($selections as $i => $selection) {
             if ($selection instanceof FieldNode) {
+                if ($selection->name->value === Introspection::TYPE_NAME_FIELD_NAME) {
+                   unset($selections[$i]);
+                }
+
                 $subSelectionSet = $selection->selectionSet;
                 if ($subSelectionSet !== null) {
-                    static::ensure($subSelectionSet);
+                    static::ensurePresent($subSelectionSet);
                 }
+            } elseif ($selection instanceof InlineFragmentNode) {
+                static::purgeRedundant($selection);
             }
         }
-    }
-
-    protected static function isTypenameField(SelectionNode $selection): bool
-    {
-        return $selection instanceof FieldNode
-            && $selection->name->value === Introspection::TYPE_NAME_FIELD_NAME;
     }
 }
