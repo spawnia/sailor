@@ -18,7 +18,7 @@ class PolymorphicMapper implements TypeMapper
     protected array $mapping;
 
     /**
-     * @param PolymorphicMapping $mapping
+     * @param  PolymorphicMapping  $mapping
      */
     public function __construct(array $mapping)
     {

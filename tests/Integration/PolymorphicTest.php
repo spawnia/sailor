@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace Spawnia\Sailor\Tests\Integration;
 
 use Spawnia\PHPUnitAssertFiles\AssertDirectory;
-use Spawnia\Sailor\Polymorphic\UserOrPost;
-use Spawnia\Sailor\Polymorphic\UserOrPost\UserOrPostResult;
 use Spawnia\Sailor\Codegen\Generator;
 use Spawnia\Sailor\Codegen\Writer;
 use Spawnia\Sailor\EndpointConfig;
+use Spawnia\Sailor\Polymorphic\UserOrPost;
 use Spawnia\Sailor\Polymorphic\UserOrPost\UserOrPost\User;
+use Spawnia\Sailor\Polymorphic\UserOrPost\UserOrPostResult;
 use Spawnia\Sailor\Tests\TestCase;
 
 class PolymorphicTest extends TestCase
 {
     use AssertDirectory;
 
-    const EXAMPLES_PATH = __DIR__ . '/../../examples/polymorphic/';
+    const EXAMPLES_PATH = __DIR__.'/../../examples/polymorphic/';
 
     public function testGeneratesPolymorphicExample(): void
     {
@@ -34,7 +34,7 @@ class PolymorphicTest extends TestCase
 
     protected static function polymorphicEndpoint(): EndpointConfig
     {
-        $fooConfig = include self::EXAMPLES_PATH . 'sailor.php';
+        $fooConfig = include self::EXAMPLES_PATH.'sailor.php';
 
         return $fooConfig['polymorphic'];
     }

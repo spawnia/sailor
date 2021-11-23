@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor\Polymorphic\UserOrPost\UserOrPost;
 
 class Post extends \Spawnia\Sailor\TypedObject

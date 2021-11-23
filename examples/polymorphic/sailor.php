@@ -17,17 +17,17 @@ return [
 
         public function targetPath(): string
         {
-            return __DIR__ . '/generated';
+            return __DIR__.'/generated';
         }
 
         public function searchPath(): string
         {
-            return __DIR__ . '/src';
+            return __DIR__.'/src';
         }
 
         public function schemaPath(): string
         {
-            return __DIR__ . '/schema.graphql';
+            return __DIR__.'/schema.graphql';
         }
 
         public function makeClient(): Client
