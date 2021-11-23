@@ -9,7 +9,7 @@ use Spawnia\Sailor\Codegen\Generator;
 use Spawnia\Sailor\Codegen\Writer;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Polymorphic\UserOrPost;
-use Spawnia\Sailor\Polymorphic\UserOrPost\UserOrPost\User;
+use Spawnia\Sailor\Polymorphic\UserOrPost\Node\User;
 use Spawnia\Sailor\Polymorphic\UserOrPost\UserOrPostResult;
 use Spawnia\Sailor\Tests\TestCase;
 

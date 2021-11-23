@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Spawnia\Sailor\Polymorphic\UserOrPost\UserOrPost;
+namespace Spawnia\Sailor\Polymorphic\UserOrPost\Node;
 
 class Post extends \Spawnia\Sailor\TypedObject
 {

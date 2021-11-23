@@ -6,12 +6,17 @@ interface Node {
     id: ID!
 }
 
-type User implements Node {
-    id: ID!
-    name: String
-}
-
 type Post implements Node {
     id: ID!
     title: String
+}
+
+type Task implements Node {
+    id: ID!
+    done: Boolean!
+}
+
+type User implements Node {
+    id: ID!
+    name: String
 }
