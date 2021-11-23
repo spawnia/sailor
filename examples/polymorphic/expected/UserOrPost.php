@@ -22,6 +22,7 @@ class UserOrPost extends \Spawnia\Sailor\Operation
         ... on Post {
             title
         }
+        __typename
     }
 }';
     }

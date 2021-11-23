@@ -21,6 +21,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\OutputType;
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\TypeInfo;
 use Nette\PhpGenerator\ClassType;
@@ -212,6 +213,11 @@ class ClassGenerator
                             $fieldName = $field->alias !== null
                                 ? $field->alias->value
                                 : $field->name->value;
+
+                            // Included in TypedObject by default
+                            if ($fieldName === Introspection::TYPE_NAME_FIELD_NAME) {
+                                return;
+                            }
 
                             $selection = $this->operationStack->peekSelection();
 

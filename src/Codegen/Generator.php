@@ -38,13 +38,13 @@ class Generator
         if ($parsedDocuments === []) {
             return [];
         }
+
         $document = Merger::combine($parsedDocuments);
+        AddTypename::modify($document);
 
         $schema = $this->schema();
 
         Validator::validate($schema, $document);
-
-        // TODO add __typename to every object subselect
 
         $classGenerator = new ClassGenerator($schema, $this->endpointConfig, $this->endpointName);
         $operationSets = $classGenerator->generate($document);
