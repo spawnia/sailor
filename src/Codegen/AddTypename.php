@@ -8,7 +8,6 @@ use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\AST\FieldNode;
 use GraphQL\Language\AST\InlineFragmentNode;
 use GraphQL\Language\AST\OperationDefinitionNode;
-use GraphQL\Language\AST\SelectionNode;
 use GraphQL\Language\AST\SelectionSetNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Introspection;
@@ -27,6 +26,7 @@ class AddTypename
     protected static function ensurePresent(SelectionSetNode $selectionSetNode): void
     {
         $hasTypename = false;
+
         foreach ($selectionSetNode->selections as $selection) {
             if ($selection instanceof FieldNode) {
                 if ($selection->name->value === Introspection::TYPE_NAME_FIELD_NAME) {
