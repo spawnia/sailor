@@ -30,9 +30,9 @@ use GraphQL\Utils\TypeInfo;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Parameter;
 use Nette\PhpGenerator\PhpNamespace;
-use Spawnia\Sailor\Mapper\PolymorphicMapper;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\ErrorFreeResult;
+use Spawnia\Sailor\Mapper\PolymorphicMapper;
 use Spawnia\Sailor\Operation;
 use Spawnia\Sailor\Result;
 use Spawnia\Sailor\TypedObject;
@@ -173,7 +173,7 @@ class ClassGenerator
                             $this->operationStack->result = $result;
                             $this->operationStack->errorFreeResult = $errorFreeResult;
                             $this->operationStack->pushSelection([
-                                $typeInfo->getType()->name => $this->makeTypedObject($operationName)
+                                $typeInfo->getType()->name => $this->makeTypedObject($operationName),
                             ]);
                         },
                         'leave' => function (OperationDefinitionNode $_): void {
@@ -247,7 +247,7 @@ class ClassGenerator
                                 $typeReference = "\\{$this->withCurrentNamespace($name)}";
 
                                 $this->operationStack->pushSelection([
-                                    $name => $this->makeTypedObject($name)
+                                    $name => $this->makeTypedObject($name),
                                 ]);
                                 $typeMapper = <<<PHP
                                 static function (\\stdClass \$value): \Spawnia\Sailor\TypedObject {
@@ -329,7 +329,7 @@ class ClassGenerator
                             if ($namedType instanceof CompositeType) {
                                 $this->finishSubtree();
                             }
-                        }
+                        },
                     ],
                 ]
             )

@@ -27,7 +27,7 @@ class OperationStack
     }
 
     /**
-     * @param array<string, ClassType> $selection
+     * @param  array<string, ClassType>  $selection
      */
     public function pushSelection(array $selection): void
     {
