@@ -38,7 +38,9 @@ class Generator
         if ($parsedDocuments === []) {
             return [];
         }
+
         $document = Merger::combine($parsedDocuments);
+        AddTypename::modify($document);
 
         $schema = $this->schema();
 
@@ -147,7 +149,7 @@ class Generator
     }
 
     /**
-     * @param  \GraphQL\Language\AST\DocumentNode[]  $parsed
+     * @param  array<string, \GraphQL\Language\AST\DocumentNode>  $parsed
      */
     public static function ensureOperationsAreNamed(array $parsed): void
     {

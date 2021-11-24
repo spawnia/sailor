@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.11.0
+
+### Added
+
+- Support interfaces
+- Support unions
+- Ensure generated code complies with PHPStan v1 at level max
+
+### Changed
+
+- Always add field `__typename` to any subselection and have it available in the result through `TypedObject`
+- Name generated `TypedObject` classes after the corresponding object type
+
 ## v0.10.2
 
 ### Fixed

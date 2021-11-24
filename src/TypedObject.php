@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor;
 
+use GraphQL\Type\Introspection;
 use Spawnia\Sailor\Codegen\FieldTypeMapper;
 
 abstract class TypedObject
 {
+    public string $__typename;
+
     /**
      * Construct a new instance of itself using plain data.
      *
@@ -20,10 +23,14 @@ abstract class TypedObject
         foreach ($data as $field => $valueOrValues) {
             if (is_null($valueOrValues)) {
                 $converted = null;
+            } elseif ($field === Introspection::TYPE_NAME_FIELD_NAME) {
+                // Short circuit here since this field is always present and needs no cast
+                $instance->__typename = $valueOrValues;
+                continue;
             } else {
                 // The ClassGenerator placed methods for each property that return
                 // a callable, which can map a value to its internal type
-                $methodName = Codegen\FieldTypeMapper::methodName($field);
+                $methodName = FieldTypeMapper::methodName($field);
 
                 $thisFunctionItself = __FUNCTION__;
                 $availableMethods = array_filter(

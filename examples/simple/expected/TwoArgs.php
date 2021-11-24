@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Simple;
 
+/**
+ * @extends \Spawnia\Sailor\Operation<\Spawnia\Sailor\Simple\TwoArgs\TwoArgsResult>
+ */
 class TwoArgs extends \Spawnia\Sailor\Operation
 {
     public static function execute(?string $first = null, ?int $second = null): TwoArgs\TwoArgsResult
@@ -15,6 +18,7 @@ class TwoArgs extends \Spawnia\Sailor\Operation
     {
         return /* @lang GraphQL */ 'query TwoArgs($first: String, $second: Int) {
           twoArgs(first: $first, second: $second)
+          __typename
         }';
     }
 

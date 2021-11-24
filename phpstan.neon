@@ -2,8 +2,9 @@ includes:
 - vendor/phpstan/phpstan/conf/bleedingEdge.neon
 parameters:
 	level: max
-	inferPrivatePropertyTypeFromConstructor: true
 	paths:
+	- examples/polymorphic/expected
+	- examples/simple/expected
 	- src
 	- tests
 	tmpDir: %currentWorkingDirectory%/.build/phpstan
@@ -13,4 +14,3 @@ parameters:
 	ignoreErrors:
 	- '#Call to deprecated method getNamespace\(\) of class Nette\\PhpGenerator\\ClassType#'
 	- '#Unsafe usage of new static.*#'
-	- '#Cannot access property .* on .*\|null#'

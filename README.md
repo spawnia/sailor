@@ -25,6 +25,11 @@ GraphQL queries and works natively with the entire ecosystem of GraphQL tools.
 Sailor takes the plain queries you write and generates executable PHP code,
 using the server schema to generate typesafe operations and results.
 
+## Missing features
+
+Sailor does not support the following essential GraphQL features yet:
+- [Fragments](https://github.com/spawnia/sailor/issues/7)
+
 ## Installation
 
 Install Sailor through composer by running:
@@ -101,7 +106,7 @@ query HelloSailor {
 }
 ```
 
-The only requirement is that you must give all your operations unique names.
+You must give all your operations unique names, the following example is invalid:
 
 ```graphql
 # Invalid, operations have to be named
@@ -121,10 +126,6 @@ For the example above, Sailor will generate a class called `HelloSailor`,
 place it in the configured namespace and write it to the configured location.
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 namespace Example\Api;
 
 class HelloSailor extends \Spawnia\Sailor\Operation { ... }
@@ -232,10 +233,9 @@ $mock
         ],
     ]));
 
-self::assertSame(
-    'Hello, Sailor!',
-    HelloSailor::execute('Sailor')->data->hello
-);
+$result = HelloSailor::execute('Sailor')->errorFree();
+
+self::assertSame('Hello, Sailor!', $result->data->hello);
 ```
 
 Subsequent calls to `::mock()` will return the initially registered mock instance.
@@ -275,7 +275,7 @@ The `Log` client offers a convenient method of reading the requests as structure
 
 ```php
 $log = new \Spawnia\Sailor\Client\Log(__DIR__ . '/sailor-requests.log');
-foreach($log->requests() as $request) {
+foreach ($log->requests() as $request) {
     var_dump($request);
 }
 

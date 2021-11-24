@@ -1,0 +1,18 @@
+query AllMembers {
+    members {
+        ... on User {
+            name
+        }
+        ... on Organization {
+            code
+        }
+    }
+}
+
+query NodeMembers {
+    members {
+        ... on Node {
+            id
+        }
+    }
+}

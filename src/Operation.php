@@ -14,6 +14,8 @@ use Mockery\MockInterface;
  * `execute` can not be made into an actual abstract function, since
  * its arguments and return type should be strictly typed
  * depending on the contents of the operation.
+ *
+ * @template TResult of Result
  */
 abstract class Operation
 {
@@ -43,6 +45,7 @@ abstract class Operation
 
     /**
      * @param  mixed  ...$args
+     * @return TResult
      */
     protected static function executeOperation(...$args): Result
     {
@@ -58,7 +61,7 @@ abstract class Operation
         $parts = explode('\\', $child);
         $basename = end($parts);
 
-        /** @var class-string<\Spawnia\Sailor\Result> $resultClass */
+        /** @var class-string<TResult> $resultClass */
         $resultClass = $child.'\\'.$basename.'Result';
 
         return $resultClass::fromResponse($response);

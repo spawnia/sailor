@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Spawnia\Sailor\Simple\MyObjectQuery\SingleObject;
+namespace Spawnia\Sailor\Simple\MyObjectNestedQuery\SingleObject\Nested;
 
-class SingleObject extends \Spawnia\Sailor\TypedObject
+class SomeObject extends \Spawnia\Sailor\TypedObject
 {
     /** @var int|null */
     public $value;

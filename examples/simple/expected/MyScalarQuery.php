@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Simple;
 
+/**
+ * @extends \Spawnia\Sailor\Operation<\Spawnia\Sailor\Simple\MyScalarQuery\MyScalarQueryResult>
+ */
 class MyScalarQuery extends \Spawnia\Sailor\Operation
 {
     public static function execute(?string $arg = null): MyScalarQuery\MyScalarQueryResult
@@ -15,6 +18,7 @@ class MyScalarQuery extends \Spawnia\Sailor\Operation
     {
         return /* @lang GraphQL */ 'query MyScalarQuery($arg: String) {
           scalarWithArg(arg: $arg)
+          __typename
         }';
     }
 

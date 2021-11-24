@@ -12,6 +12,7 @@ use Spawnia\Sailor\Codegen\Writer;
 use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Response;
+use Spawnia\Sailor\ResultErrorsException;
 use Spawnia\Sailor\Simple\MyObjectNestedQuery;
 use Spawnia\Sailor\Simple\MyObjectNestedQuery\MyObjectNestedQueryResult;
 use Spawnia\Sailor\Simple\MyScalarQuery;
@@ -24,9 +25,9 @@ class SimpleTest extends TestCase
 
     const EXAMPLES_PATH = __DIR__.'/../../examples/simple/';
 
-    public function testGeneratesFooExample(): void
+    public function testGeneratesSimpleExample(): void
     {
-        $endpoint = self::fooEndpoint();
+        $endpoint = self::simpleEndpoint();
 
         $generator = new Generator($endpoint, 'simple');
         $files = $generator->generate();
@@ -37,9 +38,9 @@ class SimpleTest extends TestCase
         self::assertDirectoryEquals(self::EXAMPLES_PATH.'expected', self::EXAMPLES_PATH.'generated');
     }
 
-    protected static function fooEndpoint(): EndpointConfig
+    protected static function simpleEndpoint(): EndpointConfig
     {
-        $fooConfig = include __DIR__.'/../../examples/simple/sailor.php';
+        $fooConfig = require self::EXAMPLES_PATH.'sailor.php';
 
         return $fooConfig['simple'];
     }
@@ -69,7 +70,7 @@ class SimpleTest extends TestCase
 
         Configuration::setEndpoint(MyScalarQuery::endpoint(), $endpoint);
 
-        $result = MyScalarQuery::execute();
+        $result = MyScalarQuery::execute()->errorFree();
         self::assertSame($value, $result->data->scalarWithArg);
     }
 
@@ -135,7 +136,7 @@ class SimpleTest extends TestCase
                 ],
             ]));
 
-        self::assertSame($bar, MyScalarQuery::execute()->data->scalarWithArg);
+        self::assertSame($bar, MyScalarQuery::execute()->errorFree()->data->scalarWithArg);
     }
 
     public function testMockError(): void
@@ -158,6 +159,9 @@ class SimpleTest extends TestCase
         $errors = $result->errors;
         self::assertNotNull($errors);
         self::assertSame('some error', $errors[0]->message);
+
+        self::expectException(ResultErrorsException::class);
+        $result->errorFree();
     }
 
     public function testNestedObject(): void
@@ -178,7 +182,7 @@ class SimpleTest extends TestCase
                 ],
             ]));
 
-        $result = MyObjectNestedQuery::execute();
+        $result = MyObjectNestedQuery::execute()->errorFree();
         $object = $result->data->singleObject;
         self::assertNotNull($object);
 
@@ -201,7 +205,7 @@ class SimpleTest extends TestCase
                 ],
             ]));
 
-        $result = MyObjectNestedQuery::execute();
+        $result = MyObjectNestedQuery::execute()->errorFree();
         $object = $result->data->singleObject;
         self::assertNotNull($object);
         self::assertNull($object->nested);
