@@ -91,6 +91,7 @@ jobs:
         example:
           - install
           - simple
+          - polymorphic
 
     steps:
       - name: "Checkout"
