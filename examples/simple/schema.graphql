@@ -4,7 +4,18 @@ type Query {
     singleObject: SomeObject
 }
 
+type Mutation {
+    takeSomeInput(input: SomeInput): Int
+}
+
 type SomeObject {
     value: Int
     nested: SomeObject
+}
+
+input SomeInput {
+    id: ID!
+    name: String
+    matrix: [[Int]!]!
+    nested: SomeInput
 }
