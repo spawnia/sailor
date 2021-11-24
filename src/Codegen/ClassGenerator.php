@@ -23,6 +23,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\OutputType;
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\TypeComparators;
@@ -254,7 +255,7 @@ class ClassGenerator
                                     return {$typeReference}::fromStdClass(\$value);
                                 }
                                 PHP;
-                            } elseif ($namedType instanceof InterfaceType) {
+                            } elseif ($namedType instanceof InterfaceType || $namedType instanceof UnionType) {
                                 // We go one level deeper into the selection set
                                 // To avoid naming conflicts, we add on another namespace
                                 $this->namespaceStack [] = ucfirst($fieldName);

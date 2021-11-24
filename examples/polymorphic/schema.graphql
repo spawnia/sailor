@@ -1,5 +1,6 @@
 type Query {
     node(id: ID!): Node!
+    members: [Member!]!
 }
 
 interface Node {
@@ -20,3 +21,9 @@ type User implements Node {
     id: ID!
     name: String
 }
+
+type Organization {
+    code: ID!
+}
+
+union Member = User | Organization

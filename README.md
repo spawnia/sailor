@@ -29,7 +29,6 @@ using the server schema to generate typesafe operations and results.
 
 Sailor does not support the following essential GraphQL features yet:
 - [Fragments](https://github.com/spawnia/sailor/issues/7)
-- [Unions](https://github.com/spawnia/sailor/issues/37)
 
 ## Installation
 
