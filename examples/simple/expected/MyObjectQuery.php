@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Simple;
 
+/**
+ * @extends \Spawnia\Sailor\Operation<\Spawnia\Sailor\Simple\MyObjectQuery\MyObjectQueryResult>
+ */
 class MyObjectQuery extends \Spawnia\Sailor\Operation
 {
     public static function execute(): MyObjectQuery\MyObjectQueryResult

@@ -62,7 +62,7 @@ class PolymorphicTest extends TestCase
                 ],
             ]));
 
-        $result = UserOrPost::execute($id)->assertErrorFree();
+        $result = UserOrPost::execute($id)->errorFree();
         $user = $result->data->node;
 
         self::assertInstanceOf(Node\User::class, $user);
@@ -94,7 +94,7 @@ class PolymorphicTest extends TestCase
                 ],
             ]));
 
-        $result = AllMembers::execute()->assertErrorFree();
+        $result = AllMembers::execute()->errorFree();
         $members = $result->data->members;
 
         self::assertCount(2, $members);
@@ -129,7 +129,7 @@ class PolymorphicTest extends TestCase
                 ],
             ]));
 
-        $result = NodeMembers::execute()->assertErrorFree();
+        $result = NodeMembers::execute()->errorFree();
         $members = $result->data->members;
 
         self::assertCount(2, $members);

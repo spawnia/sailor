@@ -165,7 +165,10 @@ class ResponseTest extends TestCase
         ]);
 
         self::assertNull($response->data);
-        self::assertSame(123, $response->extensions->foo);
+
+        $extensions = $response->extensions;
+        self::assertInstanceOf(\stdClass::class, $extensions);
+        self::assertSame(123, $extensions->foo);
     }
 
     public function testInvalidExtensions(): void
@@ -179,6 +182,8 @@ class ResponseTest extends TestCase
 
     public static function assertResponseIsFooBar(Response $response): void
     {
-        self::assertSame('bar', $response->data->foo);
+        $data = $response->data;
+        self::assertInstanceOf(\stdClass::class, $data);
+        self::assertSame('bar', $data->foo);
     }
 }

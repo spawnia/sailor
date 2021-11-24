@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Polymorphic;
 
+/**
+ * @extends \Spawnia\Sailor\Operation<\Spawnia\Sailor\Polymorphic\UserOrPost\UserOrPostResult>
+ */
 class UserOrPost extends \Spawnia\Sailor\Operation
 {
     public static function execute(string $id): UserOrPost\UserOrPostResult

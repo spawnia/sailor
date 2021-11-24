@@ -149,7 +149,7 @@ class Generator
     }
 
     /**
-     * @param  \GraphQL\Language\AST\DocumentNode[]  $parsed
+     * @param  array<string, \GraphQL\Language\AST\DocumentNode>  $parsed
      */
     public static function ensureOperationsAreNamed(array $parsed): void
     {

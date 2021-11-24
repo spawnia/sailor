@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Support interfaces
 - Support unions
+- Ensure generated code complies with PHPStan v1 at level max
 
 ### Changed
 

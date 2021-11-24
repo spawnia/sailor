@@ -54,6 +54,7 @@ class AddTypename
         foreach ($selections as $i => $selection) {
             if ($selection instanceof FieldNode) {
                 if ($selection->name->value === Introspection::TYPE_NAME_FIELD_NAME) {
+                    // @phpstan-ignore-next-line false-positive Cannot assign offset mixed to GraphQL\Language\AST\NodeList<GraphQL\Language\AST\Node&GraphQL\Language\AST\SelectionNode>.
                     unset($selections[$i]);
                 }
 

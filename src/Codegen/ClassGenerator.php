@@ -6,6 +6,7 @@ namespace Spawnia\Sailor\Codegen;
 
 use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\AST\FieldNode;
+use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\AST\VariableDefinitionNode;
@@ -85,13 +86,15 @@ class ClassGenerator
                     // A named operation, e.g. "mutation FooMutation", maps to a class
                     NodeKind::OPERATION_DEFINITION => [
                         'enter' => function (OperationDefinitionNode $operationDefinition) use ($typeInfo): void {
-                            $operationName = $operationDefinition->name->value;
+                            /**
+                             * @var NameNode $nameNode we validated every operation node is named
+                             * @see Generator::ensureOperationsAreNamed()
+                             */
+                            $nameNode = $operationDefinition->name;
+                            $operationName = $nameNode->value;
 
                             // Generate a class to represent the query/mutation itself
                             $operation = new ClassType($operationName, $this->makeNamespace());
-
-                            // The base class contains most of the logic
-                            $operation->setExtends(Operation::class);
 
                             // The execute method is the public API of the operation
                             $execute = $operation->addMethod('execute');
@@ -103,6 +106,11 @@ class ClassGenerator
                             // Related classes are put into a nested namespace
                             $this->namespaceStack [] = $operationName;
                             $resultClass = $this->withCurrentNamespace($resultName);
+
+                            // The base class contains most of the logic
+                            $operationBaseClass = Operation::class;
+                            $operation->setExtends($operationBaseClass);
+                            $operation->setComment("@extends \\{$operationBaseClass}<\\{$resultClass}>");
 
                             $execute->setReturnType($resultClass);
                             $execute->setBody(<<<'PHP'
@@ -173,8 +181,11 @@ class ClassGenerator
                             $this->operationStack = new OperationStack($operation);
                             $this->operationStack->result = $result;
                             $this->operationStack->errorFreeResult = $errorFreeResult;
+
+                            /** @var ObjectType $operationType always present in validated schemas */
+                            $operationType = $typeInfo->getType();
                             $this->operationStack->pushSelection([
-                                $typeInfo->getType()->name => $this->makeTypedObject($operationName),
+                                $operationType->name => $this->makeTypedObject($operationName),
                             ]);
                         },
                         'leave' => function (OperationDefinitionNode $_): void {

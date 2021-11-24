@@ -96,6 +96,7 @@ class IntrospectorTest extends TestCase
             $introspection = Introspection::fromSchema($schema);
 
             $response = new Response();
+            // @phpstan-ignore-next-line We know an associative array converts to a stdClass
             $response->data = Json::assocToStdClass($introspection);
 
             return $response;

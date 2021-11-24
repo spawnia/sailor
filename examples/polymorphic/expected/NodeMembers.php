@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Polymorphic;
 
+/**
+ * @extends \Spawnia\Sailor\Operation<\Spawnia\Sailor\Polymorphic\NodeMembers\NodeMembersResult>
+ */
 class NodeMembers extends \Spawnia\Sailor\Operation
 {
     public static function execute(): NodeMembers\NodeMembersResult
