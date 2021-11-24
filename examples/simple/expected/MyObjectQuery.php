@@ -16,7 +16,9 @@ class MyObjectQuery extends \Spawnia\Sailor\Operation
         return /* @lang GraphQL */ 'query MyObjectQuery {
           singleObject {
             value
+            __typename
           }
+          __typename
         }';
     }
 

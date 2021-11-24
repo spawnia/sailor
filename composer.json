@@ -15,8 +15,9 @@
     "nette/php-generator": "^3.6.3",
     "psr/http-client": "^1",
     "symfony/console": "^5",
+    "symfony/var-exporter": "^5.3",
     "thecodingmachine/safe": "^1",
-    "webonyx/graphql-php": "^14"
+    "webonyx/graphql-php": "^14.11.3"
   },
   "require-dev": {
     "composer/composer": "^2",
@@ -58,7 +59,8 @@
   "autoload-dev": {
     "psr-4": {
       "Spawnia\\Sailor\\Tests\\": "tests/",
-      "Spawnia\\Sailor\\Simple\\": "examples/simple/expected/"
+      "Spawnia\\Sailor\\Simple\\": "examples/simple/expected/",
+      "Spawnia\\Sailor\\Polymorphic\\": "examples/polymorphic/expected/"
     },
     "files": [
       "vendor/symfony/var-dumper/Resources/functions/dump.php"

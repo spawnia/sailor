@@ -1,0 +1,11 @@
+query UserOrPost($id: ID!) {
+    node(id: $id) {
+        id
+        ... on User {
+            name
+        }
+        ... on Post {
+            title
+        }
+    }
+}

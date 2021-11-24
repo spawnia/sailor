@@ -15,6 +15,7 @@ class MyScalarQuery extends \Spawnia\Sailor\Operation
     {
         return /* @lang GraphQL */ 'query MyScalarQuery($arg: String) {
           scalarWithArg(arg: $arg)
+          __typename
         }';
     }
 

@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Support interfaces
+
+### Changed
+
+- Always add field `__typename` to any subselection and have it available in the result through `TypedObject`
+- Name generated `TypedObject` classes after the corresponding object type
+
 ## v0.10.2
 
 ### Fixed

@@ -38,7 +38,9 @@ class Generator
         if ($parsedDocuments === []) {
             return [];
         }
+
         $document = Merger::combine($parsedDocuments);
+        AddTypename::modify($document);
 
         $schema = $this->schema();
 

@@ -17,8 +17,11 @@ class MyObjectNestedQuery extends \Spawnia\Sailor\Operation
           singleObject {
             nested {
               value
+              __typename
             }
+            __typename
           }
+          __typename
         }';
     }
 
