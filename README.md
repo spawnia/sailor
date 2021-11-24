@@ -25,6 +25,12 @@ GraphQL queries and works natively with the entire ecosystem of GraphQL tools.
 Sailor takes the plain queries you write and generates executable PHP code,
 using the server schema to generate typesafe operations and results.
 
+## Missing features
+
+Sailor does not support the following essential GraphQL features yet:
+- [Fragments](https://github.com/spawnia/sailor/issues/7)
+- [Unions](https://github.com/spawnia/sailor/issues/37)
+
 ## Installation
 
 Install Sailor through composer by running:
