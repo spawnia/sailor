@@ -8,14 +8,16 @@ use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\AST\FieldNode;
 use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\AST\OperationDefinitionNode;
-use GraphQL\Language\AST\SelectionSetNode;
 use GraphQL\Language\AST\VariableDefinitionNode;
 use GraphQL\Language\Printer;
 use GraphQL\Language\Visitor;
+use GraphQL\Type\Definition\CompositeType;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InputType;
+use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ListOfType;
+use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\OutputType;
@@ -23,16 +25,22 @@ use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
+use GraphQL\Utils\TypeComparators;
 use GraphQL\Utils\TypeInfo;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Parameter;
 use Nette\PhpGenerator\PhpNamespace;
+use Spawnia\Sailor\Mapper\PolymorphicMapper;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\ErrorFreeResult;
 use Spawnia\Sailor\Operation;
 use Spawnia\Sailor\Result;
 use Spawnia\Sailor\TypedObject;
+use Symfony\Component\VarExporter\VarExporter;
 
+/**
+ * @phpstan-import-type PolymorphicMapping from PolymorphicMapper
+ */
 class ClassGenerator
 {
     protected Schema $schema;
@@ -75,7 +83,7 @@ class ClassGenerator
                 [
                     // A named operation, e.g. "mutation FooMutation", maps to a class
                     NodeKind::OPERATION_DEFINITION => [
-                        'enter' => function (OperationDefinitionNode $operationDefinition): void {
+                        'enter' => function (OperationDefinitionNode $operationDefinition) use ($typeInfo): void {
                             $operationName = $operationDefinition->name->value;
 
                             // Generate a class to represent the query/mutation itself
@@ -164,11 +172,13 @@ class ClassGenerator
                             $this->operationStack = new OperationStack($operation);
                             $this->operationStack->result = $result;
                             $this->operationStack->errorFreeResult = $errorFreeResult;
-                            $this->operationStack->pushSelection(
-                                $this->makeTypedObject($operationName)
-                            );
+                            $this->operationStack->pushSelection([
+                                $typeInfo->getType()->name => $this->makeTypedObject($operationName)
+                            ]);
                         },
                         'leave' => function (OperationDefinitionNode $_): void {
+                            $this->finishSubtree();
+
                             // Store the current operation as we continue with the next one
                             $this->operationStorage [] = $this->operationStack;
                         },
@@ -219,28 +229,56 @@ class ClassGenerator
                                 return;
                             }
 
-                            $selection = $this->operationStack->peekSelection();
+                            $selectionClasses = $this->operationStack->peekSelection();
 
-                            /** @var Type & OutputType $type */
+                            /** @var Type&OutputType $type */
                             $type = $typeInfo->getType();
-                            /** @var Type $namedType */
+
+                            /** @var Type&NamedType $namedType */
                             $namedType = Type::getNamedType($type);
 
                             if ($namedType instanceof ObjectType) {
-                                $typedObjectName = ucfirst($fieldName);
-
                                 // We go one level deeper into the selection set
                                 // To avoid naming conflicts, we add on another namespace
-                                $this->namespaceStack [] = $typedObjectName;
-                                $typeReference = "\\{$this->withCurrentNamespace($typedObjectName)}";
+                                $this->namespaceStack [] = ucfirst($fieldName);
 
-                                $this->operationStack->pushSelection(
-                                    $this->makeTypedObject($typedObjectName)
-                                );
+                                $name = $namedType->name;
+
+                                $typeReference = "\\{$this->withCurrentNamespace($name)}";
+
+                                $this->operationStack->pushSelection([
+                                    $name => $this->makeTypedObject($name)
+                                ]);
                                 $typeMapper = <<<PHP
                                 static function (\\stdClass \$value): \Spawnia\Sailor\TypedObject {
                                     return {$typeReference}::fromStdClass(\$value);
                                 }
+                                PHP;
+                            } elseif ($namedType instanceof InterfaceType) {
+                                // We go one level deeper into the selection set
+                                // To avoid naming conflicts, we add on another namespace
+                                $this->namespaceStack [] = ucfirst($fieldName);
+
+                                /** @var PolymorphicMapping $mapping */
+                                $mapping = [];
+
+                                /** @var array<string, ClassType> $mappingSelection */
+                                $mappingSelection = [];
+
+                                foreach ($this->schema->getPossibleTypes($namedType) as $objectType) {
+                                    $name = $objectType->name;
+
+                                    $mapping[$name] = "\\{$this->withCurrentNamespace($name)}";
+                                    $mappingSelection[$name] = $this->makeTypedObject($name);
+                                }
+
+                                $typeReference = implode('|', $mapping);
+
+                                $this->operationStack->pushSelection($mappingSelection);
+
+                                $mappingCode = VarExporter::export($mapping);
+                                $typeMapper = <<<PHP
+                                new \Spawnia\Sailor\Mapper\PolymorphicMapper({$mappingCode})
                                 PHP;
                             } elseif ($namedType instanceof ScalarType) {
                                 $typeReference = PhpType::forScalar($namedType);
@@ -257,32 +295,57 @@ class ClassGenerator
                                 throw new \Exception('Unsupported type '.get_class($namedType).' found.');
                             }
 
-                            $fieldProperty = $selection->addProperty($fieldName);
-                            $fieldProperty->setComment('@var '.PhpType::phpDoc($type, $typeReference));
+                            $parentType = $typeInfo->getParentType();
+                            if ($parentType === null) {
+                                throw new \Exception("Unable to determine parent type of field {$fieldName}");
+                            }
 
-                            $fieldTypeMapper = $selection->addMethod(FieldTypeMapper::methodName($fieldName));
-                            $fieldTypeMapper->setReturnType('callable');
-                            $fieldTypeMapper->setBody(<<<PHP
-                            return {$typeMapper};
-                            PHP
-                            );
-                        },
-                    ],
-                    NodeKind::SELECTION_SET => [
-                        'leave' => function (SelectionSetNode $_): void {
-                            // We are done with building this subtree of the selection set,
-                            // so we move the top-most element to the storage
-                            $this->operationStack->popSelection();
+                            foreach ($selectionClasses as $name => $selection) {
+                                $selectionType = $this->schema->getType($name);
+                                if ($selectionType === null) {
+                                    throw new \Exception("Unable to determine type of selection {$name}");
+                                }
 
-                            // The namespace moves up a level
-                            array_pop($this->namespaceStack);
+                                if (TypeComparators::isTypeSubTypeOf($this->schema, $selectionType, $parentType)) {
+                                    $fieldProperty = $selection->addProperty($fieldName);
+                                    $fieldProperty->setComment('@var '.PhpType::phpDoc($type, $typeReference));
+
+                                    $fieldTypeMapper = $selection->addMethod(FieldTypeMapper::methodName($fieldName));
+                                    $fieldTypeMapper->setReturnType('callable');
+                                    $fieldTypeMapper->setBody(<<<PHP
+                                    return {$typeMapper};
+                                    PHP
+                                    );
+                                }
+                            }
                         },
+                        'leave' => function (FieldNode $_) use ($typeInfo): void {
+                            /** @var Type&OutputType $type */
+                            $type = $typeInfo->getType();
+
+                            /** @var Type&NamedType $namedType */
+                            $namedType = Type::getNamedType($type);
+
+                            if ($namedType instanceof CompositeType) {
+                                $this->finishSubtree();
+                            }
+                        }
                     ],
                 ]
             )
         );
 
         return $this->operationStorage;
+    }
+
+    protected function finishSubtree(): void
+    {
+        // We are done with building this subtree of the selection set,
+        // so we move the top-most element to the storage
+        $this->operationStack->popSelection();
+
+        // The namespace moves up a level
+        array_pop($this->namespaceStack);
     }
 
     protected function makeTypedObject(string $name): ClassType

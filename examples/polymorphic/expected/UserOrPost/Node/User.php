@@ -9,7 +9,7 @@ class User extends \Spawnia\Sailor\TypedObject
     /** @var string */
     public $id;
 
-    /** @var string */
+    /** @var string|null */
     public $name;
 
     public function idTypeMapper(): callable

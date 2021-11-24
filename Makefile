@@ -31,6 +31,9 @@ approve: ## Accept the current generated code as expected
 	rm -r examples/simple/expected
 	cp -r examples/simple/generated examples/simple/expected
 
+	rm -r examples/polymorphic/expected
+	cp -r examples/polymorphic/generated examples/polymorphic/expected
+
 vendor: composer.json composer.lock
 	composer install
 	composer validate

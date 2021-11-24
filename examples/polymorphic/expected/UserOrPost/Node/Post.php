@@ -9,7 +9,7 @@ class Post extends \Spawnia\Sailor\TypedObject
     /** @var string */
     public $id;
 
-    /** @var string */
+    /** @var string|null */
     public $title;
 
     public function idTypeMapper(): callable

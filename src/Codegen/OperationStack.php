@@ -15,7 +15,7 @@ class OperationStack
 
     public ClassType $errorFreeResult;
 
-    /** @var array<int, ClassType> */
+    /** @var array<int, array<string, ClassType>> */
     public array $selectionStack = [];
 
     /** @var array<int, ClassType> */
@@ -26,9 +26,12 @@ class OperationStack
         $this->operation = $operation;
     }
 
-    public function pushSelection(ClassType $selectionClass): void
+    /**
+     * @param array<string, ClassType> $selection
+     */
+    public function pushSelection(array $selection): void
     {
-        $this->selectionStack [] = $selectionClass;
+        $this->selectionStack [] = $selection;
     }
 
     /**
@@ -41,10 +44,15 @@ class OperationStack
             throw new \Exception('Emptied out the selection stack too quickly.');
         }
 
-        $this->selectionStorage [] = $selection;
+        foreach ($selection as $class) {
+            $this->selectionStorage [] = $class;
+        }
     }
 
-    public function peekSelection(): ClassType
+    /**
+     * @return array<string, ClassType>
+     */
+    public function peekSelection(): array
     {
         $selection = end($this->selectionStack);
         if ($selection === false) {

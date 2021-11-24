@@ -6,15 +6,15 @@ namespace Spawnia\Sailor\Polymorphic\UserOrPost;
 
 class UserOrPost extends \Spawnia\Sailor\TypedObject
 {
-    /** @var \Spawnia\Sailor\Polymorphic\UserOrPost\Node\Post|\Spawnia\Sailor\Polymorphic\UserOrPost\Node\Task|\Spawnia\Sailor\Polymorphic\UserOrPost\Node\User */
-    public $userOrPost;
+    /** @var \Spawnia\Sailor\Polymorphic\UserOrPost\Node\User|\Spawnia\Sailor\Polymorphic\UserOrPost\Node\Post|\Spawnia\Sailor\Polymorphic\UserOrPost\Node\Task */
+    public $node;
 
-    public function userOrPostTypeMapper(): callable
+    public function nodeTypeMapper(): callable
     {
         return new \Spawnia\Sailor\Mapper\PolymorphicMapper([
-            'Post' => \Spawnia\Sailor\Polymorphic\UserOrPost\Node\Post::class,
-            'Task' => \Spawnia\Sailor\Polymorphic\UserOrPost\Node\Task::class,
-            'User' => \Spawnia\Sailor\Polymorphic\UserOrPost\Node\User::class,
+            'User' => '\\Spawnia\\Sailor\\Polymorphic\\UserOrPost\\Node\\User',
+            'Post' => '\\Spawnia\\Sailor\\Polymorphic\\UserOrPost\\Node\\Post',
+            'Task' => '\\Spawnia\\Sailor\\Polymorphic\\UserOrPost\\Node\\Task',
         ]);
     }
 }

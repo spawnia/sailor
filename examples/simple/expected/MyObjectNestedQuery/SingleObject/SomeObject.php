@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Simple\MyObjectNestedQuery\SingleObject;
 
-class SingleObject extends \Spawnia\Sailor\TypedObject
+class SomeObject extends \Spawnia\Sailor\TypedObject
 {
-    /** @var \Spawnia\Sailor\Simple\MyObjectNestedQuery\SingleObject\Nested\Nested|null */
+    /** @var \Spawnia\Sailor\Simple\MyObjectNestedQuery\SingleObject\Nested\SomeObject|null */
     public $nested;
 
     public function nestedTypeMapper(): callable
     {
         return static function (\stdClass $value): \Spawnia\Sailor\TypedObject {
-            return \Spawnia\Sailor\Simple\MyObjectNestedQuery\SingleObject\Nested\Nested::fromStdClass($value);
+            return \Spawnia\Sailor\Simple\MyObjectNestedQuery\SingleObject\Nested\SomeObject::fromStdClass($value);
         };
     }
 }

@@ -47,10 +47,10 @@ class PolymorphicTest extends TestCase
         UserOrPost::mock()
             ->expects('execute')
             ->once()
-            ->with()
+            ->with($id)
             ->andReturn(UserOrPostResult::fromStdClass((object) [
                 'data' => (object) [
-                    'userOrPost' => (object) [
+                    'node' => (object) [
                         '__typename' => 'User',
                         'id' => $id,
                         'name' => $name,
@@ -58,8 +58,8 @@ class PolymorphicTest extends TestCase
                 ],
             ]));
 
-        $result = UserOrPost::execute()->assertErrorFree();
-        $user = $result->data->userOrPost;
+        $result = UserOrPost::execute($id)->assertErrorFree();
+        $user = $result->data->node;
 
         self::assertInstanceOf(User::class, $user);
         self::assertSame($id, $user->id);
