@@ -11,7 +11,6 @@ use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\AST\VariableDefinitionNode;
 use GraphQL\Language\Printer;
 use GraphQL\Language\Visitor;
-use GraphQL\Type\Definition\AbstractType;
 use GraphQL\Type\Definition\CompositeType;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
