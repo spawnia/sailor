@@ -8,3 +8,11 @@ query AllMembers {
         }
     }
 }
+
+query NodeMembers {
+    members {
+        ... on Node {
+            id
+        }
+    }
+}

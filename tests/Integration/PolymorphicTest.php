@@ -9,8 +9,9 @@ use Spawnia\Sailor\Codegen\Generator;
 use Spawnia\Sailor\Codegen\Writer;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Polymorphic\AllMembers;
-use Spawnia\Sailor\Polymorphic\AllMembers\Members;
 use Spawnia\Sailor\Polymorphic\AllMembers\AllMembersResult;
+use Spawnia\Sailor\Polymorphic\NodeMembers;
+use Spawnia\Sailor\Polymorphic\NodeMembers\NodeMembersResult;
 use Spawnia\Sailor\Polymorphic\UserOrPost;
 use Spawnia\Sailor\Polymorphic\UserOrPost\Node;
 use Spawnia\Sailor\Polymorphic\UserOrPost\UserOrPostResult;
@@ -99,10 +100,46 @@ class PolymorphicTest extends TestCase
         self::assertCount(2, $members);
         [$user, $organization] = $members;
 
-        self::assertInstanceOf(Members\User::class, $user);
+        self::assertInstanceOf(AllMembers\Members\User::class, $user);
         self::assertSame($name, $user->name);
 
-        self::assertInstanceOf(Members\Organization::class, $organization);
+        self::assertInstanceOf(AllMembers\Members\Organization::class, $organization);
         self::assertSame($code, $organization->code);
+    }
+
+    public function testNodeMembers(): void
+    {
+        $id = 'foo';
+
+        NodeMembers::mock()
+            ->expects('execute')
+            ->once()
+            ->with()
+            ->andReturn(NodeMembersResult::fromStdClass((object) [
+                'data' => (object) [
+                    'members' => [
+                        (object) [
+                            '__typename' => 'User',
+                            'id' => $id,
+                        ],
+                        (object) [
+                            '__typename' => 'Organization',
+                        ],
+                    ],
+                ],
+            ]));
+
+        $result = NodeMembers::execute()->assertErrorFree();
+        $members = $result->data->members;
+
+        self::assertCount(2, $members);
+        [$user, $organization] = $members;
+
+        self::assertInstanceOf(NodeMembers\Members\User::class, $user);
+        self::assertSame('User', $user->__typename);
+        self::assertSame($id, $user->id);
+
+        self::assertInstanceOf(NodeMembers\Members\Organization::class, $organization);
+        self::assertSame('Organization', $organization->__typename);
     }
 }
