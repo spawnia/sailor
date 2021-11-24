@@ -228,7 +228,7 @@ class SimpleTest extends TestCase
         TakeSomeInput::mock()
             ->expects('execute')
             ->once()
-            ->withArgs(fn(SomeInput $input): bool => $input == $someInput)
+            ->withArgs(fn (SomeInput $input): bool => $input == $someInput)
             ->andReturn(TakeSomeInput\TakeSomeInputResult::fromStdClass((object) [
                 'data' => (object) [
                     'takeSomeInput' => $answer,

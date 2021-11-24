@@ -51,13 +51,13 @@ class InputGenerator
                 } elseif ($namedType instanceof EnumType) {
                     $typeReference = PhpType::forEnum($namedType);
                 } elseif ($namedType instanceof InputObjectType) {
-                    $typeReference = '\\' . static::className($namedType, $this->endpointConfig);
+                    $typeReference = '\\'.static::className($namedType, $this->endpointConfig);
                 } else {
                     // @phpstan-ignore-next-line
                     throw new \Exception('Unsupported type '.get_class($namedType).' found.');
                 }
 
-                $property->setComment('@var ' . PhpType::phpDoc($fieldType, $typeReference));
+                $property->setComment('@var '.PhpType::phpDoc($fieldType, $typeReference));
             }
 
             yield $class;
@@ -66,11 +66,11 @@ class InputGenerator
 
     public static function className(InputObjectType $type, EndpointConfig $endpointConfig): string
     {
-        return self::inputNamespace($endpointConfig) . '\\' . $type->name;
+        return self::inputNamespace($endpointConfig).'\\'.$type->name;
     }
 
     protected static function inputNamespace(EndpointConfig $endpointConfig): string
     {
-        return $endpointConfig->namespace() . '\\Inputs';
+        return $endpointConfig->namespace().'\\Inputs';
     }
 }

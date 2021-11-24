@@ -60,8 +60,8 @@ class Generator
         }
 
         $inputGenerator = new InputGenerator($schema, $this->endpointConfig);
-        foreach ($inputGenerator->generate() as $inputClass)  {
-            $files []= $this->makeFile($inputClass);
+        foreach ($inputGenerator->generate() as $inputClass) {
+            $files [] = $this->makeFile($inputClass);
         }
 
         return $files;
