@@ -88,6 +88,7 @@ class ClassGenerator
                         'enter' => function (OperationDefinitionNode $operationDefinition) use ($typeInfo): void {
                             /**
                              * @var NameNode $nameNode we validated every operation node is named
+                             *
                              * @see Generator::ensureOperationsAreNamed()
                              */
                             $nameNode = $operationDefinition->name;

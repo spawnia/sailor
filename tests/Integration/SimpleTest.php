@@ -40,7 +40,7 @@ class SimpleTest extends TestCase
 
     protected static function simpleEndpoint(): EndpointConfig
     {
-        $fooConfig = require self::EXAMPLES_PATH . 'sailor.php';
+        $fooConfig = require self::EXAMPLES_PATH.'sailor.php';
 
         return $fooConfig['simple'];
     }
