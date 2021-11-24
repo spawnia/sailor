@@ -17,7 +17,7 @@
     "symfony/console": "^5",
     "symfony/var-exporter": "^5.3",
     "thecodingmachine/safe": "^1",
-    "webonyx/graphql-php": "^14"
+    "webonyx/graphql-php": "^14.11.3"
   },
   "require-dev": {
     "composer/composer": "^2",
