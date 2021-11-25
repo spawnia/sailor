@@ -5,10 +5,7 @@ declare(strict_types=1);
 namespace Spawnia\Sailor\Tests\Integration;
 
 use Mockery;
-use Spawnia\PHPUnitAssertFiles\AssertDirectory;
 use Spawnia\Sailor\Client;
-use Spawnia\Sailor\Codegen\Generator;
-use Spawnia\Sailor\Codegen\Writer;
 use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Response;
@@ -23,30 +20,6 @@ use Spawnia\Sailor\Tests\TestCase;
 
 class SimpleTest extends TestCase
 {
-    use AssertDirectory;
-
-    const EXAMPLES_PATH = __DIR__.'/../../examples/simple/';
-
-    public function testGeneratesSimpleExample(): void
-    {
-        $endpoint = self::simpleEndpoint();
-
-        $generator = new Generator($endpoint, 'simple');
-        $files = $generator->generate();
-
-        $writer = new Writer($endpoint);
-        $writer->write($files);
-
-        self::assertDirectoryEquals(self::EXAMPLES_PATH.'expected', self::EXAMPLES_PATH.'generated');
-    }
-
-    protected static function simpleEndpoint(): EndpointConfig
-    {
-        $fooConfig = require self::EXAMPLES_PATH.'sailor.php';
-
-        return $fooConfig['simple'];
-    }
-
     public function testRequest(): void
     {
         $value = 'bar';
