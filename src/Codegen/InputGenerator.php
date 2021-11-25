@@ -37,7 +37,7 @@ class InputGenerator
 
             $class = new ClassType(
                 $type->name,
-                new PhpNamespace(static::inputNamespace($this->endpointConfig))
+                new PhpNamespace(static::inputsNamespace($this->endpointConfig))
             );
 
             foreach ($type->getFields() as $name => $field) {
@@ -66,10 +66,10 @@ class InputGenerator
 
     public static function className(InputObjectType $type, EndpointConfig $endpointConfig): string
     {
-        return self::inputNamespace($endpointConfig).'\\'.$type->name;
+        return self::inputsNamespace($endpointConfig).'\\'.$type->name;
     }
 
-    protected static function inputNamespace(EndpointConfig $endpointConfig): string
+    protected static function inputsNamespace(EndpointConfig $endpointConfig): string
     {
         return $endpointConfig->namespace().'\\Inputs';
     }
