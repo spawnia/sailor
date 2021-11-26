@@ -64,6 +64,11 @@ class Generator
             $files [] = $this->makeFile($inputClass);
         }
 
+        $enumGenerator = new EnumGenerator($schema, $this->endpointConfig);
+        foreach ($enumGenerator->generate() as $enumClass) {
+            $files [] = $this->makeFile($enumClass);
+        }
+
         return $files;
     }
 

@@ -16,6 +16,12 @@ type SomeObject {
 input SomeInput {
     id: ID!
     name: String
+    value: SomeEnum
     matrix: [[Int]!]!
     nested: SomeInput
+}
+
+enum SomeEnum {
+    A
+    B
 }

@@ -12,6 +12,9 @@ class SomeInput
     /** @var string|null */
     public $name;
 
+    /** @var string|null */
+    public $value;
+
     /** @var array<int, array<int, int|null>> */
     public $matrix;
 
