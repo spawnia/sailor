@@ -30,4 +30,14 @@ abstract class EndpointConfig
      * The location of the schema file that describes the endpoint.
      */
     abstract public function schemaPath(): string;
+
+    /**
+     * Map types to a class that specializes its capabilities.
+     *
+     * @return array<string, TypeConverter|TypeDecorator>
+     */
+    public function types(): array
+    {
+        return [];
+    }
 }
