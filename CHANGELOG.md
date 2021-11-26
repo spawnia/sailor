@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.12.0
+
+### Added
+
+- Generate Enums and Inputs from the schema
+
+### Changed
+
+- Operations with input object types as arguments expect generated classes instead of `\stdClass`
+- The operation names `Inputs` and `Enums` are now reserved
+
 ## v0.11.0
 
 ### Added

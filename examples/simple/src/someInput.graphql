@@ -1,0 +1,3 @@
+mutation TakeSomeInput($input: SomeInput) {
+    takeSomeInput(input: $input)
+}

@@ -46,11 +46,10 @@ class Generator
 
         Validator::validate($schema, $document);
 
-        $classGenerator = new ClassGenerator($schema, $this->endpointConfig, $this->endpointName);
-        $operationSets = $classGenerator->generate($document);
-
         $files = [];
-        foreach ($operationSets as $operationSet) {
+
+        $classGenerator = new ClassGenerator($schema, $this->endpointConfig, $this->endpointName);
+        foreach ($classGenerator->generate($document) as $operationSet) {
             $files [] = $this->makeFile($operationSet->operation);
             $files [] = $this->makeFile($operationSet->result);
             $files [] = $this->makeFile($operationSet->errorFreeResult);
@@ -58,6 +57,16 @@ class Generator
             foreach ($operationSet->selectionStorage as $selection) {
                 $files [] = $this->makeFile($selection);
             }
+        }
+
+        $inputGenerator = new InputGenerator($schema, $this->endpointConfig);
+        foreach ($inputGenerator->generate() as $inputClass) {
+            $files [] = $this->makeFile($inputClass);
+        }
+
+        $enumGenerator = new EnumGenerator($schema, $this->endpointConfig);
+        foreach ($enumGenerator->generate() as $enumClass) {
+            $files [] = $this->makeFile($enumClass);
         }
 
         return $files;
