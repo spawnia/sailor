@@ -41,7 +41,7 @@
     "thecodingmachine/phpstan-safe-rule": "^1.1"
   },
   "suggest": {
-    "guzzle/guzzle": "Enables using the built-in default Client",
+    "guzzlehttp/guzzle": "Enables using the built-in default Client",
     "mockery/mockery": "Used in Operation::mock()"
   },
   "config": {

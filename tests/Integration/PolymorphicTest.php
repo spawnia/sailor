@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Integration;
 
-use Spawnia\PHPUnitAssertFiles\AssertDirectory;
-use Spawnia\Sailor\Codegen\Generator;
-use Spawnia\Sailor\Codegen\Writer;
-use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Polymorphic\AllMembers;
 use Spawnia\Sailor\Polymorphic\AllMembers\AllMembersResult;
 use Spawnia\Sailor\Polymorphic\NodeMembers;
@@ -19,30 +15,6 @@ use Spawnia\Sailor\Tests\TestCase;
 
 class PolymorphicTest extends TestCase
 {
-    use AssertDirectory;
-
-    const EXAMPLES_PATH = __DIR__.'/../../examples/polymorphic/';
-
-    public function testGeneratesPolymorphicExample(): void
-    {
-        $endpoint = self::polymorphicEndpoint();
-
-        $generator = new Generator($endpoint, 'polymorphic');
-        $files = $generator->generate();
-
-        $writer = new Writer($endpoint);
-        $writer->write($files);
-
-        self::assertDirectoryEquals(self::EXAMPLES_PATH.'expected', self::EXAMPLES_PATH.'generated');
-    }
-
-    protected static function polymorphicEndpoint(): EndpointConfig
-    {
-        $fooConfig = include self::EXAMPLES_PATH.'sailor.php';
-
-        return $fooConfig['polymorphic'];
-    }
-
     public function testUserOrPost(): void
     {
         $id = '1';

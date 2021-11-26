@@ -221,8 +221,7 @@ class ClassGenerator
                             } elseif ($type instanceof EnumType) {
                                 $parameter->setType(PhpType::forEnum($type));
                             } elseif ($type instanceof InputObjectType) {
-                                // TODO create value objects to allow typing inputs strictly
-                                $parameter->setType('\stdClass');
+                                $parameter->setType(InputGenerator::className($type, $this->endpointConfig));
                             } else {
                                 throw new \Exception('Unsupported type: '.get_class($type));
                             }
