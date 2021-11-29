@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor\Enum\TypeConverters;
 
 class CustomEnumConverter implements \Spawnia\Sailor\TypeConverter
@@ -12,7 +14,7 @@ class CustomEnumConverter implements \Spawnia\Sailor\TypeConverter
     public function toGraphQL($value)
     {
         if (! $value instanceof \Spawnia\Sailor\Enum\Enums\CustomEnum) {
-            throw new \InvalidArgumentException('Expected instanceof Enum, got: ' . gettype($value));
+            throw new \InvalidArgumentException('Expected instanceof Enum, got: '.gettype($value));
         }
 
         return $value->value;

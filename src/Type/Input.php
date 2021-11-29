@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor\Type;
 
-use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\TypeConverter;
 
 abstract class Input implements TypeConverter
@@ -21,27 +22,21 @@ abstract class Input implements TypeConverter
      */
     abstract protected function converters(): array;
 
-    /**
-     * @param mixed $value
-     */
     public function __set(string $name, $value): void
     {
         $converters = $this->converters();
         if (! isset($converters[$name])) {
-            throw new \InvalidArgumentException('Unknown property ' . $name);
+            throw new \InvalidArgumentException('Unknown property '.$name);
         }
 
         $this->properties[$name] = $value;
     }
 
-    /**
-     * @return mixed
-     */
     public function __get(string $name)
     {
         $converters = $this->converters();
         if (! isset($converters[$name])) {
-            throw new \InvalidArgumentException('Unknown property ' . $name);
+            throw new \InvalidArgumentException('Unknown property '.$name);
         }
 
         return $this->properties[$name];
@@ -52,13 +47,9 @@ abstract class Input implements TypeConverter
         return isset($this->properties[$name]);
     }
 
-    /**
-     * @return \stdClass
-     */
     public function toGraphQL($value): \stdClass
     {
-        /** @var static $value must not be called any other way*/
-
+        /** @var static $value must not be called any other way */
         $converters = $this->converters();
 
         $serializable = new \stdClass();

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor\EnumSrc;
 
 use InvalidArgumentException;
@@ -13,7 +15,7 @@ abstract class Enum
     {
         $reflection = new ReflectionClass($this);
         if (! in_array($value, $reflection->getConstants())) {
-            throw new InvalidArgumentException('Unexpect enum value: ' . $value);
+            throw new InvalidArgumentException('Unexpect enum value: '.$value);
         }
 
         $this->value = $value;

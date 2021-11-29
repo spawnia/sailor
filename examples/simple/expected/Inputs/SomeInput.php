@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Simple\Inputs;
 
+use Spawnia\Sailor\Type\Input;
 use Spawnia\Sailor\TypeConverter\EnumConverter;
 use Spawnia\Sailor\TypeConverter\IDConverter;
-use Spawnia\Sailor\Type\Input;
 use Spawnia\Sailor\TypeConverter\IntConverter;
 use Spawnia\Sailor\TypeConverter\ListConverter;
 use Spawnia\Sailor\TypeConverter\NonNullConverter;
@@ -29,7 +29,7 @@ class SomeInput extends Input
             'name' => new NullConverter(new StringConverter()),
             'value' => new NullConverter(new EnumConverter()),
             'matrix' => new NonNullConverter(new ListConverter(new NonNullConverter(new ListConverter(new NullConverter(new IntConverter()))))),
-            'nested' => new NullConverter(new SomeInput()),
+            'nested' => new NullConverter(new self()),
         ];
     }
 

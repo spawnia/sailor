@@ -70,10 +70,10 @@ class Generator
             $classes [] = $enumClass;
         }
 
-        $classes []= $this->generateTypeConverters($schema);
+        $classes [] = $this->generateTypeConverters($schema);
 
         foreach ($this->endpointConfig->generateClasses($schema, $document) as $class) {
-            $classes []= $class;
+            $classes [] = $class;
         }
 
         return array_map([$this, 'makeFile'], $classes);

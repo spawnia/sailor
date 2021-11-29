@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor\EnumSrc;
 
 use GraphQL\Type\Definition\EnumType;

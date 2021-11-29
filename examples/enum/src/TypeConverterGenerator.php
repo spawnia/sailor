@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor\EnumSrc;
 
 use GraphQL\Type\Schema;
@@ -29,7 +31,7 @@ class TypeConverterGenerator
             if ($name === 'CustomEnum') {
                 $class = new ClassType(
                     $type->name,
-                    new PhpNamespace(TypeConverterGenerator::typeConvertersNamespace($this->endpointConfig))
+                    new PhpNamespace(self::typeConvertersNamespace($this->endpointConfig))
                 );
 
                 $customEnumClass = CustomEnumGenerator::className($type, $this->endpointConfig);
@@ -69,5 +71,4 @@ PHP
     {
         return $endpointConfig->namespace().'\\TypeConverters';
     }
-
 }
