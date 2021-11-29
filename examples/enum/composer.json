@@ -1,0 +1,25 @@
+{
+  "require": {
+    "spawnia/sailor": "@dev"
+  },
+  "autoload": {
+    "psr-4": {
+      "Spawnia\\Sailor\\Enum\\": "generated/",
+      "Spawnia\\Sailor\\EnumSrc\\": "src/"
+    }
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "./sailor",
+      "options": {
+        "symlink": false
+      }
+    }
+  ],
+  "scripts": {
+    "move-package": "rsync -r ../../ sailor --exclude examples --exclude vendor --exclude .idea --exclude .build --delete",
+    "pre-install-cmd": "@move-package",
+    "pre-update-cmd": "@move-package"
+  }
+}

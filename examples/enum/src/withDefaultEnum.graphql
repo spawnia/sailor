@@ -1,0 +1,3 @@
+query MyDefaultEnumQuery($value: DefaultEnum!) {
+    withDefaultEnum(value: $value)
+}

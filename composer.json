@@ -59,6 +59,8 @@
   "autoload-dev": {
     "psr-4": {
       "Spawnia\\Sailor\\Tests\\": "tests/",
+      "Spawnia\\Sailor\\Enum\\": "examples/enum/expected/",
+      "Spawnia\\Sailor\\EnumSrc\\": "examples/enum/src/",
       "Spawnia\\Sailor\\Simple\\": "examples/simple/expected/",
       "Spawnia\\Sailor\\Polymorphic\\": "examples/polymorphic/expected/"
     },
