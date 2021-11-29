@@ -11,6 +11,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
 use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\PhpNamespace;
 use Nette\PhpGenerator\PsrPrinter;
 use Nette\Utils\FileSystem;
 use Spawnia\Sailor\EndpointConfig;
@@ -46,30 +47,36 @@ class Generator
 
         Validator::validate($schema, $document);
 
-        $files = [];
+        $classes = [];
 
         $classGenerator = new ClassGenerator($schema, $this->endpointConfig, $this->endpointName);
         foreach ($classGenerator->generate($document) as $operationSet) {
-            $files [] = $this->makeFile($operationSet->operation);
-            $files [] = $this->makeFile($operationSet->result);
-            $files [] = $this->makeFile($operationSet->errorFreeResult);
+            $classes [] = $operationSet->operation;
+            $classes [] = $operationSet->result;
+            $classes [] = $operationSet->errorFreeResult;
 
             foreach ($operationSet->selectionStorage as $selection) {
-                $files [] = $this->makeFile($selection);
+                $classes [] = $selection;
             }
         }
 
         $inputGenerator = new InputGenerator($schema, $this->endpointConfig);
         foreach ($inputGenerator->generate() as $inputClass) {
-            $files [] = $this->makeFile($inputClass);
+            $classes [] = $inputClass;
         }
 
-        $enumGenerator = new EnumGenerator($schema, $this->endpointConfig);
+        $enumGenerator = $this->endpointConfig->enumGenerator($schema);
         foreach ($enumGenerator->generate() as $enumClass) {
-            $files [] = $this->makeFile($enumClass);
+            $classes [] = $enumClass;
         }
 
-        return $files;
+        $classes []= $this->generateTypeConverters($schema);
+
+        foreach ($this->endpointConfig->generateClasses($schema, $document) as $class) {
+            $classes []= $class;
+        }
+
+        return array_map([$this, 'makeFile'], $classes);
     }
 
     protected function makeFile(ClassType $classType): File
@@ -201,5 +208,25 @@ class Generator
     protected function deleteGeneratedFiles(): void
     {
         FileSystem::delete($this->endpointConfig->targetPath());
+    }
+
+    protected function generateTypeConverters(Schema $schema): ClassType
+    {
+        $class = new ClassType(
+            'TypeConverters',
+            new PhpNamespace($this->endpointConfig->namespace())
+        );
+
+        foreach ($this->endpointConfig->typeConverters($schema) as $name => $typeConverter) {
+            $method = $class->addMethod($name);
+            $method->setReturnType($typeConverter);
+            $method->setBody(<<<PHP
+static \$converter;
+return \$converter ??= new \\{$typeConverter}();
+PHP
+);
+        }
+
+        return $class;
     }
 }

@@ -84,7 +84,7 @@ abstract class Operation
 
         $client = self::$clients[static::class]
             ?? Configuration::endpoint(static::endpoint())
-            ->makeClient();
+                ->makeClient();
 
         return $client->request(static::document(), $variables);
     }

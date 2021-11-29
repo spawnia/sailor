@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Spawnia\Sailor\Codegen;
 
 use GraphQL\Type\Definition\EnumType;
-use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Schema;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpNamespace;
@@ -33,21 +32,13 @@ class EnumGenerator
                 continue;
             }
 
-            $class = new ClassType(
-                $type->name,
-                new PhpNamespace(static::enumsNamespace($this->endpointConfig))
-            );
+            $class = $this->makeClass($type);
 
-            foreach ($type->getValues() as $value) {
-                $name = $value->name;
-                $class->addConstant($name, $name);
-            }
-
-            yield $class;
+            yield $this->decorateClass($type, $class);
         }
     }
 
-    public static function className(InputObjectType $type, EndpointConfig $endpointConfig): string
+    public static function className(EnumType $type, EndpointConfig $endpointConfig): string
     {
         return self::enumsNamespace($endpointConfig).'\\'.$type->name;
     }
@@ -55,5 +46,23 @@ class EnumGenerator
     protected static function enumsNamespace(EndpointConfig $endpointConfig): string
     {
         return $endpointConfig->namespace().'\\Enums';
+    }
+
+    protected function makeClass(EnumType $type): ClassType
+    {
+        return new ClassType(
+            $type->name,
+            new PhpNamespace(static::enumsNamespace($this->endpointConfig))
+        );
+    }
+
+    protected function decorateClass(EnumType $type, ClassType $class): ClassType
+    {
+        foreach ($type->getValues() as $value) {
+            $name = $value->name;
+            $class->addConstant($name, $name);
+        }
+
+        return $class;
     }
 }

@@ -12,6 +12,7 @@ use GraphQL\Type\Schema;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpNamespace;
 use Spawnia\Sailor\EndpointConfig;
+use Spawnia\Sailor\Type\Input;
 
 class InputGenerator
 {
@@ -40,6 +41,8 @@ class InputGenerator
                 new PhpNamespace(static::inputsNamespace($this->endpointConfig))
             );
 
+            $class->addExtend(Input::class);
+
             foreach ($type->getFields() as $name => $field) {
                 $property = $class->addProperty($name);
 
@@ -64,8 +67,12 @@ class InputGenerator
         }
     }
 
+    /**
+     * @return class-string<Input>
+     */
     public static function className(InputObjectType $type, EndpointConfig $endpointConfig): string
     {
+        // @phpstan-ignore-next-line Method Spawnia\Sailor\Codegen\InputGenerator::className() should return class-string<Spawnia\Sailor\Type\Input> but returns string.
         return self::inputsNamespace($endpointConfig).'\\'.$type->name;
     }
 

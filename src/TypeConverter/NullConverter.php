@@ -1,0 +1,32 @@
+<?php
+
+namespace Spawnia\Sailor\TypeConverter;
+
+use Spawnia\Sailor\TypeConverter;
+
+/**
+ * Short-circuit conversion of null.
+ */
+class NullConverter implements TypeConverter
+{
+    protected TypeConverter $ofType;
+
+    public function __construct(TypeConverter $ofType)
+    {
+        $this->ofType = $ofType;
+    }
+
+    public function fromGraphQL($value)
+    {
+        return $value === null
+            ? null
+            : $this->ofType->fromGraphQL($value);
+    }
+
+    public function toGraphQL($value)
+    {
+        return $value === null
+            ? null
+            : $this->ofType->toGraphQL($value);
+    }
+}
