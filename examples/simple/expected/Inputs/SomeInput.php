@@ -4,20 +4,37 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Simple\Inputs;
 
-class SomeInput
+use Spawnia\Sailor\TypeConverter\EnumConverter;
+use Spawnia\Sailor\TypeConverter\IDConverter;
+use Spawnia\Sailor\Type\Input;
+use Spawnia\Sailor\TypeConverter\IntConverter;
+use Spawnia\Sailor\TypeConverter\ListConverter;
+use Spawnia\Sailor\TypeConverter\NonNullConverter;
+use Spawnia\Sailor\TypeConverter\NullConverter;
+use Spawnia\Sailor\TypeConverter\StringConverter;
+
+/**
+ * @property string $id
+ * @property string|null $name
+ * @property string|null $value
+ * @property array<int, array<int, int|null>> $matrix
+ * @property \Spawnia\Sailor\Simple\Inputs\SomeInput|null $nested
+ */
+class SomeInput extends Input
 {
-    /** @var string */
-    public $id;
+    protected function converters(): array
+    {
+        return [
+            'id' => new NonNullConverter(new IDConverter()),
+            'name' => new NullConverter(new StringConverter()),
+            'value' => new NullConverter(new EnumConverter()),
+            'matrix' => new NonNullConverter(new ListConverter(new NonNullConverter(new ListConverter(new NullConverter(new IntConverter()))))),
+            'nested' => new NullConverter(new SomeInput()),
+        ];
+    }
 
-    /** @var string|null */
-    public $name;
-
-    /** @var string|null */
-    public $value;
-
-    /** @var array<int, array<int, int|null>> */
-    public $matrix;
-
-    /** @var \Spawnia\Sailor\Simple\Inputs\SomeInput|null */
-    public $nested;
+    public static function endpoint(): string
+    {
+        return 'simple';
+    }
 }
