@@ -67,20 +67,22 @@ class InputGenerator
 
             $convertersMethod = $class->addMethod('converters');
             $convertersString = implode(",\n", $converters);
-            $convertersMethod->setBody(<<<PHP
-                return [
-                {$convertersString},
-                ];
-                PHP
+            $convertersMethod->setBody(
+                <<<PHP
+                    return [
+                    {$convertersString},
+                    ];
+                    PHP
             );
             $convertersMethod->setReturnType('array');
 
             $endpoint = $class->addMethod('endpoint');
             $endpoint->setStatic();
             $endpoint->setReturnType('string');
-            $endpoint->setBody(<<<PHP
-                return '{$this->endpoint}';
-                PHP
+            $endpoint->setBody(
+                <<<PHP
+                    return '{$this->endpoint}';
+                    PHP
             );
 
             yield $class;

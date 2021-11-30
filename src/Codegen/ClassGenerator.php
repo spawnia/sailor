@@ -119,9 +119,10 @@ class ClassGenerator
                             $operation->setComment("@extends \\{$operationBaseClass}<\\{$resultClass}>");
 
                             $execute->setReturnType($resultClass);
-                            $execute->setBody(<<<'PHP'
-                                return self::executeOperation(...func_get_args());
-                                PHP
+                            $execute->setBody(
+                                <<<'PHP'
+                                    return self::executeOperation(...func_get_args());
+                                    PHP
                             );
 
                             // Store the actual query string in the operation
@@ -130,18 +131,20 @@ class ClassGenerator
                             $document->setStatic();
                             $document->setReturnType('string');
                             $operationString = Printer::doPrint($operationDefinition);
-                            $document->setBody(<<<PHP
-                                return /* @lang GraphQL */ '{$operationString}';
-                                PHP
+                            $document->setBody(
+                                <<<PHP
+                                    return /* @lang GraphQL */ '{$operationString}';
+                                    PHP
                             );
 
                             // Set the endpoint this operation belongs to
                             $endpoint = $operation->addMethod('endpoint');
                             $endpoint->setStatic();
                             $endpoint->setReturnType('string');
-                            $endpoint->setBody(<<<PHP
-                                return '{$this->endpoint}';
-                                PHP
+                            $endpoint->setBody(
+                                <<<PHP
+                                    return '{$this->endpoint}';
+                                    PHP
                             );
 
                             $result = new ClassType($resultName, $this->makeNamespace());
@@ -152,9 +155,10 @@ class ClassGenerator
                             $dataParam = $setData->addParameter('data');
                             $dataParam->setType('\\stdClass');
                             $setData->setReturnType('void');
-                            $setData->setBody(<<<PHP
-                                \$this->data = {$operationName}::fromStdClass(\$data);
-                                PHP
+                            $setData->setBody(
+                                <<<PHP
+                                    \$this->data = {$operationName}::fromStdClass(\$data);
+                                    PHP
                             );
 
                             $dataProp = $result->addProperty('data');
@@ -170,9 +174,10 @@ class ClassGenerator
                             $errorFree->setReturnType(
                                 $this->withCurrentNamespace($errorFreeResultName)
                             );
-                            $errorFree->setBody(<<<PHP
-                                return {$errorFreeResultName}::fromResult(\$this);
-                                PHP
+                            $errorFree->setBody(
+                                <<<PHP
+                                    return {$errorFreeResultName}::fromResult(\$this);
+                                    PHP
                             );
 
                             $errorFreeResult = new ClassType($errorFreeResultName, $this->makeNamespace());
@@ -316,11 +321,12 @@ class ClassGenerator
 
                                     $fieldTypeMapper = $selection->addMethod(FieldTypeMapper::methodName($fieldName));
                                     $fieldTypeMapper->setReturnType(TypeConverter::class);
-                                    $fieldTypeMapper->setBody(<<<PHP
-                                        static \$converter;
+                                    $fieldTypeMapper->setBody(
+                                        <<<PHP
+                                            static \$converter;
 
-                                        return \$converter ??= {$wrappedTypeConverter};
-                                        PHP
+                                            return \$converter ??= {$wrappedTypeConverter};
+                                            PHP
                                     );
                                 }
                             }

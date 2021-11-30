@@ -41,20 +41,22 @@ class TypeConverterGenerator
                 $fromGraphQL = $class->addMethod('fromGraphQL');
                 $fromGraphQL->addParameter('value');
                 $fromGraphQL->setReturnType($customEnumClass);
-                $fromGraphQL->setBody(<<<PHP
-                    return new \\{$customEnumClass}(\$value);
-                    PHP
+                $fromGraphQL->setBody(
+                    <<<PHP
+                        return new \\{$customEnumClass}(\$value);
+                        PHP
                 );
 
                 $toGraphQL = $class->addMethod('toGraphQL');
                 $toGraphQL->addParameter('value');
-                $toGraphQL->setBody(<<<PHP
-                    if (! \$value instanceof \\{$customEnumClass}) {
-                        throw new \InvalidArgumentException('Expected instanceof Enum, got: '.gettype(\$value));
-                    }
+                $toGraphQL->setBody(
+                    <<<PHP
+                        if (! \$value instanceof \\{$customEnumClass}) {
+                            throw new \InvalidArgumentException('Expected instanceof Enum, got: '.gettype(\$value));
+                        }
 
-                    return \$value->value;
-                    PHP
+                        return \$value->value;
+                        PHP
                 );
 
                 yield $class;
