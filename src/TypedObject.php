@@ -20,51 +20,50 @@ abstract class TypedObject implements TypeConverter
     public static function fromStdClass(stdClass $data): self
     {
         static $converter;
-        $converter ??= new static;
+        $converter ??= new static();
 
         return $converter->fromGraphQL($data);
     }
 
     public function fromGraphQL($value)
     {
-        $instance = new static;
+        $instance = new static();
 
         if (! $value instanceof stdClass) {
-            throw new \InvalidArgumentException('Expected stdClass, got: '.gettype($value));
+            throw new \InvalidArgumentException('Expected stdClass, got: ' . gettype($value));
         }
 
         foreach ($value as $field => $valueOrValues) {
-            if ($field === Introspection::TYPE_NAME_FIELD_NAME) {
+            if (Introspection::TYPE_NAME_FIELD_NAME === $field) {
                 // Short circuit here since this field is always present and needs no cast
                 $instance->__typename = $valueOrValues;
                 continue;
-            } else {
-                // The ClassGenerator placed methods for each property that return
-                // a callable, which can map a value to its internal type
-                $methodName = FieldTypeMapper::methodName($field);
+            }
+            // The ClassGenerator placed methods for each property that return
+            // a callable, which can map a value to its internal type
+            $methodName = FieldTypeMapper::methodName($field);
 
-                if (! method_exists(static::class, $methodName)) {
-                    $availableMethods = array_diff(
-                        get_class_methods(static::class),
-                        get_class_methods(self::class),
-                    );
+            if (! method_exists(static::class, $methodName)) {
+                $availableMethods = array_diff(
+                    get_class_methods(static::class),
+                    get_class_methods(self::class),
+                );
 
-                    $availableFields = implode(
-                        ', ',
-                        array_map(
+                $availableFields = implode(
+                    ', ',
+                    array_map(
                             [FieldTypeMapper::class, 'fieldName'],
                             $availableMethods,
                         )
-                    );
+                );
 
-                    throw new InvalidResponseException("Unknown field {$field}, available fields: {$availableFields}.");
-                }
-
-                /** @var TypeConverter $typeConverter */
-                $typeConverter = $instance->{$methodName}();
-
-                $converted = $typeConverter->fromGraphQL($valueOrValues);
+                throw new InvalidResponseException("Unknown field {$field}, available fields: {$availableFields}.");
             }
+
+            /** @var TypeConverter $typeConverter */
+            $typeConverter = $instance->{$methodName}();
+
+            $converted = $typeConverter->fromGraphQL($valueOrValues);
 
             $instance->{$field} = $converted;
         }

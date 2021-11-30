@@ -12,7 +12,7 @@ class CustomEnumGenerator extends EnumGenerator
 {
     protected function decorateClass(EnumType $type, ClassType $class): ClassType
     {
-        if ($type->name === 'CustomEnum') {
+        if ('CustomEnum' === $type->name) {
             $class->addExtend(Enum::class);
         }
 

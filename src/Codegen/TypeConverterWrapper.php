@@ -23,7 +23,8 @@ class TypeConverterWrapper
 
             return self::wrap(
                 $type->getOfType(),
-/** @lang PHP */ "new \\{$nonNullConverterClass}({$innerConverter})"
+                /** @lang PHP */ 
+                "new \\{$nonNullConverterClass}({$innerConverter})"
             );
         }
 
@@ -32,7 +33,8 @@ class TypeConverterWrapper
 
             return self::wrap(
                 $type->getOfType(),
-/** @lang PHP */ "new \\{$listConverterClass}({$innerConverter})"
+                /** @lang PHP */ 
+                "new \\{$listConverterClass}({$innerConverter})"
             );
         }
 

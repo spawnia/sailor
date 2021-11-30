@@ -20,7 +20,7 @@ class SomeInput extends \Spawnia\Sailor\Type\Input
             'name' => new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\StringConverter),
             'value' => new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\EnumConverter),
             'matrix' => new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\ListConverter(new \Spawnia\Sailor\TypeConverter\NonNullConverter(new \Spawnia\Sailor\TypeConverter\ListConverter(new \Spawnia\Sailor\TypeConverter\NonNullConverter(new \Spawnia\Sailor\TypeConverter\IntConverter))))),
-            'nested' => new \Spawnia\Sailor\TypeConverter\NullConverter(new self),
+            'nested' => new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\Simple\Inputs\SomeInput),
         ];
     }
 

@@ -23,14 +23,14 @@ use stdClass;
  */
 class IntrospectorTest extends TestCase
 {
-    const SCHEMA = /* @lang GraphQL */ <<<'GRAPHQL'
-    type Query {
-      simple: ID
-    }
+    public const SCHEMA = /* @lang GraphQL */ <<<'GRAPHQL'
+        type Query {
+          simple: ID
+        }
 
-    GRAPHQL;
+        GRAPHQL;
 
-    const PATH = __DIR__.'/schema.graphql';
+    public const PATH = __DIR__ . '/schema.graphql';
 
     /**
      * @dataProvider validResponseMocks
@@ -39,8 +39,7 @@ class IntrospectorTest extends TestCase
      */
     public function testPrintsIntrospection(array $responseMocks): void
     {
-        $endpointConfig = new class($responseMocks) extends EndpointConfig
-        {
+        $endpointConfig = new class($responseMocks) extends EndpointConfig {
             /** @var array<int, callable> */
             private array $responseMocks;
 
@@ -118,7 +117,7 @@ class IntrospectorTest extends TestCase
             [
                 static function (): Response {
                     $response = new Response();
-                    $response->errors = [new stdClass];
+                    $response->errors = [new stdClass()];
 
                     return $response;
                 },

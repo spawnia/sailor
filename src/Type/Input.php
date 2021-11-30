@@ -29,7 +29,7 @@ abstract class Input implements TypeConverter
     {
         $converters = $this->converters();
         if (! isset($converters[$name])) {
-            throw new \InvalidArgumentException('Unknown property '.$name);
+            throw new \InvalidArgumentException('Unknown property ' . $name);
         }
 
         $this->properties[$name] = $value;
@@ -42,7 +42,7 @@ abstract class Input implements TypeConverter
     {
         $converters = $this->converters();
         if (! isset($converters[$name])) {
-            throw new \InvalidArgumentException('Unknown property '.$name);
+            throw new \InvalidArgumentException('Unknown property ' . $name);
         }
 
         return $this->properties[$name];

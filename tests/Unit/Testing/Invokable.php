@@ -12,6 +12,5 @@ class Invokable
     // @phpstan-ignore-next-line
     public function __invoke()
     {
-        //
     }
 }

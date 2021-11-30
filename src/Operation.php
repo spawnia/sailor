@@ -45,12 +45,13 @@ abstract class Operation
 
     /**
      * @param  mixed  ...$args
+     *
      * @return TResult
      */
     protected static function executeOperation(...$args): Result
     {
         $mock = self::$mocks[static::class] ?? null;
-        if ($mock !== null) {
+        if (null !== $mock) {
             // @phpstan-ignore-next-line This function is only present on child classes
             return $mock::execute(...$args);
         }
@@ -62,7 +63,7 @@ abstract class Operation
         $basename = end($parts);
 
         /** @var class-string<TResult> $resultClass */
-        $resultClass = $child.'\\'.$basename.'Result';
+        $resultClass = $child . '\\' . $basename . 'Result';
 
         return $resultClass::fromResponse($response);
     }

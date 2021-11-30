@@ -45,8 +45,8 @@ class GeneratorTest extends TestCase
     {
         $path = 'thisShouldBeInTheMessage';
         $documents = [
-            $path => /* @lang GraphQL */
-                'invalid GraphQL',
+            $path /* @lang GraphQL */
+                => 'invalid GraphQL',
         ];
 
         self::expectExceptionMessageMatches("/$path/");

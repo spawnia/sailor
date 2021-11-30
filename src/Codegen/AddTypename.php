@@ -29,12 +29,12 @@ class AddTypename
 
         foreach ($selectionSetNode->selections as $selection) {
             if ($selection instanceof FieldNode) {
-                if ($selection->name->value === Introspection::TYPE_NAME_FIELD_NAME) {
+                if (Introspection::TYPE_NAME_FIELD_NAME === $selection->name->value) {
                     $hasTypename = true;
                 }
 
                 $subSelectionSet = $selection->selectionSet;
-                if ($subSelectionSet !== null) {
+                if (null !== $subSelectionSet) {
                     static::ensurePresent($subSelectionSet);
                 }
             } elseif ($selection instanceof InlineFragmentNode) {
@@ -53,13 +53,13 @@ class AddTypename
 
         foreach ($selections as $i => $selection) {
             if ($selection instanceof FieldNode) {
-                if ($selection->name->value === Introspection::TYPE_NAME_FIELD_NAME) {
+                if (Introspection::TYPE_NAME_FIELD_NAME === $selection->name->value) {
                     // @phpstan-ignore-next-line false-positive Cannot assign offset mixed to GraphQL\Language\AST\NodeList<GraphQL\Language\AST\Node&GraphQL\Language\AST\SelectionNode>.
                     unset($selections[$i]);
                 }
 
                 $subSelectionSet = $selection->selectionSet;
-                if ($subSelectionSet !== null) {
+                if (null !== $subSelectionSet) {
                     static::ensurePresent($subSelectionSet);
                 }
             } elseif ($selection instanceof InlineFragmentNode) {

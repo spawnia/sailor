@@ -59,28 +59,28 @@ class InputGenerator
 
                 $typeReference = $typeConfig->typeReference;
 
-                $class->addComment('@property '.PhpType::phpDoc($fieldType, $typeReference).' $'.$name);
+                $class->addComment('@property ' . PhpType::phpDoc($fieldType, $typeReference) . ' $' . $name);
 
                 $typeConverter = TypeConverterWrapper::wrap($fieldType, "new \\{$typeConfig->typeConverter}");
-                $converters [] = /** @lang PHP */"    '{$name}' => {$typeConverter}";
+                $converters[] = /** @lang PHP */ "    '{$name}' => {$typeConverter}";
             }
 
             $convertersMethod = $class->addMethod('converters');
             $convertersString = implode(",\n", $converters);
             $convertersMethod->setBody(<<<PHP
-return [
-{$convertersString},
-];
-PHP
-);
+                return [
+                {$convertersString},
+                ];
+                PHP
+            );
             $convertersMethod->setReturnType('array');
 
             $endpoint = $class->addMethod('endpoint');
             $endpoint->setStatic();
             $endpoint->setReturnType('string');
             $endpoint->setBody(<<<PHP
-                            return '{$this->endpoint}';
-                            PHP
+                return '{$this->endpoint}';
+                PHP
             );
 
             yield $class;
@@ -93,11 +93,11 @@ PHP
     public static function className(InputObjectType $type, EndpointConfig $endpointConfig): string
     {
         // @phpstan-ignore-next-line Method Spawnia\Sailor\Codegen\InputGenerator::className() should return class-string<Spawnia\Sailor\Type\Input> but returns string.
-        return self::inputsNamespace($endpointConfig).'\\'.$type->name;
+        return self::inputsNamespace($endpointConfig) . '\\' . $type->name;
     }
 
     protected static function inputsNamespace(EndpointConfig $endpointConfig): string
     {
-        return $endpointConfig->namespace().'\\Inputs';
+        return $endpointConfig->namespace() . '\\Inputs';
     }
 }

@@ -14,22 +14,22 @@ class AddTypenameTest extends TestCase
     public function testSimpleQuery(): void
     {
         $document = Parser::parse(/** @lang GraphQL */ <<<'GRAPHQL'
-{
-  simple
-}
+            {
+              simple
+            }
 
-GRAPHQL
-);
+            GRAPHQL
+        );
 
         AddTypename::modify($document);
 
         self::assertSame(/** @lang GraphQL */ <<<'GRAPHQL'
-{
-  simple
-  __typename
-}
+            {
+              simple
+              __typename
+            }
 
-GRAPHQL,
+            GRAPHQL,
             Printer::doPrint($document)
         );
     }
@@ -37,27 +37,27 @@ GRAPHQL,
     public function testInlineFragment(): void
     {
         $document = Parser::parse(/** @lang GraphQL */ <<<'GRAPHQL'
-{
-  ... on Foo {
-    inline
-    __typename
-  }
-}
+            {
+              ... on Foo {
+                inline
+                __typename
+              }
+            }
 
-GRAPHQL
-);
+            GRAPHQL
+        );
 
         AddTypename::modify($document);
 
         self::assertSame(/** @lang GraphQL */ <<<'GRAPHQL'
-{
-  ... on Foo {
-    inline
-  }
-  __typename
-}
+            {
+              ... on Foo {
+                inline
+              }
+              __typename
+            }
 
-GRAPHQL,
+            GRAPHQL,
             Printer::doPrint($document)
         );
     }
@@ -65,31 +65,31 @@ GRAPHQL,
     public function testNestedInlineFragment(): void
     {
         $document = Parser::parse(/** @lang GraphQL */ <<<'GRAPHQL'
-{
-  ... on Foo {
-    nested {
-        __typename
-    }
-    __typename
-  }
-}
+            {
+              ... on Foo {
+                nested {
+                    __typename
+                }
+                __typename
+              }
+            }
 
-GRAPHQL
-);
+            GRAPHQL
+        );
 
         AddTypename::modify($document);
 
         self::assertSame(/** @lang GraphQL */ <<<'GRAPHQL'
-{
-  ... on Foo {
-    nested {
-      __typename
-    }
-  }
-  __typename
-}
+            {
+              ... on Foo {
+                nested {
+                  __typename
+                }
+              }
+              __typename
+            }
 
-GRAPHQL,
+            GRAPHQL,
             Printer::doPrint($document)
         );
     }

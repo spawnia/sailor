@@ -26,7 +26,7 @@ class MockClientTest extends TestCase
             ->willReturn($response);
 
         $mockClient = new MockClient();
-        $mockClient->responseMocks [] = $responseMock;
+        $mockClient->responseMocks[] = $responseMock;
 
         self::assertSame($response, $mockClient->request($query, $variables));
 

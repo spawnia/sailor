@@ -34,7 +34,7 @@ class Writer
         }
 
         \Safe\file_put_contents(
-            $file->directory.'/'.$file->name,
+            $file->directory . '/' . $file->name,
             $file->content
         );
     }

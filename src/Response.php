@@ -37,7 +37,7 @@ class Response
 
     public static function fromResponseInterface(ResponseInterface $response): self
     {
-        if ($response->getStatusCode() !== 200) {
+        if (200 !== $response->getStatusCode()) {
             throw new InvalidResponseException("Response must have status code 200, got: {$response->getStatusCode()}");
         }
 
@@ -74,10 +74,10 @@ class Response
         $hasErrors = property_exists($rawResponse, 'errors');
 
         if (! $hasData && ! $hasErrors) {
-            throw new InvalidResponseException('A valid GraphQL response must contain either "data" or "errors", got: '.\Safe\json_encode($rawResponse));
+            throw new InvalidResponseException('A valid GraphQL response must contain either "data" or "errors", got: ' . \Safe\json_encode($rawResponse));
         }
 
-        $instance = new self;
+        $instance = new self();
 
         if ($hasErrors) {
             $errors = $rawResponse->errors;
@@ -106,9 +106,9 @@ class Response
     /**
      * Throw an exception if errors are present in the result.
      *
-     * @return $this
-     *
      * @throws \Spawnia\Sailor\ResultErrorsException
+     *
+     * @return $this
      */
     public function assertErrorFree(): self
     {
@@ -122,31 +122,31 @@ class Response
     /**
      * Ensure that the "errors" are in a spec-compliant format.
      *
-     * @param  mixed  $errors  Whatever came from the API under the key "errors".
+     * @param  mixed  $errors  whatever came from the API under the key "errors"
      *
      * @throws \Exception
      */
     protected static function validateErrors($errors): void
     {
         if (! is_array($errors)) {
-            throw new InvalidResponseException('The response entry "errors" must be a list if present, got: '.\Safe\json_encode($errors));
+            throw new InvalidResponseException('The response entry "errors" must be a list if present, got: ' . \Safe\json_encode($errors));
         }
 
-        if (count($errors) === 0) {
-            throw new InvalidResponseException('The response entry "errors" must not be empty if present, got: '.\Safe\json_encode($errors));
+        if (0 === count($errors)) {
+            throw new InvalidResponseException('The response entry "errors" must not be empty if present, got: ' . \Safe\json_encode($errors));
         }
 
         foreach ($errors as $error) {
             if (! $error instanceof \stdClass) {
-                throw new InvalidResponseException('Each error in the response must be a map, got: '.\Safe\json_encode($error));
+                throw new InvalidResponseException('Each error in the response must be a map, got: ' . \Safe\json_encode($error));
             }
 
             if (! property_exists($error, 'message')) {
-                throw new InvalidResponseException('Each error in the response must contain a key "message", got: '.\Safe\json_encode($error));
+                throw new InvalidResponseException('Each error in the response must contain a key "message", got: ' . \Safe\json_encode($error));
             }
 
             if (! is_string($error->message)) {
-                throw new InvalidResponseException('Each error in the response must contain a key "message" that is a string, got: '.\Safe\json_encode($error));
+                throw new InvalidResponseException('Each error in the response must contain a key "message" that is a string, got: ' . \Safe\json_encode($error));
             }
         }
     }
@@ -154,7 +154,7 @@ class Response
     /**
      * Ensure that the "data" is in a spec-compliant format.
      *
-     * @param  mixed  $data  Whatever came from the API under the key "data".
+     * @param  mixed  $data  whatever came from the API under the key "data"
      *
      * @throws \Exception
      */
@@ -162,18 +162,18 @@ class Response
     {
         if (
             $data instanceof \stdClass
-            || $data === null
+            || null === $data
         ) {
             return;
         }
 
-        throw new InvalidResponseException('The response entry "data" must be a map or "null", got: '.\Safe\json_encode($data));
+        throw new InvalidResponseException('The response entry "data" must be a map or "null", got: ' . \Safe\json_encode($data));
     }
 
     /**
      * Ensure that the "extensions" are in a spec-compliant format.
      *
-     * @param  mixed  $extensions  Whatever came from the API under the key "extensions".
+     * @param  mixed  $extensions  whatever came from the API under the key "extensions"
      *
      * @throws \Exception
      */

@@ -17,7 +17,7 @@ class NonNullConverter implements TypeConverter
 
     public function fromGraphQL($value)
     {
-        if ($value === null) {
+        if (null === $value) {
             throw new \InvalidArgumentException('Expected non-null value, got null');
         }
 
@@ -26,7 +26,7 @@ class NonNullConverter implements TypeConverter
 
     public function toGraphQL($value)
     {
-        if ($value === null) {
+        if (null === $value) {
             throw new \InvalidArgumentException('Expected non-null value, got null');
         }
 

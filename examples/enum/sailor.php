@@ -13,8 +13,7 @@ use Spawnia\Sailor\Testing\MockClient;
 use Spawnia\Sailor\TypeConfig;
 
 return [
-    'enum' => new class extends EndpointConfig
-    {
+    'enum' => new class() extends EndpointConfig {
         public function namespace(): string
         {
             return 'Spawnia\Sailor\Enum';
@@ -22,24 +21,24 @@ return [
 
         public function targetPath(): string
         {
-            return __DIR__.'/generated';
+            return __DIR__ . '/generated';
         }
 
         public function searchPath(): string
         {
-            return __DIR__.'/src';
+            return __DIR__ . '/src';
         }
 
         public function schemaPath(): string
         {
-            return __DIR__.'/schema.graphql';
+            return __DIR__ . '/schema.graphql';
         }
 
         public function makeClient(): Client
         {
             $mockClient = new MockClient();
 
-            $mockClient->responseMocks [] = static function (): Response {
+            $mockClient->responseMocks[] = static function (): Response {
                 return Response::fromStdClass((object) [
                     'data' => (object) [
                         'singleObject' => (object) [
@@ -59,7 +58,7 @@ return [
                 [
                     'CustomEnum' => new TypeConfig(
                         TypeConverterGenerator::className('CustomEnum', $this),
-                        '\\'.CustomEnumGenerator::className('CustomEnum', $this),
+                        '\\' . CustomEnumGenerator::className('CustomEnum', $this),
                     ),
                 ]
             );

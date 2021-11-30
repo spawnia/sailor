@@ -11,7 +11,6 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
 use Nette\PhpGenerator\ClassType;
-use Nette\PhpGenerator\PhpNamespace;
 use Nette\PhpGenerator\PsrPrinter;
 use Nette\Utils\FileSystem;
 use Spawnia\Sailor\EndpointConfig;
@@ -36,7 +35,7 @@ class Generator
     public function generate(): array
     {
         $parsedDocuments = $this->parsedDocuments();
-        if ($parsedDocuments === []) {
+        if ([] === $parsedDocuments) {
             return [];
         }
 
@@ -51,29 +50,30 @@ class Generator
 
         $classGenerator = new ClassGenerator($schema, $this->endpointConfig, $this->endpointName);
         foreach ($classGenerator->generate($document) as $operationSet) {
-            $classes [] = $operationSet->operation;
-            $classes [] = $operationSet->result;
-            $classes [] = $operationSet->errorFreeResult;
+            $classes[] = $operationSet->operation;
+            $classes[] = $operationSet->result;
+            $classes[] = $operationSet->errorFreeResult;
 
             foreach ($operationSet->selectionStorage as $selection) {
-                $classes [] = $selection;
+                $classes[] = $selection;
             }
         }
 
         $inputGenerator = new InputGenerator($schema, $this->endpointConfig, $this->endpointName);
         foreach ($inputGenerator->generate() as $inputClass) {
-            $classes [] = $inputClass;
+            $classes[] = $inputClass;
         }
 
         $enumGenerator = $this->endpointConfig->enumGenerator($schema);
         foreach ($enumGenerator->generate() as $enumClass) {
-            $classes [] = $enumClass;
+            $classes[] = $enumClass;
         }
 
-        $classes [] = $this->generateTypeConverters($schema);
+        $typeConvertersGenerator = new TypeConvertersGenerator($schema, $this->endpointConfig);
+        $classes[] = $typeConvertersGenerator->generate();
 
         foreach ($this->endpointConfig->generateClasses($schema, $document) as $class) {
-            $classes [] = $class;
+            $classes[] = $class;
         }
 
         return array_map([$this, 'makeFile'], $classes);
@@ -84,14 +84,14 @@ class Generator
         $file = new File();
 
         $phpNamespace = $classType->getNamespace();
-        if ($phpNamespace === null) {
+        if (null === $phpNamespace) {
             throw new \Exception('Generated classes must have a namespace.');
         }
         $file->directory = $this->targetDirectory(
             $phpNamespace->getName()
         );
 
-        $file->name = $classType->getName().'.php';
+        $file->name = $classType->getName() . '.php';
         $file->content = self::asPhpFile($classType);
 
         return $file;
@@ -102,12 +102,12 @@ class Generator
         $pathInTarget = self::after($namespace, $this->endpointConfig->namespace());
         $pathInTarget = str_replace('\\', '/', $pathInTarget);
 
-        return $this->endpointConfig->targetPath().$pathInTarget;
+        return $this->endpointConfig->targetPath() . $pathInTarget;
     }
 
     public static function after(string $subject, string $search): string
     {
-        if ($search === '') {
+        if ('' === $search) {
             return $subject;
         }
 
@@ -128,21 +128,22 @@ class Generator
         $class = $printer->printClass($classType, $phpNamespace);
 
         return <<<PHP
-        <?php
+            <?php
 
-        declare(strict_types=1);
+            declare(strict_types=1);
 
-        {$phpNamespace}{$class}
-        PHP;
+            {$phpNamespace}{$class}
+            PHP;
     }
 
     /**
      * Parse the raw document contents.
      *
      * @param  array<string, string>  $documents
-     * @return array<string, \GraphQL\Language\AST\DocumentNode>
      *
      * @throws \GraphQL\Error\SyntaxError
+     *
+     * @return array<string, \GraphQL\Language\AST\DocumentNode>
      */
     public static function parseDocuments(array $documents): array
     {
@@ -153,7 +154,7 @@ class Generator
             } catch (SyntaxError $error) {
                 throw new Error(
                     // Inform the user which file the error occurred in.
-                    $error->getMessage().' in '.$path,
+                    $error->getMessage() . ' in ' . $path,
                     null,
                     $error->getSource(),
                     $error->getPositions()
@@ -172,11 +173,11 @@ class Generator
         foreach ($parsed as $path => $documentNode) {
             foreach ($documentNode->definitions as $definition) {
                 if (! $definition instanceof OperationDefinitionNode) {
-                    throw new Error('Found unsupported definition in '.$path, $definition);
+                    throw new Error('Found unsupported definition in ' . $path, $definition);
                 }
 
-                if ($definition->name === null) {
-                    throw new Error('Found unnamed operation definition in '.$path, $definition);
+                if (null === $definition->name) {
+                    throw new Error('Found unnamed operation definition in ' . $path, $definition);
                 }
             }
         }
@@ -208,25 +209,5 @@ class Generator
     protected function deleteGeneratedFiles(): void
     {
         FileSystem::delete($this->endpointConfig->targetPath());
-    }
-
-    protected function generateTypeConverters(Schema $schema): ClassType
-    {
-        $class = new ClassType(
-            'TypeConverters',
-            new PhpNamespace($this->endpointConfig->namespace())
-        );
-
-        foreach ($this->endpointConfig->types($schema) as $name => $config) {
-            $method = $class->addMethod($name);
-            $method->setReturnType($config->typeConverter);
-            $method->setBody(<<<PHP
-static \$converter;
-return \$converter ??= new \\{$config->typeConverter}();
-PHP
-);
-        }
-
-        return $class;
     }
 }

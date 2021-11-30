@@ -31,7 +31,7 @@ class OperationStack
      */
     public function pushSelection(array $selection): void
     {
-        $this->selectionStack [] = $selection;
+        $this->selectionStack[] = $selection;
     }
 
     /**
@@ -40,12 +40,12 @@ class OperationStack
     public function popSelection(): void
     {
         $selection = array_pop($this->selectionStack);
-        if ($selection === null) {
+        if (null === $selection) {
             throw new \Exception('Emptied out the selection stack too quickly.');
         }
 
         foreach ($selection as $class) {
-            $this->selectionStorage [] = $class;
+            $this->selectionStorage[] = $class;
         }
     }
 
@@ -55,7 +55,7 @@ class OperationStack
     public function peekSelection(): array
     {
         $selection = end($this->selectionStack);
-        if ($selection === false) {
+        if (false === $selection) {
             throw new \Exception('The selection stack was unexpectedly empty.');
         }
 

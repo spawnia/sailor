@@ -73,7 +73,7 @@ class ClassGenerator
         $this->endpoint = $endpoint;
 
         $this->types = $endpointConfig->types($schema);
-        $this->namespaceStack [] = $endpointConfig->namespace();
+        $this->namespaceStack[] = $endpointConfig->namespace();
     }
 
     /**
@@ -110,7 +110,7 @@ class ClassGenerator
                             $resultName = "{$operationName}Result";
 
                             // Related classes are put into a nested namespace
-                            $this->namespaceStack [] = $operationName;
+                            $this->namespaceStack[] = $operationName;
                             $resultClass = $this->withCurrentNamespace($resultName);
 
                             // The base class contains most of the logic
@@ -120,8 +120,8 @@ class ClassGenerator
 
                             $execute->setReturnType($resultClass);
                             $execute->setBody(<<<'PHP'
-                            return self::executeOperation(...func_get_args());
-                            PHP
+                                return self::executeOperation(...func_get_args());
+                                PHP
                             );
 
                             // Store the actual query string in the operation
@@ -131,8 +131,8 @@ class ClassGenerator
                             $document->setReturnType('string');
                             $operationString = Printer::doPrint($operationDefinition);
                             $document->setBody(<<<PHP
-                            return /* @lang GraphQL */ '{$operationString}';
-                            PHP
+                                return /* @lang GraphQL */ '{$operationString}';
+                                PHP
                             );
 
                             // Set the endpoint this operation belongs to
@@ -140,8 +140,8 @@ class ClassGenerator
                             $endpoint->setStatic();
                             $endpoint->setReturnType('string');
                             $endpoint->setBody(<<<PHP
-                            return '{$this->endpoint}';
-                            PHP
+                                return '{$this->endpoint}';
+                                PHP
                             );
 
                             $result = new ClassType($resultName, $this->makeNamespace());
@@ -153,8 +153,8 @@ class ClassGenerator
                             $dataParam->setType('\\stdClass');
                             $setData->setReturnType('void');
                             $setData->setBody(<<<PHP
-                            \$this->data = {$operationName}::fromStdClass(\$data);
-                            PHP
+                                \$this->data = {$operationName}::fromStdClass(\$data);
+                                PHP
                             );
 
                             $dataProp = $result->addProperty('data');
@@ -171,8 +171,8 @@ class ClassGenerator
                                 $this->withCurrentNamespace($errorFreeResultName)
                             );
                             $errorFree->setBody(<<<PHP
-                            return {$errorFreeResultName}::fromResult(\$this);
-                            PHP
+                                return {$errorFreeResultName}::fromResult(\$this);
+                                PHP
                             );
 
                             $errorFreeResult = new ClassType($errorFreeResultName, $this->makeNamespace());
@@ -198,14 +198,14 @@ class ClassGenerator
                             $this->finishSubtree();
 
                             // Store the current operation as we continue with the next one
-                            $this->operationStorage [] = $this->operationStack;
+                            $this->operationStorage[] = $this->operationStack;
                         },
                     ],
                     NodeKind::VARIABLE_DEFINITION => [
                         'enter' => function (VariableDefinitionNode $variableDefinition) use ($typeInfo): void {
                             $parameter = new Parameter($variableDefinition->variable->name->value);
 
-                            if ($variableDefinition->defaultValue !== null) {
+                            if (null !== $variableDefinition->defaultValue) {
                                 // TODO support default values
                             }
 
@@ -231,12 +231,12 @@ class ClassGenerator
                     NodeKind::FIELD => [
                         'enter' => function (FieldNode $field) use ($typeInfo): void {
                             // We are only interested in the name that will come from the server
-                            $fieldName = $field->alias !== null
+                            $fieldName = null !== $field->alias
                                 ? $field->alias->value
                                 : $field->name->value;
 
                             // Included in TypedObject by default
-                            if ($fieldName === Introspection::TYPE_NAME_FIELD_NAME) {
+                            if (Introspection::TYPE_NAME_FIELD_NAME === $fieldName) {
                                 return;
                             }
 
@@ -251,7 +251,7 @@ class ClassGenerator
                             if ($namedType instanceof ObjectType) {
                                 // We go one level deeper into the selection set
                                 // To avoid naming conflicts, we add on another namespace
-                                $this->namespaceStack [] = ucfirst($fieldName);
+                                $this->namespaceStack[] = ucfirst($fieldName);
 
                                 $name = $namedType->name;
 
@@ -261,12 +261,12 @@ class ClassGenerator
                                     $name => $this->makeTypedObject($name),
                                 ]);
                                 $typeConverter = <<<PHP
-                                new {$typeReference}
-                                PHP;
+                                    new {$typeReference}
+                                    PHP;
                             } elseif ($namedType instanceof InterfaceType || $namedType instanceof UnionType) {
                                 // We go one level deeper into the selection set
                                 // To avoid naming conflicts, we add on another namespace
-                                $this->namespaceStack [] = ucfirst($fieldName);
+                                $this->namespaceStack[] = ucfirst($fieldName);
 
                                 /** @var PolymorphicMapping $mapping */
                                 $mapping = [];
@@ -287,18 +287,18 @@ class ClassGenerator
 
                                 $mappingCode = VarExporter::export($mapping);
                                 $typeConverter = <<<PHP
-                                new \Spawnia\Sailor\TypeConverter\PolymorphicConverter({$mappingCode})
-                                PHP;
+                                    new \Spawnia\Sailor\TypeConverter\PolymorphicConverter({$mappingCode})
+                                    PHP;
                             } else {
                                 $typeConfig = $this->types[$namedType->name];
                                 $typeReference = $typeConfig->typeReference;
                                 $typeConverter = <<<PHP
-                                new \\{$typeConfig->typeConverter}
-                                PHP;
+                                    new \\{$typeConfig->typeConverter}
+                                    PHP;
                             }
 
                             $parentType = $typeInfo->getParentType();
-                            if ($parentType === null) {
+                            if (null === $parentType) {
                                 throw new \Exception("Unable to determine parent type of field {$fieldName}");
                             }
 
@@ -306,20 +306,21 @@ class ClassGenerator
 
                             foreach ($selectionClasses as $name => $selection) {
                                 $selectionType = $this->schema->getType($name);
-                                if ($selectionType === null) {
+                                if (null === $selectionType) {
                                     throw new \Exception("Unable to determine type of selection {$name}");
                                 }
 
                                 if (TypeComparators::isTypeSubTypeOf($this->schema, $selectionType, $parentType)) {
                                     $fieldProperty = $selection->addProperty($fieldName);
-                                    $fieldProperty->setComment('@var '.PhpType::phpDoc($type, $typeReference));
+                                    $fieldProperty->setComment('@var ' . PhpType::phpDoc($type, $typeReference));
 
                                     $fieldTypeMapper = $selection->addMethod(FieldTypeMapper::methodName($fieldName));
                                     $fieldTypeMapper->setReturnType(TypeConverter::class);
                                     $fieldTypeMapper->setBody(<<<PHP
-                                    static \$converter;
-                                    return \$converter ??= {$wrappedTypeConverter};
-                                    PHP
+                                        static \$converter;
+
+                                        return \$converter ??= {$wrappedTypeConverter};
+                                        PHP
                                     );
                                 }
                             }

@@ -25,7 +25,7 @@ class Validator
             );
         }
 
-        if (count($errors) === 0) {
+        if (0 === count($errors)) {
             return;
         }
 

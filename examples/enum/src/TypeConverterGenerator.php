@@ -28,7 +28,7 @@ class TypeConverterGenerator
     public function generate(): iterable
     {
         foreach ($this->schema->getTypeMap() as $name => $type) {
-            if ($name === 'CustomEnum') {
+            if ('CustomEnum' === $name) {
                 $class = new ClassType(
                     $type->name,
                     new PhpNamespace(self::typeConvertersNamespace($this->endpointConfig))
@@ -42,19 +42,19 @@ class TypeConverterGenerator
                 $fromGraphQL->addParameter('value');
                 $fromGraphQL->setReturnType($customEnumClass);
                 $fromGraphQL->setBody(<<<PHP
-return new \\{$customEnumClass}(\$value);
-PHP
-);
+                    return new \\{$customEnumClass}(\$value);
+                    PHP
+                );
 
                 $toGraphQL = $class->addMethod('toGraphQL');
                 $toGraphQL->addParameter('value');
                 $toGraphQL->setBody(<<<PHP
-if (! \$value instanceof \\{$customEnumClass}) {
-    throw new \InvalidArgumentException('Expected instanceof Enum, got: ' . gettype(\$value));
-}
+                    if (! \$value instanceof \\{$customEnumClass}) {
+                        throw new \InvalidArgumentException('Expected instanceof Enum, got: '.gettype(\$value));
+                    }
 
-return \$value->value;
-PHP
+                    return \$value->value;
+                    PHP
                 );
 
                 yield $class;
@@ -64,11 +64,11 @@ PHP
 
     public static function className(string $typeName, EndpointConfig $endpointConfig): string
     {
-        return self::typeConvertersNamespace($endpointConfig).'\\'.$typeName;
+        return self::typeConvertersNamespace($endpointConfig) . '\\' . $typeName;
     }
 
     protected static function typeConvertersNamespace(EndpointConfig $endpointConfig): string
     {
-        return $endpointConfig->namespace().'\\TypeConverters';
+        return $endpointConfig->namespace() . '\\TypeConverters';
     }
 }

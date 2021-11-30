@@ -9,11 +9,11 @@ use Spawnia\Sailor\Client\Log;
 
 class LogTest extends TestCase
 {
-    const FILENAME = __DIR__.'/LogTest.log';
+    public const FILENAME = __DIR__ . '/LogTest.log';
 
-    const QUERY = /** @lang GraphQL */ '{ foo }';
-    const EXPECTED_JSON = /** @lang JSON */ '{"query":"{ foo }","variables":{"bar":42}}'."\n";
-    const VARIABLES = ['bar' => 42];
+    public const QUERY = /** @lang GraphQL */ '{ foo }';
+    public const EXPECTED_JSON = /** @lang JSON */ '{"query":"{ foo }","variables":{"bar":42}}' . "\n";
+    public const VARIABLES = ['bar' => 42];
 
     protected function tearDown(): void
     {
@@ -38,7 +38,7 @@ class LogTest extends TestCase
         $log->request(/** @lang GraphQL */ self::QUERY, (object) self::VARIABLES);
 
         $contents = \Safe\file_get_contents(self::FILENAME);
-        self::assertSame(self::EXPECTED_JSON.self::EXPECTED_JSON, $contents);
+        self::assertSame(self::EXPECTED_JSON . self::EXPECTED_JSON, $contents);
     }
 
     public function testRequests(): void

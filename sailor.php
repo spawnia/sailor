@@ -8,8 +8,7 @@ use Spawnia\Sailor\EndpointConfig;
  * This must return a map from endpoint names to EndpointConfig classes.
  */
 return [
-    'example' => new class extends EndpointConfig
-    {
+    'example' => new class() extends EndpointConfig {
         /**
          * Instantiate a client for Sailor to use for querying.
          *
@@ -20,7 +19,7 @@ return [
          * file is just PHP code, you can do anything. For example, you
          * can use environment variables to enable a dynamic config.
          */
-        public function makeClient(): \Spawnia\Sailor\Client
+        public function makeClient(): Spawnia\Sailor\Client
         {
             return new \Spawnia\Sailor\Client\Guzzle(
                 'https://example.com/graphql',
@@ -45,7 +44,7 @@ return [
          */
         public function targetPath(): string
         {
-            return __DIR__.'/generated/ExampleApi';
+            return __DIR__ . '/generated/ExampleApi';
         }
 
         /**
@@ -53,7 +52,7 @@ return [
          */
         public function searchPath(): string
         {
-            return __DIR__.'/src';
+            return __DIR__ . '/src';
         }
 
         /**
@@ -61,7 +60,7 @@ return [
          */
         public function schemaPath(): string
         {
-            return __DIR__.'/example.graphql';
+            return __DIR__ . '/example.graphql';
         }
     },
 ];

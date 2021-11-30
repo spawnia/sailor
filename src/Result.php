@@ -39,7 +39,7 @@ abstract class Result
      */
     public static function fromResponse(Response $response): self
     {
-        $instance = new static;
+        $instance = new static();
 
         $instance->errors = $response->errors ?? null;
         $instance->extensions = $response->extensions ?? null;
@@ -66,9 +66,9 @@ abstract class Result
     /**
      * Throw an exception if errors are present in the result.
      *
-     * @return $this
-     *
      * @throws \Spawnia\Sailor\ResultErrorsException
+     *
+     * @return $this
      */
     public function assertErrorFree(): self
     {

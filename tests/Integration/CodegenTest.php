@@ -13,14 +13,14 @@ class CodegenTest extends TestCase
 {
     use AssertDirectory;
 
-    const EXAMPLES_PATH = __DIR__.'/../../examples';
+    public const EXAMPLES_PATH = __DIR__ . '/../../examples';
 
     /**
      * @dataProvider examples
      */
     public function testGeneratesExpectedCode(string $example): void
     {
-        $examplePath = self::EXAMPLES_PATH.'/'.$example;
+        $examplePath = self::EXAMPLES_PATH . '/' . $example;
 
         $config = require "{$examplePath}/sailor.php";
         $endpoint = $config[$example];

@@ -18,7 +18,7 @@ class PhpTypeTest extends TestCase
             'MyScalarQuery|null',
             PhpType::phpDoc(
                 Type::id(),
-            'MyScalarQuery'
+                'MyScalarQuery'
             )
         );
     }

@@ -15,9 +15,9 @@ abstract class ErrorFreeResult
     public ?\stdClass $extensions;
 
     /**
-     * @return static
-     *
      * @throws \Spawnia\Sailor\ResultErrorsException
+     *
+     * @return static
      */
     public static function fromResult(Result $result): self
     {
@@ -25,7 +25,7 @@ abstract class ErrorFreeResult
             throw new ResultErrorsException($result->errors);
         }
 
-        $instance = new static;
+        $instance = new static();
 
         $instance->data = $result->data;
         $instance->extensions = $result->extensions ?? null;

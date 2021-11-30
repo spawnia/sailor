@@ -25,13 +25,13 @@ class IDConverter implements TypeConverter
             return (string) $value;
         }
 
-        throw new \InvalidArgumentException('Expected int|string, got: '.gettype($value));
+        throw new \InvalidArgumentException('Expected int|string, got: ' . gettype($value));
     }
 
     public function toGraphQL($value): string
     {
         if (! is_string($value)) {
-            throw new \InvalidArgumentException('Expected string, got '.gettype($value));
+            throw new \InvalidArgumentException('Expected string, got ' . gettype($value));
         }
 
         return $value;
