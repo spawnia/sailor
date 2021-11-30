@@ -59,8 +59,8 @@ return [
                 [
                     'CustomEnum' => new TypeConfig(
                         TypeConverterGenerator::className('CustomEnum', $this),
-                        '\\' . CustomEnumGenerator::className('CustomEnum', $this),
-                    )
+                        '\\'.CustomEnumGenerator::className('CustomEnum', $this),
+                    ),
                 ]
             );
         }

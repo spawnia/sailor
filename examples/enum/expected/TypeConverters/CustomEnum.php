@@ -14,7 +14,7 @@ class CustomEnum implements \Spawnia\Sailor\TypeConverter
     public function toGraphQL($value)
     {
         if (! $value instanceof \Spawnia\Sailor\Enum\Enums\CustomEnum) {
-            throw new \InvalidArgumentException('Expected instanceof Enum, got: ' . gettype($value));
+            throw new \InvalidArgumentException('Expected instanceof Enum, got: '.gettype($value));
         }
 
         return $value->value;

@@ -12,6 +12,7 @@ class UserOrPost extends \Spawnia\Sailor\TypedObject
     public function nodeTypeMapper(): \Spawnia\Sailor\TypeConverter
     {
         static $converter;
+
         return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\NonNullConverter(new \Spawnia\Sailor\TypeConverter\PolymorphicConverter([
             'User' => '\\Spawnia\\Sailor\\Polymorphic\\UserOrPost\\Node\\User',
             'Post' => '\\Spawnia\\Sailor\\Polymorphic\\UserOrPost\\Node\\Post',

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor\Codegen;
 
 use GraphQL\Type\Definition\ListOfType;
@@ -21,7 +23,7 @@ class TypeConverterWrapper
 
             return self::wrap(
                 $type->getOfType(),
-                /** @lang PHP */ "new \\{$nonNullConverterClass}({$innerConverter})"
+/** @lang PHP */ "new \\{$nonNullConverterClass}({$innerConverter})"
             );
         }
 
@@ -30,7 +32,7 @@ class TypeConverterWrapper
 
             return self::wrap(
                 $type->getOfType(),
-                /** @lang PHP */ "new \\{$listConverterClass}({$innerConverter})"
+/** @lang PHP */ "new \\{$listConverterClass}({$innerConverter})"
             );
         }
 

@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
-use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\NamedType;
-use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use Nette\PhpGenerator\ClassType;
@@ -61,10 +59,10 @@ class InputGenerator
 
                 $typeReference = $typeConfig->typeReference;
 
-                $class->addComment('@property '.PhpType::phpDoc($fieldType, $typeReference) . ' $' . $name);
+                $class->addComment('@property '.PhpType::phpDoc($fieldType, $typeReference).' $'.$name);
 
                 $typeConverter = TypeConverterWrapper::wrap($fieldType, "new \\{$typeConfig->typeConverter}");
-                $converters []= /** @lang PHP */"    '{$name}' => {$typeConverter}";
+                $converters [] = /** @lang PHP */"    '{$name}' => {$typeConverter}";
             }
 
             $convertersMethod = $class->addMethod('converters');

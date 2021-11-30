@@ -30,7 +30,7 @@ abstract class TypedObject implements TypeConverter
         $instance = new static;
 
         if (! $value instanceof stdClass) {
-            throw new \InvalidArgumentException('Expected stdClass, got: ' . gettype($value));
+            throw new \InvalidArgumentException('Expected stdClass, got: '.gettype($value));
         }
 
         foreach ($value as $field => $valueOrValues) {

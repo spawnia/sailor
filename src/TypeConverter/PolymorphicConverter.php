@@ -29,7 +29,7 @@ class PolymorphicConverter implements TypeConverter
     public function fromGraphQL($value): TypedObject
     {
         if (! $value instanceof stdClass) {
-            throw new \InvalidArgumentException('Expected stdClass, got: ' . gettype($value));
+            throw new \InvalidArgumentException('Expected stdClass, got: '.gettype($value));
         }
 
         return $this->mapping[$value->__typename]::fromStdClass($value);

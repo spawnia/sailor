@@ -12,6 +12,7 @@ class MyEnumInputQuery extends \Spawnia\Sailor\TypedObject
     public function withEnumInputTypeMapper(): \Spawnia\Sailor\TypeConverter
     {
         static $converter;
+
         return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\Enum\MyEnumInputQuery\WithEnumInput\EnumObject);
     }
 }

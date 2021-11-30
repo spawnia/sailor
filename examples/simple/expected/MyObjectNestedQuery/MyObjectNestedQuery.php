@@ -12,6 +12,7 @@ class MyObjectNestedQuery extends \Spawnia\Sailor\TypedObject
     public function singleObjectTypeMapper(): \Spawnia\Sailor\TypeConverter
     {
         static $converter;
+
         return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\Simple\MyObjectNestedQuery\SingleObject\SomeObject);
     }
 }

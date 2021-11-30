@@ -12,6 +12,7 @@ class AllMembers extends \Spawnia\Sailor\TypedObject
     public function membersTypeMapper(): \Spawnia\Sailor\TypeConverter
     {
         static $converter;
+
         return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\NonNullConverter(new \Spawnia\Sailor\TypeConverter\ListConverter(new \Spawnia\Sailor\TypeConverter\NonNullConverter(new \Spawnia\Sailor\TypeConverter\PolymorphicConverter([
             'User' => '\\Spawnia\\Sailor\\Polymorphic\\AllMembers\\Members\\User',
             'Organization' => '\\Spawnia\\Sailor\\Polymorphic\\AllMembers\\Members\\Organization',

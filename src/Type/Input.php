@@ -23,7 +23,7 @@ abstract class Input implements TypeConverter
     abstract protected function converters(): array;
 
     /**
-     * @param mixed $value anything
+     * @param  mixed  $value  anything
      */
     public function __set(string $name, $value): void
     {

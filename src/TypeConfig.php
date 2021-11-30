@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spawnia\Sailor;
 
 class TypeConfig
@@ -13,7 +15,7 @@ class TypeConfig
     public string $typeReference;
 
     /**
-     * @param class-string<TypeConverter> $typeConverter
+     * @param  class-string<TypeConverter>  $typeConverter
      */
     public function __construct(string $typeConverter, string $typeReference)
     {
