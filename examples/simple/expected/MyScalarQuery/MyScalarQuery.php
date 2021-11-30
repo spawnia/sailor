@@ -9,8 +9,9 @@ class MyScalarQuery extends \Spawnia\Sailor\TypedObject
     /** @var string|null */
     public $scalarWithArg;
 
-    public function scalarWithArgTypeMapper(): callable
+    public function scalarWithArgTypeMapper(): \Spawnia\Sailor\TypeConverter
     {
-        return new \Spawnia\Sailor\Mapper\DirectMapper();
+        static $converter;
+        return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\IDConverter);
     }
 }

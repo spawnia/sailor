@@ -12,13 +12,15 @@ class Post extends \Spawnia\Sailor\TypedObject
     /** @var string|null */
     public $title;
 
-    public function idTypeMapper(): callable
+    public function idTypeMapper(): \Spawnia\Sailor\TypeConverter
     {
-        return new \Spawnia\Sailor\Mapper\DirectMapper();
+        static $converter;
+        return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\NonNullConverter(new \Spawnia\Sailor\TypeConverter\IDConverter));
     }
 
-    public function titleTypeMapper(): callable
+    public function titleTypeMapper(): \Spawnia\Sailor\TypeConverter
     {
-        return new \Spawnia\Sailor\Mapper\DirectMapper();
+        static $converter;
+        return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\StringConverter);
     }
 }

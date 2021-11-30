@@ -9,10 +9,9 @@ class SomeObject extends \Spawnia\Sailor\TypedObject
     /** @var \Spawnia\Sailor\Simple\MyObjectNestedQuery\SingleObject\Nested\SomeObject|null */
     public $nested;
 
-    public function nestedTypeMapper(): callable
+    public function nestedTypeMapper(): \Spawnia\Sailor\TypeConverter
     {
-        return static function (\stdClass $value): \Spawnia\Sailor\TypedObject {
-            return \Spawnia\Sailor\Simple\MyObjectNestedQuery\SingleObject\Nested\SomeObject::fromStdClass($value);
-        };
+        static $converter;
+        return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\Simple\MyObjectNestedQuery\SingleObject\Nested\SomeObject);
     }
 }

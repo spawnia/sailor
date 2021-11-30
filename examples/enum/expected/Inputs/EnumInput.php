@@ -4,26 +4,22 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Enum\Inputs;
 
-use Spawnia\Sailor\Enum\TypeConverters;
-use Spawnia\Sailor\Type\Input;
-use Spawnia\Sailor\TypeConverter\NullConverter;
-
 /**
  * @property string|null $default
  * @property \Spawnia\Sailor\Enum\Enums\CustomEnum|null $custom
  */
-class EnumInput extends Input
+class EnumInput extends \Spawnia\Sailor\Type\Input
 {
-    protected function converters(): array
+    public function converters(): array
     {
         return [
-            'default' => new NullConverter(TypeConverters::DefaultEnum()),
-            'custom' => new NullConverter(TypeConverters::CustomEnum()),
+            'default' => new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\EnumConverter),
+            'custom' => new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\Enum\TypeConverters\CustomEnum),
         ];
     }
 
     public static function endpoint(): string
     {
-        return 'simple';
+        return 'enum';
     }
 }

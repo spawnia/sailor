@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Spawnia\Sailor\Enum;
+namespace Spawnia\Sailor\Polymorphic;
 
 class TypeConverters
 {
@@ -34,24 +34,6 @@ class TypeConverters
     {
         static $converter;
         return $converter ??= new \Spawnia\Sailor\TypeConverter\IDConverter();
-    }
-
-    public function DefaultEnum(): \Spawnia\Sailor\TypeConverter\EnumConverter
-    {
-        static $converter;
-        return $converter ??= new \Spawnia\Sailor\TypeConverter\EnumConverter();
-    }
-
-    public function CustomEnum(): TypeConverters\CustomEnum
-    {
-        static $converter;
-        return $converter ??= new \Spawnia\Sailor\Enum\TypeConverters\CustomEnum();
-    }
-
-    public function EnumInput(): Inputs\EnumInput
-    {
-        static $converter;
-        return $converter ??= new \Spawnia\Sailor\Enum\Inputs\EnumInput();
     }
 
     public function __TypeKind(): \Spawnia\Sailor\TypeConverter\EnumConverter

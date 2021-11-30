@@ -9,8 +9,9 @@ class User extends \Spawnia\Sailor\TypedObject
     /** @var string|null */
     public $name;
 
-    public function nameTypeMapper(): callable
+    public function nameTypeMapper(): \Spawnia\Sailor\TypeConverter
     {
-        return new \Spawnia\Sailor\Mapper\DirectMapper();
+        static $converter;
+        return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\StringConverter);
     }
 }

@@ -9,10 +9,9 @@ class MyObjectQuery extends \Spawnia\Sailor\TypedObject
     /** @var \Spawnia\Sailor\Simple\MyObjectQuery\SingleObject\SomeObject|null */
     public $singleObject;
 
-    public function singleObjectTypeMapper(): callable
+    public function singleObjectTypeMapper(): \Spawnia\Sailor\TypeConverter
     {
-        return static function (\stdClass $value): \Spawnia\Sailor\TypedObject {
-            return \Spawnia\Sailor\Simple\MyObjectQuery\SingleObject\SomeObject::fromStdClass($value);
-        };
+        static $converter;
+        return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\Simple\MyObjectQuery\SingleObject\SomeObject);
     }
 }

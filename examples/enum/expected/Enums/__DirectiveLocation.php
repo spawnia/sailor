@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Spawnia\Sailor\Simple\Enums;
+namespace Spawnia\Sailor\Enum\Enums;
 
 class __DirectiveLocation
 {

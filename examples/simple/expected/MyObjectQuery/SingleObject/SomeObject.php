@@ -9,8 +9,9 @@ class SomeObject extends \Spawnia\Sailor\TypedObject
     /** @var int|null */
     public $value;
 
-    public function valueTypeMapper(): callable
+    public function valueTypeMapper(): \Spawnia\Sailor\TypeConverter
     {
-        return new \Spawnia\Sailor\Mapper\DirectMapper();
+        static $converter;
+        return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\IntConverter);
     }
 }

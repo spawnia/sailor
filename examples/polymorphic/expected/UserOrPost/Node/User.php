@@ -12,13 +12,15 @@ class User extends \Spawnia\Sailor\TypedObject
     /** @var string|null */
     public $name;
 
-    public function idTypeMapper(): callable
+    public function idTypeMapper(): \Spawnia\Sailor\TypeConverter
     {
-        return new \Spawnia\Sailor\Mapper\DirectMapper();
+        static $converter;
+        return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\NonNullConverter(new \Spawnia\Sailor\TypeConverter\IDConverter));
     }
 
-    public function nameTypeMapper(): callable
+    public function nameTypeMapper(): \Spawnia\Sailor\TypeConverter
     {
-        return new \Spawnia\Sailor\Mapper\DirectMapper();
+        static $converter;
+        return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\StringConverter);
     }
 }

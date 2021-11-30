@@ -9,8 +9,9 @@ class TwoArgs extends \Spawnia\Sailor\TypedObject
     /** @var string|null */
     public $twoArgs;
 
-    public function twoArgsTypeMapper(): callable
+    public function twoArgsTypeMapper(): \Spawnia\Sailor\TypeConverter
     {
-        return new \Spawnia\Sailor\Mapper\DirectMapper();
+        static $converter;
+        return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\IDConverter);
     }
 }

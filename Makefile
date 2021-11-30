@@ -28,6 +28,9 @@ infection: ## Runs mutation tests with infection
 
 .PHONY: approve
 approve: ## Accept the current generated code as expected
+	rm -r examples/enum/expected
+	cp -r examples/enum/generated examples/enum/expected
+
 	rm -r examples/simple/expected
 	cp -r examples/simple/generated examples/simple/expected
 

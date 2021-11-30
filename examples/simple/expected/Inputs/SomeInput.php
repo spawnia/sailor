@@ -4,15 +4,6 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\Simple\Inputs;
 
-use Spawnia\Sailor\Type\Input;
-use Spawnia\Sailor\TypeConverter\EnumConverter;
-use Spawnia\Sailor\TypeConverter\IDConverter;
-use Spawnia\Sailor\TypeConverter\IntConverter;
-use Spawnia\Sailor\TypeConverter\ListConverter;
-use Spawnia\Sailor\TypeConverter\NonNullConverter;
-use Spawnia\Sailor\TypeConverter\NullConverter;
-use Spawnia\Sailor\TypeConverter\StringConverter;
-
 /**
  * @property string $id
  * @property string|null $name
@@ -20,16 +11,16 @@ use Spawnia\Sailor\TypeConverter\StringConverter;
  * @property array<int, array<int, int|null>> $matrix
  * @property \Spawnia\Sailor\Simple\Inputs\SomeInput|null $nested
  */
-class SomeInput extends Input
+class SomeInput extends \Spawnia\Sailor\Type\Input
 {
-    protected function converters(): array
+    public function converters(): array
     {
         return [
-            'id' => new NonNullConverter(new IDConverter()),
-            'name' => new NullConverter(new StringConverter()),
-            'value' => new NullConverter(new EnumConverter()),
-            'matrix' => new NonNullConverter(new ListConverter(new NonNullConverter(new ListConverter(new NullConverter(new IntConverter()))))),
-            'nested' => new NullConverter(new self()),
+            'id' => new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\NonNullConverter(new \Spawnia\Sailor\TypeConverter\IDConverter)),
+            'name' => new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\StringConverter),
+            'value' => new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\EnumConverter),
+            'matrix' => new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\ListConverter(new \Spawnia\Sailor\TypeConverter\NonNullConverter(new \Spawnia\Sailor\TypeConverter\ListConverter(new \Spawnia\Sailor\TypeConverter\NonNullConverter(new \Spawnia\Sailor\TypeConverter\IntConverter))))),
+            'nested' => new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\Simple\Inputs\SomeInput),
         ];
     }
 

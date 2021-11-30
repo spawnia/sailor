@@ -9,11 +9,12 @@ class AllMembers extends \Spawnia\Sailor\TypedObject
     /** @var array<int, \Spawnia\Sailor\Polymorphic\AllMembers\Members\User|\Spawnia\Sailor\Polymorphic\AllMembers\Members\Organization> */
     public $members;
 
-    public function membersTypeMapper(): callable
+    public function membersTypeMapper(): \Spawnia\Sailor\TypeConverter
     {
-        return new \Spawnia\Sailor\Mapper\PolymorphicMapper([
+        static $converter;
+        return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\NonNullConverter(new \Spawnia\Sailor\TypeConverter\ListConverter(new \Spawnia\Sailor\TypeConverter\NonNullConverter(new \Spawnia\Sailor\TypeConverter\PolymorphicConverter([
             'User' => '\\Spawnia\\Sailor\\Polymorphic\\AllMembers\\Members\\User',
             'Organization' => '\\Spawnia\\Sailor\\Polymorphic\\AllMembers\\Members\\Organization',
-        ]);
+        ])))));
     }
 }

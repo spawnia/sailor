@@ -9,8 +9,9 @@ class Task extends \Spawnia\Sailor\TypedObject
     /** @var string */
     public $id;
 
-    public function idTypeMapper(): callable
+    public function idTypeMapper(): \Spawnia\Sailor\TypeConverter
     {
-        return new \Spawnia\Sailor\Mapper\DirectMapper();
+        static $converter;
+        return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\NonNullConverter(new \Spawnia\Sailor\TypeConverter\IDConverter));
     }
 }

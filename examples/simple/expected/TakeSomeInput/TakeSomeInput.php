@@ -9,8 +9,9 @@ class TakeSomeInput extends \Spawnia\Sailor\TypedObject
     /** @var int|null */
     public $takeSomeInput;
 
-    public function takeSomeInputTypeMapper(): callable
+    public function takeSomeInputTypeMapper(): \Spawnia\Sailor\TypeConverter
     {
-        return new \Spawnia\Sailor\Mapper\DirectMapper();
+        static $converter;
+        return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\IntConverter);
     }
 }
