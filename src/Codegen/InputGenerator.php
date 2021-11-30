@@ -6,6 +6,7 @@ namespace Spawnia\Sailor\Codegen;
 
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
+use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
@@ -20,10 +21,13 @@ class InputGenerator
 
     protected EndpointConfig $endpointConfig;
 
-    public function __construct(Schema $schema, EndpointConfig $endpointConfig)
+    protected string $endpoint;
+
+    public function __construct(Schema $schema, EndpointConfig $endpointConfig, string $endpoint)
     {
         $this->schema = $schema;
         $this->endpointConfig = $endpointConfig;
+        $this->endpoint = $endpoint;
     }
 
     /**
@@ -31,6 +35,8 @@ class InputGenerator
      */
     public function generate(): iterable
     {
+        $typeConfigs = $this->endpointConfig->types($this->schema);
+
         foreach ($this->schema->getTypeMap() as $type) {
             if (! $type instanceof InputObjectType) {
                 continue;
@@ -43,25 +49,41 @@ class InputGenerator
 
             $class->addExtend(Input::class);
 
-            foreach ($type->getFields() as $name => $field) {
-                $property = $class->addProperty($name);
+            $converters = [];
 
+            foreach ($type->getFields() as $name => $field) {
                 $fieldType = $field->getType();
+
+                /** @var Type&NamedType $namedType guaranteed since we pass in a non-null type */
                 $namedType = Type::getNamedType($fieldType);
 
-                if ($namedType instanceof ScalarType) {
-                    $typeReference = PhpType::forScalar($namedType);
-                } elseif ($namedType instanceof EnumType) {
-                    $typeReference = PhpType::forEnum($namedType);
-                } elseif ($namedType instanceof InputObjectType) {
-                    $typeReference = '\\'.static::className($namedType, $this->endpointConfig);
-                } else {
-                    // @phpstan-ignore-next-line
-                    throw new \Exception('Unsupported type '.get_class($namedType).' found.');
-                }
+                $typeConfig = $typeConfigs[$namedType->name];
 
-                $property->setComment('@var '.PhpType::phpDoc($fieldType, $typeReference));
+                $typeReference = $typeConfig->typeReference;
+
+                $class->addComment('@property '.PhpType::phpDoc($fieldType, $typeReference) . ' $' . $name);
+
+                $typeConverter = TypeConverterWrapper::wrap($fieldType, "new \\{$typeConfig->typeConverter}");
+                $converters []= /** @lang PHP */"    '{$name}' => {$typeConverter}";
             }
+
+            $convertersMethod = $class->addMethod('converters');
+            $convertersString = implode(",\n", $converters);
+            $convertersMethod->setBody(<<<PHP
+return [
+{$convertersString},
+];
+PHP
+);
+            $convertersMethod->setReturnType('array');
+
+            $endpoint = $class->addMethod('endpoint');
+            $endpoint->setStatic();
+            $endpoint->setReturnType('string');
+            $endpoint->setBody(<<<PHP
+                            return '{$this->endpoint}';
+                            PHP
+            );
 
             yield $class;
         }

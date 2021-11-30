@@ -6,8 +6,9 @@ namespace Spawnia\Sailor;
 
 use GraphQL\Type\Introspection;
 use Spawnia\Sailor\Codegen\FieldTypeMapper;
+use stdClass;
 
-abstract class TypedObject
+abstract class TypedObject implements TypeConverter
 {
     public string $__typename;
 
@@ -16,11 +17,23 @@ abstract class TypedObject
      *
      * @return static
      */
-    public static function fromStdClass(\stdClass $data): self
+    public static function fromStdClass(stdClass $data): self
+    {
+        static $converter;
+        $converter ??= new static;
+
+        return $converter->fromGraphQL($data);
+    }
+
+    public function fromGraphQL($value)
     {
         $instance = new static;
 
-        foreach ($data as $field => $valueOrValues) {
+        if (! $value instanceof stdClass) {
+            throw new \InvalidArgumentException('Expected stdClass, got: ' . gettype($value));
+        }
+
+        foreach ($value as $field => $valueOrValues) {
             if (is_null($valueOrValues)) {
                 $converted = null;
             } elseif ($field === Introspection::TYPE_NAME_FIELD_NAME) {
@@ -49,15 +62,16 @@ abstract class TypedObject
                     throw new InvalidResponseException("Unknown field {$field}, available fields: {$availableFields}.");
                 }
 
-                $typeMapper = $instance->{$methodName}();
+                /** @var TypeConverter $typeConverter */
+                $typeConverter = $instance->{$methodName}();
 
                 if (is_array($valueOrValues)) {
                     $converted = [];
                     foreach ($valueOrValues as $value) {
-                        $converted [] = $typeMapper($value);
+                        $converted [] = $typeConverter->fromGraphQL($value);
                     }
                 } else {
-                    $converted = $typeMapper($valueOrValues);
+                    $converted = $typeConverter->fromGraphQL($valueOrValues);
                 }
             }
 
@@ -65,5 +79,10 @@ abstract class TypedObject
         }
 
         return $instance;
+    }
+
+    public function toGraphQL($value)
+    {
+        throw new \Exception('Should never happen');
     }
 }

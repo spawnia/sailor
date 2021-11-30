@@ -2,15 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Spawnia\Sailor\Mapper;
+namespace Spawnia\Sailor\TypeConverter;
 
+use Spawnia\Sailor\TypeConverter;
 use Spawnia\Sailor\TypedObject;
-use Spawnia\Sailor\TypeMapper;
+use stdClass;
 
 /**
  * @phpstan-type PolymorphicMapping array<string, class-string<TypedObject>>
  */
-class PolymorphicMapper implements TypeMapper
+class PolymorphicConverter implements TypeConverter
 {
     /**
      * @var PolymorphicMapping
@@ -25,12 +26,17 @@ class PolymorphicMapper implements TypeMapper
         $this->mapping = $mapping;
     }
 
-    /**
-     * @param  \stdClass  $value  An object representing an polymorphic type
-     */
-    // @phpstan-ignore-next-line contravariance is technically broken here
-    public function __invoke($value): TypedObject
+    public function fromGraphQL($value): TypedObject
     {
+        if (! $value instanceof stdClass) {
+            throw new \InvalidArgumentException('Expected stdClass, got: ' . gettype($value));
+        }
+
         return $this->mapping[$value->__typename]::fromStdClass($value);
+    }
+
+    public function toGraphQL($value)
+    {
+        throw new \Exception('Should never happen');
     }
 }

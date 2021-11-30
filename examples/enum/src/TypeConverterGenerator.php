@@ -34,7 +34,7 @@ class TypeConverterGenerator
                     new PhpNamespace(self::typeConvertersNamespace($this->endpointConfig))
                 );
 
-                $customEnumClass = CustomEnumGenerator::className($type, $this->endpointConfig);
+                $customEnumClass = CustomEnumGenerator::className($type->name, $this->endpointConfig);
 
                 $class->addImplement(TypeConverter::class);
 

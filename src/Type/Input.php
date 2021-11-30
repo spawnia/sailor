@@ -22,6 +22,9 @@ abstract class Input implements TypeConverter
      */
     abstract protected function converters(): array;
 
+    /**
+     * @param mixed $value anything
+     */
     public function __set(string $name, $value): void
     {
         $converters = $this->converters();
@@ -32,6 +35,9 @@ abstract class Input implements TypeConverter
         $this->properties[$name] = $value;
     }
 
+    /**
+     * @return mixed anything
+     */
     public function __get(string $name)
     {
         $converters = $this->converters();

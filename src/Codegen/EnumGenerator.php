@@ -38,9 +38,9 @@ class EnumGenerator
         }
     }
 
-    public static function className(EnumType $type, EndpointConfig $endpointConfig): string
+    public static function className(string $typeName, EndpointConfig $endpointConfig): string
     {
-        return self::enumsNamespace($endpointConfig).'\\'.$type->name;
+        return self::enumsNamespace($endpointConfig).'\\'.$typeName;
     }
 
     protected static function enumsNamespace(EndpointConfig $endpointConfig): string

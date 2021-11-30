@@ -46,25 +46,26 @@ abstract class EndpointConfig
     abstract public function schemaPath(): string;
 
     /**
-     * Map leaf types (scalar, enum) to a type converter.
+     * Map types to a type converter.
      *
-     * @return array<string, class-string<TypeConverter>>
+     * @return array<string, TypeConfig>
      */
-    public function typeConverters(Schema $schema): array
+    public function types(Schema $schema): array
     {
         $typeConverters = [
-            'Int' => IntConverter::class,
-            'Float' => FloatConverter::class,
-            'String' => StringConverter::class,
-            'Boolean' => BooleanConverter::class,
-            'ID' => IDConverter::class,
+            'Int' => new TypeConfig(IntConverter::class, 'int'),
+            'Float' => new TypeConfig(FloatConverter::class, 'float'),
+            'String' => new TypeConfig(StringConverter::class, 'string'),
+            'Boolean' => new TypeConfig(BooleanConverter::class, 'bool'),
+            'ID' => new TypeConfig(IDConverter::class, 'string'),
         ];
 
         foreach ($schema->getTypeMap() as $name => $type) {
             if ($type instanceof EnumType) {
-                $typeConverters[$name] = EnumConverter::class;
+                $typeConverters[$name] = new TypeConfig(EnumConverter::class, 'string');
             } elseif ($type instanceof InputObjectType) {
-                $typeConverters[$name] = InputGenerator::className($type, $this);
+                $inputClassName = InputGenerator::className($type, $this);
+                $typeConverters[$name] = new TypeConfig($inputClassName, "\\{$inputClassName}");
             }
         }
 

@@ -10,6 +10,7 @@ use Spawnia\Sailor\EnumSrc\CustomEnumGenerator;
 use Spawnia\Sailor\EnumSrc\TypeConverterGenerator;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
+use Spawnia\Sailor\TypeConfig;
 
 return [
     'enum' => new class extends EndpointConfig
@@ -51,11 +52,16 @@ return [
             return $mockClient;
         }
 
-        public function typeConverters(Schema $schema): array
+        public function types(Schema $schema): array
         {
             return array_merge(
-                parent::typeConverters($schema),
-                ['CustomEnum' => TypeConverterGenerator::className('CustomEnum', $this)]
+                parent::types($schema),
+                [
+                    'CustomEnum' => new TypeConfig(
+                        TypeConverterGenerator::className('CustomEnum', $this),
+                        '\\' . CustomEnumGenerator::className('CustomEnum', $this),
+                    )
+                ]
             );
         }
 

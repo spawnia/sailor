@@ -34,14 +34,15 @@ use Nette\PhpGenerator\Parameter;
 use Nette\PhpGenerator\PhpNamespace;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\ErrorFreeResult;
-use Spawnia\Sailor\Mapper\PolymorphicMapper;
+use Spawnia\Sailor\TypeConverter\PolymorphicConverter;
 use Spawnia\Sailor\Operation;
 use Spawnia\Sailor\Result;
+use Spawnia\Sailor\TypeConverter;
 use Spawnia\Sailor\TypedObject;
 use Symfony\Component\VarExporter\VarExporter;
 
 /**
- * @phpstan-import-type PolymorphicMapping from PolymorphicMapper
+ * @phpstan-import-type PolymorphicMapping from PolymorphicConverter
  */
 class ClassGenerator
 {
@@ -52,6 +53,11 @@ class ClassGenerator
     protected string $endpoint;
 
     protected OperationStack $operationStack;
+
+    /**
+     * @var array<string, \Spawnia\Sailor\TypeConfig>
+     */
+    protected array $types;
 
     /**
      * @var array<int, OperationStack>
@@ -68,6 +74,8 @@ class ClassGenerator
         $this->schema = $schema;
         $this->endpointConfig = $endpointConfig;
         $this->endpoint = $endpoint;
+
+        $this->types = $endpointConfig->types($schema);
         $this->namespaceStack [] = $endpointConfig->namespace();
     }
 
@@ -131,10 +139,10 @@ class ClassGenerator
                             );
 
                             // Set the endpoint this operation belongs to
-                            $document = $operation->addMethod('endpoint');
-                            $document->setStatic();
-                            $document->setReturnType('string');
-                            $document->setBody(<<<PHP
+                            $endpoint = $operation->addMethod('endpoint');
+                            $endpoint->setStatic();
+                            $endpoint->setReturnType('string');
+                            $endpoint->setBody(<<<PHP
                             return '{$this->endpoint}';
                             PHP
                             );
@@ -216,14 +224,8 @@ class ClassGenerator
 
                             if ($type instanceof ListOfType) {
                                 $parameter->setType('array');
-                            } elseif ($type instanceof ScalarType) {
-                                $parameter->setType(PhpType::forScalar($type));
-                            } elseif ($type instanceof EnumType) {
-                                $parameter->setType(PhpType::forEnum($type));
-                            } elseif ($type instanceof InputObjectType) {
-                                $parameter->setType(InputGenerator::className($type, $this->endpointConfig));
                             } else {
-                                throw new \Exception('Unsupported type: '.get_class($type));
+                                $parameter->setType($this->types[$type->name]->typeReference);
                             }
 
                             $this->operationStack->addParameterToOperation($parameter);
@@ -261,10 +263,8 @@ class ClassGenerator
                                 $this->operationStack->pushSelection([
                                     $name => $this->makeTypedObject($name),
                                 ]);
-                                $typeMapper = <<<PHP
-                                static function (\\stdClass \$value): \Spawnia\Sailor\TypedObject {
-                                    return {$typeReference}::fromStdClass(\$value);
-                                }
+                                $typeConverter = <<<PHP
+                                new {$typeReference}
                                 PHP;
                             } elseif ($namedType instanceof InterfaceType || $namedType instanceof UnionType) {
                                 // We go one level deeper into the selection set
@@ -289,28 +289,23 @@ class ClassGenerator
                                 $this->operationStack->pushSelection($mappingSelection);
 
                                 $mappingCode = VarExporter::export($mapping);
-                                $typeMapper = <<<PHP
-                                new \Spawnia\Sailor\Mapper\PolymorphicMapper({$mappingCode})
-                                PHP;
-                            } elseif ($namedType instanceof ScalarType) {
-                                $typeReference = PhpType::forScalar($namedType);
-                                $typeMapper = <<<PHP
-                                new \Spawnia\Sailor\Mapper\DirectMapper()
-                                PHP;
-                            } elseif ($namedType instanceof EnumType) {
-                                $typeReference = PhpType::forEnum($namedType);
-                                // TODO consider mapping from enum instances
-                                $typeMapper = <<<PHP
-                                new \Spawnia\Sailor\Mapper\DirectMapper()
+                                $typeConverter = <<<PHP
+                                new \Spawnia\Sailor\TypeConverter\PolymorphicConverter({$mappingCode})
                                 PHP;
                             } else {
-                                throw new \Exception('Unsupported type '.get_class($namedType).' found.');
+                                $typeConfig = $this->types[$namedType->name];
+                                $typeReference = $typeConfig->typeReference;
+                                $typeConverter = <<<PHP
+                                new {$typeConfig->typeConverter}
+                                PHP;
                             }
 
                             $parentType = $typeInfo->getParentType();
                             if ($parentType === null) {
                                 throw new \Exception("Unable to determine parent type of field {$fieldName}");
                             }
+
+                            $wrappedTypeConverter = TypeConverterWrapper::wrap($type, $typeConverter);
 
                             foreach ($selectionClasses as $name => $selection) {
                                 $selectionType = $this->schema->getType($name);
@@ -323,9 +318,10 @@ class ClassGenerator
                                     $fieldProperty->setComment('@var '.PhpType::phpDoc($type, $typeReference));
 
                                     $fieldTypeMapper = $selection->addMethod(FieldTypeMapper::methodName($fieldName));
-                                    $fieldTypeMapper->setReturnType('callable');
+                                    $fieldTypeMapper->setReturnType(TypeConverter::class);
                                     $fieldTypeMapper->setBody(<<<PHP
-                                    return {$typeMapper};
+                                    static \$converter;
+                                    return \$converter ??= {$wrappedTypeConverter};
                                     PHP
                                     );
                                 }

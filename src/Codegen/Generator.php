@@ -60,7 +60,7 @@ class Generator
             }
         }
 
-        $inputGenerator = new InputGenerator($schema, $this->endpointConfig);
+        $inputGenerator = new InputGenerator($schema, $this->endpointConfig, $this->endpointName);
         foreach ($inputGenerator->generate() as $inputClass) {
             $classes [] = $inputClass;
         }
@@ -217,12 +217,12 @@ class Generator
             new PhpNamespace($this->endpointConfig->namespace())
         );
 
-        foreach ($this->endpointConfig->typeConverters($schema) as $name => $typeConverter) {
+        foreach ($this->endpointConfig->types($schema) as $name => $config) {
             $method = $class->addMethod($name);
-            $method->setReturnType($typeConverter);
+            $method->setReturnType($config->typeConverter);
             $method->setBody(<<<PHP
 static \$converter;
-return \$converter ??= new \\{$typeConverter}();
+return \$converter ??= new \\{$config->typeConverter}();
 PHP
 );
         }
