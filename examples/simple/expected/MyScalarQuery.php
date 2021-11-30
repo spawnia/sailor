@@ -17,8 +17,8 @@ class MyScalarQuery extends \Spawnia\Sailor\Operation
     public static function document(): string
     {
         return /* @lang GraphQL */ 'query MyScalarQuery($arg: String) {
-          scalarWithArg(arg: $arg)
           __typename
+          scalarWithArg(arg: $arg)
         }';
     }
 

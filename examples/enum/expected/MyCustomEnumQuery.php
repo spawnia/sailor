@@ -17,8 +17,8 @@ class MyCustomEnumQuery extends \Spawnia\Sailor\Operation
     public static function document(): string
     {
         return /* @lang GraphQL */ 'query MyCustomEnumQuery($value: CustomEnum) {
-          withCustomEnum(value: $value)
           __typename
+          withCustomEnum(value: $value)
         }';
     }
 

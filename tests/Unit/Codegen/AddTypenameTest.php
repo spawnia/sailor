@@ -25,8 +25,8 @@ class AddTypenameTest extends TestCase
 
         self::assertSame(/** @lang GraphQL */ <<<'GRAPHQL'
             {
-              simple
               __typename
+              simple
             }
 
             GRAPHQL,
@@ -51,10 +51,10 @@ class AddTypenameTest extends TestCase
 
         self::assertSame(/** @lang GraphQL */ <<<'GRAPHQL'
             {
+              __typename
               ... on Foo {
                 inline
               }
-              __typename
             }
 
             GRAPHQL,
@@ -81,12 +81,12 @@ class AddTypenameTest extends TestCase
 
         self::assertSame(/** @lang GraphQL */ <<<'GRAPHQL'
             {
+              __typename
               ... on Foo {
                 nested {
                   __typename
                 }
               }
-              __typename
             }
 
             GRAPHQL,

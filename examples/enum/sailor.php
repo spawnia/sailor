@@ -10,7 +10,7 @@ use Spawnia\Sailor\EnumSrc\CustomEnumGenerator;
 use Spawnia\Sailor\EnumSrc\TypeConverterGenerator;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
-use Spawnia\Sailor\TypeConfig;
+use Spawnia\Sailor\Type\TypeConfig;
 
 return [
     'enum' => new class() extends EndpointConfig {

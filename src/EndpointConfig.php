@@ -11,6 +11,7 @@ use GraphQL\Type\Schema;
 use Nette\PhpGenerator\ClassType;
 use Spawnia\Sailor\Codegen\EnumGenerator;
 use Spawnia\Sailor\Codegen\InputGenerator;
+use Spawnia\Sailor\Type\TypeConfig;
 use Spawnia\Sailor\TypeConverter\BooleanConverter;
 use Spawnia\Sailor\TypeConverter\EnumConverter;
 use Spawnia\Sailor\TypeConverter\FloatConverter;

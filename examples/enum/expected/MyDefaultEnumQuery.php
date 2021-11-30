@@ -17,8 +17,8 @@ class MyDefaultEnumQuery extends \Spawnia\Sailor\Operation
     public static function document(): string
     {
         return /* @lang GraphQL */ 'query MyDefaultEnumQuery($value: DefaultEnum!) {
-          withDefaultEnum(value: $value)
           __typename
+          withDefaultEnum(value: $value)
         }';
     }
 

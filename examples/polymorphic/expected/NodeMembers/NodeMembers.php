@@ -6,8 +6,18 @@ namespace Spawnia\Sailor\Polymorphic\NodeMembers;
 
 class NodeMembers extends \Spawnia\Sailor\TypedObject
 {
+    /** @var string */
+    public $__typename;
+
     /** @var array<int, \Spawnia\Sailor\Polymorphic\NodeMembers\Members\User|\Spawnia\Sailor\Polymorphic\NodeMembers\Members\Organization> */
     public $members;
+
+    public function __typenameTypeMapper(): \Spawnia\Sailor\TypeConverter
+    {
+        static $converter;
+
+        return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\NonNullConverter(new \Spawnia\Sailor\TypeConverter\StringConverter));
+    }
 
     public function membersTypeMapper(): \Spawnia\Sailor\TypeConverter
     {

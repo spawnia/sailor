@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Spawnia\Sailor;
+namespace Spawnia\Sailor\Type;
+
+use Spawnia\Sailor\TypeConverter;
 
 class TypeConfig
 {

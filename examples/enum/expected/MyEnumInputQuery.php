@@ -17,12 +17,12 @@ class MyEnumInputQuery extends \Spawnia\Sailor\Operation
     public static function document(): string
     {
         return /* @lang GraphQL */ 'query MyEnumInputQuery($input: EnumInput) {
+          __typename
           withEnumInput(input: $input) {
+            __typename
             custom
             default
-            __typename
           }
-          __typename
         }';
     }
 

@@ -7,7 +7,17 @@ namespace Spawnia\Sailor\Polymorphic\AllMembers\Members;
 class Organization extends \Spawnia\Sailor\TypedObject
 {
     /** @var string */
+    public $__typename;
+
+    /** @var string */
     public $code;
+
+    public function __typenameTypeMapper(): \Spawnia\Sailor\TypeConverter
+    {
+        static $converter;
+
+        return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\NonNullConverter(new \Spawnia\Sailor\TypeConverter\StringConverter));
+    }
 
     public function codeTypeMapper(): \Spawnia\Sailor\TypeConverter
     {

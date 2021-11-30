@@ -17,13 +17,13 @@ class NodeMembers extends \Spawnia\Sailor\Operation
     public static function document(): string
     {
         return /* @lang GraphQL */ 'query NodeMembers {
+          __typename
           members {
+            __typename
             ... on Node {
               id
             }
-            __typename
           }
-          __typename
         }';
     }
 

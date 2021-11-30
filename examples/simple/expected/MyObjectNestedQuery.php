@@ -17,14 +17,14 @@ class MyObjectNestedQuery extends \Spawnia\Sailor\Operation
     public static function document(): string
     {
         return /* @lang GraphQL */ 'query MyObjectNestedQuery {
-          singleObject {
-            nested {
-              value
-              __typename
-            }
-            __typename
-          }
           __typename
+          singleObject {
+            __typename
+            nested {
+              __typename
+              value
+            }
+          }
         }';
     }
 

@@ -17,8 +17,8 @@ class TwoArgs extends \Spawnia\Sailor\Operation
     public static function document(): string
     {
         return /* @lang GraphQL */ 'query TwoArgs($first: String, $second: Int) {
-          twoArgs(first: $first, second: $second)
           __typename
+          twoArgs(first: $first, second: $second)
         }';
     }
 

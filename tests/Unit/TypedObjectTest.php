@@ -22,7 +22,7 @@ class TypedObjectTest extends TestCase
     public function testWrongKey(): void
     {
         $this->expectException(InvalidResponseException::class);
-        $this->expectExceptionMessage('Unknown field nonExistent, available fields: scalarWithArg.');
+        $this->expectExceptionMessage('Unknown field nonExistent, available fields: __typename, scalarWithArg.');
         MyScalarQuery::fromStdClass((object) [
             'nonExistent' => 'foo',
         ]);

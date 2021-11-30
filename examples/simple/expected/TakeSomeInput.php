@@ -17,8 +17,8 @@ class TakeSomeInput extends \Spawnia\Sailor\Operation
     public static function document(): string
     {
         return /* @lang GraphQL */ 'mutation TakeSomeInput($input: SomeInput) {
-          takeSomeInput(input: $input)
           __typename
+          takeSomeInput(input: $input)
         }';
     }
 

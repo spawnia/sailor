@@ -52,7 +52,7 @@ class ClassGenerator
     protected OperationStack $operationStack;
 
     /**
-     * @var array<string, \Spawnia\Sailor\TypeConfig>
+     * @var array<string, \Spawnia\Sailor\Type\TypeConfig>
      */
     protected array $types;
 
@@ -241,9 +241,9 @@ class ClassGenerator
                                 : $field->name->value;
 
                             // Included in TypedObject by default
-                            if (Introspection::TYPE_NAME_FIELD_NAME === $fieldName) {
-                                return;
-                            }
+//                            if (Introspection::TYPE_NAME_FIELD_NAME === $fieldName) {
+//                                return;
+//                            }
 
                             $selectionClasses = $this->operationStack->peekSelection();
 

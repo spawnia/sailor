@@ -17,7 +17,9 @@ class UserOrPost extends \Spawnia\Sailor\Operation
     public static function document(): string
     {
         return /* @lang GraphQL */ 'query UserOrPost($id: ID!) {
+          __typename
           node(id: $id) {
+            __typename
             id
             ... on User {
               name
@@ -25,9 +27,7 @@ class UserOrPost extends \Spawnia\Sailor\Operation
             ... on Post {
               title
             }
-            __typename
           }
-          __typename
         }';
     }
 

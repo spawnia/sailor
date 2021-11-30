@@ -25,31 +25,18 @@ class AddTypename
 
     protected static function ensurePresent(SelectionSetNode $selectionSetNode): void
     {
-        $hasTypename = false;
+        static::purgeRedundant($selectionSetNode);
 
-        foreach ($selectionSetNode->selections as $selection) {
-            if ($selection instanceof FieldNode) {
-                if (Introspection::TYPE_NAME_FIELD_NAME === $selection->name->value) {
-                    $hasTypename = true;
-                }
-
-                $subSelectionSet = $selection->selectionSet;
-                if (null !== $subSelectionSet) {
-                    static::ensurePresent($subSelectionSet);
-                }
-            } elseif ($selection instanceof InlineFragmentNode) {
-                static::purgeRedundant($selection);
-            }
-        }
-
-        if (! $hasTypename) {
-            $selectionSetNode->selections[] = Parser::field(Introspection::TYPE_NAME_FIELD_NAME);
-        }
+        $selectionSetNode->selections->splice(
+            0,
+            0,
+            [Parser::field(Introspection::TYPE_NAME_FIELD_NAME)]
+        );
     }
 
-    protected static function purgeRedundant(InlineFragmentNode $inlineFragmentNode): void
+    protected static function purgeRedundant(SelectionSetNode $selectionSetNode): void
     {
-        $selections = $inlineFragmentNode->selectionSet->selections;
+        $selections = $selectionSetNode->selections;
 
         foreach ($selections as $i => $selection) {
             if ($selection instanceof FieldNode) {
@@ -63,7 +50,7 @@ class AddTypename
                     static::ensurePresent($subSelectionSet);
                 }
             } elseif ($selection instanceof InlineFragmentNode) {
-                static::purgeRedundant($selection);
+                static::purgeRedundant($selection->selectionSet);
             }
         }
     }

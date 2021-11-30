@@ -17,16 +17,16 @@ class AllMembers extends \Spawnia\Sailor\Operation
     public static function document(): string
     {
         return /* @lang GraphQL */ 'query AllMembers {
+          __typename
           members {
+            __typename
             ... on User {
               name
             }
             ... on Organization {
               code
             }
-            __typename
           }
-          __typename
         }';
     }
 

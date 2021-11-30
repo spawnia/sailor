@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor;
 
-use GraphQL\Type\Introspection;
 use Spawnia\Sailor\Codegen\FieldTypeMapper;
 use stdClass;
 
 abstract class TypedObject implements TypeConverter
 {
-    public string $__typename;
-
     /**
      * Construct a new instance of itself using plain data.
      *
@@ -34,11 +31,11 @@ abstract class TypedObject implements TypeConverter
         }
 
         foreach ($value as $field => $valueOrValues) {
-            if (Introspection::TYPE_NAME_FIELD_NAME === $field) {
-                // Short circuit here since this field is always present and needs no cast
-                $instance->__typename = $valueOrValues;
-                continue;
-            }
+//            if (Introspection::TYPE_NAME_FIELD_NAME === $field) {
+//                // Short circuit here since this field is always present and needs no cast
+//                $instance->__typename = $valueOrValues;
+//                continue;
+//            }
             // The ClassGenerator placed methods for each property that return
             // a callable, which can map a value to its internal type
             $methodName = FieldTypeMapper::methodName($field);
@@ -52,9 +49,9 @@ abstract class TypedObject implements TypeConverter
                 $availableFields = implode(
                     ', ',
                     array_map(
-                            [FieldTypeMapper::class, 'fieldName'],
-                            $availableMethods,
-                        )
+                        [FieldTypeMapper::class, 'fieldName'],
+                        $availableMethods,
+                    )
                 );
 
                 throw new InvalidResponseException("Unknown field {$field}, available fields: {$availableFields}.");

@@ -17,11 +17,11 @@ class MyObjectQuery extends \Spawnia\Sailor\Operation
     public static function document(): string
     {
         return /* @lang GraphQL */ 'query MyObjectQuery {
-          singleObject {
-            value
-            __typename
-          }
           __typename
+          singleObject {
+            __typename
+            value
+          }
         }';
     }
 
