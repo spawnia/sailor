@@ -34,9 +34,7 @@ abstract class TypedObject implements TypeConverter
         }
 
         foreach ($value as $field => $valueOrValues) {
-            if (is_null($valueOrValues)) {
-                $converted = null;
-            } elseif ($field === Introspection::TYPE_NAME_FIELD_NAME) {
+            if ($field === Introspection::TYPE_NAME_FIELD_NAME) {
                 // Short circuit here since this field is always present and needs no cast
                 $instance->__typename = $valueOrValues;
                 continue;
@@ -65,14 +63,7 @@ abstract class TypedObject implements TypeConverter
                 /** @var TypeConverter $typeConverter */
                 $typeConverter = $instance->{$methodName}();
 
-                if (is_array($valueOrValues)) {
-                    $converted = [];
-                    foreach ($valueOrValues as $value) {
-                        $converted [] = $typeConverter->fromGraphQL($value);
-                    }
-                } else {
-                    $converted = $typeConverter->fromGraphQL($valueOrValues);
-                }
+                $converted = $typeConverter->fromGraphQL($valueOrValues);
             }
 
             $instance->{$field} = $converted;

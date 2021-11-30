@@ -296,7 +296,7 @@ class ClassGenerator
                                 $typeConfig = $this->types[$namedType->name];
                                 $typeReference = $typeConfig->typeReference;
                                 $typeConverter = <<<PHP
-                                new {$typeConfig->typeConverter}
+                                new \\{$typeConfig->typeConverter}
                                 PHP;
                             }
 
