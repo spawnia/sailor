@@ -1,9 +1,13 @@
 .PHONY: it
-it: vendor stan test ## Runs the cs, stan, and test targets
+it: fix stan test ## Run the commonly used targets
 
 .PHONY: help
 help: ## Displays this list of targets with descriptions
-	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[32m%-30s\033[0m %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(firstword $(MAKEFILE_LIST)) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[32m%-30s\033[0m %s\n", $$1, $$2}'
+
+.PHONY: fix
+fix: vendor
+	vendor/bin/php-cs-fixer fix
 
 .PHONY: stan
 stan: ## Runs static analysis with phpstan

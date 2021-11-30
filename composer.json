@@ -25,6 +25,7 @@
     "guzzlehttp/guzzle": "^7",
     "infection/infection": "~0.21",
     "jangregor/phpstan-prophecy": "^1",
+    "mll-lab/php-cs-fixer-config": "^4.3",
     "mockery/mockery": "^1.4",
     "nyholm/psr7": "^1.4",
     "php-http/httplug": "^2",
