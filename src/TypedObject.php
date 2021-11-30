@@ -43,12 +43,12 @@ abstract class TypedObject implements TypeConverter
                 // a callable, which can map a value to its internal type
                 $methodName = FieldTypeMapper::methodName($field);
 
-                $thisFunctionItself = __FUNCTION__;
-                $availableMethods = array_filter(
-                    get_class_methods(static::class),
-                    static fn (string $method): bool => $method !== $thisFunctionItself,
-                );
-                if (! in_array($methodName, $availableMethods)) {
+                if (! method_exists(static::class, $methodName)) {
+                    $availableMethods = array_diff(
+                        get_class_methods(static::class),
+                        get_class_methods(self::class),
+                    );
+
                     $availableFields = implode(
                         ', ',
                         array_map(
