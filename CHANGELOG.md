@@ -7,8 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-- Allow symfony/console v6
-- Allow symfony/var-exporter v6
+## v0.13.0
+
+### Added
+
+- Allow `symfony/console` and `symfony/var-exporter` v6 as dependencies
 
 ## v0.12.0
 
