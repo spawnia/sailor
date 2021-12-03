@@ -46,7 +46,7 @@ abstract class EndpointConfig
     abstract public function schemaPath(): string;
 
     /**
-     * Map types to a type converter.
+     * Return a map from type names to a TypeConfig describing how to deal with them.
      *
      * @return array<string, TypeConfig>
      */
@@ -73,6 +73,10 @@ abstract class EndpointConfig
     }
 
     /**
+     * Generate additional classes.
+     *
+     * Will overwrite built-in generated classes if named the same.
+     *
      * @return iterable<ClassType>
      */
     public function generateClasses(Schema $schema, DocumentNode $document, string $endpointName): iterable
