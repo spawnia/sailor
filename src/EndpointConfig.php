@@ -9,7 +9,6 @@ use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Schema;
 use Nette\PhpGenerator\ClassType;
-use Spawnia\Sailor\Codegen\EnumGenerator;
 use Spawnia\Sailor\Codegen\InputGenerator;
 use Spawnia\Sailor\Type\TypeConfig;
 use Spawnia\Sailor\TypeConverter\BooleanConverter;
@@ -51,7 +50,7 @@ abstract class EndpointConfig
      *
      * @return array<string, TypeConfig>
      */
-    public function types(Schema $schema): array
+    public function configureTypes(Schema $schema): array
     {
         $typeConverters = [
             'Int' => new TypeConfig(IntConverter::class, 'int'),
@@ -73,15 +72,10 @@ abstract class EndpointConfig
         return $typeConverters;
     }
 
-    public function enumGenerator(Schema $schema): EnumGenerator
-    {
-        return new EnumGenerator($schema, $this);
-    }
-
     /**
      * @return iterable<ClassType>
      */
-    public function generateClasses(Schema $schema, DocumentNode $document): iterable
+    public function generateClasses(Schema $schema, DocumentNode $document, string $endpointName): iterable
     {
         return [];
     }

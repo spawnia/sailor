@@ -30,9 +30,9 @@ class Generator
     /**
      * Generate a list of files to write.
      *
-     * @return array<int, File>
+     * @return iterable<File>
      */
-    public function generate(): array
+    public function generate(): iterable
     {
         $parsedDocuments = $this->parsedDocuments();
         if ([] === $parsedDocuments) {
@@ -46,37 +46,27 @@ class Generator
 
         Validator::validate($schema, $document);
 
-        $classes = [];
-
-        $classGenerator = new ClassGenerator($schema, $this->endpointConfig, $this->endpointName);
-        foreach ($classGenerator->generate($document) as $operationSet) {
-            $classes[] = $operationSet->operation;
-            $classes[] = $operationSet->result;
-            $classes[] = $operationSet->errorFreeResult;
-
-            foreach ($operationSet->selectionStorage as $selection) {
-                $classes[] = $selection;
+        foreach ($this->classGenerators() as $classGeneratorClass) {
+            $classGenerator = new $classGeneratorClass($schema, $document, $this->endpointConfig, $this->endpointName);
+            foreach ($classGenerator->generate() as $class) {
+                yield $this->makeFile($class);
             }
         }
 
-        $inputGenerator = new InputGenerator($schema, $this->endpointConfig, $this->endpointName);
-        foreach ($inputGenerator->generate() as $inputClass) {
-            $classes[] = $inputClass;
+        foreach ($this->endpointConfig->generateClasses($schema, $document, $this->endpointName) as $class) {
+            yield $this->makeFile($class);
         }
+    }
 
-        $enumGenerator = $this->endpointConfig->enumGenerator($schema);
-        foreach ($enumGenerator->generate() as $enumClass) {
-            $classes[] = $enumClass;
-        }
-
-        $typeConvertersGenerator = new TypeConvertersGenerator($schema, $this->endpointConfig);
-        $classes[] = $typeConvertersGenerator->generate();
-
-        foreach ($this->endpointConfig->generateClasses($schema, $document) as $class) {
-            $classes[] = $class;
-        }
-
-        return array_map([$this, 'makeFile'], $classes);
+    /**
+     * @return iterable<class-string<ClassGenerator>>
+     */
+    protected function classGenerators(): iterable
+    {
+        yield OperationGenerator::class;
+        yield InputGenerator::class;
+        yield EnumGenerator::class;
+        yield TypeConvertersGenerator::class;
     }
 
     protected function makeFile(ClassType $classType): File

@@ -5,23 +5,12 @@ declare(strict_types=1);
 namespace Spawnia\Sailor\Codegen;
 
 use GraphQL\Type\Definition\EnumType;
-use GraphQL\Type\Schema;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpNamespace;
 use Spawnia\Sailor\EndpointConfig;
 
-class EnumGenerator
+class EnumGenerator extends ClassGenerator
 {
-    protected Schema $schema;
-
-    protected EndpointConfig $endpointConfig;
-
-    public function __construct(Schema $schema, EndpointConfig $endpointConfig)
-    {
-        $this->schema = $schema;
-        $this->endpointConfig = $endpointConfig;
-    }
-
     /**
      * @return iterable<ClassType>
      */

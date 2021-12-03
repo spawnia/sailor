@@ -7,33 +7,19 @@ namespace Spawnia\Sailor\Codegen;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
-use GraphQL\Type\Schema;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpNamespace;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Type\Input;
 
-class InputGenerator
+class InputGenerator extends ClassGenerator
 {
-    protected Schema $schema;
-
-    protected EndpointConfig $endpointConfig;
-
-    protected string $endpoint;
-
-    public function __construct(Schema $schema, EndpointConfig $endpointConfig, string $endpoint)
-    {
-        $this->schema = $schema;
-        $this->endpointConfig = $endpointConfig;
-        $this->endpoint = $endpoint;
-    }
-
     /**
      * @return iterable<ClassType>
      */
     public function generate(): iterable
     {
-        $typeConfigs = $this->endpointConfig->types($this->schema);
+        $typeConfigs = $this->endpointConfig->configureTypes($this->schema);
 
         foreach ($this->schema->getTypeMap() as $type) {
             if (! $type instanceof InputObjectType) {
@@ -81,7 +67,7 @@ class InputGenerator
             $endpoint->setReturnType('string');
             $endpoint->setBody(
                 <<<PHP
-                    return '{$this->endpoint}';
+                    return '{$this->endpointName}';
                     PHP
             );
 

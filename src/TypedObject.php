@@ -31,11 +31,6 @@ abstract class TypedObject implements TypeConverter
         }
 
         foreach ($value as $field => $valueOrValues) {
-//            if (Introspection::TYPE_NAME_FIELD_NAME === $field) {
-//                // Short circuit here since this field is always present and needs no cast
-//                $instance->__typename = $valueOrValues;
-//                continue;
-//            }
             // The ClassGenerator placed methods for each property that return
             // a callable, which can map a value to its internal type
             $methodName = FieldTypeMapper::methodName($field);

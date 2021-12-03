@@ -19,15 +19,18 @@ class Writer
     /**
      * Persist the given files onto disk.
      *
-     * @param  array<File>  $files
+     * @param iterable<File> $files
      */
-    public function write(array $files): void
+    public function write(iterable $files): void
     {
         FileSystem::delete($this->endpointConfig->targetPath());
-        array_map([self::class, 'writeFile'], $files);
+
+        foreach ($files as $file) {
+            $this->writeFile($file);
+        }
     }
 
-    public static function writeFile(File $file): void
+    protected function writeFile(File $file): void
     {
         if (! file_exists($file->directory)) {
             \Safe\mkdir($file->directory, 0777, true);

@@ -36,8 +36,8 @@ class CodegenCommand extends Command
             echo "Generating code for endpoint {$endpointName}...\n";
 
             $endpointConfig = Configuration::endpoint($endpointName);
-            $generator = new Generator($endpointConfig, $endpointName);
 
+            $generator = new Generator($endpointConfig, $endpointName);
             $files = $generator->generate();
 
             $writer = new Writer($endpointConfig);

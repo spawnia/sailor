@@ -7,7 +7,7 @@ use GraphQL\Type\Schema;
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\EnumSrc\CustomEnumGenerator;
-use Spawnia\Sailor\EnumSrc\TypeConverterGenerator;
+use Spawnia\Sailor\EnumSrc\CustomTypeConverterGenerator;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
 use Spawnia\Sailor\Type\TypeConfig;
@@ -51,27 +51,28 @@ return [
             return $mockClient;
         }
 
-        public function types(Schema $schema): array
+        public function configureTypes(Schema $schema): array
         {
             return array_merge(
-                parent::types($schema),
+                parent::configureTypes($schema),
                 [
                     'CustomEnum' => new TypeConfig(
-                        TypeConverterGenerator::className('CustomEnum', $this),
+                        CustomTypeConverterGenerator::className('CustomEnum', $this),
                         '\\' . CustomEnumGenerator::className('CustomEnum', $this),
                     ),
                 ]
             );
         }
 
-        public function enumGenerator(Schema $schema): CustomEnumGenerator
+        public function generateClasses(Schema $schema, DocumentNode $document, string $endpointName): iterable
         {
-            return new CustomEnumGenerator($schema, $this);
-        }
+            foreach ((new CustomEnumGenerator($schema, $document, $this, $endpointName))->generate() as $enum) {
+                yield $enum;
+            }
 
-        public function generateClasses(Schema $schema, DocumentNode $document): iterable
-        {
-            return (new TypeConverterGenerator($schema, $this))->generate();
+            foreach ((new CustomTypeConverterGenerator($schema, $document, $this, $endpointName))->generate() as $enum) {
+                yield $enum;
+            }
         }
     },
 ];
