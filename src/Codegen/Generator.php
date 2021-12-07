@@ -52,6 +52,12 @@ class Generator
             yield $this->makeFile($class);
         }
 
+        foreach ($this->endpointConfig->configureTypes($schema, $this->endpointName) as $typeConfig) {
+            foreach ($typeConfig->generate() as $class) {
+                yield $this->makeFile($class);
+            }
+        }
+
         foreach ($this->endpointConfig->generateClasses($schema, $document, $this->endpointName) as $class) {
             yield $this->makeFile($class);
         }

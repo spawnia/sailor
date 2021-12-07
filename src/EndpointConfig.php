@@ -60,7 +60,7 @@ abstract class EndpointConfig
 
         foreach ($schema->getTypeMap() as $name => $type) {
             if ($type instanceof EnumType) {
-                $typeConverters[$name] = new EnumTypeConfig();
+                $typeConverters[$name] = new EnumTypeConfig($this, $type);
             } elseif ($type instanceof InputObjectType) {
                 $typeConverters[$name] = new InputTypeConfig($this, $schema, $endpointName, $type);
             }

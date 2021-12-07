@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Spawnia\Sailor\Enum;
 
@@ -7,7 +9,7 @@ namespace Spawnia\Sailor\Enum;
  */
 class MyEnumInputQuery extends \Spawnia\Sailor\Operation
 {
-    public static function execute(?Inputs\EnumInput $input = null): MyEnumInputQuery\MyEnumInputQueryResult
+    public static function execute(?Types\EnumInput $input = null): MyEnumInputQuery\MyEnumInputQueryResult
     {
         return self::executeOperation(...func_get_args());
     }

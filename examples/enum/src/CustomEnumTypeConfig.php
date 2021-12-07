@@ -2,46 +2,38 @@
 
 namespace Spawnia\Sailor\EnumSrc;
 
-use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\Type;
-use GraphQL\Type\Schema;
-use GraphQL\Utils\Utils;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Method;
-use Spawnia\Sailor\EndpointConfig;
-use Spawnia\Sailor\Type\TypeConfig;
+use Spawnia\Sailor\Type\EnumTypeConfig;
 use Spawnia\Sailor\TypeConverter\GeneratesTypeConverter;
 
-class CustomEnumTypeConfig implements TypeConfig
+class CustomEnumTypeConfig extends EnumTypeConfig
 {
     use GeneratesTypeConverter;
 
-    private EndpointConfig $endpointConfig;
-
-    private Schema $schema;
-
-    private EnumType $type;
-
-    private CustomEnumGenerator $enumGenerator;
-
-    public function __construct(EndpointConfig $endpointConfig, Schema $schema, string $typeName)
+    public function typeConverter(): string
     {
-        $this->endpointConfig = $endpointConfig;
-        $this->schema = $schema;
-
-        $type = $schema->getType($typeName);
-        if (! $type instanceof EnumType) {
-            $notEnumType = Utils::printSafe($type);
-            throw new \InvalidArgumentException("Expected type {$typeName} to be instanceof EnumType, got: {$notEnumType}.");
-        }
-        $this->type = $type;
-
-        $this->enumGenerator = new CustomEnumGenerator($endpointConfig, $this->type);
+        return $this->typeConverterClassName($this->enumType, $this->endpointConfig);
     }
 
-    protected function decorateTypeConverter(Type $type, ClassType $class, Method $fromGraphQL, Method $toGraphQL): ClassType
+    public function typeReference(): string
     {
-        $customEnumClass = $this->enumGenerator->className();
+        return "\\{$this->enumClassName()}";
+    }
+
+    public function generate(): iterable
+    {
+        foreach (parent::generate() as $enum) {
+            yield $enum;
+        }
+
+        yield $this->makeTypeConverter($this->enumType, $this->endpointConfig);
+    }
+
+    protected function decorateTypeConverterClass(Type $type, ClassType $class, Method $fromGraphQL, Method $toGraphQL): ClassType
+    {
+        $customEnumClass = $this->enumClassName();
 
         $fromGraphQL->setReturnType($customEnumClass);
         $fromGraphQL->setBody(
@@ -63,22 +55,10 @@ class CustomEnumTypeConfig implements TypeConfig
         return $class;
     }
 
-    public function typeConverter(): string
+    protected function decorateEnumClass(ClassType $class): ClassType
     {
-        return $this->typeConverterClassName($this->type, $this->endpointConfig);
-    }
+        $class->addExtend(Enum::class);
 
-    public function typeReference(): string
-    {
-        return "\\{$this->enumGenerator->className()}";
-    }
-
-    public function generate(): iterable
-    {
-        foreach ($this->enumGenerator->generate() as $enum) {
-            yield $enum;
-        }
-
-        yield $this->makeTypeConverter($this->type, $this->endpointConfig);
+        return parent::decorateEnumClass($class);
     }
 }

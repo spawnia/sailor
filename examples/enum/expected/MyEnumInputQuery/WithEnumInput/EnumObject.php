@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Spawnia\Sailor\Enum\MyEnumInputQuery\WithEnumInput;
 
@@ -7,7 +9,7 @@ class EnumObject extends \Spawnia\Sailor\TypedObject
     /** @var string */
     public $__typename;
 
-    /** @var \Spawnia\Sailor\Enum\Enums\CustomEnum|null */
+    /** @var \Spawnia\Sailor\Enum\Types\CustomEnum|null */
     public $custom;
 
     /** @var string|null */

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Spawnia\Sailor\Simple;
 
@@ -39,11 +41,11 @@ class TypeConverters
         return $converter ??= new \Spawnia\Sailor\TypeConverter\IDConverter();
     }
 
-    public static function SomeInput(): Inputs\SomeInput
+    public static function SomeInput(): Types\SomeInput
     {
         static $converter;
 
-        return $converter ??= new \Spawnia\Sailor\Simple\Inputs\SomeInput();
+        return $converter ??= new \Spawnia\Sailor\Simple\Types\SomeInput();
     }
 
     public static function SomeEnum(): \Spawnia\Sailor\TypeConverter\EnumConverter

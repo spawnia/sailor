@@ -11,7 +11,7 @@ use Spawnia\Sailor\TypeConverter;
 
 trait GeneratesTypeConverter
 {
-    abstract protected function decorateTypeConverter(Type $type, ClassType $class, Method $fromGraphQL, Method $toGraphQL): ClassType;
+    abstract protected function decorateTypeConverterClass(Type $type, ClassType $class, Method $fromGraphQL, Method $toGraphQL): ClassType;
 
     protected function makeTypeConverter(Type $type, EndpointConfig $endpointConfig): ClassType
     {
@@ -28,7 +28,7 @@ trait GeneratesTypeConverter
         $toGraphQL = $class->addMethod('toGraphQL');
         $toGraphQL->addParameter('value');
 
-        return $this->decorateTypeConverter($type, $class, $fromGraphQL, $toGraphQL);
+        return $this->decorateTypeConverterClass($type, $class, $fromGraphQL, $toGraphQL);
     }
 
     public function typeConverterClassName(Type $type, EndpointConfig $endpointConfig): string

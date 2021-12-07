@@ -51,7 +51,7 @@ return [
             return array_merge(
                 parent::configureTypes($schema, $endpointName),
                 [
-                    'CustomEnum' => new CustomEnumTypeConfig($this, $schema, 'CustomEnum'),
+                    'CustomEnum' => new CustomEnumTypeConfig($this, $schema->getType('CustomEnum')),
                 ]
             );
         }

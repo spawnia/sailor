@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Spawnia\Sailor\Simple;
 
@@ -7,7 +9,7 @@ namespace Spawnia\Sailor\Simple;
  */
 class TakeSomeInput extends \Spawnia\Sailor\Operation
 {
-    public static function execute(?Inputs\SomeInput $input = null): TakeSomeInput\TakeSomeInputResult
+    public static function execute(?Types\SomeInput $input = null): TakeSomeInput\TakeSomeInputResult
     {
         return self::executeOperation(...func_get_args());
     }

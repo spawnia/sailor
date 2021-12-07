@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Spawnia\Sailor\Enum;
 
@@ -53,11 +55,11 @@ class TypeConverters
         return $converter ??= new \Spawnia\Sailor\Enum\TypeConverters\CustomEnum();
     }
 
-    public static function EnumInput(): Inputs\EnumInput
+    public static function EnumInput(): Types\EnumInput
     {
         static $converter;
 
-        return $converter ??= new \Spawnia\Sailor\Enum\Inputs\EnumInput();
+        return $converter ??= new \Spawnia\Sailor\Enum\Types\EnumInput();
     }
 
     public static function __TypeKind(): \Spawnia\Sailor\TypeConverter\EnumConverter

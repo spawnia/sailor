@@ -56,10 +56,8 @@ class InputTypeConfig implements TypeConfig
     {
         $typeConfigs = $this->endpointConfig->configureTypes($this->schema, $this->endpointName);
 
-        $type = $this->inputObjectType;
-
         $class = new ClassType(
-            $type->name,
+            $this->inputObjectType->name,
             new PhpNamespace($this->endpointConfig->typesNamespace())
         );
 
@@ -67,7 +65,7 @@ class InputTypeConfig implements TypeConfig
 
         $converters = [];
 
-        foreach ($type->getFields() as $name => $field) {
+        foreach ($this->inputObjectType->getFields() as $name => $field) {
             $fieldType = $field->getType();
 
             /** @var Type&NamedType $namedType guaranteed since we pass in a non-null type */

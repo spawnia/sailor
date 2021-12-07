@@ -2,12 +2,12 @@
 
 namespace Spawnia\Sailor\Tests\Integration;
 
-use Spawnia\Sailor\Enum\Enums\CustomEnum;
-use Spawnia\Sailor\Enum\Enums\DefaultEnum;
-use Spawnia\Sailor\Enum\Inputs\EnumInput;
 use Spawnia\Sailor\Enum\MyCustomEnumQuery;
 use Spawnia\Sailor\Enum\MyDefaultEnumQuery;
 use Spawnia\Sailor\Enum\MyEnumInputQuery;
+use Spawnia\Sailor\Enum\Types\CustomEnum;
+use Spawnia\Sailor\Enum\Types\DefaultEnum;
+use Spawnia\Sailor\Enum\Types\EnumInput;
 use Spawnia\Sailor\Tests\TestCase;
 
 class EnumTest extends TestCase
