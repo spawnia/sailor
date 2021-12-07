@@ -24,6 +24,7 @@
     "webonyx/graphql-php": "^14.11.3"
   },
   "require-dev": {
+    "bensampo/laravel-enum": "^3 || ^4.1",
     "composer/composer": "^2",
     "ergebnis/composer-normalize": "^2.13",
     "guzzlehttp/guzzle": "^7",
@@ -46,6 +47,7 @@
     "thecodingmachine/phpstan-safe-rule": "^1.1"
   },
   "suggest": {
+    "bensampo/laravel-enum": "Use with BenSampoEnumTypeConfig",
     "guzzlehttp/guzzle": "Enables using the built-in default Client",
     "mockery/mockery": "Used in Operation::mock()"
   },

@@ -16,7 +16,7 @@ class ScalarTypeConfig implements TypeConfig
         return 'string';
     }
 
-    public function generate(): iterable
+    public function generateClasses(): iterable
     {
         return [];
     }

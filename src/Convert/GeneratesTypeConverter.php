@@ -35,6 +35,7 @@ trait GeneratesTypeConverter
      */
     public function typeConverterClassName(Type $type, EndpointConfig $endpointConfig): string
     {
+        // @phpstan-ignore-next-line PHPStan does not recognize the dynamically built class name
         return $endpointConfig->typeConvertersNamespace() . '\\' . $this->typeConverterBaseName($type);
     }
 

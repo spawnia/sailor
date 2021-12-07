@@ -16,7 +16,7 @@ class IntTypeConfig implements TypeConfig
         return 'int';
     }
 
-    public function generate(): iterable
+    public function generateClasses(): iterable
     {
         return [];
     }

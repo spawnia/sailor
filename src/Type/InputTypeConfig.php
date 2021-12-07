@@ -52,7 +52,7 @@ class InputTypeConfig implements TypeConfig
     /**
      * @return iterable<ClassType>
      */
-    public function generate(): iterable
+    public function generateClasses(): iterable
     {
         $typeConfigs = $this->endpointConfig->configureTypes($this->schema, $this->endpointName);
 

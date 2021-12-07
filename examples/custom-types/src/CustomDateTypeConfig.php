@@ -37,7 +37,7 @@ class CustomDateTypeConfig implements TypeConfig
         return '\\' . DateTime::class;
     }
 
-    public function generate(): iterable
+    public function generateClasses(): iterable
     {
         yield $this->makeTypeConverter($this->scalarType, $this->endpointConfig);
     }

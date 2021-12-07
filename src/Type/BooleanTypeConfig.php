@@ -16,7 +16,7 @@ class BooleanTypeConfig implements TypeConfig
         return 'bool';
     }
 
-    public function generate(): iterable
+    public function generateClasses(): iterable
     {
         return [];
     }

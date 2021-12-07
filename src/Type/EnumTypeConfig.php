@@ -20,6 +20,24 @@ class EnumTypeConfig implements TypeConfig
         $this->enumType = $enumType;
     }
 
+    public function typeConverter(): string
+    {
+        return EnumConverter::class;
+    }
+
+    public function typeReference(): string
+    {
+        return 'string';
+    }
+
+    /**
+     * @return iterable<ClassType>
+     */
+    public function generateClasses(): iterable
+    {
+        yield $this->makeEnumClass();
+    }
+
     public function enumClassName(): string
     {
         return $this->endpointConfig->typesNamespace() . '\\' . $this->enumType->name;
@@ -43,23 +61,5 @@ class EnumTypeConfig implements TypeConfig
         }
 
         return $class;
-    }
-
-    public function typeConverter(): string
-    {
-        return EnumConverter::class;
-    }
-
-    public function typeReference(): string
-    {
-        return 'string';
-    }
-
-    /**
-     * @return iterable<ClassType>
-     */
-    public function generate(): iterable
-    {
-        yield $this->makeEnumClass();
     }
 }

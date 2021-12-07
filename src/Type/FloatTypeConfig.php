@@ -16,7 +16,7 @@ class FloatTypeConfig implements TypeConfig
         return 'float';
     }
 
-    public function generate(): iterable
+    public function generateClasses(): iterable
     {
         return [];
     }

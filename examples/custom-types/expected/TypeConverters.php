@@ -55,6 +55,13 @@ class TypeConverters
         return $converter ??= new \Spawnia\Sailor\CustomTypes\TypeConverters\CustomEnumConverter();
     }
 
+    public static function BenSampoEnum(): TypeConverters\BenSampoEnumConverter
+    {
+        static $converter;
+
+        return $converter ??= new \Spawnia\Sailor\CustomTypes\TypeConverters\BenSampoEnumConverter();
+    }
+
     public static function EnumInput(): Types\EnumInput
     {
         static $converter;

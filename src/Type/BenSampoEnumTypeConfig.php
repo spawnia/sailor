@@ -1,14 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace Spawnia\Sailor\CustomTypesSrc;
+namespace Spawnia\Sailor\Type;
 
+use BenSampo\Enum\Enum;
 use GraphQL\Type\Definition\Type;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Method;
 use Spawnia\Sailor\Convert\GeneratesTypeConverter;
-use Spawnia\Sailor\Type\EnumTypeConfig;
 
-class CustomEnumTypeConfig extends EnumTypeConfig
+class BenSampoEnumTypeConfig extends EnumTypeConfig
 {
     use GeneratesTypeConverter;
 
@@ -45,7 +45,7 @@ class CustomEnumTypeConfig extends EnumTypeConfig
         $toGraphQL->setBody(
             <<<PHP
                 if (! \$value instanceof \\{$customEnumClass}) {
-                    throw new \InvalidArgumentException('Expected instanceof Enum, got: '.gettype(\$value));
+                    throw new \InvalidArgumentException('Expected instanceof {$customEnumClass}, got: '.gettype(\$value));
                 }
 
                 return \$value->value;
@@ -58,6 +58,10 @@ class CustomEnumTypeConfig extends EnumTypeConfig
     protected function decorateEnumClass(ClassType $class): ClassType
     {
         $class->addExtend(Enum::class);
+
+        foreach ($this->enumType->getValues() as $value) {
+            $class->addComment("@method static static {$value->name}()");
+        }
 
         return parent::decorateEnumClass($class);
     }

@@ -2,9 +2,11 @@
 
 namespace Spawnia\Sailor\Tests\Integration;
 
+use Spawnia\Sailor\CustomTypes\Operations\MyBenSampoEnumQuery;
 use Spawnia\Sailor\CustomTypes\Operations\MyCustomEnumQuery;
 use Spawnia\Sailor\CustomTypes\Operations\MyDefaultEnumQuery;
 use Spawnia\Sailor\CustomTypes\Operations\MyEnumInputQuery;
+use Spawnia\Sailor\CustomTypes\Types\BenSampoEnum;
 use Spawnia\Sailor\CustomTypes\Types\CustomEnum;
 use Spawnia\Sailor\CustomTypes\Types\DefaultEnum;
 use Spawnia\Sailor\CustomTypes\Types\EnumInput;
@@ -49,6 +51,27 @@ class CustomTypesTest extends TestCase
         $customEnum = $result->data->withCustomEnum;
         self::assertInstanceOf(CustomEnum::class, $customEnum);
         self::assertSame($value->value, $customEnum->value);
+    }
+
+    public function testBenSampoEnum(): void
+    {
+        $value = BenSampoEnum::A();
+
+        MyBenSampoEnumQuery::mock()
+            ->expects('execute')
+            ->once()
+            ->with($value)
+            ->andReturn(MyBenSampoEnumQuery\MyBenSampoEnumQueryResult::fromStdClass((object) [
+                'data' => (object) [
+                    'withBenSampoEnum' => $value->value,
+                ],
+            ]));
+
+        $result = MyBenSampoEnumQuery::execute($value)->errorFree();
+
+        $benSampoEnum = $result->data->withBenSampoEnum;
+        self::assertInstanceOf(BenSampoEnum::class, $benSampoEnum);
+        self::assertSame($value->value, $benSampoEnum->value);
     }
 
     public function testEnumInput(): void
