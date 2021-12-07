@@ -37,7 +37,7 @@ class CodegenTest extends TestCase
      */
     public static function examples(): iterable
     {
-        yield ['enum'];
+        yield ['custom-types'];
         yield ['simple'];
         yield ['polymorphic'];
     }
