@@ -8,11 +8,11 @@ use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\ResultErrorsException;
-use Spawnia\Sailor\Simple\MyObjectNestedQuery;
-use Spawnia\Sailor\Simple\MyObjectNestedQuery\MyObjectNestedQueryResult;
-use Spawnia\Sailor\Simple\MyScalarQuery;
-use Spawnia\Sailor\Simple\MyScalarQuery\MyScalarQueryResult;
-use Spawnia\Sailor\Simple\TakeSomeInput;
+use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery;
+use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery\MyObjectNestedQueryResult;
+use Spawnia\Sailor\Simple\Operations\MyScalarQuery;
+use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQueryResult;
+use Spawnia\Sailor\Simple\Operations\TakeSomeInput;
 use Spawnia\Sailor\Simple\Types\SomeInput;
 use Spawnia\Sailor\Tests\TestCase;
 

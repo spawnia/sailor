@@ -4,7 +4,7 @@ namespace Spawnia\Sailor\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\InvalidResponseException;
-use Spawnia\Sailor\Simple\MyScalarQuery\MyScalarQuery;
+use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQuery;
 
 class TypedObjectTest extends TestCase
 {

@@ -92,7 +92,7 @@ abstract class EndpointConfig
 
     public function operationsNamespace(): string
     {
-        return $this->namespace();
+        return $this->namespace() . '\\Operations';
     }
 
     public function typeConvertersNamespace(): string

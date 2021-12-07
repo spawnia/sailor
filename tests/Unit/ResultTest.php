@@ -4,8 +4,8 @@ namespace Spawnia\Sailor\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\ResultErrorsException;
-use Spawnia\Sailor\Simple\MyScalarQuery\MyScalarQuery;
-use Spawnia\Sailor\Simple\MyScalarQuery\MyScalarQueryResult;
+use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQuery;
+use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQueryResult;
 
 class ResultTest extends TestCase
 {

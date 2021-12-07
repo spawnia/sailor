@@ -2,13 +2,13 @@
 
 namespace Spawnia\Sailor\Tests\Integration;
 
-use Spawnia\Sailor\Polymorphic\AllMembers;
-use Spawnia\Sailor\Polymorphic\AllMembers\AllMembersResult;
-use Spawnia\Sailor\Polymorphic\NodeMembers;
-use Spawnia\Sailor\Polymorphic\NodeMembers\NodeMembersResult;
-use Spawnia\Sailor\Polymorphic\UserOrPost;
-use Spawnia\Sailor\Polymorphic\UserOrPost\Node;
-use Spawnia\Sailor\Polymorphic\UserOrPost\UserOrPostResult;
+use Spawnia\Sailor\Polymorphic\Operations\AllMembers;
+use Spawnia\Sailor\Polymorphic\Operations\AllMembers\AllMembersResult;
+use Spawnia\Sailor\Polymorphic\Operations\NodeMembers;
+use Spawnia\Sailor\Polymorphic\Operations\NodeMembers\NodeMembersResult;
+use Spawnia\Sailor\Polymorphic\Operations\UserOrPost;
+use Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node;
+use Spawnia\Sailor\Polymorphic\Operations\UserOrPost\UserOrPostResult;
 use Spawnia\Sailor\Tests\TestCase;
 
 class PolymorphicTest extends TestCase

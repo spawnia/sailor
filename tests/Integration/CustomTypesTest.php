@@ -2,9 +2,9 @@
 
 namespace Spawnia\Sailor\Tests\Integration;
 
-use Spawnia\Sailor\CustomTypes\MyCustomEnumQuery;
-use Spawnia\Sailor\CustomTypes\MyDefaultEnumQuery;
-use Spawnia\Sailor\CustomTypes\MyEnumInputQuery;
+use Spawnia\Sailor\CustomTypes\Operations\MyCustomEnumQuery;
+use Spawnia\Sailor\CustomTypes\Operations\MyDefaultEnumQuery;
+use Spawnia\Sailor\CustomTypes\Operations\MyEnumInputQuery;
 use Spawnia\Sailor\CustomTypes\Types\CustomEnum;
 use Spawnia\Sailor\CustomTypes\Types\DefaultEnum;
 use Spawnia\Sailor\CustomTypes\Types\EnumInput;
