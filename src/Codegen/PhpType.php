@@ -32,4 +32,17 @@ class PhpType
 
         return $typeReference;
     }
+
+    public static function type(Type $type, string $typeReference): string
+    {
+        if ($type instanceof NonNull) {
+            return self::type($type->getWrappedType(), $typeReference);
+        }
+
+        if ($type instanceof ListOfType) {
+            return 'array';
+        }
+
+        return $typeReference;
+    }
 }

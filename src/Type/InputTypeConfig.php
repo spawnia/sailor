@@ -2,6 +2,7 @@
 
 namespace Spawnia\Sailor\Type;
 
+use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
@@ -63,9 +64,14 @@ class InputTypeConfig implements TypeConfig
 
         $class->addExtend(Input::class);
 
+        $make = $class->addMethod('make');
+        $make->setStatic(true);
+        $make->setReturnType('self');
+        $make->addBody("\$instance = new self;\n");
+
         $converters = [];
 
-        foreach ($this->inputObjectType->getFields() as $name => $field) {
+        foreach ($this->requiredFieldsFirst() as $name => $field) {
             $fieldType = $field->getType();
 
             /** @var Type&NamedType $namedType guaranteed since we pass in a non-null type */
@@ -74,12 +80,28 @@ class InputTypeConfig implements TypeConfig
             $typeConfig = $typeConfigs[$namedType->name];
 
             $typeReference = $typeConfig->typeReference();
+            $phpType = PhpType::type($fieldType, $typeReference);
+            $phpDoc = PhpType::phpDoc($fieldType, $typeReference);
 
-            $class->addComment('@property ' . PhpType::phpDoc($fieldType, $typeReference) . ' $' . $name);
+            $class->addComment("@property {$phpDoc} \${$name}");
 
             $typeConverter = TypeConverterWrapper::wrap($fieldType, "new \\{$typeConfig->typeConverter()}");
             $converters[] = /** @lang PHP */ "    '{$name}' => {$typeConverter}";
+
+            $make->addComment("@param {$phpDoc} \${$name}");
+            if ($field->isRequired()) {
+                $make->addParameter($name)
+                    ->setType($phpType);
+            } else {
+                // TODO deal with complex input values
+                $make->addParameter($name, $field->defaultValue ?? null)
+                    ->setType($phpType)
+                    ->setNullable(true);
+            }
+            $make->addBody("\$instance->{$name} = \${$name};");
         }
+
+        $make->addBody("\nreturn \$instance;");
 
         $convertersMethod = $class->addMethod('converters');
         $convertersString = implode(",\n", $converters);
@@ -102,5 +124,19 @@ class InputTypeConfig implements TypeConfig
         );
 
         yield $class;
+    }
+
+    /**
+     * @return array<string, InputObjectField>
+     */
+    protected function requiredFieldsFirst(): array
+    {
+        $inputObjectFields = $this->inputObjectType->getFields();
+        \Safe\uasort(
+            $inputObjectFields,
+            fn (InputObjectField $first, InputObjectField $second): int => (int) $second->isRequired() - (int) $first->isRequired()
+        );
+
+        return $inputObjectFields;
     }
 }

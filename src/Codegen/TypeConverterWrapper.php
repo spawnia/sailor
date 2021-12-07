@@ -14,7 +14,7 @@ class TypeConverterWrapper
     /**
      * Wrap the code for an inner converter with converters for its wrapping types.
      */
-    public static function wrap(Type $type, string $innerConverter): string
+    public static function wrap(Type $type, string $innerConverter, bool $nullabilityDecided = false): string
     {
         if ($type instanceof NonNull) {
             $nonNullConverterClass = NonNullConverter::class;
@@ -22,7 +22,8 @@ class TypeConverterWrapper
             return self::wrap(
                 $type->getOfType(),
                 /** @lang PHP */
-                "new \\{$nonNullConverterClass}({$innerConverter})"
+                "new \\{$nonNullConverterClass}({$innerConverter})",
+                true
             );
         }
 
@@ -36,8 +37,12 @@ class TypeConverterWrapper
             );
         }
 
-        $nullConverterClass = NullConverter::class;
+        if (! $nullabilityDecided) {
+            $nullConverterClass = NullConverter::class;
 
-        return /** @lang PHP */ "new \\{$nullConverterClass}({$innerConverter})";
+            return /** @lang PHP */ "new \\{$nullConverterClass}({$innerConverter})";
+        }
+
+        return $innerConverter;
     }
 }

@@ -10,6 +10,20 @@ namespace Spawnia\Sailor\CustomTypes\Types;
  */
 class EnumInput extends \Spawnia\Sailor\Type\Input
 {
+    /**
+     * @param string|null $default
+     * @param \Spawnia\Sailor\CustomTypes\Types\CustomEnum|null $custom
+     */
+    public static function make(?string $default = null, ?CustomEnum $custom = null): self
+    {
+        $instance = new self;
+
+        $instance->default = $default;
+        $instance->custom = $custom;
+
+        return $instance;
+    }
+
     public function converters(): array
     {
         return [

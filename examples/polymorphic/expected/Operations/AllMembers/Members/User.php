@@ -16,7 +16,7 @@ class User extends \Spawnia\Sailor\TypedObject
     {
         static $converter;
 
-        return $converter ??= new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter));
+        return $converter ??= new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter);
     }
 
     public function nameTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter

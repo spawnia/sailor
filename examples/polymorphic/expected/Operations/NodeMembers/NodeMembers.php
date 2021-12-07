@@ -16,16 +16,16 @@ class NodeMembers extends \Spawnia\Sailor\TypedObject
     {
         static $converter;
 
-        return $converter ??= new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter));
+        return $converter ??= new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter);
     }
 
     public function membersTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
     {
         static $converter;
 
-        return $converter ??= new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\ListConverter(new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\PolymorphicConverter([
+        return $converter ??= new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\ListConverter(new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\PolymorphicConverter([
             'User' => '\\Spawnia\\Sailor\\Polymorphic\\Operations\\NodeMembers\\Members\\User',
             'Organization' => '\\Spawnia\\Sailor\\Polymorphic\\Operations\\NodeMembers\\Members\\Organization',
-        ])))));
+        ]))));
     }
 }
