@@ -38,6 +38,7 @@ class CodegenTest extends TestCase
     public static function examples(): iterable
     {
         yield ['custom-types'];
+        yield ['input'];
         yield ['simple'];
         yield ['polymorphic'];
     }

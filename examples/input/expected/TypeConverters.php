@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Spawnia\Sailor\Simple;
+namespace Spawnia\Sailor\Input;
 
 class TypeConverters
 {
@@ -39,6 +39,13 @@ class TypeConverters
         static $converter;
 
         return $converter ??= new \Spawnia\Sailor\Convert\IDConverter();
+    }
+
+    public static function SomeInput(): Types\SomeInput
+    {
+        static $converter;
+
+        return $converter ??= new \Spawnia\Sailor\Input\Types\SomeInput();
     }
 
     public static function __TypeKind(): \Spawnia\Sailor\Convert\EnumConverter

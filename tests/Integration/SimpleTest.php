@@ -12,8 +12,6 @@ use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery;
 use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery\MyObjectNestedQueryResult;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQueryResult;
-use Spawnia\Sailor\Simple\Operations\TakeSomeInput;
-use Spawnia\Sailor\Simple\Types\SomeInput;
 use Spawnia\Sailor\Tests\TestCase;
 
 class SimpleTest extends TestCase
@@ -182,31 +180,5 @@ class SimpleTest extends TestCase
         $object = $result->data->singleObject;
         self::assertNotNull($object);
         self::assertNull($object->nested);
-    }
-
-    public function testSomeInput(): void
-    {
-        $nestedInput = new SomeInput();
-        $nestedInput->id = 'bar';
-
-        $someInput = new SomeInput();
-        $someInput->id = 'foo';
-        $someInput->matrix = [[1, null]];
-        $someInput->nested = $nestedInput;
-
-        $answer = 42;
-
-        TakeSomeInput::mock()
-            ->expects('execute')
-            ->once()
-            ->withArgs(fn (SomeInput $input): bool => $input == $someInput)
-            ->andReturn(TakeSomeInput\TakeSomeInputResult::fromStdClass((object) [
-                'data' => (object) [
-                    'takeSomeInput' => $answer,
-                ],
-            ]));
-
-        $result = TakeSomeInput::execute($someInput)->errorFree();
-        self::assertSame($answer, $result->data->takeSomeInput);
     }
 }

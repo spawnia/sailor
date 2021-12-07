@@ -9,8 +9,7 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpNamespace;
-use Spawnia\Sailor\Codegen\PhpType;
-use Spawnia\Sailor\Codegen\TypeConverterWrapper;
+use Spawnia\Sailor\Codegen\TypeWrapper;
 use Spawnia\Sailor\EndpointConfig;
 
 class InputTypeConfig implements TypeConfig
@@ -80,12 +79,12 @@ class InputTypeConfig implements TypeConfig
             $typeConfig = $typeConfigs[$namedType->name];
 
             $typeReference = $typeConfig->typeReference();
-            $phpType = PhpType::type($fieldType, $typeReference);
-            $phpDoc = PhpType::phpDoc($fieldType, $typeReference);
+            $phpType = TypeWrapper::type($fieldType, $typeReference);
+            $phpDoc = TypeWrapper::phpDoc($fieldType, $typeReference);
 
             $class->addComment("@property {$phpDoc} \${$name}");
 
-            $typeConverter = TypeConverterWrapper::wrap($fieldType, "new \\{$typeConfig->typeConverter()}");
+            $typeConverter = TypeWrapper::converter($fieldType, "new \\{$typeConfig->typeConverter()}");
             $converters[] = /** @lang PHP */ "    '{$name}' => {$typeConverter}";
 
             $make->addComment("@param {$phpDoc} \${$name}");

@@ -61,6 +61,7 @@
       "Spawnia\\Sailor\\Tests\\": "tests/",
       "Spawnia\\Sailor\\CustomTypes\\": "examples/custom-types/expected/",
       "Spawnia\\Sailor\\CustomTypesSrc\\": "examples/custom-types/src/",
+      "Spawnia\\Sailor\\Input\\": "examples/input/expected/",
       "Spawnia\\Sailor\\Simple\\": "examples/simple/expected/",
       "Spawnia\\Sailor\\Polymorphic\\": "examples/polymorphic/expected/"
     },

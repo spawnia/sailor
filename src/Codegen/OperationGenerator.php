@@ -124,7 +124,7 @@ class OperationGenerator implements ClassGenerator
                             );
 
                             // Store the actual query string in the operation
-                            // TODO minify the query string
+                            // TODO minify the query string https://github.com/webonyx/graphql-php/issues/1028
                             $document = $operation->addMethod('document');
                             $document->setStatic();
                             $document->setReturnType('string');
@@ -300,7 +300,7 @@ class OperationGenerator implements ClassGenerator
                                 throw new \Exception("Unable to determine parent type of field {$fieldName}");
                             }
 
-                            $wrappedTypeConverter = TypeConverterWrapper::wrap($type, $typeConverter);
+                            $wrappedTypeConverter = TypeWrapper::converter($type, $typeConverter);
 
                             foreach ($selectionClasses as $name => $selection) {
                                 $selectionType = $this->schema->getType($name);
@@ -310,7 +310,7 @@ class OperationGenerator implements ClassGenerator
 
                                 if (TypeComparators::isTypeSubTypeOf($this->schema, $selectionType, $parentType)) {
                                     $fieldProperty = $selection->addProperty($fieldName);
-                                    $fieldProperty->setComment('@var ' . PhpType::phpDoc($type, $typeReference));
+                                    $fieldProperty->setComment('@var ' . TypeWrapper::phpDoc($type, $typeReference));
 
                                     $fieldTypeMapper = $selection->addMethod(FieldTypeMapper::methodName($fieldName));
                                     $fieldTypeMapper->setReturnType(TypeConverter::class);

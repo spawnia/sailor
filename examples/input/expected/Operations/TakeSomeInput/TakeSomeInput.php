@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Spawnia\Sailor\Simple\Operations\TakeSomeInput;
+namespace Spawnia\Sailor\Input\Operations\TakeSomeInput;
 
 class TakeSomeInput extends \Spawnia\Sailor\TypedObject
 {

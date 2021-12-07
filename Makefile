@@ -30,16 +30,17 @@ infection: ## Runs mutation tests with infection
 	mkdir -p .build/infection
 	vendor/bin/infection --ignore-msi-with-no-mutations --min-covered-msi=100 --min-msi=100
 
+define approve_example
+	rm -r examples/$(1)/expected
+	cp -r examples/$(1)/generated examples/$(1)/expected
+endef
+
 .PHONY: approve
 approve: ## Accept the current generated code as expected
-	rm -r examples/custom-types/expected
-	cp -r examples/custom-types/generated examples/custom-types/expected
-
-	rm -r examples/simple/expected
-	cp -r examples/simple/generated examples/simple/expected
-
-	rm -r examples/polymorphic/expected
-	cp -r examples/polymorphic/generated examples/polymorphic/expected
+	$(call approve_example,custom-types)
+	$(call approve_example,input)
+	$(call approve_example,polymorphic)
+	$(call approve_example,simple)
 
 vendor: composer.json composer.lock
 	composer install

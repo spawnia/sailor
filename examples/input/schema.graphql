@@ -1,0 +1,10 @@
+type Mutation {
+    takeSomeInput(input: SomeInput): Int
+}
+
+input SomeInput {
+    required: ID!
+    optional: String
+    matrix: [[Int]!]!
+    nested: SomeInput
+}
