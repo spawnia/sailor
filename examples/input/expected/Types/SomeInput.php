@@ -10,7 +10,7 @@ namespace Spawnia\Sailor\Input\Types;
  * @property string|null $optional
  * @property \Spawnia\Sailor\Input\Types\SomeInput|null $nested
  */
-class SomeInput extends \Spawnia\Sailor\Type\Input
+class SomeInput extends \Spawnia\Sailor\Type\TypedObject
 {
     /**
      * @param string $required
@@ -36,7 +36,9 @@ class SomeInput extends \Spawnia\Sailor\Type\Input
 
     public function converters(): array
     {
-        return [
+        static $converters;
+
+        return $converters ??= [
             'required' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\IDConverter),
             'matrix' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\ListConverter(new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\ListConverter(new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\IntConverter))))),
             'optional' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\StringConverter),

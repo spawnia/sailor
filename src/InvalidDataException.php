@@ -2,6 +2,6 @@
 
 namespace Spawnia\Sailor;
 
-class InvalidResponseException extends \Exception
+class InvalidDataException extends \Exception
 {
 }

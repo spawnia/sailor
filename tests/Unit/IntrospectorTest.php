@@ -10,7 +10,7 @@ use function Safe\unlink;
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Introspector;
-use Spawnia\Sailor\InvalidResponseException;
+use Spawnia\Sailor\InvalidDataException;
 use Spawnia\Sailor\Json;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
@@ -126,7 +126,7 @@ class IntrospectorTest extends TestCase
         yield [
             [
                 static function (): Response {
-                    throw new InvalidResponseException('misbehaved server');
+                    throw new InvalidDataException('misbehaved server');
                 },
                 self::successfulIntrospectionMock(),
             ],

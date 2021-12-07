@@ -3,7 +3,7 @@
 namespace Spawnia\Sailor;
 
 /**
- * @property TypedObject|null $data The result of executing the requested operation.
+ * @property \Spawnia\Sailor\Type\TypedObject|null $data The result of executing the requested operation.
  */
 abstract class ErrorFreeResult
 {

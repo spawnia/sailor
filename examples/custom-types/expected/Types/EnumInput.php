@@ -8,7 +8,7 @@ namespace Spawnia\Sailor\CustomTypes\Types;
  * @property string|null $default
  * @property \Spawnia\Sailor\CustomTypes\Types\CustomEnum|null $custom
  */
-class EnumInput extends \Spawnia\Sailor\Type\Input
+class EnumInput extends \Spawnia\Sailor\Type\TypedObject
 {
     /**
      * @param string|null $default
@@ -26,7 +26,9 @@ class EnumInput extends \Spawnia\Sailor\Type\Input
 
     public function converters(): array
     {
-        return [
+        static $converters;
+
+        return $converters ??= [
             'default' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\EnumConverter),
             'custom' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\CustomTypes\TypeConverters\CustomEnumConverter),
         ];

@@ -31,7 +31,7 @@ class InputTypeConfig implements TypeConfig
     }
 
     /**
-     * @return class-string<Input>
+     * @return class-string<TypedObject>
      */
     public function className(): string
     {
@@ -61,7 +61,7 @@ class InputTypeConfig implements TypeConfig
             new PhpNamespace($this->endpointConfig->typesNamespace())
         );
 
-        $class->addExtend(Input::class);
+        $class->addExtend(TypedObject::class);
 
         $make = $class->addMethod('make');
         $make->setStatic(true);
@@ -106,7 +106,9 @@ class InputTypeConfig implements TypeConfig
         $convertersString = implode(",\n", $converters);
         $convertersMethod->setBody(
             <<<PHP
-                return [
+                static \$converters;
+
+                return \$converters ??= [
                 {$convertersString},
                 ];
                 PHP

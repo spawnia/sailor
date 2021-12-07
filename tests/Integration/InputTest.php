@@ -36,20 +36,21 @@ class InputTest extends TestCase
 
     public function testMake(): void
     {
+        // TODO use named arguments in PHP 8
         $input = SomeInput::make(
-            /* required: */ 
+            /* required: */
             'foo',
-            /* matrix: */ 
+            /* matrix: */
             [[]],
-            /* optional: */ 
+            /* optional: */
             null,
-            /* nested: */ 
+            /* nested: */
             SomeInput::make(
-                /* required: */ 
+                /* required: */
                 'bar',
-                /* matrix: */ 
+                /* matrix: */
                 [[1, null]],
-                /* optional: */ 
+                /* optional: */
                 'baz'
             ),
         );

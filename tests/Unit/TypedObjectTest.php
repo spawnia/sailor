@@ -3,7 +3,7 @@
 namespace Spawnia\Sailor\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Spawnia\Sailor\InvalidResponseException;
+use Spawnia\Sailor\InvalidDataException;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQuery;
 
 class TypedObjectTest extends TestCase
@@ -19,8 +19,9 @@ class TypedObjectTest extends TestCase
 
     public function testWrongKey(): void
     {
-        $this->expectException(InvalidResponseException::class);
-        $this->expectExceptionMessage('Unknown field nonExistent, available fields: __typename, scalarWithArg.');
+        $this->expectExceptionObject(new InvalidDataException(
+            'Unknown property nonExistent, available properties: __typename, scalarWithArg.'
+        ));
         MyScalarQuery::fromStdClass((object) [
             'nonExistent' => 'foo',
         ]);

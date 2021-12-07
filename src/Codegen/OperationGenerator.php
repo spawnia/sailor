@@ -33,7 +33,7 @@ use Spawnia\Sailor\ErrorFreeResult;
 use Spawnia\Sailor\Operation;
 use Spawnia\Sailor\Result;
 use Spawnia\Sailor\Type\TypeConfig;
-use Spawnia\Sailor\TypedObject;
+use Spawnia\Sailor\Type\TypedObject;
 use Symfony\Component\VarExporter\VarExporter;
 
 /**
@@ -309,8 +309,15 @@ class OperationGenerator implements ClassGenerator
                                 }
 
                                 if (TypeComparators::isTypeSubTypeOf($this->schema, $selectionType, $parentType)) {
+                                    $phpDocType = TypeWrapper::phpDoc($type, $typeReference);
+
                                     $fieldProperty = $selection->addProperty($fieldName);
-                                    $fieldProperty->setComment('@var ' . TypeWrapper::phpDoc($type, $typeReference));
+                                    $fieldProperty->setComment('@var ' . $phpDocType);
+
+                                    $selection->addComment("@property {$phpDocType} \${$fieldName}");
+
+                                    $converters = $selection->getMethod('converters');
+                                    $converters->addBody("    '{$fieldName}' => {$wrappedTypeConverter},");
 
                                     $fieldTypeMapper = $selection->addMethod(FieldTypeMapper::methodName($fieldName));
                                     $fieldTypeMapper->setReturnType(TypeConverter::class);
@@ -353,6 +360,11 @@ class OperationGenerator implements ClassGenerator
 
     protected function finishSubtree(): void
     {
+        foreach ($this->operationStack->peekSelection() as $selection) {
+            $converters = $selection->getMethod('converters');
+            $converters->addBody('];');
+        }
+
         // We are done with building this subtree of the selection set,
         // so we move the top-most element to the storage
         $this->operationStack->popSelection();
@@ -368,6 +380,16 @@ class OperationGenerator implements ClassGenerator
             $this->makeNamespace()
         );
         $typedObject->addExtend(TypedObject::class);
+
+        $converters = $typedObject->addMethod('converters');
+        $converters->setReturnType('array');
+        $converters->addBody(
+            <<<'PHP'
+static $converters;
+
+return $converters ??= [
+PHP
+        );
 
         return $typedObject;
     }

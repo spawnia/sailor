@@ -2,7 +2,7 @@
 
 namespace Spawnia\Sailor\Convert;
 
-use Spawnia\Sailor\TypedObject;
+use Spawnia\Sailor\Type\TypedObject;
 use stdClass;
 
 /**

@@ -8,9 +8,6 @@ parameters:
 	- src
 	- tests
 	tmpDir: %currentWorkingDirectory%/.build/phpstan
-	excludePaths:
-	# This is where raw data is magically mapped to typed data
-	- %rootDir%/../../../src/TypedObject.php
 	ignoreErrors:
 	- '#Call to deprecated method getNamespace\(\) of class Nette\\PhpGenerator\\ClassType#'
 	- '#Unsafe usage of new static.*#'
