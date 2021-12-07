@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\CustomTypes\TypeConverters;
 
-class CustomEnum implements \Spawnia\Sailor\TypeConverter
+class CustomEnumConverter implements \Spawnia\Sailor\TypeConverter
 {
     public function fromGraphQL($value): \Spawnia\Sailor\CustomTypes\Types\CustomEnum
     {

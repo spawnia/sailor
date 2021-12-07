@@ -16,7 +16,7 @@ trait GeneratesTypeConverter
     protected function makeTypeConverter(Type $type, EndpointConfig $endpointConfig): ClassType
     {
         $class = new ClassType(
-            $type->name,
+            $this->typeConverterBaseName($type),
             new PhpNamespace($endpointConfig->typeConvertersNamespace())
         );
 
@@ -33,6 +33,11 @@ trait GeneratesTypeConverter
 
     public function typeConverterClassName(Type $type, EndpointConfig $endpointConfig): string
     {
-        return $endpointConfig->typeConvertersNamespace() . '\\' . $type->name;
+        return $endpointConfig->typeConvertersNamespace() . '\\' . $this->typeConverterBaseName($type);
+    }
+
+    protected function typeConverterBaseName(Type $type): string
+    {
+        return "{$type->name}Converter";
     }
 }

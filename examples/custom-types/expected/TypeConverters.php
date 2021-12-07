@@ -48,11 +48,11 @@ class TypeConverters
         return $converter ??= new \Spawnia\Sailor\TypeConverter\EnumConverter();
     }
 
-    public static function CustomEnum(): TypeConverters\CustomEnum
+    public static function CustomEnum(): TypeConverters\CustomEnumConverter
     {
         static $converter;
 
-        return $converter ??= new \Spawnia\Sailor\CustomTypes\TypeConverters\CustomEnum();
+        return $converter ??= new \Spawnia\Sailor\CustomTypes\TypeConverters\CustomEnumConverter();
     }
 
     public static function EnumInput(): Types\EnumInput
@@ -83,10 +83,10 @@ class TypeConverters
         return $converter ??= new \Spawnia\Sailor\TypeConverter\ScalarConverter();
     }
 
-    public static function CustomDate(): TypeConverters\CustomDate
+    public static function CustomDate(): TypeConverters\CustomDateConverter
     {
         static $converter;
 
-        return $converter ??= new \Spawnia\Sailor\CustomTypes\TypeConverters\CustomDate();
+        return $converter ??= new \Spawnia\Sailor\CustomTypes\TypeConverters\CustomDateConverter();
     }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\CustomTypes\TypeConverters;
 
-class CustomDate implements \Spawnia\Sailor\TypeConverter
+class CustomDateConverter implements \Spawnia\Sailor\TypeConverter
 {
     public function fromGraphQL($value): \DateTime
     {

@@ -14,7 +14,7 @@ class EnumInput extends \Spawnia\Sailor\Type\Input
     {
         return [
             'default' => new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\EnumConverter),
-            'custom' => new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\CustomTypes\TypeConverters\CustomEnum),
+            'custom' => new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\CustomTypes\TypeConverters\CustomEnumConverter),
         ];
     }
 
