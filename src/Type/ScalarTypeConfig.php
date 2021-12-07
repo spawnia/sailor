@@ -2,7 +2,7 @@
 
 namespace Spawnia\Sailor\Type;
 
-use Spawnia\Sailor\TypeConverter\ScalarConverter;
+use Spawnia\Sailor\Convert\ScalarConverter;
 
 class ScalarTypeConfig implements TypeConfig
 {

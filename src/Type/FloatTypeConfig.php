@@ -2,7 +2,7 @@
 
 namespace Spawnia\Sailor\Type;
 
-use Spawnia\Sailor\TypeConverter\FloatConverter;
+use Spawnia\Sailor\Convert\FloatConverter;
 
 class FloatTypeConfig implements TypeConfig
 {

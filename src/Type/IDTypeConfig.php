@@ -2,7 +2,7 @@
 
 namespace Spawnia\Sailor\Type;
 
-use Spawnia\Sailor\TypeConverter\IDConverter;
+use Spawnia\Sailor\Convert\IDConverter;
 
 class IDTypeConfig implements TypeConfig
 {

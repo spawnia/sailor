@@ -2,7 +2,7 @@
 
 namespace Spawnia\Sailor\Type;
 
-use Spawnia\Sailor\TypeConverter\BooleanConverter;
+use Spawnia\Sailor\Convert\BooleanConverter;
 
 class BooleanTypeConfig implements TypeConfig
 {

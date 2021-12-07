@@ -5,8 +5,8 @@ namespace Spawnia\Sailor\CustomTypesSrc;
 use GraphQL\Type\Definition\Type;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Method;
+use Spawnia\Sailor\Convert\GeneratesTypeConverter;
 use Spawnia\Sailor\Type\EnumTypeConfig;
-use Spawnia\Sailor\TypeConverter\GeneratesTypeConverter;
 
 class CustomEnumTypeConfig extends EnumTypeConfig
 {

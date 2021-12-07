@@ -12,17 +12,17 @@ class SomeObject extends \Spawnia\Sailor\TypedObject
     /** @var int|null */
     public $value;
 
-    public function __typenameTypeMapper(): \Spawnia\Sailor\TypeConverter
+    public function __typenameTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
     {
         static $converter;
 
-        return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\NonNullConverter(new \Spawnia\Sailor\TypeConverter\StringConverter));
+        return $converter ??= new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter));
     }
 
-    public function valueTypeMapper(): \Spawnia\Sailor\TypeConverter
+    public function valueTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
     {
         static $converter;
 
-        return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\IntConverter);
+        return $converter ??= new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\IntConverter);
     }
 }

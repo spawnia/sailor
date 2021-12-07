@@ -3,6 +3,7 @@
 namespace Spawnia\Sailor;
 
 use Spawnia\Sailor\Codegen\FieldTypeMapper;
+use Spawnia\Sailor\Convert\TypeConverter;
 use stdClass;
 
 abstract class TypedObject implements TypeConverter

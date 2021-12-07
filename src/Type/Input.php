@@ -2,7 +2,7 @@
 
 namespace Spawnia\Sailor\Type;
 
-use Spawnia\Sailor\TypeConverter;
+use Spawnia\Sailor\Convert\TypeConverter;
 
 abstract class Input implements TypeConverter
 {

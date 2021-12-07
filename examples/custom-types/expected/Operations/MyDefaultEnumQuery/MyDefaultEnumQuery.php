@@ -12,17 +12,17 @@ class MyDefaultEnumQuery extends \Spawnia\Sailor\TypedObject
     /** @var string */
     public $withDefaultEnum;
 
-    public function __typenameTypeMapper(): \Spawnia\Sailor\TypeConverter
+    public function __typenameTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
     {
         static $converter;
 
-        return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\NonNullConverter(new \Spawnia\Sailor\TypeConverter\StringConverter));
+        return $converter ??= new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter));
     }
 
-    public function withDefaultEnumTypeMapper(): \Spawnia\Sailor\TypeConverter
+    public function withDefaultEnumTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
     {
         static $converter;
 
-        return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\NonNullConverter(new \Spawnia\Sailor\TypeConverter\EnumConverter));
+        return $converter ??= new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\EnumConverter));
     }
 }

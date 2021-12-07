@@ -7,9 +7,9 @@ use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Method;
+use Spawnia\Sailor\Convert\GeneratesTypeConverter;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Type\TypeConfig;
-use Spawnia\Sailor\TypeConverter\GeneratesTypeConverter;
 
 class CustomDateTypeConfig implements TypeConfig
 {

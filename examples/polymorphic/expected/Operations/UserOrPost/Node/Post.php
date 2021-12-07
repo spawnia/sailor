@@ -15,24 +15,24 @@ class Post extends \Spawnia\Sailor\TypedObject
     /** @var string|null */
     public $title;
 
-    public function __typenameTypeMapper(): \Spawnia\Sailor\TypeConverter
+    public function __typenameTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
     {
         static $converter;
 
-        return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\NonNullConverter(new \Spawnia\Sailor\TypeConverter\StringConverter));
+        return $converter ??= new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter));
     }
 
-    public function idTypeMapper(): \Spawnia\Sailor\TypeConverter
+    public function idTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
     {
         static $converter;
 
-        return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\NonNullConverter(new \Spawnia\Sailor\TypeConverter\IDConverter));
+        return $converter ??= new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\IDConverter));
     }
 
-    public function titleTypeMapper(): \Spawnia\Sailor\TypeConverter
+    public function titleTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
     {
         static $converter;
 
-        return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\StringConverter);
+        return $converter ??= new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\StringConverter);
     }
 }

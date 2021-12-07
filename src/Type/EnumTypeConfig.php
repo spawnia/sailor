@@ -5,8 +5,8 @@ namespace Spawnia\Sailor\Type;
 use GraphQL\Type\Definition\EnumType;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpNamespace;
+use Spawnia\Sailor\Convert\EnumConverter;
 use Spawnia\Sailor\EndpointConfig;
-use Spawnia\Sailor\TypeConverter\EnumConverter;
 
 class EnumTypeConfig implements TypeConfig
 {

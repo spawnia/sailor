@@ -12,18 +12,18 @@ class NodeMembers extends \Spawnia\Sailor\TypedObject
     /** @var array<int, \Spawnia\Sailor\Polymorphic\Operations\NodeMembers\Members\User|\Spawnia\Sailor\Polymorphic\Operations\NodeMembers\Members\Organization> */
     public $members;
 
-    public function __typenameTypeMapper(): \Spawnia\Sailor\TypeConverter
+    public function __typenameTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
     {
         static $converter;
 
-        return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\NonNullConverter(new \Spawnia\Sailor\TypeConverter\StringConverter));
+        return $converter ??= new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter));
     }
 
-    public function membersTypeMapper(): \Spawnia\Sailor\TypeConverter
+    public function membersTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
     {
         static $converter;
 
-        return $converter ??= new \Spawnia\Sailor\TypeConverter\NullConverter(new \Spawnia\Sailor\TypeConverter\NonNullConverter(new \Spawnia\Sailor\TypeConverter\ListConverter(new \Spawnia\Sailor\TypeConverter\NonNullConverter(new \Spawnia\Sailor\TypeConverter\PolymorphicConverter([
+        return $converter ??= new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\ListConverter(new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\PolymorphicConverter([
             'User' => '\\Spawnia\\Sailor\\Polymorphic\\Operations\\NodeMembers\\Members\\User',
             'Organization' => '\\Spawnia\\Sailor\\Polymorphic\\Operations\\NodeMembers\\Members\\Organization',
         ])))));

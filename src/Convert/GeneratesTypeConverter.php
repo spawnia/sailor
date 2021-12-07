@@ -1,13 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace Spawnia\Sailor\TypeConverter;
+namespace Spawnia\Sailor\Convert;
 
 use GraphQL\Type\Definition\Type;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpNamespace;
 use Spawnia\Sailor\EndpointConfig;
-use Spawnia\Sailor\TypeConverter;
 
 trait GeneratesTypeConverter
 {

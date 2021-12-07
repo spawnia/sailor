@@ -1,8 +1,7 @@
 <?php declare(strict_types=1);
 
-namespace Spawnia\Sailor\TypeConverter;
+namespace Spawnia\Sailor\Convert;
 
-use Spawnia\Sailor\TypeConverter;
 use Spawnia\Sailor\TypedObject;
 use stdClass;
 

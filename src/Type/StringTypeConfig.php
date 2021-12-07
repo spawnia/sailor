@@ -2,7 +2,7 @@
 
 namespace Spawnia\Sailor\Type;
 
-use Spawnia\Sailor\TypeConverter\StringConverter;
+use Spawnia\Sailor\Convert\StringConverter;
 
 class StringTypeConfig implements TypeConfig
 {

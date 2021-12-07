@@ -26,13 +26,13 @@ use GraphQL\Utils\TypeInfo;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Parameter;
 use Nette\PhpGenerator\PhpNamespace;
+use Spawnia\Sailor\Convert\PolymorphicConverter;
+use Spawnia\Sailor\Convert\TypeConverter;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\ErrorFreeResult;
 use Spawnia\Sailor\Operation;
 use Spawnia\Sailor\Result;
 use Spawnia\Sailor\Type\TypeConfig;
-use Spawnia\Sailor\TypeConverter;
-use Spawnia\Sailor\TypeConverter\PolymorphicConverter;
 use Spawnia\Sailor\TypedObject;
 use Symfony\Component\VarExporter\VarExporter;
 
@@ -285,7 +285,7 @@ class OperationGenerator implements ClassGenerator
 
                                 $mappingCode = VarExporter::export($mapping);
                                 $typeConverter = <<<PHP
-                                    new \Spawnia\Sailor\TypeConverter\PolymorphicConverter({$mappingCode})
+                                    new \Spawnia\Sailor\Convert\PolymorphicConverter({$mappingCode})
                                     PHP;
                             } else {
                                 $typeConfig = $this->types[$namedType->name];

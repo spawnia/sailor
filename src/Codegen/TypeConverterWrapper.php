@@ -5,9 +5,9 @@ namespace Spawnia\Sailor\Codegen;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\Type;
-use Spawnia\Sailor\TypeConverter\ListConverter;
-use Spawnia\Sailor\TypeConverter\NonNullConverter;
-use Spawnia\Sailor\TypeConverter\NullConverter;
+use Spawnia\Sailor\Convert\ListConverter;
+use Spawnia\Sailor\Convert\NonNullConverter;
+use Spawnia\Sailor\Convert\NullConverter;
 
 class TypeConverterWrapper
 {

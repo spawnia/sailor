@@ -2,7 +2,7 @@
 
 namespace Spawnia\Sailor\Type;
 
-use Spawnia\Sailor\TypeConverter\IntConverter;
+use Spawnia\Sailor\Convert\IntConverter;
 
 class IntTypeConfig implements TypeConfig
 {

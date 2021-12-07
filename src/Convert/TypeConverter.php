@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Spawnia\Sailor;
+namespace Spawnia\Sailor\Convert;
 
 /**
  * Converts a value between its JSON representation and an internal value.

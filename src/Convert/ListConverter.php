@@ -1,8 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Spawnia\Sailor\TypeConverter;
-
-use Spawnia\Sailor\TypeConverter;
+namespace Spawnia\Sailor\Convert;
 
 class ListConverter implements TypeConverter
 {

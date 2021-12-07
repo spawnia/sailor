@@ -2,7 +2,7 @@
 
 namespace Spawnia\Sailor;
 
-class Json
+final class Json
 {
     /**
      * Convert an JSON encodable value so that maps are \stdClass instances.

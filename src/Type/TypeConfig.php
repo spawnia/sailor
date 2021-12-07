@@ -3,7 +3,7 @@
 namespace Spawnia\Sailor\Type;
 
 use Nette\PhpGenerator\ClassType;
-use Spawnia\Sailor\TypeConverter;
+use Spawnia\Sailor\Convert\TypeConverter;
 
 interface TypeConfig
 {
