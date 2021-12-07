@@ -24,7 +24,7 @@ class EnumInput extends \Spawnia\Sailor\Type\TypedObject
         return $instance;
     }
 
-    public function converters(): array
+    protected function converters(): array
     {
         static $converters;
 
@@ -32,10 +32,5 @@ class EnumInput extends \Spawnia\Sailor\Type\TypedObject
             'default' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\EnumConverter),
             'custom' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\CustomTypes\TypeConverters\CustomEnumConverter),
         ];
-    }
-
-    public static function endpoint(): string
-    {
-        return 'custom-types';
     }
 }

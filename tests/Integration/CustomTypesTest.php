@@ -89,7 +89,7 @@ class CustomTypesTest extends TestCase
             ->with($input)
             ->andReturn(MyEnumInputQuery\MyEnumInputQueryResult::fromStdClass((object) [
                 'data' => (object) [
-                    'withEnumInput' => $input->toGraphQL($input),
+                    'withEnumInput' => $input->toStdClass(),
                 ],
             ]));
 

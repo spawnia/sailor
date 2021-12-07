@@ -11,16 +11,24 @@ namespace Spawnia\Sailor\CustomTypes\Operations\MyEnumInputQuery\WithEnumInput;
  */
 class EnumObject extends \Spawnia\Sailor\Type\TypedObject
 {
-    /** @var string */
-    public $__typename;
+    /**
+     * @param \Spawnia\Sailor\CustomTypes\Types\CustomEnum|null $custom
+     * @param string|null $default
+     */
+    public static function make(
+        ?\Spawnia\Sailor\CustomTypes\Types\CustomEnum $custom = null,
+        ?string $default = null
+    ): self {
+        $instance = new self;
 
-    /** @var \Spawnia\Sailor\CustomTypes\Types\CustomEnum|null */
-    public $custom;
+        $instance->__typename = 'EnumObject';
+        $instance->custom = $custom;
+        $instance->default = $default;
 
-    /** @var string|null */
-    public $default;
+        return $instance;
+    }
 
-    public function converters(): array
+    protected function converters(): array
     {
         static $converters;
 
@@ -29,26 +37,5 @@ class EnumObject extends \Spawnia\Sailor\Type\TypedObject
             'custom' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\CustomTypes\TypeConverters\CustomEnumConverter),
             'default' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\EnumConverter),
         ];
-    }
-
-    public function __typenameTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
-    {
-        static $converter;
-
-        return $converter ??= new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter);
-    }
-
-    public function customTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
-    {
-        static $converter;
-
-        return $converter ??= new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\CustomTypes\TypeConverters\CustomEnumConverter);
-    }
-
-    public function defaultTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
-    {
-        static $converter;
-
-        return $converter ??= new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\EnumConverter);
     }
 }

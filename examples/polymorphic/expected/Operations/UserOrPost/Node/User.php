@@ -5,50 +5,35 @@ declare(strict_types=1);
 namespace Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node;
 
 /**
- * @property string $__typename
  * @property string $id
+ * @property string $__typename
  * @property string|null $name
  */
 class User extends \Spawnia\Sailor\Type\TypedObject
 {
-    /** @var string */
-    public $__typename;
+    /**
+     * @param string $id
+     * @param string|null $name
+     */
+    public static function make(string $id, ?string $name = null): self
+    {
+        $instance = new self;
 
-    /** @var string */
-    public $id;
+        $instance->id = $id;
+        $instance->__typename = 'Node';
+        $instance->name = $name;
 
-    /** @var string|null */
-    public $name;
+        return $instance;
+    }
 
-    public function converters(): array
+    protected function converters(): array
     {
         static $converters;
 
         return $converters ??= [
-            '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
             'id' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\IDConverter),
+            '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
             'name' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\StringConverter),
         ];
-    }
-
-    public function __typenameTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
-    {
-        static $converter;
-
-        return $converter ??= new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter);
-    }
-
-    public function idTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
-    {
-        static $converter;
-
-        return $converter ??= new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\IDConverter);
-    }
-
-    public function nameTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
-    {
-        static $converter;
-
-        return $converter ??= new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\StringConverter);
     }
 }

@@ -35,6 +35,14 @@ abstract class TypedObject implements TypeConverter
     }
 
     /**
+     * Convert itself to a stdClass.
+     */
+    public function toStdClass(): stdClass
+    {
+        return $this->toGraphQL($this);
+    }
+
+    /**
      * @param  mixed  $value  anything
      */
     public function __set(string $name, $value): void

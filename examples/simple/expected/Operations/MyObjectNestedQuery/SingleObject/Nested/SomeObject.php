@@ -10,13 +10,20 @@ namespace Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery\SingleObject\Nest
  */
 class SomeObject extends \Spawnia\Sailor\Type\TypedObject
 {
-    /** @var string */
-    public $__typename;
+    /**
+     * @param int|null $value
+     */
+    public static function make(?int $value = null): self
+    {
+        $instance = new self;
 
-    /** @var int|null */
-    public $value;
+        $instance->__typename = 'SomeObject';
+        $instance->value = $value;
 
-    public function converters(): array
+        return $instance;
+    }
+
+    protected function converters(): array
     {
         static $converters;
 
@@ -24,19 +31,5 @@ class SomeObject extends \Spawnia\Sailor\Type\TypedObject
             '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
             'value' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\IntConverter),
         ];
-    }
-
-    public function __typenameTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
-    {
-        static $converter;
-
-        return $converter ??= new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter);
-    }
-
-    public function valueTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
-    {
-        static $converter;
-
-        return $converter ??= new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\IntConverter);
     }
 }

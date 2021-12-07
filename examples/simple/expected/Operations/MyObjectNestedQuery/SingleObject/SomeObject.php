@@ -10,13 +10,20 @@ namespace Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery\SingleObject;
  */
 class SomeObject extends \Spawnia\Sailor\Type\TypedObject
 {
-    /** @var string */
-    public $__typename;
+    /**
+     * @param \Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery\SingleObject\Nested\SomeObject|null $nested
+     */
+    public static function make(?Nested\SomeObject $nested = null): self
+    {
+        $instance = new self;
 
-    /** @var \Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery\SingleObject\Nested\SomeObject|null */
-    public $nested;
+        $instance->__typename = 'SomeObject';
+        $instance->nested = $nested;
 
-    public function converters(): array
+        return $instance;
+    }
+
+    protected function converters(): array
     {
         static $converters;
 
@@ -24,19 +31,5 @@ class SomeObject extends \Spawnia\Sailor\Type\TypedObject
             '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
             'nested' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery\SingleObject\Nested\SomeObject),
         ];
-    }
-
-    public function __typenameTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
-    {
-        static $converter;
-
-        return $converter ??= new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter);
-    }
-
-    public function nestedTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
-    {
-        static $converter;
-
-        return $converter ??= new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery\SingleObject\Nested\SomeObject);
     }
 }

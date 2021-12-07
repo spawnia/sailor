@@ -10,13 +10,20 @@ namespace Spawnia\Sailor\Simple\Operations\TwoArgs;
  */
 class TwoArgs extends \Spawnia\Sailor\Type\TypedObject
 {
-    /** @var string */
-    public $__typename;
+    /**
+     * @param string|null $twoArgs
+     */
+    public static function make(?string $twoArgs = null): self
+    {
+        $instance = new self;
 
-    /** @var string|null */
-    public $twoArgs;
+        $instance->__typename = 'Query';
+        $instance->twoArgs = $twoArgs;
 
-    public function converters(): array
+        return $instance;
+    }
+
+    protected function converters(): array
     {
         static $converters;
 
@@ -24,19 +31,5 @@ class TwoArgs extends \Spawnia\Sailor\Type\TypedObject
             '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
             'twoArgs' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\IDConverter),
         ];
-    }
-
-    public function __typenameTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
-    {
-        static $converter;
-
-        return $converter ??= new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter);
-    }
-
-    public function twoArgsTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
-    {
-        static $converter;
-
-        return $converter ??= new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\IDConverter);
     }
 }

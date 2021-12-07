@@ -64,10 +64,10 @@ class TypeWrapper
         return $innerConverter;
     }
 
-    public static function type(Type $type, string $typeReference): string
+    public static function php(Type $type, string $typeReference): string
     {
         if ($type instanceof NonNull) {
-            return self::type($type->getWrappedType(), $typeReference);
+            return self::php($type->getWrappedType(), $typeReference);
         }
 
         if ($type instanceof ListOfType) {

@@ -10,13 +10,20 @@ namespace Spawnia\Sailor\Input\Operations\TakeSomeInput;
  */
 class TakeSomeInput extends \Spawnia\Sailor\Type\TypedObject
 {
-    /** @var string */
-    public $__typename;
+    /**
+     * @param int|null $takeSomeInput
+     */
+    public static function make(?int $takeSomeInput = null): self
+    {
+        $instance = new self;
 
-    /** @var int|null */
-    public $takeSomeInput;
+        $instance->__typename = 'Mutation';
+        $instance->takeSomeInput = $takeSomeInput;
 
-    public function converters(): array
+        return $instance;
+    }
+
+    protected function converters(): array
     {
         static $converters;
 
@@ -24,19 +31,5 @@ class TakeSomeInput extends \Spawnia\Sailor\Type\TypedObject
             '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
             'takeSomeInput' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\IntConverter),
         ];
-    }
-
-    public function __typenameTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
-    {
-        static $converter;
-
-        return $converter ??= new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter);
-    }
-
-    public function takeSomeInputTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
-    {
-        static $converter;
-
-        return $converter ??= new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\IntConverter);
     }
 }

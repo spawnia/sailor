@@ -31,7 +31,7 @@ infection: ## Runs mutation tests with infection
 	vendor/bin/infection --ignore-msi-with-no-mutations --min-covered-msi=100 --min-msi=100
 
 define approve_example
-	rm -r examples/$(1)/expected
+	rm -rf examples/$(1)/expected
 	cp -r examples/$(1)/generated examples/$(1)/expected
 endef
 

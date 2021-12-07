@@ -34,7 +34,7 @@ class SomeInput extends \Spawnia\Sailor\Type\TypedObject
         return $instance;
     }
 
-    public function converters(): array
+    protected function converters(): array
     {
         static $converters;
 
@@ -44,10 +44,5 @@ class SomeInput extends \Spawnia\Sailor\Type\TypedObject
             'optional' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\StringConverter),
             'nested' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Input\Types\SomeInput),
         ];
-    }
-
-    public static function endpoint(): string
-    {
-        return 'input';
     }
 }

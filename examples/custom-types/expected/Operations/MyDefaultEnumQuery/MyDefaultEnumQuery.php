@@ -5,38 +5,31 @@ declare(strict_types=1);
 namespace Spawnia\Sailor\CustomTypes\Operations\MyDefaultEnumQuery;
 
 /**
- * @property string $__typename
  * @property string $withDefaultEnum
+ * @property string $__typename
  */
 class MyDefaultEnumQuery extends \Spawnia\Sailor\Type\TypedObject
 {
-    /** @var string */
-    public $__typename;
+    /**
+     * @param string $withDefaultEnum
+     */
+    public static function make(string $withDefaultEnum): self
+    {
+        $instance = new self;
 
-    /** @var string */
-    public $withDefaultEnum;
+        $instance->withDefaultEnum = $withDefaultEnum;
+        $instance->__typename = 'Query';
 
-    public function converters(): array
+        return $instance;
+    }
+
+    protected function converters(): array
     {
         static $converters;
 
         return $converters ??= [
-            '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
             'withDefaultEnum' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\EnumConverter),
+            '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
         ];
-    }
-
-    public function __typenameTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
-    {
-        static $converter;
-
-        return $converter ??= new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter);
-    }
-
-    public function withDefaultEnumTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
-    {
-        static $converter;
-
-        return $converter ??= new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\EnumConverter);
     }
 }

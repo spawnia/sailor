@@ -13,7 +13,7 @@ class OperationStack
 
     public ClassType $errorFreeResult;
 
-    /** @var array<int, array<string, ClassType>> */
+    /** @var array<int, array<string, TypedObjectBuilder>> */
     public array $selectionStack = [];
 
     /** @var array<int, ClassType> */
@@ -25,7 +25,7 @@ class OperationStack
     }
 
     /**
-     * @param  array<string, ClassType>  $selection
+     * @param  array<string, TypedObjectBuilder>  $selection
      */
     public function pushSelection(array $selection): void
     {
@@ -42,13 +42,13 @@ class OperationStack
             throw new \Exception('Emptied out the selection stack too quickly.');
         }
 
-        foreach ($selection as $class) {
-            $this->selectionStorage[] = $class;
+        foreach ($selection as $typedObjectBuilder) {
+            $this->selectionStorage[] = $typedObjectBuilder->build();
         }
     }
 
     /**
-     * @return array<string, ClassType>
+     * @return array<string, TypedObjectBuilder>
      */
     public function peekSelection(): array
     {

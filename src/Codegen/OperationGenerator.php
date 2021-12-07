@@ -20,6 +20,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\OutputType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
+use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\TypeComparators;
 use GraphQL\Utils\TypeInfo;
@@ -27,13 +28,11 @@ use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Parameter;
 use Nette\PhpGenerator\PhpNamespace;
 use Spawnia\Sailor\Convert\PolymorphicConverter;
-use Spawnia\Sailor\Convert\TypeConverter;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\ErrorFreeResult;
 use Spawnia\Sailor\Operation;
 use Spawnia\Sailor\Result;
 use Spawnia\Sailor\Type\TypeConfig;
-use Spawnia\Sailor\Type\TypedObject;
 use Symfony\Component\VarExporter\VarExporter;
 
 /**
@@ -194,7 +193,7 @@ class OperationGenerator implements ClassGenerator
                             /** @var ObjectType $operationType always present in validated schemas */
                             $operationType = $typeInfo->getType();
                             $this->operationStack->pushSelection([
-                                $operationType->name => $this->makeTypedObject($operationName),
+                                $operationType->name => $this->makeTypedObjectBuilder($operationName),
                             ]);
                         },
                         'leave' => function (OperationDefinitionNode $_): void {
@@ -253,13 +252,14 @@ class OperationGenerator implements ClassGenerator
 
                                 $name = $namedType->name;
 
-                                $typeReference = "\\{$this->withCurrentNamespace($name)}";
+                                $phpType = $this->withCurrentNamespace($name);
+                                $phpDocType = "\\$phpType";
 
                                 $this->operationStack->pushSelection([
-                                    $name => $this->makeTypedObject($name),
+                                    $name => $this->makeTypedObjectBuilder($name),
                                 ]);
                                 $typeConverter = <<<PHP
-                                    new {$typeReference}
+                                    {$phpType}
                                     PHP;
                             } elseif ($namedType instanceof InterfaceType || $namedType instanceof UnionType) {
                                 // We go one level deeper into the selection set
@@ -269,29 +269,31 @@ class OperationGenerator implements ClassGenerator
                                 /** @var PolymorphicMapping $mapping */
                                 $mapping = [];
 
-                                /** @var array<string, ClassType> $mappingSelection */
+                                /** @var array<string, TypedObjectBuilder> $mappingSelection */
                                 $mappingSelection = [];
 
                                 foreach ($this->schema->getPossibleTypes($namedType) as $objectType) {
                                     $name = $objectType->name;
 
                                     $mapping[$name] = "\\{$this->withCurrentNamespace($name)}";
-                                    $mappingSelection[$name] = $this->makeTypedObject($name);
+                                    $mappingSelection[$name] = $this->makeTypedObjectBuilder($name);
                                 }
 
-                                $typeReference = implode('|', $mapping);
+                                $phpType = 'object';
+                                $phpDocType = implode('|', $mapping);
 
                                 $this->operationStack->pushSelection($mappingSelection);
 
                                 $mappingCode = VarExporter::export($mapping);
                                 $typeConverter = <<<PHP
-                                    new \Spawnia\Sailor\Convert\PolymorphicConverter({$mappingCode})
+                                    Spawnia\Sailor\Convert\PolymorphicConverter({$mappingCode})
                                     PHP;
                             } else {
                                 $typeConfig = $this->types[$namedType->name];
-                                $typeReference = $typeConfig->typeReference();
+                                $phpType = $typeConfig->typeReference();
+                                $phpDocType = $phpType;
                                 $typeConverter = <<<PHP
-                                    new \\{$typeConfig->typeConverter()}
+                                    {$typeConfig->typeConverter()}
                                     PHP;
                             }
 
@@ -300,7 +302,10 @@ class OperationGenerator implements ClassGenerator
                                 throw new \Exception("Unable to determine parent type of field {$fieldName}");
                             }
 
-                            $wrappedTypeConverter = TypeWrapper::converter($type, $typeConverter);
+                            // Eases instantiation of mocked results
+                            $defaultValue = Introspection::TYPE_NAME_FIELD_NAME === $fieldName
+                                ? $parentType->name
+                                : null;
 
                             foreach ($selectionClasses as $name => $selection) {
                                 $selectionType = $this->schema->getType($name);
@@ -309,24 +314,13 @@ class OperationGenerator implements ClassGenerator
                                 }
 
                                 if (TypeComparators::isTypeSubTypeOf($this->schema, $selectionType, $parentType)) {
-                                    $phpDocType = TypeWrapper::phpDoc($type, $typeReference);
-
-                                    $fieldProperty = $selection->addProperty($fieldName);
-                                    $fieldProperty->setComment('@var ' . $phpDocType);
-
-                                    $selection->addComment("@property {$phpDocType} \${$fieldName}");
-
-                                    $converters = $selection->getMethod('converters');
-                                    $converters->addBody("    '{$fieldName}' => {$wrappedTypeConverter},");
-
-                                    $fieldTypeMapper = $selection->addMethod(FieldTypeMapper::methodName($fieldName));
-                                    $fieldTypeMapper->setReturnType(TypeConverter::class);
-                                    $fieldTypeMapper->setBody(
-                                        <<<PHP
-                                            static \$converter;
-
-                                            return \$converter ??= {$wrappedTypeConverter};
-                                            PHP
+                                    $selection->addProperty(
+                                        $fieldName,
+                                        $type,
+                                        $phpDocType,
+                                        $phpType,
+                                        $typeConverter,
+                                        $defaultValue,
                                     );
                                 }
                             }
@@ -360,38 +354,20 @@ class OperationGenerator implements ClassGenerator
 
     protected function finishSubtree(): void
     {
-        foreach ($this->operationStack->peekSelection() as $selection) {
-            $converters = $selection->getMethod('converters');
-            $converters->addBody('];');
-        }
-
         // We are done with building this subtree of the selection set,
-        // so we move the top-most element to the storage
+        // so we move the current selections to storage.
         $this->operationStack->popSelection();
 
         // The namespace moves up a level
         array_pop($this->namespaceStack);
     }
 
-    protected function makeTypedObject(string $name): ClassType
+    protected function makeTypedObjectBuilder(string $name): TypedObjectBuilder
     {
-        $typedObject = new ClassType(
+        return new TypedObjectBuilder(
             $name,
-            $this->makeNamespace()
+            $this->currentNamespace()
         );
-        $typedObject->addExtend(TypedObject::class);
-
-        $converters = $typedObject->addMethod('converters');
-        $converters->setReturnType('array');
-        $converters->addBody(
-            <<<'PHP'
-static $converters;
-
-return $converters ??= [
-PHP
-        );
-
-        return $typedObject;
     }
 
     protected function makeNamespace(): PhpNamespace

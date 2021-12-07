@@ -10,13 +10,20 @@ namespace Spawnia\Sailor\CustomTypes\Operations\MyBenSampoEnumQuery;
  */
 class MyBenSampoEnumQuery extends \Spawnia\Sailor\Type\TypedObject
 {
-    /** @var string */
-    public $__typename;
+    /**
+     * @param \Spawnia\Sailor\CustomTypes\Types\BenSampoEnum|null $withBenSampoEnum
+     */
+    public static function make(?\Spawnia\Sailor\CustomTypes\Types\BenSampoEnum $withBenSampoEnum = null): self
+    {
+        $instance = new self;
 
-    /** @var \Spawnia\Sailor\CustomTypes\Types\BenSampoEnum|null */
-    public $withBenSampoEnum;
+        $instance->__typename = 'Query';
+        $instance->withBenSampoEnum = $withBenSampoEnum;
 
-    public function converters(): array
+        return $instance;
+    }
+
+    protected function converters(): array
     {
         static $converters;
 
@@ -24,19 +31,5 @@ class MyBenSampoEnumQuery extends \Spawnia\Sailor\Type\TypedObject
             '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
             'withBenSampoEnum' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\CustomTypes\TypeConverters\BenSampoEnumConverter),
         ];
-    }
-
-    public function __typenameTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
-    {
-        static $converter;
-
-        return $converter ??= new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter);
-    }
-
-    public function withBenSampoEnumTypeMapper(): \Spawnia\Sailor\Convert\TypeConverter
-    {
-        static $converter;
-
-        return $converter ??= new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\CustomTypes\TypeConverters\BenSampoEnumConverter);
     }
 }
