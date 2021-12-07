@@ -31,6 +31,9 @@ trait GeneratesTypeConverter
         return $this->decorateTypeConverterClass($type, $class, $fromGraphQL, $toGraphQL);
     }
 
+    /**
+     * @return class-string<TypeConverter>
+     */
     public function typeConverterClassName(Type $type, EndpointConfig $endpointConfig): string
     {
         return $endpointConfig->typeConvertersNamespace() . '\\' . $this->typeConverterBaseName($type);
