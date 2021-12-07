@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
@@ -23,7 +21,7 @@ class TypeConverterWrapper
 
             return self::wrap(
                 $type->getOfType(),
-                /** @lang PHP */ 
+                /** @lang PHP */
                 "new \\{$nonNullConverterClass}({$innerConverter})"
             );
         }
@@ -33,7 +31,7 @@ class TypeConverterWrapper
 
             return self::wrap(
                 $type->getOfType(),
-                /** @lang PHP */ 
+                /** @lang PHP */
                 "new \\{$listConverterClass}({$innerConverter})"
             );
         }

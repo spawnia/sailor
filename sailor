@@ -1,7 +1,5 @@
 #!/usr/bin/env php
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 use Spawnia\Sailor\Console\CodegenCommand;
 use Spawnia\Sailor\Console\IntrospectCommand;

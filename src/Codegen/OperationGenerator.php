@@ -1,9 +1,8 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
+use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\AST\FieldNode;
 use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\NodeKind;
@@ -21,14 +20,17 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\OutputType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
+use GraphQL\Type\Schema;
 use GraphQL\Utils\TypeComparators;
 use GraphQL\Utils\TypeInfo;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Parameter;
 use Nette\PhpGenerator\PhpNamespace;
+use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\ErrorFreeResult;
 use Spawnia\Sailor\Operation;
 use Spawnia\Sailor\Result;
+use Spawnia\Sailor\Type\TypeConfig;
 use Spawnia\Sailor\TypeConverter;
 use Spawnia\Sailor\TypeConverter\PolymorphicConverter;
 use Spawnia\Sailor\TypedObject;
@@ -37,12 +39,28 @@ use Symfony\Component\VarExporter\VarExporter;
 /**
  * @phpstan-import-type PolymorphicMapping from PolymorphicConverter
  */
-class OperationGenerator extends ClassGenerator
+class OperationGenerator implements ClassGenerator
 {
+    protected Schema $schema;
+
+    protected DocumentNode $document;
+
+    protected EndpointConfig $endpointConfig;
+
+    protected string $endpointName;
+
+    public function __construct(Schema $schema, DocumentNode $document, EndpointConfig $endpointNameConfig, string $endpointName)
+    {
+        $this->schema = $schema;
+        $this->endpointConfig = $endpointNameConfig;
+        $this->endpointName = $endpointName;
+        $this->document = $document;
+    }
+
     protected OperationStack $operationStack;
 
     /**
-     * @var array<string, \Spawnia\Sailor\Type\TypeConfig>
+     * @var array<string, TypeConfig>
      */
     protected array $types;
 
@@ -58,8 +76,8 @@ class OperationGenerator extends ClassGenerator
 
     public function generate(): iterable
     {
-        $this->types = $this->endpointConfig->configureTypes($this->schema);
-        $this->namespaceStack[] = $this->endpointConfig->namespace();
+        $this->types = $this->endpointConfig->configureTypes($this->schema, $this->endpointName);
+        $this->namespaceStack[] = $this->endpointConfig->operationsNamespace();
 
         $typeInfo = new TypeInfo($this->schema);
 
@@ -207,7 +225,7 @@ class OperationGenerator extends ClassGenerator
                             if ($type instanceof ListOfType) {
                                 $parameter->setType('array');
                             } else {
-                                $parameter->setType($this->types[$type->name]->typeReference);
+                                $parameter->setType($this->types[$type->name]->typeReference());
                             }
 
                             $this->operationStack->addParameterToOperation($parameter);
@@ -271,9 +289,9 @@ class OperationGenerator extends ClassGenerator
                                     PHP;
                             } else {
                                 $typeConfig = $this->types[$namedType->name];
-                                $typeReference = $typeConfig->typeReference;
+                                $typeReference = $typeConfig->typeReference();
                                 $typeConverter = <<<PHP
-                                    new \\{$typeConfig->typeConverter}
+                                    new \\{$typeConfig->typeConverter()}
                                     PHP;
                             }
 

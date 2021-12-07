@@ -1,27 +1,22 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Type;
 
+use Nette\PhpGenerator\ClassType;
 use Spawnia\Sailor\TypeConverter;
 
-class TypeConfig
+interface TypeConfig
 {
-    /** @var class-string<TypeConverter> */
-    public string $typeConverter;
+    /** @return class-string<TypeConverter> */
+    public function typeConverter(): string;
 
     /**
      * Reference to the type, e.g. string, \Foo\Bar.
      */
-    public string $typeReference;
+    public function typeReference(): string;
 
     /**
-     * @param  class-string<TypeConverter>  $typeConverter
+     * @return iterable<ClassType>
      */
-    public function __construct(string $typeConverter, string $typeReference)
-    {
-        $this->typeConverter = $typeConverter;
-        $this->typeReference = $typeReference;
-    }
+    public function generate(): iterable;
 }

@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor;
 
@@ -9,14 +7,14 @@ use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Schema;
 use Nette\PhpGenerator\ClassType;
-use Spawnia\Sailor\Codegen\InputGenerator;
+use Spawnia\Sailor\Type\BooleanTypeConfig;
+use Spawnia\Sailor\Type\EnumTypeConfig;
+use Spawnia\Sailor\Type\FloatTypeConfig;
+use Spawnia\Sailor\Type\IDTypeConfig;
+use Spawnia\Sailor\Type\InputTypeConfig;
+use Spawnia\Sailor\Type\IntTypeConfig;
+use Spawnia\Sailor\Type\StringTypeConfig;
 use Spawnia\Sailor\Type\TypeConfig;
-use Spawnia\Sailor\TypeConverter\BooleanConverter;
-use Spawnia\Sailor\TypeConverter\EnumConverter;
-use Spawnia\Sailor\TypeConverter\FloatConverter;
-use Spawnia\Sailor\TypeConverter\IDConverter;
-use Spawnia\Sailor\TypeConverter\IntConverter;
-use Spawnia\Sailor\TypeConverter\StringConverter;
 
 abstract class EndpointConfig
 {
@@ -50,22 +48,21 @@ abstract class EndpointConfig
      *
      * @return array<string, TypeConfig>
      */
-    public function configureTypes(Schema $schema): array
+    public function configureTypes(Schema $schema, string $endpointName): array
     {
         $typeConverters = [
-            'Int' => new TypeConfig(IntConverter::class, 'int'),
-            'Float' => new TypeConfig(FloatConverter::class, 'float'),
-            'String' => new TypeConfig(StringConverter::class, 'string'),
-            'Boolean' => new TypeConfig(BooleanConverter::class, 'bool'),
-            'ID' => new TypeConfig(IDConverter::class, 'string'),
+            'Int' => new IntTypeConfig(),
+            'Float' => new FloatTypeConfig(),
+            'String' => new StringTypeConfig(),
+            'Boolean' => new BooleanTypeConfig(),
+            'ID' => new IDTypeConfig(),
         ];
 
         foreach ($schema->getTypeMap() as $name => $type) {
             if ($type instanceof EnumType) {
-                $typeConverters[$name] = new TypeConfig(EnumConverter::class, 'string');
+                $typeConverters[$name] = new EnumTypeConfig();
             } elseif ($type instanceof InputObjectType) {
-                $inputClassName = InputGenerator::className($type, $this);
-                $typeConverters[$name] = new TypeConfig($inputClassName, "\\{$inputClassName}");
+                $typeConverters[$name] = new InputTypeConfig($this, $schema, $endpointName, $type);
             }
         }
 
@@ -82,5 +79,20 @@ abstract class EndpointConfig
     public function generateClasses(Schema $schema, DocumentNode $document, string $endpointName): iterable
     {
         return [];
+    }
+
+    public function typesNamespace(): string
+    {
+        return $this->namespace() . '\\Types';
+    }
+
+    public function operationsNamespace(): string
+    {
+        return $this->namespace();
+    }
+
+    public function typeConvertersNamespace(): string
+    {
+        return $this->namespace() . '\\TypeConverters';
     }
 }

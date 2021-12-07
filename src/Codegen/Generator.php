@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
@@ -46,27 +44,17 @@ class Generator
 
         Validator::validate($schema, $document);
 
-        foreach ($this->classGenerators() as $classGeneratorClass) {
-            $classGenerator = new $classGeneratorClass($schema, $document, $this->endpointConfig, $this->endpointName);
-            foreach ($classGenerator->generate() as $class) {
-                yield $this->makeFile($class);
-            }
+        foreach ((new OperationGenerator($schema, $document, $this->endpointConfig, $this->endpointName))->generate() as $class) {
+            yield $this->makeFile($class);
+        }
+
+        foreach ((new TypeConvertersGenerator($schema, $this->endpointConfig, $this->endpointName))->generate() as $class) {
+            yield $this->makeFile($class);
         }
 
         foreach ($this->endpointConfig->generateClasses($schema, $document, $this->endpointName) as $class) {
             yield $this->makeFile($class);
         }
-    }
-
-    /**
-     * @return iterable<class-string<ClassGenerator>>
-     */
-    protected function classGenerators(): iterable
-    {
-        yield OperationGenerator::class;
-        yield InputGenerator::class;
-        yield EnumGenerator::class;
-        yield TypeConvertersGenerator::class;
     }
 
     protected function makeFile(ClassType $classType): File

@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
@@ -9,45 +7,44 @@ use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpNamespace;
 use Spawnia\Sailor\EndpointConfig;
 
-class EnumGenerator extends ClassGenerator
+class EnumGenerator implements ClassGenerator
 {
+    private EndpointConfig $endpointConfig;
+
+    private EnumType $enumType;
+
+    public function __construct(EndpointConfig $endpointConfig, EnumType $enumType)
+    {
+        $this->endpointConfig = $endpointConfig;
+        $this->enumType = $enumType;
+    }
+
     /**
      * @return iterable<ClassType>
      */
     public function generate(): iterable
     {
-        foreach ($this->schema->getTypeMap() as $type) {
-            if (! $type instanceof EnumType) {
-                continue;
-            }
+        $class = $this->makeClass();
 
-            $class = $this->makeClass($type);
-
-            yield $this->decorateClass($type, $class);
-        }
+        yield $this->decorateClass($class);
     }
 
-    public static function className(string $typeName, EndpointConfig $endpointConfig): string
+    public function className(): string
     {
-        return self::enumsNamespace($endpointConfig) . '\\' . $typeName;
+        return $this->endpointConfig->typesNamespace() . '\\' . $this->enumType->name;
     }
 
-    protected static function enumsNamespace(EndpointConfig $endpointConfig): string
-    {
-        return $endpointConfig->namespace() . '\\Enums';
-    }
-
-    protected function makeClass(EnumType $type): ClassType
+    protected function makeClass(): ClassType
     {
         return new ClassType(
-            $type->name,
-            new PhpNamespace(static::enumsNamespace($this->endpointConfig))
+            $this->enumType->name,
+            new PhpNamespace($this->endpointConfig->typesNamespace())
         );
     }
 
-    protected function decorateClass(EnumType $type, ClassType $class): ClassType
+    protected function decorateClass(ClassType $class): ClassType
     {
-        foreach ($type->getValues() as $value) {
+        foreach ($this->enumType->getValues() as $value) {
             $name = $value->name;
             $class->addConstant($name, $name);
         }

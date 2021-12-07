@@ -1,21 +1,16 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\EnumSrc;
 
-use GraphQL\Type\Definition\EnumType;
 use Nette\PhpGenerator\ClassType;
 use Spawnia\Sailor\Codegen\EnumGenerator;
 
 class CustomEnumGenerator extends EnumGenerator
 {
-    protected function decorateClass(EnumType $type, ClassType $class): ClassType
+    protected function decorateClass(ClassType $class): ClassType
     {
-        if ('CustomEnum' === $type->name) {
-            $class->addExtend(Enum::class);
-        }
+        $class->addExtend(Enum::class);
 
-        return parent::decorateClass($type, $class);
+        return parent::decorateClass($class);
     }
 }
