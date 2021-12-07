@@ -63,7 +63,7 @@ class Configuration
                 exit(1);
             }
 
-            $endpoints = include self::EXPECTED_CONFIG_LOCATION;
+            $endpoints = require self::EXPECTED_CONFIG_LOCATION;
             if (! is_array($endpoints)) {
                 ConfigurationException::wrongReturnType(gettype($endpoints));
             }

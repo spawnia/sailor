@@ -7,10 +7,10 @@ use Symfony\Component\Console\Application;
 
 if (file_exists(__DIR__.'/../../autoload.php')) {
     // The usual location, since this file will reside in vendor/bin
-    include __DIR__.'/../../autoload.php';
+    require __DIR__.'/../../autoload.php';
 } else {
     // Useful when doing development on this package
-    include __DIR__.'/vendor/autoload.php';
+    require __DIR__.'/vendor/autoload.php';
 }
 
 $console = new Application();
