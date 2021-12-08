@@ -107,9 +107,16 @@ HelloSailor::setClient(null);
 
 ### Custom types
 
-You may overwrite `EndpointConfig::configureTypes()` to specialize the configuration
-for how Sailor deals with the types within your schema. The main use case for this
-is custom scalar types and custom enum types. See [examples/custom-types](examples/custom-types).
+Custom scalars are commonly serialized as strings. Without knowing about the contents of the type,
+Sailor can not do any conversions or provide more accurate type hints, so it uses `string`.
+
+Enums are only supported from PHP 8.1. Many projects simply used scalar values or an implementation
+that approximates enums through some kind of value class. Sailor is not opinionated and generates
+enums as a class with string constants and does no conversion - useful but not perfect.
+For an improved experience, it is recommended to customize the enum generation/conversion.
+
+Overwrite `EndpointConfig::configureTypes()` to specialize how Sailor deals with the types within your schema.
+See [examples/custom-types](examples/custom-types).
 
 ## Usage
 
