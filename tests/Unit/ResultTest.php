@@ -69,7 +69,7 @@ class ResultTest extends TestCase
     public function testFromData(): void
     {
         $data = MyScalarQuery::make(
-        /* scalarWithArg: */ 
+        /* scalarWithArg: */
             'bar'
         );
         $result = MyScalarQueryResult::fromData($data);
