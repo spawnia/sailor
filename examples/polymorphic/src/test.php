@@ -1,14 +1,14 @@
-<?php
+<?php declare(strict_types=1);
 
-declare(strict_types=1);
+use Spawnia\Sailor\Polymorphic\Operations\UserOrPost;
 
-include __DIR__.'/../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 $id = '1';
 
-$result = \Spawnia\Sailor\Polymorphic\UserOrPost::execute($id);
+$result = UserOrPost::execute($id);
 $userOrPost = $result->data->node;
 
-assert($userOrPost instanceof \Spawnia\Sailor\Polymorphic\UserOrPost\Node\User);
+assert($userOrPost instanceof UserOrPost\Node\User);
 assert($userOrPost->id === $id);
-assert($userOrPost->name === 'blarg');
+assert('blarg' === $userOrPost->name);

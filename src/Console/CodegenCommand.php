@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Console;
 
@@ -25,7 +23,7 @@ class CodegenCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $endpoint = $input->getArgument('endpoint');
-        if ($endpoint !== null) {
+        if (null !== $endpoint) {
             $endpointNames = (array) $endpoint;
         } else {
             $endpointNames = array_keys(Configuration::endpoints());
@@ -36,8 +34,8 @@ class CodegenCommand extends Command
             echo "Generating code for endpoint {$endpointName}...\n";
 
             $endpointConfig = Configuration::endpoint($endpointName);
-            $generator = new Generator($endpointConfig, $endpointName);
 
+            $generator = new Generator($endpointConfig, $endpointName);
             $files = $generator->generate();
 
             $writer = new Writer($endpointConfig);

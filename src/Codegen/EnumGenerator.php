@@ -1,26 +1,22 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
 use GraphQL\Type\Definition\EnumType;
-use GraphQL\Type\Definition\InputObjectType;
-use GraphQL\Type\Schema;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpNamespace;
 use Spawnia\Sailor\EndpointConfig;
 
-class EnumGenerator
+class EnumGenerator implements ClassGenerator
 {
-    protected Schema $schema;
+    private EndpointConfig $endpointConfig;
 
-    protected EndpointConfig $endpointConfig;
+    private EnumType $enumType;
 
-    public function __construct(Schema $schema, EndpointConfig $endpointConfig)
+    public function __construct(EndpointConfig $endpointConfig, EnumType $enumType)
     {
-        $this->schema = $schema;
         $this->endpointConfig = $endpointConfig;
+        $this->enumType = $enumType;
     }
 
     /**
@@ -28,32 +24,31 @@ class EnumGenerator
      */
     public function generate(): iterable
     {
-        foreach ($this->schema->getTypeMap() as $type) {
-            if (! $type instanceof EnumType) {
-                continue;
-            }
+        $class = $this->makeClass();
 
-            $class = new ClassType(
-                $type->name,
-                new PhpNamespace(static::enumsNamespace($this->endpointConfig))
-            );
+        yield $this->decorateClass($class);
+    }
 
-            foreach ($type->getValues() as $value) {
-                $name = $value->name;
-                $class->addConstant($name, $name);
-            }
+    public function className(): string
+    {
+        return $this->endpointConfig->typesNamespace() . '\\' . $this->enumType->name;
+    }
 
-            yield $class;
+    protected function makeClass(): ClassType
+    {
+        return new ClassType(
+            $this->enumType->name,
+            new PhpNamespace($this->endpointConfig->typesNamespace())
+        );
+    }
+
+    protected function decorateClass(ClassType $class): ClassType
+    {
+        foreach ($this->enumType->getValues() as $value) {
+            $name = $value->name;
+            $class->addConstant($name, $name);
         }
-    }
 
-    public static function className(InputObjectType $type, EndpointConfig $endpointConfig): string
-    {
-        return self::enumsNamespace($endpointConfig).'\\'.$type->name;
-    }
-
-    protected static function enumsNamespace(EndpointConfig $endpointConfig): string
-    {
-        return $endpointConfig->namespace().'\\Enums';
+        return $class;
     }
 }

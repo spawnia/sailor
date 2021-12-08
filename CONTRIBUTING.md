@@ -6,13 +6,11 @@ For details, see [`workflows/continuous-integration.yml`](workflows/continuous-i
 
 ## Setup
 
-Make sure you have `PHP`, `composer` and `make` installed, as well as:
-
-    composer global require ergebnis/composer-normalize
+Make sure you have `PHP`, `composer` and `make` installed.
 
 ## Code Style
 
-The code style is automatically fixed through [StyleCI](https://styleci.io/).
+We are using [`friendsofphp/php-cs-fixer`](https://github.com/friendsofphp/php-cs-fixer) to automatically format the code.
 
 ## Commands
 

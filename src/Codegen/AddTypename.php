@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
@@ -25,45 +23,32 @@ class AddTypename
 
     protected static function ensurePresent(SelectionSetNode $selectionSetNode): void
     {
-        $hasTypename = false;
+        static::purgeRedundant($selectionSetNode);
 
-        foreach ($selectionSetNode->selections as $selection) {
-            if ($selection instanceof FieldNode) {
-                if ($selection->name->value === Introspection::TYPE_NAME_FIELD_NAME) {
-                    $hasTypename = true;
-                }
-
-                $subSelectionSet = $selection->selectionSet;
-                if ($subSelectionSet !== null) {
-                    static::ensurePresent($subSelectionSet);
-                }
-            } elseif ($selection instanceof InlineFragmentNode) {
-                static::purgeRedundant($selection);
-            }
-        }
-
-        if (! $hasTypename) {
-            $selectionSetNode->selections[] = Parser::field(Introspection::TYPE_NAME_FIELD_NAME);
-        }
+        $selectionSetNode->selections->splice(
+            0,
+            0,
+            [Parser::field(Introspection::TYPE_NAME_FIELD_NAME)]
+        );
     }
 
-    protected static function purgeRedundant(InlineFragmentNode $inlineFragmentNode): void
+    protected static function purgeRedundant(SelectionSetNode $selectionSetNode): void
     {
-        $selections = $inlineFragmentNode->selectionSet->selections;
+        $selections = $selectionSetNode->selections;
 
         foreach ($selections as $i => $selection) {
             if ($selection instanceof FieldNode) {
-                if ($selection->name->value === Introspection::TYPE_NAME_FIELD_NAME) {
+                if (Introspection::TYPE_NAME_FIELD_NAME === $selection->name->value) {
                     // @phpstan-ignore-next-line false-positive Cannot assign offset mixed to GraphQL\Language\AST\NodeList<GraphQL\Language\AST\Node&GraphQL\Language\AST\SelectionNode>.
                     unset($selections[$i]);
                 }
 
                 $subSelectionSet = $selection->selectionSet;
-                if ($subSelectionSet !== null) {
+                if (null !== $subSelectionSet) {
                     static::ensurePresent($subSelectionSet);
                 }
             } elseif ($selection instanceof InlineFragmentNode) {
-                static::purgeRedundant($selection);
+                static::purgeRedundant($selection->selectionSet);
             }
         }
     }

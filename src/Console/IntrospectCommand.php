@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Console;
 
@@ -18,14 +16,17 @@ class IntrospectCommand extends Command
     protected function configure(): void
     {
         $this->setDescription('Download a remote schema through introspection.');
-        $this->addArgument('endpoint', InputArgument::OPTIONAL,
-            'You may choose a specific endpoint. Uses all by default.');
+        $this->addArgument(
+            'endpoint',
+            InputArgument::OPTIONAL,
+            'You may choose a specific endpoint. Uses all by default.'
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $endpoint = $input->getArgument('endpoint');
-        if ($endpoint !== null) {
+        if (null !== $endpoint) {
             $endpointNames = (array) $endpoint;
         } else {
             $endpointNames = array_keys(Configuration::endpoints());

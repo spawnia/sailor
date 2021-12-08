@@ -6,7 +6,7 @@
 
 [![CI Status](https://github.com/spawnia/sailor/workflows/Continuous%20Integration/badge.svg)](https://github.com/spawnia/sailor/actions)
 [![codecov](https://codecov.io/gh/spawnia/sailor/branch/master/graph/badge.svg)](https://codecov.io/gh/spawnia/sailor)
-[![StyleCI](https://github.styleci.io/repos/207396174/shield?branch=master)](https://github.styleci.io/repos/207396174)
+
 [![Latest Stable Version](https://poser.pugx.org/spawnia/sailor/v/stable)](https://packagist.org/packages/spawnia/sailor)
 [![Total Downloads](https://poser.pugx.org/spawnia/sailor/downloads)](https://packagist.org/packages/spawnia/sailor)
 
@@ -78,6 +78,46 @@ environment variables (run `composer require vlucas/phpdotenv` if you do not hav
         }
 ```
 
+### Client implementations
+
+Sailor provides a few built-in clients:
+- `Spawnia\Sailor\Client\Guzzle`: Default HTTP client
+- `Spawnia\Sailor\Client\Psr18`: PSR-18 HTTP client
+- `Spawnia\Sailor\Client\Log`: Used for testing
+
+You can bring your own by implementing the interface `Spawnia\Sailor\Client`.
+
+### Dynamic clients
+
+You can configure clients dynamically for specific operations or per request:
+
+```php
+use Example\Api\Operations\HelloSailor;
+
+/** @var \Spawnia\Sailor\Client $client Somehow instantiated dynamically */
+
+HelloSailor::setClient($client);
+
+// Will use $client over the client from EndpointConfig
+$result = HelloSailor::execute();
+
+// Reverts to using the client from EndpointConfig
+HelloSailor::setClient(null);
+```
+
+### Custom types
+
+Custom scalars are commonly serialized as strings. Without knowing about the contents of the type,
+Sailor can not do any conversions or provide more accurate type hints, so it uses `string`.
+
+Enums are only supported from PHP 8.1. Many projects simply used scalar values or an implementation
+that approximates enums through some kind of value class. Sailor is not opinionated and generates
+enums as a class with string constants and does no conversion - useful but not perfect.
+For an improved experience, it is recommended to customize the enum generation/conversion.
+
+Overwrite `EndpointConfig::configureTypes()` to specialize how Sailor deals with the types within your schema.
+See [examples/custom-types](examples/custom-types).
+
 ## Usage
 
 ### Introspection
@@ -126,7 +166,7 @@ For the example above, Sailor will generate a class called `HelloSailor`,
 place it in the configured namespace and write it to the configured location.
 
 ```php
-namespace Example\Api;
+namespace Example\Api\Operations;
 
 class HelloSailor extends \Spawnia\Sailor\Operation { ... }
 ```
@@ -137,11 +177,11 @@ within those value classes, so you can access them in a typesafe way.
 
 ### Execute queries
 
-You are now set up to run a query
-against the server, just call the `execute()` function of the new query class:
+You are now set up to run a query against the server,
+just call the `execute()` function of the new query class:
 
 ```php
-$result = \Example\Api\HelloSailor::execute();
+$result = \Example\Api\Operations\HelloSailor::execute();
 ```
 
 The returned `$result` is going to be a class that extends `\Spawnia\Sailor\Result` and
@@ -149,7 +189,7 @@ holds the decoded response returned from the server. You can just grab the `$dat
 or `$extensions` off of it:
 
 ```php
-$result->data        // `null` or a generated subclass of `\Spawnia\Sailor\TypedObject`
+$result->data        // `null` or a generated subclass of `\Spawnia\Sailor\ObjectLike`
 $result->errors      // `null` or a list of errors
 $result->extensions  // `null` or an arbitrary map
 ```
@@ -160,28 +200,136 @@ You can ensure your query returned the proper data and contained no errors:
 $errorFreeResult = $result->errorFree(); // Throws if there are errors
 ```
 
-### Client implementations
+### Queries with arguments
 
-Sailor provides a few built-in clients:
-- `Spawnia\Sailor\Client\Guzzle`: Default HTTP client
-- `Spawnia\Sailor\Client\Psr18`: PSR-18 HTTP client
-- `Spawnia\Sailor\Client\Log`: Used for testing
-
-You can bring your own by implementing the interface `Spawnia\Sailor\Client`.
-
-### Dynamic clients
-
-You can configure clients dynamically for specific operations or per request:
+Your generated operation classes will be annotated with the arguments your query defines.
 
 ```php
-/** @var \Spawnia\Sailor\Client $client Somehow instantiated dynamically */
-\Example\Api\HelloSailor::setClient($client);
+class HelloSailor extends \Spawnia\Sailor\Operation
+{
+    public static function execute(string $required, ?\Example\Api\Types\SomeInput $input = null): HelloSailor\HelloSailorResult { ... }
+}
+```
 
-// Will use $client over the client from EndpointConfig
-$result = HelloSailor::execute();
+Inputs can be built up incrementally:
 
-// Reverts to using the client from EndpointConfig
-HelloSailor::setClient(null);
+```php
+$input = new \Example\Api\Types\SomeInput;
+$input->foo = 'bar';
+```
+
+If you are using PHP 8, instantiation with named arguments can be quite useful to ensure your
+input is completely filled:
+
+```php
+\Example\Api\Types\SomeInput::make(foo: 'bar')
+```
+
+### Partial inputs
+
+GraphQL often uses a pattern of partial inputs - the equivalent of an HTTP `PATCH`.
+Consider the following input:
+
+```graphql
+input SomeInput {
+  requiredId: Int!,
+  firstOptional: Int,
+  secondOptional: Int,
+}
+```
+
+Suppose we allow instantiation in PHP with the following implementation:
+
+```php
+class SomeInput extends \Spawnia\Sailor\ObjectLike
+{
+    public static function make(
+        int $requiredId,
+        ?int $firstOptional = null,
+        ?int $secondOptional = null,
+    ): self {
+        $instance = new self;
+
+        $instance->requiredId = $required;
+        $instance->firstOptional = $firstOptional;
+        $instance->secondOptional = $secondOptional;
+
+        return $instance;
+    }
+}
+```
+
+The following call:
+
+```php
+SomeInput::make(requiredId: 1, secondOptional: 2);
+```
+
+Should produce the following JSON payload:
+
+```json
+{ "requiredId": 1, "secondOptional": 2 }
+```
+
+However, from within `make()` there is no way to differentiate between an explicitly
+passed optional named argument and one that has been assigned the default value.
+Thus, the resulting JSON payload will unintentionally modify `firstOptional` too, erasing
+whatever value it previously held.
+
+```json
+{ "requiredId": 1, "firstOptional": null, "secondOptional": 2 }
+```
+
+A naive solution to this would be to filter out any argument that is `null`.
+However, we would also like to be able to explicitly set the first optional value to `null`.
+The following call *should* result in the previous JSON payload.
+
+```php
+SomeInput::make(requiredId: 1, firstOptional: null, secondOptional: 2);
+```
+
+In order to generate partial inputs by default, optional named arguments have a special default value
+of `PHP_FLOAT_MAX - 1` which is equivalent to `1.7976931348623157E+308`. This allows Sailor to differentiate
+between explicitly passing `null` and not passing a value at all.
+
+```php
+class SomeInput extends \Spawnia\Sailor\ObjectLike
+{
+    const UNDEFINED = PHP_FLOAT_MAX - 1;
+
+    /**
+     * @param int $requiredId
+     * @param int|null $firstOptional
+     * @param int|null $secondOptional
+     */
+    public static function make(
+        $requiredId,
+        $firstOptional = self::UNDEFINED,
+        $secondOptional = self::UNDEFINED,
+    ): self {
+        $instance = new self;
+
+        if ($requiredId !== self::UNDEFINED) {
+            $instance->requiredId = $requiredId;
+        }
+        if ($firstOptional !== self::UNDEFINED) {
+            $instance->firstOptional = $firstOptional;
+        }
+        if ($secondOptional !== self::UNDEFINED) {
+            $instance->secondOptional = $secondOptional;
+        }
+
+        return $instance;
+    }
+}
+```
+
+In the unlikely case where you need to pass a float value that might be close to or exactly match
+the special value, you can assign it directly:
+
+```php
+$input = SomeInput::make(requiredId: 1);
+$input->secondOptional = $someFloat;
 ```
 
 ## Testing
@@ -215,8 +363,8 @@ Otherwise, mocks are not reset between test methods, you might run into very con
 Mocks are registered per operation class:
 
 ```php
-/** @var \Mockery\MockInterface&\Example\Api\HelloSailor */
-$mock = \Example\Api\HelloSailor::mock();
+/** @var \Mockery\MockInterface&\Example\Api\Operations\HelloSailor */
+$mock = \Example\Api\Operations\HelloSailor::mock();
 ```
 
 When registered, the mock captures all calls to `HelloSailor::execute()`.
@@ -244,6 +392,29 @@ Subsequent calls to `::mock()` will return the initially registered mock instanc
 $mock1 = HelloSailor::mock();
 $mock2 = HelloSailor::mock();
 assert($mock1 === $mock2); // true
+```
+
+You can also simulate a result with errors:
+
+```php
+HelloSailorResult::fromErrors([
+    (object) [
+        'message' => 'Something went wrong',
+    ],
+]);
+```
+
+For PHP 8 users, there is a more ergonomic method of instantiating mocked results:
+
+```php
+HelloSailorResult::fromData(
+    HelloSailor::make(
+        hello: 'Hello, Sailor!',
+        nested: HelloSailor\Nested::make(
+            hello: 'Hello again!',
+        )
+    )
+))
 ```
 
 ### Integration
