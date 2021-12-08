@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Integration;
 
@@ -10,12 +8,10 @@ use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\ResultErrorsException;
-use Spawnia\Sailor\Simple\Inputs\SomeInput;
-use Spawnia\Sailor\Simple\MyObjectNestedQuery;
-use Spawnia\Sailor\Simple\MyObjectNestedQuery\MyObjectNestedQueryResult;
-use Spawnia\Sailor\Simple\MyScalarQuery;
-use Spawnia\Sailor\Simple\MyScalarQuery\MyScalarQueryResult;
-use Spawnia\Sailor\Simple\TakeSomeInput;
+use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery;
+use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery\MyObjectNestedQueryResult;
+use Spawnia\Sailor\Simple\Operations\MyScalarQuery;
+use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQueryResult;
 use Spawnia\Sailor\Tests\TestCase;
 
 class SimpleTest extends TestCase
@@ -184,31 +180,5 @@ class SimpleTest extends TestCase
         $object = $result->data->singleObject;
         self::assertNotNull($object);
         self::assertNull($object->nested);
-    }
-
-    public function testSomeInput(): void
-    {
-        $nestedInput = new SomeInput();
-        $nestedInput->id = 'bar';
-
-        $someInput = new SomeInput();
-        $someInput->id = 'foo';
-        $someInput->matrix = [[1, null]];
-        $someInput->nested = $nestedInput;
-
-        $answer = 42;
-
-        TakeSomeInput::mock()
-            ->expects('execute')
-            ->once()
-            ->withArgs(fn (SomeInput $input): bool => $input == $someInput)
-            ->andReturn(TakeSomeInput\TakeSomeInputResult::fromStdClass((object) [
-                'data' => (object) [
-                    'takeSomeInput' => $answer,
-                ],
-            ]));
-
-        $result = TakeSomeInput::execute($someInput)->errorFree();
-        self::assertSame($answer, $result->data->takeSomeInput);
     }
 }

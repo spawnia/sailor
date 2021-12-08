@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Unit\Testing;
 
@@ -12,6 +10,5 @@ class Invokable
     // @phpstan-ignore-next-line
     public function __invoke()
     {
-        //
     }
 }

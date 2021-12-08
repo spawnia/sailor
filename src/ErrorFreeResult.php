@@ -1,11 +1,9 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor;
 
 /**
- * @property TypedObject|null $data The result of executing the requested operation.
+ * @property \Spawnia\Sailor\ObjectLike|null $data The result of executing the requested operation.
  */
 abstract class ErrorFreeResult
 {
@@ -15,9 +13,9 @@ abstract class ErrorFreeResult
     public ?\stdClass $extensions;
 
     /**
-     * @return static
-     *
      * @throws \Spawnia\Sailor\ResultErrorsException
+     *
+     * @return static
      */
     public static function fromResult(Result $result): self
     {
@@ -25,7 +23,7 @@ abstract class ErrorFreeResult
             throw new ResultErrorsException($result->errors);
         }
 
-        $instance = new static;
+        $instance = new static();
 
         $instance->data = $result->data;
         $instance->extensions = $result->extensions ?? null;

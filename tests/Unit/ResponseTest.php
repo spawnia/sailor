@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Unit;
 
@@ -8,7 +6,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
-use Spawnia\Sailor\InvalidResponseException;
+use Spawnia\Sailor\InvalidDataException;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\ResultErrorsException;
 
@@ -39,7 +37,7 @@ class ResponseTest extends TestCase
         $httpResponse->method('getStatusCode')
             ->willReturn(500);
 
-        self::expectException(InvalidResponseException::class);
+        self::expectException(InvalidDataException::class);
         Response::fromResponseInterface($httpResponse);
     }
 
@@ -72,7 +70,7 @@ class ResponseTest extends TestCase
 
     public function testInvalidData(): void
     {
-        self::expectException(InvalidResponseException::class);
+        self::expectException(InvalidDataException::class);
         Response::fromStdClass(
             (object) [
                 'data' => [],
@@ -109,31 +107,31 @@ class ResponseTest extends TestCase
 
     public function testNoDataAndNoErrors(): void
     {
-        self::expectException(InvalidResponseException::class);
+        self::expectException(InvalidDataException::class);
         Response::fromStdClass((object) []);
     }
 
     public function testErrorsAreNotAList(): void
     {
-        self::expectException(InvalidResponseException::class);
+        self::expectException(InvalidDataException::class);
         Response::fromStdClass((object) ['errors' => 'foobar']);
     }
 
     public function testErrorsAreEmptyList(): void
     {
-        self::expectException(InvalidResponseException::class);
+        self::expectException(InvalidDataException::class);
         Response::fromStdClass((object) ['errors' => []]);
     }
 
     public function testErrorIsNotAMap(): void
     {
-        self::expectException(InvalidResponseException::class);
+        self::expectException(InvalidDataException::class);
         Response::fromStdClass((object) ['errors' => ['foo']]);
     }
 
     public function testErrorHasNoMessage(): void
     {
-        self::expectException(InvalidResponseException::class);
+        self::expectException(InvalidDataException::class);
         Response::fromStdClass((object) [
             'errors' => [
                 (object) [
@@ -145,7 +143,7 @@ class ResponseTest extends TestCase
 
     public function testErrorMessageIsNotAString(): void
     {
-        self::expectException(InvalidResponseException::class);
+        self::expectException(InvalidDataException::class);
         Response::fromStdClass((object) [
             'errors' => [
                 (object) [
@@ -173,7 +171,7 @@ class ResponseTest extends TestCase
 
     public function testInvalidExtensions(): void
     {
-        self::expectException(InvalidResponseException::class);
+        self::expectException(InvalidDataException::class);
         Response::fromStdClass((object) [
             'data' => null,
             'extensions' => 'not a map',

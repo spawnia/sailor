@@ -1,13 +1,11 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\ResultErrorsException;
-use Spawnia\Sailor\Simple\MyScalarQuery\MyScalarQuery;
-use Spawnia\Sailor\Simple\MyScalarQuery\MyScalarQueryResult;
+use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQuery;
+use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQueryResult;
 
 class ResultTest extends TestCase
 {
@@ -52,6 +50,32 @@ class ResultTest extends TestCase
         self::assertNull($result->data);
         self::assertNotNull($result->errors);
         self::assertCount(1, $result->errors);
+        self::assertNull($result->extensions);
+    }
+
+    public function testFromErrors(): void
+    {
+        $result = MyScalarQueryResult::fromErrors([
+            (object) [
+                'message' => 'foo',
+            ],
+        ]);
+        self::assertNull($result->data);
+        self::assertNotNull($result->errors);
+        self::assertCount(1, $result->errors);
+        self::assertNull($result->extensions);
+    }
+
+    public function testFromData(): void
+    {
+        $data = MyScalarQuery::make(
+        /* scalarWithArg: */
+            'bar'
+        );
+        $result = MyScalarQueryResult::fromData($data);
+
+        self::assertSame($data, $result->data);
+        self::assertNull($result->errors);
         self::assertNull($result->extensions);
     }
 }

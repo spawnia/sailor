@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
@@ -25,7 +23,7 @@ class Validator
             );
         }
 
-        if (count($errors) === 0) {
+        if (0 === count($errors)) {
             return;
         }
 

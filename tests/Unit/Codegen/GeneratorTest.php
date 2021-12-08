@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Unit\Codegen;
 
@@ -45,8 +43,7 @@ class GeneratorTest extends TestCase
     {
         $path = 'thisShouldBeInTheMessage';
         $documents = [
-            $path => /* @lang GraphQL */
-                'invalid GraphQL',
+            $path /* @lang GraphQL */ => 'invalid GraphQL',
         ];
 
         self::expectExceptionMessageMatches("/$path/");

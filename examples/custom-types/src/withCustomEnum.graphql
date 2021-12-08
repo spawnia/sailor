@@ -1,0 +1,3 @@
+query MyCustomEnumQuery($value: CustomEnum) {
+    withCustomEnum(value: $value)
+}

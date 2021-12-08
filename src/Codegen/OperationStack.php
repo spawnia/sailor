@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
@@ -15,7 +13,7 @@ class OperationStack
 
     public ClassType $errorFreeResult;
 
-    /** @var array<int, array<string, ClassType>> */
+    /** @var array<int, array<string, ObjectLikeBuilder>> */
     public array $selectionStack = [];
 
     /** @var array<int, ClassType> */
@@ -27,11 +25,11 @@ class OperationStack
     }
 
     /**
-     * @param  array<string, ClassType>  $selection
+     * @param  array<string, ObjectLikeBuilder>  $selection
      */
     public function pushSelection(array $selection): void
     {
-        $this->selectionStack [] = $selection;
+        $this->selectionStack[] = $selection;
     }
 
     /**
@@ -40,22 +38,22 @@ class OperationStack
     public function popSelection(): void
     {
         $selection = array_pop($this->selectionStack);
-        if ($selection === null) {
+        if (null === $selection) {
             throw new \Exception('Emptied out the selection stack too quickly.');
         }
 
-        foreach ($selection as $class) {
-            $this->selectionStorage [] = $class;
+        foreach ($selection as $builder) {
+            $this->selectionStorage[] = $builder->build();
         }
     }
 
     /**
-     * @return array<string, ClassType>
+     * @return array<string, ObjectLikeBuilder>
      */
     public function peekSelection(): array
     {
         $selection = end($this->selectionStack);
-        if ($selection === false) {
+        if (false === $selection) {
             throw new \Exception('The selection stack was unexpectedly empty.');
         }
 

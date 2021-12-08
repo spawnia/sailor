@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Integration;
 
@@ -13,14 +11,14 @@ class CodegenTest extends TestCase
 {
     use AssertDirectory;
 
-    const EXAMPLES_PATH = __DIR__.'/../../examples';
+    public const EXAMPLES_PATH = __DIR__ . '/../../examples';
 
     /**
      * @dataProvider examples
      */
     public function testGeneratesExpectedCode(string $example): void
     {
-        $examplePath = self::EXAMPLES_PATH.'/'.$example;
+        $examplePath = self::EXAMPLES_PATH . '/' . $example;
 
         $config = require "{$examplePath}/sailor.php";
         $endpoint = $config[$example];
@@ -39,6 +37,8 @@ class CodegenTest extends TestCase
      */
     public static function examples(): iterable
     {
+        yield ['custom-types'];
+        yield ['input'];
         yield ['simple'];
         yield ['polymorphic'];
     }
