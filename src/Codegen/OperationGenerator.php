@@ -232,8 +232,11 @@ class OperationGenerator implements ClassGenerator
                                 // TODO support default values
                             }
 
-                            /** @var Type & InputType $type */
+                            /** @var Type&InputType $type */
                             $type = $typeInfo->getInputType();
+
+                            /** @var Type&NamedType $namedType */
+                            $namedType = Type::getNamedType($type);
 
                             if ($type instanceof NonNull) {
                                 $type = $type->getWrappedType();
@@ -245,7 +248,7 @@ class OperationGenerator implements ClassGenerator
                             if ($type instanceof ListOfType) {
                                 $parameter->setType('array');
                             } else {
-                                $parameter->setType($this->types[$type->name]->typeReference());
+                                $parameter->setType($this->types[$namedType->name]->typeReference());
                             }
 
                             $this->operationStack->addParameterToOperation($parameter);
@@ -318,10 +321,8 @@ class OperationGenerator implements ClassGenerator
                                     PHP;
                             }
 
+                            /** @var Type&NamedType $parentType */
                             $parentType = $typeInfo->getParentType();
-                            if (null === $parentType) {
-                                throw new \Exception("Unable to determine parent type of field {$fieldName}");
-                            }
 
                             // Eases instantiation of mocked results
                             $defaultValue = Introspection::TYPE_NAME_FIELD_NAME === $fieldName
