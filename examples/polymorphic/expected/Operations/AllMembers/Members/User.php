@@ -8,7 +8,7 @@ namespace Spawnia\Sailor\Polymorphic\Operations\AllMembers\Members;
  * @property string $__typename
  * @property string|null $name
  */
-class User extends \Spawnia\Sailor\Type\TypedObject
+class User extends \Spawnia\Sailor\ObjectLike
 {
     /**
      * @param string|null $name

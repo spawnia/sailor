@@ -8,7 +8,7 @@ namespace Spawnia\Sailor\Simple\Operations\MyObjectQuery\SingleObject;
  * @property string $__typename
  * @property int|null $value
  */
-class SomeObject extends \Spawnia\Sailor\Type\TypedObject
+class SomeObject extends \Spawnia\Sailor\ObjectLike
 {
     /**
      * @param int|null $value

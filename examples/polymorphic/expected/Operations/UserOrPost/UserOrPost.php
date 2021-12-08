@@ -8,7 +8,7 @@ namespace Spawnia\Sailor\Polymorphic\Operations\UserOrPost;
  * @property \Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node\User|\Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node\Post|\Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node\Task $node
  * @property string $__typename
  */
-class UserOrPost extends \Spawnia\Sailor\Type\TypedObject
+class UserOrPost extends \Spawnia\Sailor\ObjectLike
 {
     /**
      * @param \Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node\User|\Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node\Post|\Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node\Task $node

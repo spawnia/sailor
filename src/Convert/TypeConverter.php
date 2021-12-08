@@ -2,15 +2,19 @@
 
 namespace Spawnia\Sailor\Convert;
 
+use Spawnia\Sailor\Json;
+
 /**
  * Converts a value between its JSON representation and an internal value.
+ *
+ * @phpstan-import-type StdClassJsonValue from Json
  */
 interface TypeConverter
 {
     /**
      * Convert from a JSON value to an internal value.
      *
-     * @param  array<int, mixed>|\stdClass|string|float|int|bool|null  $value  the value given by the server
+     * @param StdClassJsonValue $value the value given by the server
      *
      * @return mixed the internal representation of the given value
      */
@@ -19,9 +23,9 @@ interface TypeConverter
     /**
      * Convert from an internal value to a JSON value.
      *
-     * @param  mixed  $value  the internal representation of the given value
+     * @param mixed $value the internal representation of the given value
      *
-     * @return array<int, mixed>|\stdClass|string|float|int|bool|null the value to pass to the server
+     * @return StdClassJsonValue the value to pass to the server
      */
     public function toGraphQL($value);
 }

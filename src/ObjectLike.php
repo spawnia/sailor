@@ -1,13 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace Spawnia\Sailor\Type;
+namespace Spawnia\Sailor;
 
 use InvalidArgumentException;
 use Spawnia\Sailor\Convert\TypeConverter;
-use Spawnia\Sailor\InvalidDataException;
 use stdClass;
 
-abstract class TypedObject implements TypeConverter
+abstract class ObjectLike implements TypeConverter
 {
     public const UNDEFINED = PHP_FLOAT_MAX - 1;
 
@@ -45,7 +44,7 @@ abstract class TypedObject implements TypeConverter
     }
 
     /**
-     * @param  mixed  $value  anything
+     * @param mixed $value anything
      */
     public function __set(string $name, $value): void
     {

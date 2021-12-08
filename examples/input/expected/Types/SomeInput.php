@@ -10,7 +10,7 @@ namespace Spawnia\Sailor\Input\Types;
  * @property string|null $optional
  * @property \Spawnia\Sailor\Input\Types\SomeInput|null $nested
  */
-class SomeInput extends \Spawnia\Sailor\Type\TypedObject
+class SomeInput extends \Spawnia\Sailor\ObjectLike
 {
     /**
      * @param string $required

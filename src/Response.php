@@ -10,9 +10,8 @@ use Safe\Exceptions\JsonException;
  * Represents a response sent by a GraphQL server.
  *
  * During instantiation, the response structure is validated.
- * That does guarantee the server at least sent a syntactically
- * correct response, although it does not guarantee the content
- * matches the sent query.
+ * That does guarantee the server at least sent a syntactically correct response,
+ * although it does not guarantee the content matches the sent query.
  */
 class Response
 {

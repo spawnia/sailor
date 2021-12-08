@@ -8,7 +8,7 @@ namespace Spawnia\Sailor\CustomTypes\Operations\MyCustomEnumQuery;
  * @property string $__typename
  * @property \Spawnia\Sailor\CustomTypes\Types\CustomEnum|null $withCustomEnum
  */
-class MyCustomEnumQuery extends \Spawnia\Sailor\Type\TypedObject
+class MyCustomEnumQuery extends \Spawnia\Sailor\ObjectLike
 {
     /**
      * @param \Spawnia\Sailor\CustomTypes\Types\CustomEnum|null $withCustomEnum

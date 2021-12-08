@@ -8,12 +8,12 @@ use GraphQL\Type\Introspection;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpNamespace;
-use Spawnia\Sailor\Type\TypedObject;
+use Spawnia\Sailor\ObjectLike;
 
 /**
  * @phpstan-type PropertyArgs array{string, Type, string, string, string, mixed}
  */
-class TypedObjectBuilder
+class ObjectLikeBuilder
 {
     private ClassType $class;
 
@@ -35,7 +35,7 @@ class TypedObjectBuilder
     {
         $class = new ClassType($name, new PhpNamespace($namespace));
 
-        $class->addExtend(TypedObject::class);
+        $class->addExtend(ObjectLike::class);
 
         $make = $class->addMethod('make');
         $make->setStatic(true);
@@ -109,7 +109,7 @@ PHP
             $parameter = $this->make->addParameter($name);
             if (! $type instanceof NonNull || null !== $defaultValue) {
                 $parameter->setNullable(true);
-                $parameter->setDefaultValue(TypedObject::UNDEFINED);
+                $parameter->setDefaultValue(ObjectLike::UNDEFINED);
             }
 
             $this->make->addBody(

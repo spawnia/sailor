@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\InvalidDataException;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQuery;
 
-class TypedObjectTest extends TestCase
+class ObjectLikeTest extends TestCase
 {
     public function testFromStdClass(): void
     {
@@ -22,7 +22,7 @@ class TypedObjectTest extends TestCase
     {
         $bar = 'bar';
         $foo = MyScalarQuery::make(
-            /* scalarWithArg: */ 
+            /* scalarWithArg: */
             $bar
         );
 

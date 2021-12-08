@@ -8,7 +8,7 @@ namespace Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery\SingleObject;
  * @property string $__typename
  * @property \Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery\SingleObject\Nested\SomeObject|null $nested
  */
-class SomeObject extends \Spawnia\Sailor\Type\TypedObject
+class SomeObject extends \Spawnia\Sailor\ObjectLike
 {
     /**
      * @param \Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery\SingleObject\Nested\SomeObject|null $nested

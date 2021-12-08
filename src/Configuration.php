@@ -2,7 +2,7 @@
 
 namespace Spawnia\Sailor;
 
-class Configuration
+final class Configuration
 {
     /**
      * We expect this file to reside in vendor/sailor/src/Operation.php,
@@ -16,7 +16,7 @@ class Configuration
      *
      * @var array<string, \Spawnia\Sailor\EndpointConfig>
      */
-    protected static array $endpoints;
+    private static array $endpoints;
 
     public static function endpoint(string $name): EndpointConfig
     {
@@ -44,7 +44,7 @@ class Configuration
         self::$endpoints[$name] = $endpointConfig;
     }
 
-    protected static function ensureEndpointsAreLoaded(): void
+    private static function ensureEndpointsAreLoaded(): void
     {
         if (! isset(self::$endpoints)) {
             if (! file_exists(self::EXPECTED_CONFIG_LOCATION)) {

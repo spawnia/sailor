@@ -8,7 +8,7 @@ namespace Spawnia\Sailor\Simple\Operations\TwoArgs;
  * @property string $__typename
  * @property string|null $twoArgs
  */
-class TwoArgs extends \Spawnia\Sailor\Type\TypedObject
+class TwoArgs extends \Spawnia\Sailor\ObjectLike
 {
     /**
      * @param string|null $twoArgs

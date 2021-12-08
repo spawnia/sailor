@@ -9,7 +9,7 @@ namespace Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node;
  * @property string $__typename
  * @property string|null $title
  */
-class Post extends \Spawnia\Sailor\Type\TypedObject
+class Post extends \Spawnia\Sailor\ObjectLike
 {
     /**
      * @param string $id

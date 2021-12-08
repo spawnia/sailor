@@ -7,7 +7,7 @@ namespace Spawnia\Sailor\Polymorphic\Operations\NodeMembers\Members;
 /**
  * @property string $__typename
  */
-class Organization extends \Spawnia\Sailor\Type\TypedObject
+class Organization extends \Spawnia\Sailor\ObjectLike
 {
     public static function make(): self
     {

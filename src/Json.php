@@ -2,34 +2,39 @@
 
 namespace Spawnia\Sailor;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+
+/**
+ * @phpstan-type JsonValue array<int, mixed>|array<string, mixed>|\stdClass|string|float|int|bool|null
+ * @phpstan-type StdClassJsonValue array<int, mixed>|\stdClass|string|float|int|bool|null
+ * @phpstan-type AssocJsonValue array<int, mixed>|\stdClass|string|float|int|bool|null
+ */
 final class Json
 {
     /**
      * Convert an JSON encodable value so that maps are \stdClass instances.
      *
-     * @param  mixed  $value  any value that can be encoded as JSON
+     * @param JsonValue $value  any value that can be encoded as JSON
      *
-     * @return mixed the transformed value where associative arrays are now \stcClass instances
+     * @return StdClassJsonValue the transformed value where associative arrays are now \stcClass instances
      */
     public static function assocToStdClass($value)
     {
-        return \Safe\json_decode(
-            \Safe\json_encode($value)
-        );
+        // @phpstan-ignore-next-line built-in types are inaccurate
+        return json_decode(json_encode($value));
     }
 
     /**
      * Convert an JSON encodable value so that maps are associative arrays.
      *
-     * @param  mixed  $value  any value that can be encoded as JSON
+     * @param  JsonValue  $value  any value that can be encoded as JSON
      *
-     * @return mixed the transformed value where objects are now associative arrays
+     * @return AssocJsonValue the transformed value where objects are now associative arrays
      */
     public static function stdClassToAssoc($value)
     {
-        return \Safe\json_decode(
-            \Safe\json_encode($value),
-            true
-        );
+        // @phpstan-ignore-next-line built-in types are inaccurate
+        return json_decode(json_encode($value), true);
     }
 }

@@ -8,7 +8,7 @@ namespace Spawnia\Sailor\CustomTypes\Types;
  * @property string|null $default
  * @property \Spawnia\Sailor\CustomTypes\Types\CustomEnum|null $custom
  */
-class EnumInput extends \Spawnia\Sailor\Type\TypedObject
+class EnumInput extends \Spawnia\Sailor\ObjectLike
 {
     /**
      * @param string|null $default

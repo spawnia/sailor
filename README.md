@@ -126,7 +126,7 @@ For the example above, Sailor will generate a class called `HelloSailor`,
 place it in the configured namespace and write it to the configured location.
 
 ```php
-namespace Example\Api;
+namespace Example\Api\Operations;
 
 class HelloSailor extends \Spawnia\Sailor\Operation { ... }
 ```
@@ -141,7 +141,7 @@ You are now set up to run a query
 against the server, just call the `execute()` function of the new query class:
 
 ```php
-$result = \Example\Api\HelloSailor::execute();
+$result = \Example\Api\Operations\HelloSailor::execute();
 ```
 
 The returned `$result` is going to be a class that extends `\Spawnia\Sailor\Result` and
@@ -149,7 +149,7 @@ holds the decoded response returned from the server. You can just grab the `$dat
 or `$extensions` off of it:
 
 ```php
-$result->data        // `null` or a generated subclass of `\Spawnia\Sailor\TypedObject`
+$result->data        // `null` or a generated subclass of `\Spawnia\Sailor\ObjectLike`
 $result->errors      // `null` or a list of errors
 $result->extensions  // `null` or an arbitrary map
 ```
@@ -174,8 +174,11 @@ You can bring your own by implementing the interface `Spawnia\Sailor\Client`.
 You can configure clients dynamically for specific operations or per request:
 
 ```php
+use Example\Api\Operations\HelloSailor;
+
 /** @var \Spawnia\Sailor\Client $client Somehow instantiated dynamically */
-\Example\Api\HelloSailor::setClient($client);
+
+HelloSailor::setClient($client);
 
 // Will use $client over the client from EndpointConfig
 $result = HelloSailor::execute();
@@ -215,8 +218,8 @@ Otherwise, mocks are not reset between test methods, you might run into very con
 Mocks are registered per operation class:
 
 ```php
-/** @var \Mockery\MockInterface&\Example\Api\HelloSailor */
-$mock = \Example\Api\HelloSailor::mock();
+/** @var \Mockery\MockInterface&\Example\Api\Operations\HelloSailor */
+$mock = \Example\Api\Operations\HelloSailor::mock();
 ```
 
 When registered, the mock captures all calls to `HelloSailor::execute()`.

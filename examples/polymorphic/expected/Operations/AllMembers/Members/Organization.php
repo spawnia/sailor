@@ -8,7 +8,7 @@ namespace Spawnia\Sailor\Polymorphic\Operations\AllMembers\Members;
  * @property string $code
  * @property string $__typename
  */
-class Organization extends \Spawnia\Sailor\Type\TypedObject
+class Organization extends \Spawnia\Sailor\ObjectLike
 {
     /**
      * @param string $code

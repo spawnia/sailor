@@ -214,7 +214,7 @@ class OperationGenerator implements ClassGenerator
                             /** @var ObjectType $operationType always present in validated schemas */
                             $operationType = $typeInfo->getType();
                             $this->operationStack->pushSelection([
-                                $operationType->name => $this->makeTypedObjectBuilder($operationName),
+                                $operationType->name => $this->makeObjectLikeBuilder($operationName),
                             ]);
                         },
                         'leave' => function (OperationDefinitionNode $_): void {
@@ -277,7 +277,7 @@ class OperationGenerator implements ClassGenerator
                                 $phpDocType = "\\$phpType";
 
                                 $this->operationStack->pushSelection([
-                                    $name => $this->makeTypedObjectBuilder($name),
+                                    $name => $this->makeObjectLikeBuilder($name),
                                 ]);
                                 $typeConverter = <<<PHP
                                     {$phpType}
@@ -290,14 +290,14 @@ class OperationGenerator implements ClassGenerator
                                 /** @var PolymorphicMapping $mapping */
                                 $mapping = [];
 
-                                /** @var array<string, TypedObjectBuilder> $mappingSelection */
+                                /** @var array<string, ObjectLikeBuilder> $mappingSelection */
                                 $mappingSelection = [];
 
                                 foreach ($this->schema->getPossibleTypes($namedType) as $objectType) {
                                     $name = $objectType->name;
 
                                     $mapping[$name] = "\\{$this->withCurrentNamespace($name)}";
-                                    $mappingSelection[$name] = $this->makeTypedObjectBuilder($name);
+                                    $mappingSelection[$name] = $this->makeObjectLikeBuilder($name);
                                 }
 
                                 $phpType = 'object';
@@ -383,9 +383,9 @@ class OperationGenerator implements ClassGenerator
         array_pop($this->namespaceStack);
     }
 
-    protected function makeTypedObjectBuilder(string $name): TypedObjectBuilder
+    protected function makeObjectLikeBuilder(string $name): ObjectLikeBuilder
     {
-        return new TypedObjectBuilder(
+        return new ObjectLikeBuilder(
             $name,
             $this->currentNamespace()
         );

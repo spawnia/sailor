@@ -9,7 +9,7 @@ namespace Spawnia\Sailor\CustomTypes\Operations\MyEnumInputQuery\WithEnumInput;
  * @property \Spawnia\Sailor\CustomTypes\Types\CustomEnum|null $custom
  * @property string|null $default
  */
-class EnumObject extends \Spawnia\Sailor\Type\TypedObject
+class EnumObject extends \Spawnia\Sailor\ObjectLike
 {
     /**
      * @param \Spawnia\Sailor\CustomTypes\Types\CustomEnum|null $custom

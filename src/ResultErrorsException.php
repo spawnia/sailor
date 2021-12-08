@@ -5,7 +5,7 @@ namespace Spawnia\Sailor;
 class ResultErrorsException extends \Exception
 {
     /**
-     * @param  array<int, \stdClass>  $errors
+     * @param array<int, \stdClass> $errors
      */
     public function __construct(array $errors)
     {

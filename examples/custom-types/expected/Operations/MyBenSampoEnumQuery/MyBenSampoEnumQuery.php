@@ -8,7 +8,7 @@ namespace Spawnia\Sailor\CustomTypes\Operations\MyBenSampoEnumQuery;
  * @property string $__typename
  * @property \Spawnia\Sailor\CustomTypes\Types\BenSampoEnum|null $withBenSampoEnum
  */
-class MyBenSampoEnumQuery extends \Spawnia\Sailor\Type\TypedObject
+class MyBenSampoEnumQuery extends \Spawnia\Sailor\ObjectLike
 {
     /**
      * @param \Spawnia\Sailor\CustomTypes\Types\BenSampoEnum|null $withBenSampoEnum

@@ -8,7 +8,7 @@ namespace Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node;
  * @property string $id
  * @property string $__typename
  */
-class Task extends \Spawnia\Sailor\Type\TypedObject
+class Task extends \Spawnia\Sailor\ObjectLike
 {
     /**
      * @param string $id

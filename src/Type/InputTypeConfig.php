@@ -7,8 +7,9 @@ use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use Nette\PhpGenerator\ClassType;
-use Spawnia\Sailor\Codegen\TypedObjectBuilder;
+use Spawnia\Sailor\Codegen\ObjectLikeBuilder;
 use Spawnia\Sailor\EndpointConfig;
+use Spawnia\Sailor\ObjectLike;
 
 class InputTypeConfig implements TypeConfig
 {
@@ -29,7 +30,7 @@ class InputTypeConfig implements TypeConfig
     }
 
     /**
-     * @return class-string<TypedObject>
+     * @return class-string<ObjectLike>
      */
     public function className(): string
     {
@@ -54,7 +55,7 @@ class InputTypeConfig implements TypeConfig
     {
         $typeConfigs = $this->endpointConfig->configureTypes($this->schema, $this->endpointName);
 
-        $builder = new TypedObjectBuilder(
+        $builder = new ObjectLikeBuilder(
             $this->inputObjectType->name,
             $this->endpointConfig->typesNamespace(),
         );

@@ -2,11 +2,11 @@
 
 namespace Spawnia\Sailor\Convert;
 
-use Spawnia\Sailor\Type\TypedObject;
+use Spawnia\Sailor\ObjectLike;
 use stdClass;
 
 /**
- * @phpstan-type PolymorphicMapping array<string, class-string<TypedObject>>
+ * @phpstan-type PolymorphicMapping array<string, class-string<ObjectLike>>
  */
 class PolymorphicConverter implements TypeConverter
 {
@@ -23,7 +23,7 @@ class PolymorphicConverter implements TypeConverter
         $this->mapping = $mapping;
     }
 
-    public function fromGraphQL($value): TypedObject
+    public function fromGraphQL($value): ObjectLike
     {
         if (! $value instanceof stdClass) {
             throw new \InvalidArgumentException('Expected stdClass, got: ' . gettype($value));

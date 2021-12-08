@@ -8,7 +8,7 @@ namespace Spawnia\Sailor\Simple\Operations\MyScalarQuery;
  * @property string $__typename
  * @property string|null $scalarWithArg
  */
-class MyScalarQuery extends \Spawnia\Sailor\Type\TypedObject
+class MyScalarQuery extends \Spawnia\Sailor\ObjectLike
 {
     /**
      * @param string|null $scalarWithArg

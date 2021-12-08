@@ -8,7 +8,7 @@ namespace Spawnia\Sailor\Polymorphic\Operations\AllMembers;
  * @property array<int, \Spawnia\Sailor\Polymorphic\Operations\AllMembers\Members\User|\Spawnia\Sailor\Polymorphic\Operations\AllMembers\Members\Organization> $members
  * @property string $__typename
  */
-class AllMembers extends \Spawnia\Sailor\Type\TypedObject
+class AllMembers extends \Spawnia\Sailor\ObjectLike
 {
     /**
      * @param array<int, \Spawnia\Sailor\Polymorphic\Operations\AllMembers\Members\User|\Spawnia\Sailor\Polymorphic\Operations\AllMembers\Members\Organization> $members

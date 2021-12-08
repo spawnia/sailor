@@ -8,7 +8,7 @@ namespace Spawnia\Sailor\Input\Operations\TakeSomeInput;
  * @property string $__typename
  * @property int|null $takeSomeInput
  */
-class TakeSomeInput extends \Spawnia\Sailor\Type\TypedObject
+class TakeSomeInput extends \Spawnia\Sailor\ObjectLike
 {
     /**
      * @param int|null $takeSomeInput
