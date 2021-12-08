@@ -13,11 +13,13 @@ class Organization extends \Spawnia\Sailor\Type\TypedObject
     /**
      * @param string $code
      */
-    public static function make(string $code): self
+    public static function make($code): self
     {
         $instance = new self;
 
-        $instance->code = $code;
+        if ($code !== self::UNDEFINED) {
+            $instance->code = $code;
+        }
         $instance->__typename = 'Member';
 
         return $instance;

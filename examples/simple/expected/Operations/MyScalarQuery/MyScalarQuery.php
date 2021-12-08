@@ -13,12 +13,14 @@ class MyScalarQuery extends \Spawnia\Sailor\Type\TypedObject
     /**
      * @param string|null $scalarWithArg
      */
-    public static function make(?string $scalarWithArg = null): self
+    public static function make($scalarWithArg = 1.7976931348623157E+308): self
     {
         $instance = new self;
 
         $instance->__typename = 'Query';
-        $instance->scalarWithArg = $scalarWithArg;
+        if ($scalarWithArg !== self::UNDEFINED) {
+            $instance->scalarWithArg = $scalarWithArg;
+        }
 
         return $instance;
     }

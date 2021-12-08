@@ -13,11 +13,13 @@ class NodeMembers extends \Spawnia\Sailor\Type\TypedObject
     /**
      * @param array<int, \Spawnia\Sailor\Polymorphic\Operations\NodeMembers\Members\User|\Spawnia\Sailor\Polymorphic\Operations\NodeMembers\Members\Organization> $members
      */
-    public static function make(array $members): self
+    public static function make($members): self
     {
         $instance = new self;
 
-        $instance->members = $members;
+        if ($members !== self::UNDEFINED) {
+            $instance->members = $members;
+        }
         $instance->__typename = 'Query';
 
         return $instance;

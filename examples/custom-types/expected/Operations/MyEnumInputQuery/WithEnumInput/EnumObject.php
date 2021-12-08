@@ -15,15 +15,17 @@ class EnumObject extends \Spawnia\Sailor\Type\TypedObject
      * @param \Spawnia\Sailor\CustomTypes\Types\CustomEnum|null $custom
      * @param string|null $default
      */
-    public static function make(
-        ?\Spawnia\Sailor\CustomTypes\Types\CustomEnum $custom = null,
-        ?string $default = null
-    ): self {
+    public static function make($custom = 1.7976931348623157E+308, $default = 1.7976931348623157E+308): self
+    {
         $instance = new self;
 
         $instance->__typename = 'EnumObject';
-        $instance->custom = $custom;
-        $instance->default = $default;
+        if ($custom !== self::UNDEFINED) {
+            $instance->custom = $custom;
+        }
+        if ($default !== self::UNDEFINED) {
+            $instance->default = $default;
+        }
 
         return $instance;
     }

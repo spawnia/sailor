@@ -64,7 +64,6 @@ class InputTest extends TestCase
                     'required' => 'bar',
                     'matrix' => [[1, null]],
                     'optional' => 'baz',
-                    'nested' => null,
                 ],
             ],
             (new SomeInput())->toGraphQL($input)

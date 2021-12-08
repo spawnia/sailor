@@ -15,13 +15,17 @@ class Post extends \Spawnia\Sailor\Type\TypedObject
      * @param string $id
      * @param string|null $title
      */
-    public static function make(string $id, ?string $title = null): self
+    public static function make($id, $title = 1.7976931348623157E+308): self
     {
         $instance = new self;
 
-        $instance->id = $id;
+        if ($id !== self::UNDEFINED) {
+            $instance->id = $id;
+        }
         $instance->__typename = 'Node';
-        $instance->title = $title;
+        if ($title !== self::UNDEFINED) {
+            $instance->title = $title;
+        }
 
         return $instance;
     }

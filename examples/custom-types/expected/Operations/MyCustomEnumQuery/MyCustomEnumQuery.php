@@ -13,12 +13,14 @@ class MyCustomEnumQuery extends \Spawnia\Sailor\Type\TypedObject
     /**
      * @param \Spawnia\Sailor\CustomTypes\Types\CustomEnum|null $withCustomEnum
      */
-    public static function make(?\Spawnia\Sailor\CustomTypes\Types\CustomEnum $withCustomEnum = null): self
+    public static function make($withCustomEnum = 1.7976931348623157E+308): self
     {
         $instance = new self;
 
         $instance->__typename = 'Query';
-        $instance->withCustomEnum = $withCustomEnum;
+        if ($withCustomEnum !== self::UNDEFINED) {
+            $instance->withCustomEnum = $withCustomEnum;
+        }
 
         return $instance;
     }

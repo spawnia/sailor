@@ -13,12 +13,14 @@ class TwoArgs extends \Spawnia\Sailor\Type\TypedObject
     /**
      * @param string|null $twoArgs
      */
-    public static function make(?string $twoArgs = null): self
+    public static function make($twoArgs = 1.7976931348623157E+308): self
     {
         $instance = new self;
 
         $instance->__typename = 'Query';
-        $instance->twoArgs = $twoArgs;
+        if ($twoArgs !== self::UNDEFINED) {
+            $instance->twoArgs = $twoArgs;
+        }
 
         return $instance;
     }

@@ -13,12 +13,14 @@ class MyEnumInputQuery extends \Spawnia\Sailor\Type\TypedObject
     /**
      * @param \Spawnia\Sailor\CustomTypes\Operations\MyEnumInputQuery\WithEnumInput\EnumObject|null $withEnumInput
      */
-    public static function make(?WithEnumInput\EnumObject $withEnumInput = null): self
+    public static function make($withEnumInput = 1.7976931348623157E+308): self
     {
         $instance = new self;
 
         $instance->__typename = 'Query';
-        $instance->withEnumInput = $withEnumInput;
+        if ($withEnumInput !== self::UNDEFINED) {
+            $instance->withEnumInput = $withEnumInput;
+        }
 
         return $instance;
     }

@@ -14,12 +14,16 @@ class EnumInput extends \Spawnia\Sailor\Type\TypedObject
      * @param string|null $default
      * @param \Spawnia\Sailor\CustomTypes\Types\CustomEnum|null $custom
      */
-    public static function make(?string $default = null, ?CustomEnum $custom = null): self
+    public static function make($default = 1.7976931348623157E+308, $custom = 1.7976931348623157E+308): self
     {
         $instance = new self;
 
-        $instance->default = $default;
-        $instance->custom = $custom;
+        if ($default !== self::UNDEFINED) {
+            $instance->default = $default;
+        }
+        if ($custom !== self::UNDEFINED) {
+            $instance->custom = $custom;
+        }
 
         return $instance;
     }

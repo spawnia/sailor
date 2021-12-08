@@ -13,11 +13,13 @@ class UserOrPost extends \Spawnia\Sailor\Type\TypedObject
     /**
      * @param \Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node\User|\Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node\Post|\Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node\Task $node
      */
-    public static function make(object $node): self
+    public static function make($node): self
     {
         $instance = new self;
 
-        $instance->node = $node;
+        if ($node !== self::UNDEFINED) {
+            $instance->node = $node;
+        }
         $instance->__typename = 'Query';
 
         return $instance;

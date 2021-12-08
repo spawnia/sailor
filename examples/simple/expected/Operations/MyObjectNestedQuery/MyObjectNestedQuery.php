@@ -13,12 +13,14 @@ class MyObjectNestedQuery extends \Spawnia\Sailor\Type\TypedObject
     /**
      * @param \Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery\SingleObject\SomeObject|null $singleObject
      */
-    public static function make(?SingleObject\SomeObject $singleObject = null): self
+    public static function make($singleObject = 1.7976931348623157E+308): self
     {
         $instance = new self;
 
         $instance->__typename = 'Query';
-        $instance->singleObject = $singleObject;
+        if ($singleObject !== self::UNDEFINED) {
+            $instance->singleObject = $singleObject;
+        }
 
         return $instance;
     }

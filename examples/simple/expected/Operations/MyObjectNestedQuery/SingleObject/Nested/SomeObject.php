@@ -13,12 +13,14 @@ class SomeObject extends \Spawnia\Sailor\Type\TypedObject
     /**
      * @param int|null $value
      */
-    public static function make(?int $value = null): self
+    public static function make($value = 1.7976931348623157E+308): self
     {
         $instance = new self;
 
         $instance->__typename = 'SomeObject';
-        $instance->value = $value;
+        if ($value !== self::UNDEFINED) {
+            $instance->value = $value;
+        }
 
         return $instance;
     }

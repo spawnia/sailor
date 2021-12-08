@@ -13,12 +13,14 @@ class MyBenSampoEnumQuery extends \Spawnia\Sailor\Type\TypedObject
     /**
      * @param \Spawnia\Sailor\CustomTypes\Types\BenSampoEnum|null $withBenSampoEnum
      */
-    public static function make(?\Spawnia\Sailor\CustomTypes\Types\BenSampoEnum $withBenSampoEnum = null): self
+    public static function make($withBenSampoEnum = 1.7976931348623157E+308): self
     {
         $instance = new self;
 
         $instance->__typename = 'Query';
-        $instance->withBenSampoEnum = $withBenSampoEnum;
+        if ($withBenSampoEnum !== self::UNDEFINED) {
+            $instance->withBenSampoEnum = $withBenSampoEnum;
+        }
 
         return $instance;
     }

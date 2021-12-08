@@ -107,16 +107,17 @@ PHP
             $this->make->addComment("@param {$wrappedPhpDocType} \${$name}");
 
             $parameter = $this->make->addParameter($name);
-            $parameter->setType(TypeWrapper::php($type, $phpType));
-            if (! $type instanceof NonNull) {
-                // TODO deal with complex default values
+            if (! $type instanceof NonNull || $defaultValue !== null) {
                 $parameter->setNullable(true);
-                $parameter->setDefaultValue(null);
-            } elseif (null !== $defaultValue) {
-                $parameter->setDefaultValue($defaultValue);
+                $parameter->setDefaultValue(TypedObject::UNDEFINED);
             }
 
-            $this->make->addBody("\$instance->{$name} = \${$name};");
+            $this->make->addBody(<<<PHP
+if (\${$name} !== self::UNDEFINED) {
+    \$instance->{$name} = \${$name};
+}
+PHP
+);
         }
     }
 }

@@ -13,11 +13,13 @@ class MyDefaultEnumQuery extends \Spawnia\Sailor\Type\TypedObject
     /**
      * @param string $withDefaultEnum
      */
-    public static function make(string $withDefaultEnum): self
+    public static function make($withDefaultEnum): self
     {
         $instance = new self;
 
-        $instance->withDefaultEnum = $withDefaultEnum;
+        if ($withDefaultEnum !== self::UNDEFINED) {
+            $instance->withDefaultEnum = $withDefaultEnum;
+        }
         $instance->__typename = 'Query';
 
         return $instance;

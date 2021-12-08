@@ -13,12 +13,14 @@ class SomeObject extends \Spawnia\Sailor\Type\TypedObject
     /**
      * @param \Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery\SingleObject\Nested\SomeObject|null $nested
      */
-    public static function make(?Nested\SomeObject $nested = null): self
+    public static function make($nested = 1.7976931348623157E+308): self
     {
         $instance = new self;
 
         $instance->__typename = 'SomeObject';
-        $instance->nested = $nested;
+        if ($nested !== self::UNDEFINED) {
+            $instance->nested = $nested;
+        }
 
         return $instance;
     }

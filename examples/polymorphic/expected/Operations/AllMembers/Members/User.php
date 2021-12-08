@@ -13,12 +13,14 @@ class User extends \Spawnia\Sailor\Type\TypedObject
     /**
      * @param string|null $name
      */
-    public static function make(?string $name = null): self
+    public static function make($name = 1.7976931348623157E+308): self
     {
         $instance = new self;
 
         $instance->__typename = 'Member';
-        $instance->name = $name;
+        if ($name !== self::UNDEFINED) {
+            $instance->name = $name;
+        }
 
         return $instance;
     }

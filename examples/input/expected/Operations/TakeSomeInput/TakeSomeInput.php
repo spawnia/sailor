@@ -13,12 +13,14 @@ class TakeSomeInput extends \Spawnia\Sailor\Type\TypedObject
     /**
      * @param int|null $takeSomeInput
      */
-    public static function make(?int $takeSomeInput = null): self
+    public static function make($takeSomeInput = 1.7976931348623157E+308): self
     {
         $instance = new self;
 
         $instance->__typename = 'Mutation';
-        $instance->takeSomeInput = $takeSomeInput;
+        if ($takeSomeInput !== self::UNDEFINED) {
+            $instance->takeSomeInput = $takeSomeInput;
+        }
 
         return $instance;
     }

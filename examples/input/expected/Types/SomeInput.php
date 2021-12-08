@@ -19,17 +19,25 @@ class SomeInput extends \Spawnia\Sailor\Type\TypedObject
      * @param \Spawnia\Sailor\Input\Types\SomeInput|null $nested
      */
     public static function make(
-        string $required,
-        array $matrix,
-        ?string $optional = null,
-        ?SomeInput $nested = null
+        $required,
+        $matrix,
+        $optional = 1.7976931348623157E+308,
+        $nested = 1.7976931348623157E+308
     ): self {
         $instance = new self;
 
-        $instance->required = $required;
-        $instance->matrix = $matrix;
-        $instance->optional = $optional;
-        $instance->nested = $nested;
+        if ($required !== self::UNDEFINED) {
+            $instance->required = $required;
+        }
+        if ($matrix !== self::UNDEFINED) {
+            $instance->matrix = $matrix;
+        }
+        if ($optional !== self::UNDEFINED) {
+            $instance->optional = $optional;
+        }
+        if ($nested !== self::UNDEFINED) {
+            $instance->nested = $nested;
+        }
 
         return $instance;
     }
