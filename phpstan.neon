@@ -3,6 +3,8 @@ includes:
 parameters:
 	level: max
 	paths:
+	- examples/custom-types/expected
+	- examples/input/expected
 	- examples/polymorphic/expected
 	- examples/simple/expected
 	- src

@@ -42,12 +42,14 @@ class BenSampoEnumTypeConfig extends EnumTypeConfig
                 PHP
         );
 
+        $toGraphQL->setReturnType('string');
         $toGraphQL->setBody(
             <<<PHP
                 if (! \$value instanceof \\{$customEnumClass}) {
                     throw new \InvalidArgumentException('Expected instanceof {$customEnumClass}, got: '.gettype(\$value));
                 }
 
+                // @phpstan-ignore-next-line generated enum values are always strings
                 return \$value->value;
                 PHP
         );

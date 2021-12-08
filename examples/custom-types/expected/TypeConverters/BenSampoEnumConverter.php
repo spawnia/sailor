@@ -11,12 +11,13 @@ class BenSampoEnumConverter implements \Spawnia\Sailor\Convert\TypeConverter
         return new \Spawnia\Sailor\CustomTypes\Types\BenSampoEnum($value);
     }
 
-    public function toGraphQL($value)
+    public function toGraphQL($value): string
     {
         if (! $value instanceof \Spawnia\Sailor\CustomTypes\Types\BenSampoEnum) {
             throw new \InvalidArgumentException('Expected instanceof Spawnia\Sailor\CustomTypes\Types\BenSampoEnum, got: '.gettype($value));
         }
 
+        // @phpstan-ignore-next-line generated enum values are always strings
         return $value->value;
     }
 }

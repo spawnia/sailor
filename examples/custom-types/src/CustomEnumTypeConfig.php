@@ -38,10 +38,15 @@ class CustomEnumTypeConfig extends EnumTypeConfig
         $fromGraphQL->setReturnType($customEnumClass);
         $fromGraphQL->setBody(
             <<<PHP
+                if (! is_string(\$value)) {
+                    throw new \InvalidArgumentException('Expected string, got: '.gettype(\$value));
+                }
+
                 return new \\{$customEnumClass}(\$value);
                 PHP
         );
 
+        $toGraphQL->setReturnType('string');
         $toGraphQL->setBody(
             <<<PHP
                 if (! \$value instanceof \\{$customEnumClass}) {
