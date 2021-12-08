@@ -52,4 +52,30 @@ class ResultTest extends TestCase
         self::assertCount(1, $result->errors);
         self::assertNull($result->extensions);
     }
+
+    public function testFromErrors(): void
+    {
+        $result = MyScalarQueryResult::fromErrors([
+            (object) [
+                'message' => 'foo',
+            ],
+        ]);
+        self::assertNull($result->data);
+        self::assertNotNull($result->errors);
+        self::assertCount(1, $result->errors);
+        self::assertNull($result->extensions);
+    }
+
+    public function testFromData(): void
+    {
+        $data = MyScalarQuery::make(
+        /* scalarWithArg: */ 
+            'bar'
+        );
+        $result = MyScalarQueryResult::fromData($data);
+
+        self::assertSame($data, $result->data);
+        self::assertNull($result->errors);
+        self::assertNull($result->extensions);
+    }
 }

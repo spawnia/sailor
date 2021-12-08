@@ -9,7 +9,7 @@ use stdClass;
 
 abstract class TypedObject implements TypeConverter
 {
-    const UNDEFINED = PHP_FLOAT_MAX - 1;
+    public const UNDEFINED = PHP_FLOAT_MAX - 1;
 
     /**
      * Necessary in order to be able to determine between explicit null and unset properties.

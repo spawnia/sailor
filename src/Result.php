@@ -15,12 +15,12 @@ abstract class Result
      *
      * @var array<int, \stdClass>|null
      */
-    public ?array $errors;
+    public ?array $errors = null;
 
     /**
      * Optional, can be an arbitrary map if present.
      */
-    public ?\stdClass $extensions;
+    public ?\stdClass $extensions = null;
 
     /**
      * Decode the raw data into proper types and set it.
@@ -59,6 +59,21 @@ abstract class Result
         return static::fromResponse(
             Response::fromStdClass($stdClass)
         );
+    }
+
+    /**
+     * Useful for instantiation of failed mocked results.
+     *
+     * @param array<int, \stdClass> $errors
+     *
+     * @return static
+     */
+    public static function fromErrors(array $errors): self
+    {
+        $instance = new static();
+        $instance->errors = $errors;
+
+        return $instance;
     }
 
     /**

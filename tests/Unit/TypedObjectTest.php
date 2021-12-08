@@ -8,13 +8,25 @@ use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQuery;
 
 class TypedObjectTest extends TestCase
 {
-    public function testDecode(): void
+    public function testFromStdClass(): void
     {
+        $bar = 'bar';
         $foo = MyScalarQuery::fromStdClass((object) [
-            'scalarWithArg' => 'bar',
+            'scalarWithArg' => $bar,
         ]);
 
-        self::assertSame('bar', $foo->scalarWithArg);
+        self::assertSame($bar, $foo->scalarWithArg);
+    }
+
+    public function testMake(): void
+    {
+        $bar = 'bar';
+        $foo = MyScalarQuery::make(
+            /* scalarWithArg: */ 
+            $bar
+        );
+
+        self::assertSame($bar, $foo->scalarWithArg);
     }
 
     public function testWrongKey(): void

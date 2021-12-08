@@ -158,10 +158,31 @@ class OperationGenerator implements ClassGenerator
                                     PHP
                             );
 
-                            $dataProp = $result->addProperty('data');
-                            $dataProp->setType(
-                                $this->withCurrentNamespace($operationName)
+                            $dataType = $this->withCurrentNamespace($operationName);
+
+                            $fromData = $result->addMethod('fromData');
+                            $fromData->setStatic(true);
+                            $dataParam = $fromData->addParameter('data');
+                            $dataParam->setType($dataType);
+                            $fromData->setReturnType('self');
+                            $fromData->addComment(
+                                <<<'PHPDOC'
+                                Useful for instantiation of successful mocked results.
+
+                                @return static
+                                PHPDOC
                             );
+                            $fromData->setBody(
+                                <<<'PHP'
+                                $instance = new static;
+                                $instance->data = $data;
+
+                                return $instance;
+                                PHP
+                            );
+
+                            $dataProp = $result->addProperty('data', null);
+                            $dataProp->setType($dataType);
                             $dataProp->setNullable(true);
 
                             $errorFreeResultName = "{$operationName}ErrorFreeResult";

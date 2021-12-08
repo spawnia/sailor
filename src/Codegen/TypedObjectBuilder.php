@@ -107,17 +107,18 @@ PHP
             $this->make->addComment("@param {$wrappedPhpDocType} \${$name}");
 
             $parameter = $this->make->addParameter($name);
-            if (! $type instanceof NonNull || $defaultValue !== null) {
+            if (! $type instanceof NonNull || null !== $defaultValue) {
                 $parameter->setNullable(true);
                 $parameter->setDefaultValue(TypedObject::UNDEFINED);
             }
 
-            $this->make->addBody(<<<PHP
+            $this->make->addBody(
+                <<<PHP
 if (\${$name} !== self::UNDEFINED) {
     \$instance->{$name} = \${$name};
 }
 PHP
-);
+            );
         }
     }
 }
