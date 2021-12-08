@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- Generate operations under namespace `Operations`
+- Generate enums and inputs under namespace `Types`
+- Base inputs and results on class `ObjectLike`
+
+### Added
+
+- Allow customization of how Sailor deals with types using `EndpointConfig::configureTypes()`
+- Allow additional code generation with `EndpointConfig::generateClasses()`
+- Ease mock result instantiation with `Result::fromData()` and `Result::fromErrors()`
+- Ease input and mock data instantiation with `ObjectLike::make()`
+
 ## v0.12.0
 
 ### Added
