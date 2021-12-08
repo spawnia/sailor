@@ -15,8 +15,8 @@
     "ext-json": "*",
     "nette/php-generator": "^3.6.3",
     "psr/http-client": "^1",
-    "symfony/console": "^5",
-    "symfony/var-exporter": "^5.3",
+    "symfony/console": "^5 || ^6",
+    "symfony/var-exporter": "^5.3 || ^6",
     "thecodingmachine/safe": "^1",
     "webonyx/graphql-php": "^14.11.3"
   },
