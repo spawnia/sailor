@@ -159,7 +159,7 @@ class Generator
             foreach ($documentNode->definitions as $definition) {
                 if ($definition instanceof OperationDefinitionNode) {
                     if (null === $definition->name) {
-                        throw new Error('Found unnamed operation definition in '.$path, $definition);
+                        throw new Error('Found unnamed operation definition in ' . $path, $definition);
                     }
                     continue;
                 }
@@ -168,7 +168,7 @@ class Generator
                     continue;
                 }
 
-                throw new Error('Found unsupported definition in '.$path, $definition);
+                throw new Error('Found unsupported definition in ' . $path, $definition);
             }
         }
     }

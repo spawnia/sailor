@@ -2,9 +2,9 @@
 
 namespace Spawnia\Sailor\Tests\Unit\Codegen;
 
+use GraphQL\Error\Error;
 use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\OperationDefinitionNode;
-use GraphQL\Error\Error;
 use GraphQL\Language\Parser;
 use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Codegen\Generator;
@@ -101,7 +101,7 @@ class GeneratorTest extends TestCase
     {
         $somePath = 'path';
         $documents = [
-            $somePath => Parser::parse(/* @lang GraphQL */'
+            $somePath => Parser::parse(/* @lang GraphQL */ '
                 type Query {
                     foo: ID
                 }
