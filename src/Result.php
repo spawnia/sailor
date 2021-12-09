@@ -1,11 +1,9 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor;
 
 /**
- * @property TypedObject|null $data The result of executing the requested operation.
+ * @property \Spawnia\Sailor\ObjectLike|null $data The result of executing the requested operation.
  */
 abstract class Result
 {
@@ -17,12 +15,12 @@ abstract class Result
      *
      * @var array<int, \stdClass>|null
      */
-    public ?array $errors;
+    public ?array $errors = null;
 
     /**
      * Optional, can be an arbitrary map if present.
      */
-    public ?\stdClass $extensions;
+    public ?\stdClass $extensions = null;
 
     /**
      * Decode the raw data into proper types and set it.
@@ -39,7 +37,7 @@ abstract class Result
      */
     public static function fromResponse(Response $response): self
     {
-        $instance = new static;
+        $instance = new static();
 
         $instance->errors = $response->errors ?? null;
         $instance->extensions = $response->extensions ?? null;
@@ -64,11 +62,26 @@ abstract class Result
     }
 
     /**
+     * Useful for instantiation of failed mocked results.
+     *
+     * @param array<int, \stdClass> $errors
+     *
+     * @return static
+     */
+    public static function fromErrors(array $errors): self
+    {
+        $instance = new static();
+        $instance->errors = $errors;
+
+        return $instance;
+    }
+
+    /**
      * Throw an exception if errors are present in the result.
      *
-     * @return $this
-     *
      * @throws \Spawnia\Sailor\ResultErrorsException
+     *
+     * @return $this
      */
     public function assertErrorFree(): self
     {

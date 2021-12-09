@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Client;
 
@@ -50,6 +48,7 @@ class Log implements Client
         $file = \Safe\fopen($this->filename, 'r');
 
         while ($line = fgets($file)) {
+            // @phpstan-ignore-next-line we know the data in the log matches the defined array shape
             yield \Safe\json_decode($line, true);
         }
 

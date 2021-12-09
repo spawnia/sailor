@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor;
 
@@ -29,6 +27,7 @@ class Introspector
         }
 
         $schema = BuildClientSchema::build(
+            // @phpstan-ignore-next-line we know a stdClass converts to an associative array
             Json::stdClassToAssoc($introspectionResult->data)
         );
 

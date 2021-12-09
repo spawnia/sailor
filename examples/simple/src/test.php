@@ -1,9 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
-declare(strict_types=1);
-
-include __DIR__.'/../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 $result = \Spawnia\Sailor\Simple\MyObjectQuery::execute();
 
-assert($result->data->singleObject->value === 42);
+assert(42 === $result->data->singleObject->value);

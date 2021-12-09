@@ -1,0 +1,29 @@
+type Query {
+    node(id: ID!): Node!
+    members: [Member!]!
+}
+
+interface Node {
+    id: ID!
+}
+
+type Post implements Node {
+    id: ID!
+    title: String
+}
+
+type Task implements Node {
+    id: ID!
+    done: Boolean!
+}
+
+type User implements Node {
+    id: ID!
+    name: String
+}
+
+type Organization {
+    code: ID!
+}
+
+union Member = User | Organization

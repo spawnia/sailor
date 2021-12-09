@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor;
 
@@ -12,9 +10,8 @@ use Safe\Exceptions\JsonException;
  * Represents a response sent by a GraphQL server.
  *
  * During instantiation, the response structure is validated.
- * That does guarantee the server at least sent a syntactically
- * correct response, although it does not guarantee the content
- * matches the sent query.
+ * That does guarantee the server at least sent a syntactically correct response,
+ * although it does not guarantee the content matches the sent query.
  */
 class Response
 {
@@ -37,8 +34,8 @@ class Response
 
     public static function fromResponseInterface(ResponseInterface $response): self
     {
-        if ($response->getStatusCode() !== 200) {
-            throw new InvalidResponseException("Response must have status code 200, got: {$response->getStatusCode()}");
+        if (200 !== $response->getStatusCode()) {
+            throw new InvalidDataException("Response must have status code 200, got: {$response->getStatusCode()}");
         }
 
         return self::fromJson(
@@ -58,11 +55,11 @@ class Response
         try {
             $response = \Safe\json_decode($json);
         } catch (JsonException $jsonException) {
-            throw new InvalidResponseException("Received a response that is invalid JSON: {$json}", 0, $jsonException);
+            throw new InvalidDataException("Received a response that is invalid JSON: {$json}", 0, $jsonException);
         }
 
         if (! $response instanceof \stdClass) {
-            throw new InvalidResponseException("A response to a GraphQL operation must be a map, got: {$json}");
+            throw new InvalidDataException("A response to a GraphQL operation must be a map, got: {$json}");
         }
 
         return self::fromStdClass($response);
@@ -74,10 +71,10 @@ class Response
         $hasErrors = property_exists($rawResponse, 'errors');
 
         if (! $hasData && ! $hasErrors) {
-            throw new InvalidResponseException('A valid GraphQL response must contain either "data" or "errors", got: '.\Safe\json_encode($rawResponse));
+            throw new InvalidDataException('A valid GraphQL response must contain either "data" or "errors", got: ' . \Safe\json_encode($rawResponse));
         }
 
-        $instance = new self;
+        $instance = new self();
 
         if ($hasErrors) {
             $errors = $rawResponse->errors;
@@ -106,9 +103,9 @@ class Response
     /**
      * Throw an exception if errors are present in the result.
      *
-     * @return $this
-     *
      * @throws \Spawnia\Sailor\ResultErrorsException
+     *
+     * @return $this
      */
     public function assertErrorFree(): self
     {
@@ -122,31 +119,31 @@ class Response
     /**
      * Ensure that the "errors" are in a spec-compliant format.
      *
-     * @param  mixed  $errors  Whatever came from the API under the key "errors".
+     * @param  mixed  $errors  whatever came from the API under the key "errors"
      *
      * @throws \Exception
      */
     protected static function validateErrors($errors): void
     {
         if (! is_array($errors)) {
-            throw new InvalidResponseException('The response entry "errors" must be a list if present, got: '.\Safe\json_encode($errors));
+            throw new InvalidDataException('The response entry "errors" must be a list if present, got: ' . \Safe\json_encode($errors));
         }
 
-        if (count($errors) === 0) {
-            throw new InvalidResponseException('The response entry "errors" must not be empty if present, got: '.\Safe\json_encode($errors));
+        if (0 === count($errors)) {
+            throw new InvalidDataException('The response entry "errors" must not be empty if present, got: ' . \Safe\json_encode($errors));
         }
 
         foreach ($errors as $error) {
             if (! $error instanceof \stdClass) {
-                throw new InvalidResponseException('Each error in the response must be a map, got: '.\Safe\json_encode($error));
+                throw new InvalidDataException('Each error in the response must be a map, got: ' . \Safe\json_encode($error));
             }
 
             if (! property_exists($error, 'message')) {
-                throw new InvalidResponseException('Each error in the response must contain a key "message", got: '.\Safe\json_encode($error));
+                throw new InvalidDataException('Each error in the response must contain a key "message", got: ' . \Safe\json_encode($error));
             }
 
             if (! is_string($error->message)) {
-                throw new InvalidResponseException('Each error in the response must contain a key "message" that is a string, got: '.\Safe\json_encode($error));
+                throw new InvalidDataException('Each error in the response must contain a key "message" that is a string, got: ' . \Safe\json_encode($error));
             }
         }
     }
@@ -154,7 +151,7 @@ class Response
     /**
      * Ensure that the "data" is in a spec-compliant format.
      *
-     * @param  mixed  $data  Whatever came from the API under the key "data".
+     * @param  mixed  $data  whatever came from the API under the key "data"
      *
      * @throws \Exception
      */
@@ -162,25 +159,25 @@ class Response
     {
         if (
             $data instanceof \stdClass
-            || $data === null
+            || null === $data
         ) {
             return;
         }
 
-        throw new InvalidResponseException('The response entry "data" must be a map or "null", got: '.\Safe\json_encode($data));
+        throw new InvalidDataException('The response entry "data" must be a map or "null", got: ' . \Safe\json_encode($data));
     }
 
     /**
      * Ensure that the "extensions" are in a spec-compliant format.
      *
-     * @param  mixed  $extensions  Whatever came from the API under the key "extensions".
+     * @param  mixed  $extensions  whatever came from the API under the key "extensions"
      *
      * @throws \Exception
      */
     protected static function validateExtensions($extensions): void
     {
         if (! $extensions instanceof \stdClass) {
-            throw new InvalidResponseException('The response entry "extensions" must be a map.');
+            throw new InvalidDataException('The response entry "extensions" must be a map.');
         }
     }
 }

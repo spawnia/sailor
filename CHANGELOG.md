@@ -2,10 +2,55 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+
+## v0.14.0
+
+### Changed
+
+- Generate operations under namespace `Operations`
+- Generate enums and inputs under namespace `Types`
+- Base inputs and results on class `ObjectLike`
+
+### Added
+
+- Allow customization of how Sailor deals with types using `EndpointConfig::configureTypes()`
+- Allow additional code generation with `EndpointConfig::generateClasses()`
+- Ease mock result instantiation with `Result::fromData()` and `Result::fromErrors()`
+- Ease input and mock data instantiation with `ObjectLike::make()`
+
+## v0.13.0
+
+### Added
+
+- Allow `symfony/console` and `symfony/var-exporter` v6 as dependencies
+
+## v0.12.0
+
+### Added
+
+- Generate Enums and Inputs from the schema
+
+### Changed
+
+- Operations with input object types as arguments expect generated classes instead of `\stdClass`
+- The operation names `Inputs` and `Enums` are now reserved
+
+## v0.11.0
+
+### Added
+
+- Support interfaces
+- Support unions
+- Ensure generated code complies with PHPStan v1 at level max
+
+### Changed
+
+- Always add field `__typename` to any subselection and have it available in the result through `TypedObject`
+- Name generated `TypedObject` classes after the corresponding object type
 
 ## v0.10.2
 

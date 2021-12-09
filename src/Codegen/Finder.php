@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
@@ -30,7 +28,7 @@ class Finder
 
             // When installing from source, the examples might end up in the critical path
             // so we exclude them from the search
-            if (mb_strpos($path, 'vendor/spawnia/sailor/') !== false) {
+            if (false !== mb_strpos($path, 'vendor/spawnia/sailor/')) {
                 continue;
             }
 

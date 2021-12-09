@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
@@ -31,35 +29,39 @@ class Generator
     /**
      * Generate a list of files to write.
      *
-     * @return array<int, File>
+     * @return iterable<File>
      */
-    public function generate(): array
+    public function generate(): iterable
     {
         $parsedDocuments = $this->parsedDocuments();
-        if ($parsedDocuments === []) {
+        if ([] === $parsedDocuments) {
             return [];
         }
+
         $document = Merger::combine($parsedDocuments);
+        AddTypename::modify($document);
 
         $schema = $this->schema();
 
         Validator::validate($schema, $document);
 
-        $classGenerator = new ClassGenerator($schema, $this->endpointConfig, $this->endpointName);
-        $operationSets = $classGenerator->generate($document);
+        foreach ((new OperationGenerator($schema, $document, $this->endpointConfig, $this->endpointName))->generate() as $class) {
+            yield $this->makeFile($class);
+        }
 
-        $files = [];
-        foreach ($operationSets as $operationSet) {
-            $files [] = $this->makeFile($operationSet->operation);
-            $files [] = $this->makeFile($operationSet->result);
-            $files [] = $this->makeFile($operationSet->errorFreeResult);
+        foreach ((new TypeConvertersGenerator($schema, $this->endpointConfig, $this->endpointName))->generate() as $class) {
+            yield $this->makeFile($class);
+        }
 
-            foreach ($operationSet->selectionStorage as $selection) {
-                $files [] = $this->makeFile($selection);
+        foreach ($this->endpointConfig->configureTypes($schema, $this->endpointName) as $typeConfig) {
+            foreach ($typeConfig->generateClasses() as $class) {
+                yield $this->makeFile($class);
             }
         }
 
-        return $files;
+        foreach ($this->endpointConfig->generateClasses($schema, $document, $this->endpointName) as $class) {
+            yield $this->makeFile($class);
+        }
     }
 
     protected function makeFile(ClassType $classType): File
@@ -67,14 +69,14 @@ class Generator
         $file = new File();
 
         $phpNamespace = $classType->getNamespace();
-        if ($phpNamespace === null) {
+        if (null === $phpNamespace) {
             throw new \Exception('Generated classes must have a namespace.');
         }
         $file->directory = $this->targetDirectory(
             $phpNamespace->getName()
         );
 
-        $file->name = $classType->getName().'.php';
+        $file->name = $classType->getName() . '.php';
         $file->content = self::asPhpFile($classType);
 
         return $file;
@@ -85,12 +87,12 @@ class Generator
         $pathInTarget = self::after($namespace, $this->endpointConfig->namespace());
         $pathInTarget = str_replace('\\', '/', $pathInTarget);
 
-        return $this->endpointConfig->targetPath().$pathInTarget;
+        return $this->endpointConfig->targetPath() . $pathInTarget;
     }
 
     public static function after(string $subject, string $search): string
     {
-        if ($search === '') {
+        if ('' === $search) {
             return $subject;
         }
 
@@ -111,21 +113,22 @@ class Generator
         $class = $printer->printClass($classType, $phpNamespace);
 
         return <<<PHP
-        <?php
+            <?php
 
-        declare(strict_types=1);
+            declare(strict_types=1);
 
-        {$phpNamespace}{$class}
-        PHP;
+            {$phpNamespace}{$class}
+            PHP;
     }
 
     /**
      * Parse the raw document contents.
      *
      * @param  array<string, string>  $documents
-     * @return array<string, \GraphQL\Language\AST\DocumentNode>
      *
      * @throws \GraphQL\Error\SyntaxError
+     *
+     * @return array<string, \GraphQL\Language\AST\DocumentNode>
      */
     public static function parseDocuments(array $documents): array
     {
@@ -136,7 +139,7 @@ class Generator
             } catch (SyntaxError $error) {
                 throw new Error(
                     // Inform the user which file the error occurred in.
-                    $error->getMessage().' in '.$path,
+                    $error->getMessage() . ' in ' . $path,
                     null,
                     $error->getSource(),
                     $error->getPositions()
@@ -155,7 +158,7 @@ class Generator
         foreach ($parsed as $path => $documentNode) {
             foreach ($documentNode->definitions as $definition) {
                 if ($definition instanceof OperationDefinitionNode) {
-                    if ($definition->name === null) {
+                    if (null === $definition->name) {
                         throw new Error('Found unnamed operation definition in '.$path, $definition);
                     }
                     continue;

@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor;
 
@@ -14,6 +12,8 @@ use Mockery\MockInterface;
  * `execute` can not be made into an actual abstract function, since
  * its arguments and return type should be strictly typed
  * depending on the contents of the operation.
+ *
+ * @template TResult of Result
  */
 abstract class Operation
 {
@@ -43,11 +43,13 @@ abstract class Operation
 
     /**
      * @param  mixed  ...$args
+     *
+     * @return TResult
      */
     protected static function executeOperation(...$args): Result
     {
         $mock = self::$mocks[static::class] ?? null;
-        if ($mock !== null) {
+        if (null !== $mock) {
             // @phpstan-ignore-next-line This function is only present on child classes
             return $mock::execute(...$args);
         }
@@ -58,8 +60,8 @@ abstract class Operation
         $parts = explode('\\', $child);
         $basename = end($parts);
 
-        /** @var class-string<\Spawnia\Sailor\Result> $resultClass */
-        $resultClass = $child.'\\'.$basename.'Result';
+        /** @var class-string<TResult> $resultClass */
+        $resultClass = $child . '\\' . $basename . 'Result';
 
         return $resultClass::fromResponse($response);
     }
@@ -81,7 +83,7 @@ abstract class Operation
 
         $client = self::$clients[static::class]
             ?? Configuration::endpoint(static::endpoint())
-            ->makeClient();
+                ->makeClient();
 
         return $client->request(static::document(), $variables);
     }

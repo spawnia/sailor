@@ -1,9 +1,9 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Unit\Codegen;
 
+use GraphQL\Language\AST\NameNode;
+use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Error\Error;
 use GraphQL\Language\Parser;
 use PHPUnit\Framework\TestCase;
@@ -23,10 +23,17 @@ class GeneratorTest extends TestCase
         ];
 
         $parsed = Generator::parseDocuments($documents);
-        /** @var \GraphQL\Language\AST\OperationDefinitionNode $query */
-        $query = $parsed[$somePath]->definitions[0];
+        self::assertCount(1, $parsed);
 
-        self::assertSame('MyScalarQuery', $query->name->value);
+        $definitions = $parsed[$somePath]->definitions;
+        self::assertCount(1, $definitions);
+
+        $query = $definitions[0];
+        self::assertInstanceOf(OperationDefinitionNode::class, $query);
+
+        $nameNode = $query->name;
+        self::assertInstanceOf(NameNode::class, $nameNode);
+        self::assertSame('MyScalarQuery', $nameNode->value);
     }
 
     public function testParseFragmentSuccessfully(): void
@@ -83,8 +90,7 @@ class GeneratorTest extends TestCase
     {
         $path = 'thisShouldBeInTheMessage';
         $documents = [
-            $path => /* @lang GraphQL */
-                'invalid GraphQL',
+            $path /* @lang GraphQL */ => 'invalid GraphQL',
         ];
 
         self::expectExceptionMessageMatches("/$path/");

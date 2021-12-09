@@ -1,0 +1,35 @@
+type Query {
+    withDefaultEnum(value: DefaultEnum!): DefaultEnum!
+    withCustomEnum(value: CustomEnum): CustomEnum
+    withBenSampoEnum(value: BenSampoEnum): BenSampoEnum
+    withEnumInput(input: EnumInput): EnumObject
+}
+
+type EnumObject {
+    default: DefaultEnum
+    custom: CustomEnum
+}
+
+input EnumInput {
+    default: DefaultEnum
+    custom: CustomEnum
+}
+
+enum DefaultEnum {
+    A
+    B
+}
+
+enum CustomEnum {
+    A
+    B
+}
+
+enum BenSampoEnum {
+    A
+    B
+}
+
+scalar DefaultDate
+
+scalar CustomDate

@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Tests\Unit\Codegen;
 
@@ -8,7 +6,7 @@ use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\Type;
 use PHPUnit\Framework\TestCase;
-use Spawnia\Sailor\Codegen\PhpType;
+use Spawnia\Sailor\Codegen\TypeWrapper;
 
 class PhpTypeTest extends TestCase
 {
@@ -16,9 +14,9 @@ class PhpTypeTest extends TestCase
     {
         self::assertSame(
             'MyScalarQuery|null',
-            PhpType::phpDoc(
+            TypeWrapper::phpDoc(
                 Type::id(),
-            'MyScalarQuery'
+                'MyScalarQuery'
             )
         );
     }
@@ -27,7 +25,7 @@ class PhpTypeTest extends TestCase
     {
         self::assertSame(
             'MyScalarQuery',
-            PhpType::phpDoc(
+            TypeWrapper::phpDoc(
                 new NonNull(
                     Type::id()
                 ),
@@ -40,7 +38,7 @@ class PhpTypeTest extends TestCase
     {
         self::assertSame(
             'array<int, MyScalarQuery|null>|null',
-            PhpType::phpDoc(
+            TypeWrapper::phpDoc(
                 new ListOfType(
                     Type::id()
                 ),
@@ -53,7 +51,7 @@ class PhpTypeTest extends TestCase
     {
         self::assertSame(
             'array<int, MyScalarQuery>',
-            PhpType::phpDoc(
+            TypeWrapper::phpDoc(
                 new NonNull(
                     new ListOfType(
                         new NonNull(
@@ -70,7 +68,7 @@ class PhpTypeTest extends TestCase
     {
         self::assertSame(
             'array<int, array<int, MyScalarQuery|null>|null>',
-            PhpType::phpDoc(
+            TypeWrapper::phpDoc(
                 new NonNull(
                     new ListOfType(
                         new ListOfType(

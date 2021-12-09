@@ -1,23 +1,24 @@
 {
   "require": {
-    "spawnia/sailor": "*"
+    "spawnia/sailor": "@dev"
   },
   "autoload": {
     "psr-4": {
       "Spawnia\\Sailor\\Simple\\": "generated/"
     }
   },
-  "minimum-stability": "dev",
-  "prefer-stable": true,
+  "repositories": [
+    {
+      "type": "path",
+      "url": "./sailor",
+      "options": {
+        "symlink": false
+      }
+    }
+  ],
   "scripts": {
-    "require-from-local": [
-      "rm -rf vendor/spawnia/sailor && rsync -r ../../ vendor/spawnia/sailor --exclude examples --exclude vendor --exclude .idea --exclude .build"
-    ],
-    "post-install-cmd": [
-      "@require-from-local"
-    ],
-    "post-update-cmd": [
-      "@require-from-local"
-    ]
+    "move-package": "rsync -r ../../ sailor --exclude examples --exclude vendor --exclude .idea --exclude .build --delete",
+    "pre-install-cmd": "@move-package",
+    "pre-update-cmd": "@move-package"
   }
 }

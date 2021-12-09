@@ -1,0 +1,6 @@
+query MyEnumInputQuery($input: EnumInput) {
+    withEnumInput(input: $input) {
+        custom
+        default
+    }
+}

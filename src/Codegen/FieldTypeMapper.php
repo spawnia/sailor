@@ -1,16 +1,14 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Codegen;
 
 final class FieldTypeMapper
 {
-    const SUFFIX = 'TypeMapper';
+    public const SUFFIX = 'TypeMapper';
 
     public static function methodName(string $field): string
     {
-        return $field.self::SUFFIX;
+        return $field . self::SUFFIX;
     }
 
     public static function fieldName(string $mapTypeMethod): string
