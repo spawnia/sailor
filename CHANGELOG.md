@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.14.1
+
+### Fixed
+
+- Fix conversion of custom types used directly in variables
+
 ## v0.14.0
 
 ### Changed

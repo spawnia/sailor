@@ -100,7 +100,6 @@ class SimpleTest extends TestCase
 
         MyScalarQuery::mock()
             ->expects('execute')
-            ->with()
             ->andReturn(MyScalarQueryResult::fromStdClass((object) [
                 'data' => (object) [
                     'scalarWithArg' => $bar,
@@ -116,7 +115,6 @@ class SimpleTest extends TestCase
 
         MyScalarQuery::mock()
             ->expects('execute')
-            ->with()
             ->andReturn(MyScalarQueryResult::fromStdClass((object) [
                 'data' => null,
                 'errors' => [

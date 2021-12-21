@@ -9,9 +9,23 @@ namespace Spawnia\Sailor\CustomTypes\Operations;
  */
 class MyEnumInputQuery extends \Spawnia\Sailor\Operation
 {
-    public static function execute(?\Spawnia\Sailor\CustomTypes\Types\EnumInput $input = null): MyEnumInputQuery\MyEnumInputQueryResult
+    /**
+     * @param \Spawnia\Sailor\CustomTypes\Types\EnumInput|null $input
+     */
+    public static function execute($input = 1.7976931348623157E+308): MyEnumInputQuery\MyEnumInputQueryResult
     {
-        return self::executeOperation(...func_get_args());
+        return self::executeOperation(
+            $input,
+        );
+    }
+
+    protected static function converters(): array
+    {
+        static $converters;
+
+        return $converters ??= [
+            ['input', new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\CustomTypes\Types\EnumInput)],
+        ];
     }
 
     public static function document(): string
