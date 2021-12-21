@@ -128,6 +128,12 @@ PHP
         $wrappedPhpDocType = TypeWrapper::phpDoc($type, $typeReference);
 
         $wrappedTypeConverter = TypeWrapper::converter($type, "new \\{$typeConverter}");
+
+        /**
+         * Not using a map because we utilize the numeric indizes to match parameters with arguments.
+         *
+         * @see Operation::fetchResponse()
+         */
         $this->converters->addBody(/** @lang PHP */ "    ['{$name}', {$wrappedTypeConverter}],");
 
         $this->execute->addComment(/** @lang PHPDoc */ "@param {$wrappedPhpDocType} \${$name}");
