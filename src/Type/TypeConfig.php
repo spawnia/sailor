@@ -13,6 +13,8 @@ interface TypeConfig
     /**
      * Fully qualified class name of a TypeConverter instance.
      *
+     * The class must allow instantiation with a parameter-less constructor.
+     *
      * @return class-string<TypeConverter>
      */
     public function typeConverter(): string;

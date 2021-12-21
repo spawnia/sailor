@@ -9,9 +9,23 @@ namespace Spawnia\Sailor\Simple\Operations;
  */
 class MyScalarQuery extends \Spawnia\Sailor\Operation
 {
-    public static function execute(?string $arg = null): MyScalarQuery\MyScalarQueryResult
+    /**
+     * @param string|null $arg
+     */
+    public static function execute($arg = 1.7976931348623157E+308): MyScalarQuery\MyScalarQueryResult
     {
-        return self::executeOperation(...func_get_args());
+        return self::executeOperation(
+            $arg,
+        );
+    }
+
+    protected static function converters(): array
+    {
+        static $converters;
+
+        return $converters ??= [
+            ['arg', new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\StringConverter)],
+        ];
     }
 
     public static function document(): string

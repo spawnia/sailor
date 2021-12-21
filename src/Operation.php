@@ -4,6 +4,7 @@ namespace Spawnia\Sailor;
 
 use Mockery;
 use Mockery\MockInterface;
+use Spawnia\Sailor\Convert\TypeConverter;
 
 /**
  * Subclasses of this class are automatically generated.
@@ -42,6 +43,11 @@ abstract class Operation
     abstract public static function document(): string;
 
     /**
+     * @return array<int, array{string, TypeConverter}>
+     */
+    abstract protected static function converters(): array;
+
+    /**
      * @param  mixed  ...$args
      *
      * @return TResult
@@ -74,11 +80,14 @@ abstract class Operation
     protected static function fetchResponse(array $args): Response
     {
         $variables = new \stdClass();
-        $executeMethod = new \ReflectionMethod(static::class, 'execute');
-        $parameters = $executeMethod->getParameters();
+        $arguments = static::converters();
         foreach ($args as $index => $arg) {
-            $parameter = $parameters[$index];
-            $variables->{$parameter->getName()} = $arg;
+            if (ObjectLike::UNDEFINED === $arg) {
+                continue;
+            }
+
+            [$name, $typeConverter] = $arguments[$index];
+            $variables->{$name} = $typeConverter->toGraphQL($arg);
         }
 
         $client = self::$clients[static::class]
