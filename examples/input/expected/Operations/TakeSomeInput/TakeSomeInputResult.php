@@ -8,6 +8,11 @@ class TakeSomeInputResult extends \Spawnia\Sailor\Result
 {
     public ?TakeSomeInput $data = null;
 
+    public static function endpoint(): string
+    {
+        return 'input';
+    }
+
     protected function setData(\stdClass $data): void
     {
         $this->data = TakeSomeInput::fromStdClass($data);

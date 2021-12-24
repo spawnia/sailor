@@ -8,6 +8,11 @@ class MyObjectNestedQueryResult extends \Spawnia\Sailor\Result
 {
     public ?MyObjectNestedQuery $data = null;
 
+    public static function endpoint(): string
+    {
+        return 'simple';
+    }
+
     protected function setData(\stdClass $data): void
     {
         $this->data = MyObjectNestedQuery::fromStdClass($data);

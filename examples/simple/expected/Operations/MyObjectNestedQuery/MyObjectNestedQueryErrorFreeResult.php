@@ -7,4 +7,9 @@ namespace Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery;
 class MyObjectNestedQueryErrorFreeResult extends \Spawnia\Sailor\ErrorFreeResult
 {
     public MyObjectNestedQuery $data;
+
+    public static function endpoint(): string
+    {
+        return 'simple';
+    }
 }

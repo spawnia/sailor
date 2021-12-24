@@ -8,6 +8,11 @@ class MyScalarQueryResult extends \Spawnia\Sailor\Result
 {
     public ?MyScalarQuery $data = null;
 
+    public static function endpoint(): string
+    {
+        return 'simple';
+    }
+
     protected function setData(\stdClass $data): void
     {
         $this->data = MyScalarQuery::fromStdClass($data);

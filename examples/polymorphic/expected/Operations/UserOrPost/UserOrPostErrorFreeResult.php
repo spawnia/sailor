@@ -7,4 +7,9 @@ namespace Spawnia\Sailor\Polymorphic\Operations\UserOrPost;
 class UserOrPostErrorFreeResult extends \Spawnia\Sailor\ErrorFreeResult
 {
     public UserOrPost $data;
+
+    public static function endpoint(): string
+    {
+        return 'polymorphic';
+    }
 }

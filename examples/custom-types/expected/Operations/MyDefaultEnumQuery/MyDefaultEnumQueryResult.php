@@ -8,6 +8,11 @@ class MyDefaultEnumQueryResult extends \Spawnia\Sailor\Result
 {
     public ?MyDefaultEnumQuery $data = null;
 
+    public static function endpoint(): string
+    {
+        return 'custom-types';
+    }
+
     protected function setData(\stdClass $data): void
     {
         $this->data = MyDefaultEnumQuery::fromStdClass($data);

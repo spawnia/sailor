@@ -8,6 +8,11 @@ class UserOrPostResult extends \Spawnia\Sailor\Result
 {
     public ?UserOrPost $data = null;
 
+    public static function endpoint(): string
+    {
+        return 'polymorphic';
+    }
+
     protected function setData(\stdClass $data): void
     {
         $this->data = UserOrPost::fromStdClass($data);
