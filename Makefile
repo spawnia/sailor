@@ -14,8 +14,13 @@ stan: ## Runs static analysis with phpstan
 	mkdir -p .build/phpstan
 	vendor/bin/phpstan analyse --configuration=phpstan.neon
 
+.PHONY: codegen
+codegen: ## Runs the codegen tests
+	mkdir -p .build/phpunit
+	vendor/bin/phpunit --filter CodegenTest
+
 .PHONY: test
-test: ## Runs auto-review, unit, and integration tests with phpunit
+test: ## Runs tests with phpunit
 	mkdir -p .build/phpunit
 	vendor/bin/phpunit
 

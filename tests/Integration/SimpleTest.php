@@ -113,6 +113,9 @@ class SimpleTest extends TestCase
     {
         $message = 'some error';
 
+        $endpoint = Mockery::mock(EndpointConfig::class)->makePartial();
+        Configuration::setEndpoint(MyScalarQueryResult::endpoint(), $endpoint);
+
         MyScalarQuery::mock()
             ->expects('execute')
             ->andReturn(MyScalarQueryResult::fromStdClass((object) [

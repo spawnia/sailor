@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.15.0
+
+### Added
+
+- Add ability to overwrite parsing of errors
+
+### Changed
+
+- Convert errors from plain `stdClass` to `Spawnia\Sailor\Error\Error` in results
+
 ## v0.14.1
 
 ### Fixed

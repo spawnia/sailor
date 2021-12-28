@@ -80,14 +80,7 @@ PHP
 
     public function setEndpoint(string $endpointName): void
     {
-        $endpoint = $this->class->addMethod('endpoint');
-        $endpoint->setStatic();
-        $endpoint->setReturnType('string');
-        $endpoint->setBody(
-            <<<PHP
-            return '{$endpointName}';
-            PHP
-        );
+        ClassHelper::setEndpoint($this->class, $endpointName);
     }
 
     /**

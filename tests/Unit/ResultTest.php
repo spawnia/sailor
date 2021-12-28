@@ -2,7 +2,11 @@
 
 namespace Spawnia\Sailor\Tests\Unit;
 
+use Mockery;
 use PHPUnit\Framework\TestCase;
+use Spawnia\Sailor\Configuration;
+use Spawnia\Sailor\EndpointConfig;
+use Spawnia\Sailor\Error\Error;
 use Spawnia\Sailor\ResultErrorsException;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQuery;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQueryResult;
@@ -16,7 +20,7 @@ class ResultTest extends TestCase
         // No errors, so nothing happens
         $result->assertErrorFree();
 
-        $result->errors = [new \stdClass()];
+        $result->errors = [new Error('foo')];
 
         $this->expectException(ResultErrorsException::class);
         $result->assertErrorFree();
@@ -32,7 +36,7 @@ class ResultTest extends TestCase
         // No errors
         $result->errorFree();
 
-        $result->errors = [new \stdClass()];
+        $result->errors = [new Error('foo')];
 
         $this->expectException(ResultErrorsException::class);
         $result->errorFree();
@@ -40,16 +44,28 @@ class ResultTest extends TestCase
 
     public function testWithErrors(): void
     {
+        $endpoint = Mockery::mock(EndpointConfig::class)->makePartial();
+        Configuration::setEndpoint(MyScalarQueryResult::endpoint(), $endpoint);
+
+        $message = 'foo';
+
         $result = MyScalarQueryResult::fromStdClass((object) [
             'errors' => [
                 (object) [
-                    'message' => 'foo',
+                    'message' => $message,
                 ],
             ],
         ]);
+
         self::assertNull($result->data);
-        self::assertNotNull($result->errors);
-        self::assertCount(1, $result->errors);
+
+        $errors = $result->errors;
+        self::assertNotNull($errors);
+        self::assertCount(1, $errors);
+
+        $error = $errors[0];
+        self::assertSame($message, $error->message);
+
         self::assertNull($result->extensions);
     }
 
