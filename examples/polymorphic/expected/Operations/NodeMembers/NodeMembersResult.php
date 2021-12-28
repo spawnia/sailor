@@ -8,6 +8,11 @@ class NodeMembersResult extends \Spawnia\Sailor\Result
 {
     public ?NodeMembers $data = null;
 
+    public static function endpoint(): string
+    {
+        return 'polymorphic';
+    }
+
     protected function setData(\stdClass $data): void
     {
         $this->data = NodeMembers::fromStdClass($data);

@@ -2,6 +2,9 @@
 
 namespace Spawnia\Sailor;
 
+use Spawnia\Sailor\Error\Error;
+use stdClass;
+
 /**
  * @property \Spawnia\Sailor\ObjectLike|null $data The result of executing the requested operation.
  */
@@ -13,24 +16,29 @@ abstract class Result
      * Each error is a map that is guaranteed to contain at least
      * the key `message` and may contain arbitrary other keys.
      *
-     * @var array<int, \stdClass>|null
+     * @var array<int, Error>|null
      */
     public ?array $errors = null;
 
     /**
      * Optional, can be an arbitrary map if present.
      */
-    public ?\stdClass $extensions = null;
+    public ?stdClass $extensions = null;
 
     /**
      * Decode the raw data into proper types and set it.
      */
-    abstract protected function setData(\stdClass $data): void;
+    abstract protected function setData(stdClass $data): void;
 
     /**
      * Throws if errors are present in the result or returns an error free result.
      */
     abstract public function errorFree(): ErrorFreeResult;
+
+    /**
+     * The configured endpoint the result belongs to.
+     */
+    abstract public static function endpoint(): string;
 
     /**
      * @return static
@@ -39,7 +47,9 @@ abstract class Result
     {
         $instance = new static();
 
-        $instance->errors = $response->errors ?? null;
+        $instance->errors = isset($response->errors)
+            ? array_map([Configuration::endpoint(static::endpoint()), 'parseError'], $response->errors)
+            : null;
         $instance->extensions = $response->extensions ?? null;
 
         if (isset($response->data)) {
@@ -54,7 +64,7 @@ abstract class Result
     /**
      * @return static
      */
-    public static function fromStdClass(\stdClass $stdClass): self
+    public static function fromStdClass(stdClass $stdClass): self
     {
         return static::fromResponse(
             Response::fromStdClass($stdClass)
@@ -64,14 +74,14 @@ abstract class Result
     /**
      * Useful for instantiation of failed mocked results.
      *
-     * @param array<int, \stdClass> $errors
+     * @param array<int, stdClass> $errors
      *
      * @return static
      */
     public static function fromErrors(array $errors): self
     {
         $instance = new static();
-        $instance->errors = $errors;
+        $instance->errors = array_map([Configuration::endpoint(static::endpoint()), 'parseError'], $errors);
 
         return $instance;
     }

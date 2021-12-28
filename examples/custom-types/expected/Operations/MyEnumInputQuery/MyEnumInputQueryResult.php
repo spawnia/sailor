@@ -8,6 +8,11 @@ class MyEnumInputQueryResult extends \Spawnia\Sailor\Result
 {
     public ?MyEnumInputQuery $data = null;
 
+    public static function endpoint(): string
+    {
+        return 'custom-types';
+    }
+
     protected function setData(\stdClass $data): void
     {
         $this->data = MyEnumInputQuery::fromStdClass($data);

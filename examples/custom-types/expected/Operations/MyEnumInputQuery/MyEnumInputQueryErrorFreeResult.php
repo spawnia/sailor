@@ -7,4 +7,9 @@ namespace Spawnia\Sailor\CustomTypes\Operations\MyEnumInputQuery;
 class MyEnumInputQueryErrorFreeResult extends \Spawnia\Sailor\ErrorFreeResult
 {
     public MyEnumInputQuery $data;
+
+    public static function endpoint(): string
+    {
+        return 'custom-types';
+    }
 }
