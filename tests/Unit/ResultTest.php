@@ -7,27 +7,62 @@ use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Error\Error;
-use Spawnia\Sailor\ResultErrorsException;
+use Spawnia\Sailor\Error\ResultErrorsException;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQuery;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQueryResult;
 
 class ResultTest extends TestCase
 {
-    public function testThrowErrors(): void
+    /**
+     * @dataProvider isClientSafe
+     */
+    public function testThrowErrors(bool $isClientSafe): void
     {
+        $endpoint = Mockery::mock(EndpointConfig::class);
+        $endpoint->expects('errorsAreClientSafe')
+            ->once()
+            ->andReturn($isClientSafe);
+        Configuration::setEndpoint(MyScalarQueryResult::endpoint(), $endpoint);
+
         $result = new MyScalarQueryResult();
 
         // No errors, so nothing happens
         $result->assertErrorFree();
 
-        $result->errors = [new Error('foo')];
+        $errors = [new Error('foo')];
+        $result->errors = $errors;
 
-        $this->expectException(ResultErrorsException::class);
-        $result->assertErrorFree();
+        $exception = null;
+        try {
+            $result->assertErrorFree();
+        } catch (\Throwable $e) {
+            $exception = $e;
+        }
+
+        self::assertInstanceOf(ResultErrorsException::class, $exception);
+        self::assertSame($isClientSafe, $exception->isClientSafe());
     }
 
-    public function testErrorFree(): void
+    /**
+     * @return iterable<array{bool}>
+     */
+    public function isClientSafe(): iterable
     {
+        yield [true];
+        yield [false];
+    }
+
+    /**
+     * @dataProvider isClientSafe
+     */
+    public function testErrorFree(bool $isClientSafe): void
+    {
+        $endpoint = Mockery::mock(EndpointConfig::class);
+        $endpoint->expects('errorsAreClientSafe')
+            ->once()
+            ->andReturn($isClientSafe);
+        Configuration::setEndpoint(MyScalarQueryResult::endpoint(), $endpoint);
+
         $result = new MyScalarQueryResult();
         $result->data = MyScalarQuery::fromStdClass((object) [
             'scalarWithArg' => null,
@@ -38,8 +73,15 @@ class ResultTest extends TestCase
 
         $result->errors = [new Error('foo')];
 
-        $this->expectException(ResultErrorsException::class);
-        $result->errorFree();
+        $exception = null;
+        try {
+            $result->errorFree();
+        } catch (\Throwable $e) {
+            $exception = $e;
+        }
+
+        self::assertInstanceOf(ResultErrorsException::class, $exception);
+        self::assertSame($isClientSafe, $exception->isClientSafe());
     }
 
     public function testWithErrors(): void
@@ -69,16 +111,30 @@ class ResultTest extends TestCase
         self::assertNull($result->extensions);
     }
 
-    public function testFromErrors(): void
+    /**
+     * @dataProvider isClientSafe
+     */
+    public function testFromErrors(bool $isClientSafe): void
     {
+        $endpoint = Mockery::mock(EndpointConfig::class)->makePartial();
+        $endpoint->expects('errorsAreClientSafe')
+            ->once()
+            ->andReturn($isClientSafe);
+        Configuration::setEndpoint(MyScalarQueryResult::endpoint(), $endpoint);
+
         $result = MyScalarQueryResult::fromErrors([
             (object) [
                 'message' => 'foo',
             ],
         ]);
         self::assertNull($result->data);
-        self::assertNotNull($result->errors);
-        self::assertCount(1, $result->errors);
+
+        $errors = $result->errors;
+        self::assertNotNull($errors);
+        self::assertCount(1, $errors);
+        $error = $errors[0];
+        self::assertSame($isClientSafe, $error->isClientSafe());
+
         self::assertNull($result->extensions);
     }
 

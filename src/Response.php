@@ -102,22 +102,6 @@ class Response
     }
 
     /**
-     * Throw an exception if errors are present in the result.
-     *
-     * @throws \Spawnia\Sailor\ResultErrorsException
-     *
-     * @return $this
-     */
-    public function assertErrorFree(): self
-    {
-        if (isset($this->errors)) {
-            throw new ResultErrorsException($this->errors);
-        }
-
-        return $this;
-    }
-
-    /**
      * Ensure that the "errors" are in a spec-compliant format.
      *
      * @param  mixed  $errors  whatever came from the API under the key "errors"

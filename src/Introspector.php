@@ -5,6 +5,7 @@ namespace Spawnia\Sailor;
 use GraphQL\Type\Introspection;
 use GraphQL\Utils\BuildClientSchema;
 use GraphQL\Utils\SchemaPrinter;
+use Spawnia\Sailor\Error\ResultErrorsException;
 use Throwable;
 
 class Introspector
@@ -41,12 +42,19 @@ class Introspector
 
     protected function fetchIntrospectionResult(Client $client, bool $directiveIsRepeatable): Response
     {
-        return $client
-            ->request(
-                Introspection::getIntrospectionQuery([
-                    'directiveIsRepeatable' => $directiveIsRepeatable,
-                ])
-            )
-            ->assertErrorFree();
+        $response = $client->request(
+            Introspection::getIntrospectionQuery([
+                'directiveIsRepeatable' => $directiveIsRepeatable,
+            ])
+        );
+
+        if (isset($response->errors)) {
+            $exception = new ResultErrorsException($response->errors);
+            $exception->isClientSafe = $this->endpointConfig->errorsAreClientSafe();
+
+            throw $exception;
+        }
+
+        return $response;
     }
 }

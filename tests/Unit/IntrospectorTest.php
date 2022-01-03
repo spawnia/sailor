@@ -9,6 +9,7 @@ use function Safe\file_get_contents;
 use function Safe\unlink;
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\EndpointConfig;
+use Spawnia\Sailor\Error\ResultErrorsException;
 use Spawnia\Sailor\Introspector;
 use Spawnia\Sailor\InvalidDataException;
 use Spawnia\Sailor\Json;
@@ -37,12 +38,63 @@ class IntrospectorTest extends TestCase
      */
     public function testPrintsIntrospection(array $responseMocks): void
     {
+        $this->makeIntrospector($responseMocks)
+            ->introspect();
+
+        self::assertFileExists(self::PATH);
+        self::assertSame(self::SCHEMA, file_get_contents(self::PATH));
+
+        unlink(self::PATH);
+    }
+
+    public function testFailsIntrospectionIfFallbackAlsoThrows(): void
+    {
+        self::expectException(ResultErrorsException::class);
+        $this
+            ->makeIntrospector([
+                self::responseWithErrorsMock(),
+                self::responseWithErrorsMock(),
+            ])
+            ->introspect();
+    }
+
+    /**
+     * @return iterable<array{array<int, ResponseMock>}>
+     */
+    public function validResponseMocks(): iterable
+    {
+        yield [
+            [
+                self::successfulIntrospectionMock(),
+            ],
+        ];
+
+        yield [
+            [
+                self::responseWithErrorsMock(),
+                self::successfulIntrospectionMock(),
+            ],
+        ];
+
+        yield [
+            [
+                self::misbehavedServerMock(),
+                self::successfulIntrospectionMock(),
+            ],
+        ];
+    }
+
+    /**
+     * @param array<int, ResponseMock> $responseMocks
+     */
+    private function makeIntrospector(array $responseMocks): Introspector
+    {
         $endpointConfig = new class($responseMocks) extends EndpointConfig {
             /** @var array<int, callable> */
             private array $responseMocks;
 
             /**
-             * @param  array<int, callable>  $responseMocks
+             * @param array<int, callable> $responseMocks
              */
             public function __construct(array $responseMocks)
             {
@@ -78,15 +130,13 @@ class IntrospectorTest extends TestCase
             }
         };
 
-        (new Introspector($endpointConfig))->introspect();
-
-        self::assertFileExists(self::PATH);
-        self::assertSame(self::SCHEMA, file_get_contents(self::PATH));
-
-        unlink(self::PATH);
+        return new Introspector($endpointConfig);
     }
 
-    public static function successfulIntrospectionMock(): \Closure
+    /**
+     * @return ResponseMock
+     */
+    public static function successfulIntrospectionMock(): callable
     {
         return static function (): Response {
             $schema = BuildSchema::build(self::SCHEMA);
@@ -101,35 +151,25 @@ class IntrospectorTest extends TestCase
     }
 
     /**
-     * @return iterable<array{array<int, ResponseMock>}>
+     * @return ResponseMock
      */
-    public function validResponseMocks(): iterable
+    private function responseWithErrorsMock(): callable
     {
-        yield [
-            [
-                self::successfulIntrospectionMock(),
-            ],
-        ];
+        return static function (): Response {
+            $response = new Response();
+            $response->errors = [new stdClass()];
 
-        yield [
-            [
-                static function (): Response {
-                    $response = new Response();
-                    $response->errors = [new stdClass()];
+            return $response;
+        };
+    }
 
-                    return $response;
-                },
-                self::successfulIntrospectionMock(),
-            ],
-        ];
-
-        yield [
-            [
-                static function (): Response {
-                    throw new InvalidDataException('misbehaved server');
-                },
-                self::successfulIntrospectionMock(),
-            ],
-        ];
+    /**
+     * @return ResponseMock
+     */
+    private static function misbehavedServerMock(): callable
+    {
+        return static function (): Response {
+            throw new InvalidDataException('misbehaved server');
+        };
     }
 }

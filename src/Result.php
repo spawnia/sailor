@@ -3,6 +3,7 @@
 namespace Spawnia\Sailor;
 
 use Spawnia\Sailor\Error\Error;
+use Spawnia\Sailor\Error\ResultErrorsException;
 use stdClass;
 
 /**
@@ -48,7 +49,7 @@ abstract class Result
         $instance = new static();
 
         $instance->errors = isset($response->errors)
-            ? array_map([Configuration::endpoint(static::endpoint()), 'parseError'], $response->errors)
+            ? static::parseErrors($response->errors)
             : null;
         $instance->extensions = $response->extensions ?? null;
 
@@ -81,22 +82,46 @@ abstract class Result
     public static function fromErrors(array $errors): self
     {
         $instance = new static();
-        $instance->errors = array_map([Configuration::endpoint(static::endpoint()), 'parseError'], $errors);
+        $instance->errors = static::parseErrors($errors);
 
         return $instance;
     }
 
     /**
+     * @param array<int, stdClass> $errors
+     *
+     * @return array<int, Error>
+     */
+    protected static function parseErrors(array $errors): array
+    {
+        $endpoint = Configuration::endpoint(static::endpoint());
+
+        return array_map(
+            static function (stdClass $raw) use ($endpoint): Error {
+                $parsed = $endpoint->parseError($raw);
+                $parsed->isClientSafe = $endpoint->errorsAreClientSafe();
+
+                return $parsed;
+            },
+            $errors
+        );
+    }
+
+    /**
      * Throw an exception if errors are present in the result.
      *
-     * @throws \Spawnia\Sailor\ResultErrorsException
+     * @throws \Spawnia\Sailor\Error\ResultErrorsException
      *
      * @return $this
      */
     public function assertErrorFree(): self
     {
         if (isset($this->errors)) {
-            throw new ResultErrorsException($this->errors);
+            $exception = new ResultErrorsException($this->errors);
+            $exception->isClientSafe = Configuration::endpoint(static::endpoint())
+                ->errorsAreClientSafe();
+
+            throw $exception;
         }
 
         return $this;

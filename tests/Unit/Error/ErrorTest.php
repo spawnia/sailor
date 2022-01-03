@@ -86,9 +86,21 @@ class ErrorTest extends TestCase
     ],
     "extensions": {
         "foo": 123
-    }
+    },
+    "isClientSafe": false
 }
 JSON
 , \Safe\json_encode($error));
+    }
+
+    public function testClientAware(): void
+    {
+        $error = Error::fromStdClass((object) [
+            'message' => 'irrelevant',
+        ]);
+        self::assertFalse($error->isClientSafe());
+
+        $error->isClientSafe = true;
+        self::assertTrue($error->isClientSafe());
     }
 }

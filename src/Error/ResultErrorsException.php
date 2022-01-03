@@ -1,13 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace Spawnia\Sailor;
+namespace Spawnia\Sailor\Error;
 
 use Exception;
-use Spawnia\Sailor\Error\Error;
+use GraphQL\Error\ClientAware;
 use stdClass;
 
-class ResultErrorsException extends Exception
+class ResultErrorsException extends Exception implements ClientAware
 {
+    use WrapsEndpointError;
+
     /**
      * @param array<int, stdClass|Error> $errors
      */
