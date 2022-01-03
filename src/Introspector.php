@@ -13,9 +13,12 @@ class Introspector
 {
     protected EndpointConfig $endpointConfig;
 
-    public function __construct(EndpointConfig $endpointConfig)
+    protected string $endpointName;
+
+    public function __construct(EndpointConfig $endpointConfig, string $endpointName)
     {
         $this->endpointConfig = $endpointConfig;
+        $this->endpointName = $endpointName;
     }
 
     public function introspect(): void
@@ -50,10 +53,13 @@ class Introspector
         );
 
         if (isset($response->errors)) {
-            throw new ResultErrorsException(array_map(
-                [$this->endpointConfig, 'parseError'],
-                $response->errors
-            ));
+            throw new ResultErrorsException(
+                array_map(
+                    [$this->endpointConfig, 'parseError'],
+                    $response->errors
+                ),
+                $this->endpointName
+            );
         }
 
         return $response;

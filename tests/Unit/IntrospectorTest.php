@@ -130,7 +130,7 @@ class IntrospectorTest extends TestCase
             }
         };
 
-        return new Introspector($endpointConfig);
+        return new Introspector($endpointConfig, 'foo');
     }
 
     /**

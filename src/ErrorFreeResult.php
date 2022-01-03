@@ -22,10 +22,7 @@ abstract class ErrorFreeResult
     public static function fromResult(Result $result): self
     {
         if (isset($result->errors)) {
-            $exception = new ResultErrorsException($result->errors);
-            $exception->endpointName = $result::endpoint();
-
-            throw $exception;
+            throw new ResultErrorsException($result->errors, $result::endpoint());
         }
 
         $instance = new static();

@@ -20,13 +20,11 @@ class ResultErrorsException extends Exception implements ClientAware
     /**
      * @param array<int, Error> $errors
      */
-    public function __construct(array $errors)
+    public function __construct(array $errors, string $endpointName)
     {
-        $endpoint = isset($this->endpointName)
-            ? $this->endpointName . ': '
-            : '';
+        $this->endpointName = $endpointName;
         $messages = array_map(static fn (Error $error): string => $error->message, $errors);
 
-        parent::__construct($endpoint . implode(' | ', $messages));
+        parent::__construct($endpointName . ': ' . implode(' | ', $messages));
     }
 }

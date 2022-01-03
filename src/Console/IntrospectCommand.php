@@ -35,10 +35,10 @@ class IntrospectCommand extends Command
         /** @var string $endpointName */
         foreach ($endpointNames as $endpointName) {
             echo "Running introspection on endpoint {$endpointName}...\n";
-            $generator = new Introspector(
-                Configuration::endpoint($endpointName)
-            );
-            $generator->introspect();
+            (new Introspector(
+                Configuration::endpoint($endpointName),
+                $endpointName
+            ))->introspect();
         }
 
         echo "Successfully introspected. You might want to rerun codegen: vendor/bin/sailor\n";

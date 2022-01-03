@@ -117,8 +117,7 @@ abstract class Result
     public function assertErrorFree(): self
     {
         if (isset($this->errors)) {
-            $exception = new ResultErrorsException($this->errors);
-            $exception->endpointName = static::endpoint();
+            $exception = new ResultErrorsException($this->errors, static::endpoint());
 
             throw $exception;
         }
