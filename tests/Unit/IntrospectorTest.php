@@ -157,7 +157,7 @@ class IntrospectorTest extends TestCase
     {
         return static function (): Response {
             $response = new Response();
-            $response->errors = [new stdClass()];
+            $response->errors = [(object) ['message' => 'foo']];
 
             return $response;
         };

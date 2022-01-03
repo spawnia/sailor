@@ -4,17 +4,23 @@ namespace Spawnia\Sailor\Error;
 
 use Exception;
 use GraphQL\Error\ClientAware;
-use stdClass;
 
 class ResultErrorsException extends Exception implements ClientAware
 {
     use WrapsEndpointError;
 
     /**
-     * @param array<int, stdClass|Error> $errors
+     * @var array<int, Error>
+     */
+    public array $errors;
+
+    /**
+     * @param array<int, Error> $errors
      */
     public function __construct(array $errors)
     {
-        parent::__construct(\Safe\json_encode($errors));
+        $messages = array_map(static fn (Error $error): string => $error->message, $errors);
+
+        parent::__construct(implode(' | ', $messages));
     }
 }
