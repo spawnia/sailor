@@ -5,7 +5,6 @@ namespace Spawnia\Sailor;
 use GraphQL\Type\Introspection;
 use GraphQL\Utils\BuildClientSchema;
 use GraphQL\Utils\SchemaPrinter;
-use Spawnia\Sailor\Error\Error;
 use Spawnia\Sailor\Error\ResultErrorsException;
 use stdClass;
 use Throwable;
@@ -51,20 +50,10 @@ class Introspector
         );
 
         if (isset($response->errors)) {
-            $parsedErrors = array_map(
-                function (stdClass $raw): Error {
-                    $parsed = $this->endpointConfig->parseError($raw);
-                    $parsed->isClientSafe = $this->endpointConfig->errorsAreClientSafe();
-
-                    return $parsed;
-                },
+            throw new ResultErrorsException(array_map(
+                [$this->endpointConfig, 'parseError'],
                 $response->errors
-            );
-
-            $exception = new ResultErrorsException($parsedErrors);
-            $exception->isClientSafe = $this->endpointConfig->errorsAreClientSafe();
-
-            throw $exception;
+            ));
         }
 
         return $response;

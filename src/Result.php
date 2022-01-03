@@ -99,7 +99,7 @@ abstract class Result
         return array_map(
             static function (stdClass $raw) use ($endpoint): Error {
                 $parsed = $endpoint->parseError($raw);
-                $parsed->isClientSafe = $endpoint->errorsAreClientSafe();
+                $parsed->endpointName = static::endpoint();
 
                 return $parsed;
             },
@@ -118,8 +118,7 @@ abstract class Result
     {
         if (isset($this->errors)) {
             $exception = new ResultErrorsException($this->errors);
-            $exception->isClientSafe = Configuration::endpoint(static::endpoint())
-                ->errorsAreClientSafe();
+            $exception->endpointName = static::endpoint();
 
             throw $exception;
         }

@@ -3,6 +3,7 @@
 namespace Spawnia\Sailor\Error;
 
 use GraphQL\Error\ClientAware;
+use Spawnia\Sailor\Configuration;
 
 /**
  * @mixin ClientAware
@@ -10,13 +11,18 @@ use GraphQL\Error\ClientAware;
 trait WrapsEndpointError
 {
     /**
-     * Is it safe to display this error to clients?
+     * Name of the endpoint this error orignated from.
      */
-    public bool $isClientSafe = false;
+    public string $endpointName;
 
     public function isClientSafe(): bool
     {
-        return $this->isClientSafe;
+        if (! isset($this->endpointName)) {
+            return false;
+        }
+
+        return Configuration::endpoint($this->endpointName)
+            ->errorsAreClientSafe();
     }
 
     /**

@@ -23,8 +23,7 @@ abstract class ErrorFreeResult
     {
         if (isset($result->errors)) {
             $exception = new ResultErrorsException($result->errors);
-            $exception->isClientSafe = Configuration::endpoint($result::endpoint())
-                ->errorsAreClientSafe();
+            $exception->endpointName = $result::endpoint();
 
             throw $exception;
         }
