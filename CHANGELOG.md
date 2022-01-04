@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Move `Spawnia\Sailor\ResultErrorsException` to `Spawnia\Sailor\Error\ResultErrorsException`
+- Move `Spawnia\Sailor\InvalidDataException` to `Spawnia\Sailor\Error\InvalidDataException`
 - Include only messages in `ResultErrorsException::$message`, expose full `Error` objects as `ResultErrorsException::$errors`
 
 ### Removed
