@@ -6,9 +6,8 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
-use Spawnia\Sailor\InvalidDataException;
+use Spawnia\Sailor\Error\InvalidDataException;
 use Spawnia\Sailor\Response;
-use Spawnia\Sailor\ResultErrorsException;
 
 class ResponseTest extends TestCase
 {
@@ -93,9 +92,6 @@ class ResponseTest extends TestCase
         $errors = $response->errors;
         self::assertNotNull($errors);
         self::assertSame('foo', $errors[0]->message);
-
-        self::expectException(ResultErrorsException::class);
-        $response->assertErrorFree();
     }
 
     public function testNotAMap(): void

@@ -34,4 +34,9 @@ class MyBenSampoEnumQuery extends \Spawnia\Sailor\ObjectLike
             'withBenSampoEnum' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\CustomTypes\TypeConverters\BenSampoEnumConverter),
         ];
     }
+
+    public static function endpoint(): string
+    {
+        return 'custom-types';
+    }
 }

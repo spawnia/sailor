@@ -8,6 +8,11 @@ class AllMembersResult extends \Spawnia\Sailor\Result
 {
     public ?AllMembers $data = null;
 
+    public static function endpoint(): string
+    {
+        return 'polymorphic';
+    }
+
     protected function setData(\stdClass $data): void
     {
         $this->data = AllMembers::fromStdClass($data);

@@ -118,6 +118,15 @@ For an improved experience, it is recommended to customize the enum generation/c
 Overwrite `EndpointConfig::configureTypes()` to specialize how Sailor deals with the types within your schema.
 See [examples/custom-types](examples/custom-types).
 
+### Error conversion
+
+Errors sent within the GraphQL response must follow the [response errors specification](http://spec.graphql.org/October2021/#sec-Errors).
+Sailor converts the plain `stdClass` obtained from decoding the JSON response into
+instances of `\Spawnia\Sailor\Error\Error` by default.
+
+If one of your endpoints returns structured data in `extensions`, you can customize how
+the plain errors are decoded into class instances by overwriting `EndpointConfig::parseError()`.
+
 ## Usage
 
 ### Introspection
@@ -190,14 +199,24 @@ or `$extensions` off of it:
 
 ```php
 $result->data        // `null` or a generated subclass of `\Spawnia\Sailor\ObjectLike`
-$result->errors      // `null` or a list of errors
+$result->errors      // `null` or a list of `\Spawnia\Sailor\Error\Error`
 $result->extensions  // `null` or an arbitrary map
 ```
+
+### Error handling
 
 You can ensure your query returned the proper data and contained no errors:
 
 ```php
-$errorFreeResult = $result->errorFree(); // Throws if there are errors
+$errorFreeResult = \Example\Api\Operations\HelloSailor::execute()
+    ->errorFree(); // Throws if there are errors or returns an error free result
+```
+
+If you don't need any data, but want to ensure a mutation succeeded:
+
+```php
+\Example\Api\Operations\SomeMutation::execute()
+    ->assertErrorFree(); // Throws if there are errors
 ```
 
 ### Queries with arguments

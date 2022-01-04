@@ -7,4 +7,9 @@ namespace Spawnia\Sailor\Simple\Operations\MyObjectQuery;
 class MyObjectQueryErrorFreeResult extends \Spawnia\Sailor\ErrorFreeResult
 {
     public MyObjectQuery $data;
+
+    public static function endpoint(): string
+    {
+        return 'simple';
+    }
 }

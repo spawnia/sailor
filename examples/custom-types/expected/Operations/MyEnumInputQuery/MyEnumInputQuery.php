@@ -34,4 +34,9 @@ class MyEnumInputQuery extends \Spawnia\Sailor\ObjectLike
             'withEnumInput' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\CustomTypes\Operations\MyEnumInputQuery\WithEnumInput\EnumObject),
         ];
     }
+
+    public static function endpoint(): string
+    {
+        return 'custom-types';
+    }
 }

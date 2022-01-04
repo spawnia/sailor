@@ -3,11 +3,10 @@
 namespace Spawnia\Sailor\Codegen;
 
 use Nette\PhpGenerator\ClassType;
-use Nette\PhpGenerator\Parameter;
 
 class OperationStack
 {
-    public ClassType $operation;
+    public OperationBuilder $operation;
 
     public ClassType $result;
 
@@ -19,7 +18,7 @@ class OperationStack
     /** @var array<int, ClassType> */
     public array $selectionStorage = [];
 
-    public function __construct(ClassType $operation)
+    public function __construct(OperationBuilder $operation)
     {
         $this->operation = $operation;
     }
@@ -58,15 +57,5 @@ class OperationStack
         }
 
         return $selection;
-    }
-
-    public function addParameterToOperation(Parameter $parameter): void
-    {
-        $execute = $this->operation->getMethod('execute');
-
-        $parameters = $execute->getParameters();
-        $parameters[] = $parameter;
-
-        $execute->setParameters($parameters);
     }
 }

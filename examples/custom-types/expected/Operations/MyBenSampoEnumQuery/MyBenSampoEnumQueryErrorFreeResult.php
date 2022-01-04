@@ -7,4 +7,9 @@ namespace Spawnia\Sailor\CustomTypes\Operations\MyBenSampoEnumQuery;
 class MyBenSampoEnumQueryErrorFreeResult extends \Spawnia\Sailor\ErrorFreeResult
 {
     public MyBenSampoEnumQuery $data;
+
+    public static function endpoint(): string
+    {
+        return 'custom-types';
+    }
 }

@@ -34,4 +34,9 @@ class MyScalarQuery extends \Spawnia\Sailor\ObjectLike
             'scalarWithArg' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\IDConverter),
         ];
     }
+
+    public static function endpoint(): string
+    {
+        return 'simple';
+    }
 }

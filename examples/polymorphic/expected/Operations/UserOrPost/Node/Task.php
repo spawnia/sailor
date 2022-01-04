@@ -34,4 +34,9 @@ class Task extends \Spawnia\Sailor\ObjectLike
             '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
         ];
     }
+
+    public static function endpoint(): string
+    {
+        return 'polymorphic';
+    }
 }

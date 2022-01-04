@@ -15,4 +15,5 @@ parameters:
 	- '#Unsafe usage of new static.*#'
 
 	- '#Default value of the parameter .+ \(float\) of method .+::make\(\) is incompatible with type .+#'
+	- '#Default value of the parameter .+ \(float\) of method .+::execute\(\) is incompatible with type .+#'
 	- '#Strict comparison using !== between .+ and 1\.7976931348623E\+308 will always evaluate to true#'

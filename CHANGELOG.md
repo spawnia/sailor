@@ -2,10 +2,42 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+
+## v0.16.0
+
+### Added
+
+- Add configuration `EndpointConfig::errorsAreClientSafe()` to propagate client-safety of endpoint errors
+
+### Changed
+
+- Move `Spawnia\Sailor\ResultErrorsException` to `Spawnia\Sailor\Error\ResultErrorsException`
+- Move `Spawnia\Sailor\InvalidDataException` to `Spawnia\Sailor\Error\InvalidDataException`
+- Include only messages in `ResultErrorsException::$message`, expose full `Error` objects as `ResultErrorsException::$errors`
+
+### Removed
+
+- Remove `Spawnia\Sailor\Response::assertErrorFree()`
+
+## v0.15.0
+
+### Added
+
+- Add ability to overwrite parsing of errors
+
+### Changed
+
+- Convert errors from plain `stdClass` to `Spawnia\Sailor\Error\Error` in results
+
+## v0.14.1
+
+### Fixed
+
+- Fix conversion of custom types used directly in variables
 
 ## v0.14.0
 

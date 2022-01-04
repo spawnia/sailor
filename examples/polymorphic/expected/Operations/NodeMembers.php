@@ -11,7 +11,16 @@ class NodeMembers extends \Spawnia\Sailor\Operation
 {
     public static function execute(): NodeMembers\NodeMembersResult
     {
-        return self::executeOperation(...func_get_args());
+        return self::executeOperation(
+        );
+    }
+
+    protected static function converters(): array
+    {
+        static $converters;
+
+        return $converters ??= [
+        ];
     }
 
     public static function document(): string

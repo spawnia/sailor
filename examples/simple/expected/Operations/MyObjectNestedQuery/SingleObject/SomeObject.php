@@ -34,4 +34,9 @@ class SomeObject extends \Spawnia\Sailor\ObjectLike
             'nested' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery\SingleObject\Nested\SomeObject),
         ];
     }
+
+    public static function endpoint(): string
+    {
+        return 'simple';
+    }
 }

@@ -2,10 +2,14 @@
 
 namespace Spawnia\Sailor;
 
+use Spawnia\Sailor\Error\Error;
+use Spawnia\Sailor\Error\ResultErrorsException;
+use stdClass;
+
 /**
  * @property \Spawnia\Sailor\ObjectLike|null $data The result of executing the requested operation.
  */
-abstract class Result
+abstract class Result implements BelongsToEndpoint
 {
     /**
      * A non‐empty list of errors or `null` if there are no errors.
@@ -13,24 +17,29 @@ abstract class Result
      * Each error is a map that is guaranteed to contain at least
      * the key `message` and may contain arbitrary other keys.
      *
-     * @var array<int, \stdClass>|null
+     * @var array<int, Error>|null
      */
     public ?array $errors = null;
 
     /**
      * Optional, can be an arbitrary map if present.
      */
-    public ?\stdClass $extensions = null;
+    public ?stdClass $extensions = null;
 
     /**
      * Decode the raw data into proper types and set it.
      */
-    abstract protected function setData(\stdClass $data): void;
+    abstract protected function setData(stdClass $data): void;
 
     /**
      * Throws if errors are present in the result or returns an error free result.
      */
     abstract public function errorFree(): ErrorFreeResult;
+
+    /**
+     * The configured endpoint this class belongs to.
+     */
+    abstract public static function endpoint(): string;
 
     /**
      * @return static
@@ -39,7 +48,9 @@ abstract class Result
     {
         $instance = new static();
 
-        $instance->errors = $response->errors ?? null;
+        $instance->errors = isset($response->errors)
+            ? static::parseErrors($response->errors)
+            : null;
         $instance->extensions = $response->extensions ?? null;
 
         if (isset($response->data)) {
@@ -54,7 +65,7 @@ abstract class Result
     /**
      * @return static
      */
-    public static function fromStdClass(\stdClass $stdClass): self
+    public static function fromStdClass(stdClass $stdClass): self
     {
         return static::fromResponse(
             Response::fromStdClass($stdClass)
@@ -64,29 +75,51 @@ abstract class Result
     /**
      * Useful for instantiation of failed mocked results.
      *
-     * @param array<int, \stdClass> $errors
+     * @param array<int, stdClass> $errors
      *
      * @return static
      */
     public static function fromErrors(array $errors): self
     {
         $instance = new static();
-        $instance->errors = $errors;
+        $instance->errors = static::parseErrors($errors);
 
         return $instance;
     }
 
     /**
+     * @param array<int, stdClass> $errors
+     *
+     * @return array<int, Error>
+     */
+    protected static function parseErrors(array $errors): array
+    {
+        $endpoint = Configuration::endpoint(static::endpoint());
+
+        return array_map(
+            static function (stdClass $raw) use ($endpoint): Error {
+                $parsed = $endpoint->parseError($raw);
+                $parsed->endpointName = static::endpoint();
+
+                return $parsed;
+            },
+            $errors
+        );
+    }
+
+    /**
      * Throw an exception if errors are present in the result.
      *
-     * @throws \Spawnia\Sailor\ResultErrorsException
+     * @throws \Spawnia\Sailor\Error\ResultErrorsException
      *
      * @return $this
      */
     public function assertErrorFree(): self
     {
         if (isset($this->errors)) {
-            throw new ResultErrorsException($this->errors);
+            $exception = new ResultErrorsException($this->errors, static::endpoint());
+
+            throw $exception;
         }
 
         return $this;

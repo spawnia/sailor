@@ -8,6 +8,7 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Schema;
 use Nette\PhpGenerator\ClassType;
+use Spawnia\Sailor\Error\Error;
 use Spawnia\Sailor\Type\BooleanTypeConfig;
 use Spawnia\Sailor\Type\EnumTypeConfig;
 use Spawnia\Sailor\Type\FloatTypeConfig;
@@ -17,6 +18,7 @@ use Spawnia\Sailor\Type\IntTypeConfig;
 use Spawnia\Sailor\Type\ScalarTypeConfig;
 use Spawnia\Sailor\Type\StringTypeConfig;
 use Spawnia\Sailor\Type\TypeConfig;
+use stdClass;
 
 abstract class EndpointConfig
 {
@@ -44,6 +46,22 @@ abstract class EndpointConfig
      * The location of the schema file that describes the endpoint.
      */
     abstract public function schemaPath(): string;
+
+    /**
+     * Instantiate an Error class from a plain GraphQL error.
+     */
+    public function parseError(stdClass $error): Error
+    {
+        return Error::fromStdClass($error);
+    }
+
+    /**
+     * Is it safe to display the errors from the endpoint to clients?
+     */
+    public function errorsAreClientSafe(): bool
+    {
+        return false;
+    }
 
     /**
      * Return a map from type names to a TypeConfig describing how to deal with them.
