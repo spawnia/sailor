@@ -14,8 +14,8 @@ class TwoArgs extends \Spawnia\Sailor\Operation
      * @param int|null $second
      */
     public static function execute(
-        $first = 1.7976931348623157E+308,
-        $second = 1.7976931348623157E+308
+        $first = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+        $second = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'
     ): TwoArgs\TwoArgsResult {
         return self::executeOperation(
             $first,
