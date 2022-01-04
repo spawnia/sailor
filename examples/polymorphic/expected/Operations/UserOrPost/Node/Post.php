@@ -15,8 +15,10 @@ class Post extends \Spawnia\Sailor\ObjectLike
      * @param string $id
      * @param string|null $title
      */
-    public static function make($id, $title = 1.7976931348623157E+308): self
-    {
+    public static function make(
+        $id,
+        $title = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'
+    ): self {
         $instance = new self;
 
         if ($id !== self::UNDEFINED) {

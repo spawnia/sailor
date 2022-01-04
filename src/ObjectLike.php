@@ -9,7 +9,7 @@ use stdClass;
 
 abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
 {
-    public const UNDEFINED = PHP_FLOAT_MAX - 1;
+    public const UNDEFINED = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.';
 
     /**
      * Necessary in order to be able to determine between explicit null and unset properties.
