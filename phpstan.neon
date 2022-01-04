@@ -14,6 +14,6 @@ parameters:
 	- '#Call to deprecated method getNamespace\(\) of class Nette\\PhpGenerator\\ClassType#'
 	- '#Unsafe usage of new static.*#'
 
-	- '#Default value of the parameter .+ \(float\) of method .+::make\(\) is incompatible with type .+#'
-	- '#Default value of the parameter .+ \(float\) of method .+::execute\(\) is incompatible with type .+#'
-	- '#Strict comparison using !== between .+ and 1\.7976931348623E\+308 will always evaluate to true#'
+	- '#Default value of the parameter .+ \(string\) of method .+::make\(\) is incompatible with type .+#'
+	- '#Default value of the parameter .+ \(string\) of method .+::execute\(\) is incompatible with type .+#'
+	- "#Strict comparison using !== between .+ and 'Special default…' will always evaluate to true#"
