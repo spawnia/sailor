@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.16.0
+
 ### Added
 
 - Add configuration `EndpointConfig::errorsAreClientSafe()` to propagate client-safety of endpoint errors
