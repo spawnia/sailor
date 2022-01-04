@@ -15,8 +15,10 @@ class EnumObject extends \Spawnia\Sailor\ObjectLike
      * @param \Spawnia\Sailor\CustomTypes\Types\CustomEnum|null $custom
      * @param string|null $default
      */
-    public static function make($custom = 1.7976931348623157E+308, $default = 1.7976931348623157E+308): self
-    {
+    public static function make(
+        $custom = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+        $default = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'
+    ): self {
         $instance = new self;
 
         $instance->__typename = 'EnumObject';

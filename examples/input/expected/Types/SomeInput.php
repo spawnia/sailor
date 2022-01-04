@@ -21,8 +21,8 @@ class SomeInput extends \Spawnia\Sailor\ObjectLike
     public static function make(
         $required,
         $matrix,
-        $optional = 1.7976931348623157E+308,
-        $nested = 1.7976931348623157E+308
+        $optional = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+        $nested = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'
     ): self {
         $instance = new self;
 
