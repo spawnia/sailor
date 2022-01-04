@@ -11,7 +11,7 @@ use Spawnia\Sailor\Configuration;
 trait WrapsEndpointError
 {
     /**
-     * Name of the endpoint this error orignated from.
+     * Name of the endpoint this error originates from.
      */
     public string $endpointName;
 
