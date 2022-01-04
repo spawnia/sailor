@@ -4,9 +4,10 @@ namespace Spawnia\Sailor;
 
 use InvalidArgumentException;
 use Spawnia\Sailor\Convert\TypeConverter;
+use Spawnia\Sailor\Error\InvalidDataException;
 use stdClass;
 
-abstract class ObjectLike implements TypeConverter
+abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
 {
     public const UNDEFINED = PHP_FLOAT_MAX - 1;
 
@@ -107,12 +108,10 @@ abstract class ObjectLike implements TypeConverter
     {
         $converters = $this->converters();
         if (! isset($converters[$name])) {
-            $availableProperties = implode(
-                ', ',
-                array_keys($converters)
-            );
+            $endpoint = static::endpoint();
+            $availableProperties = implode(', ', array_keys($converters));
 
-            throw new InvalidDataException("Unknown property {$name}, available properties: {$availableProperties}.");
+            throw new InvalidDataException("{$endpoint}: Unknown property {$name}, available properties: {$availableProperties}.");
         }
 
         return $converters[$name];

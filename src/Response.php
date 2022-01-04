@@ -5,6 +5,7 @@ namespace Spawnia\Sailor;
 use GraphQL\Executor\ExecutionResult;
 use Psr\Http\Message\ResponseInterface;
 use Safe\Exceptions\JsonException;
+use Spawnia\Sailor\Error\InvalidDataException;
 use stdClass;
 
 /**

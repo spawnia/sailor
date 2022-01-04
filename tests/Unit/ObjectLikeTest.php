@@ -3,7 +3,7 @@
 namespace Spawnia\Sailor\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Spawnia\Sailor\InvalidDataException;
+use Spawnia\Sailor\Error\InvalidDataException;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQuery;
 
 class ObjectLikeTest extends TestCase

@@ -37,4 +37,9 @@ class EnumInput extends \Spawnia\Sailor\ObjectLike
             'custom' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\CustomTypes\TypeConverters\CustomEnumConverter),
         ];
     }
+
+    public static function endpoint(): string
+    {
+        return 'custom-types';
+    }
 }

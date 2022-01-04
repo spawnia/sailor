@@ -16,7 +16,7 @@ use Spawnia\Sailor\Convert\TypeConverter;
  *
  * @template TResult of Result
  */
-abstract class Operation
+abstract class Operation implements BelongsToEndpoint
 {
     /**
      * Map from child classes to their registered mocks.
@@ -31,11 +31,6 @@ abstract class Operation
      * @var array<class-string<static>, Client|null>
      */
     protected static array $clients = [];
-
-    /**
-     * The configured endpoint the operation belongs to.
-     */
-    abstract public static function endpoint(): string;
 
     /**
      * The GraphQL query string.

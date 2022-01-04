@@ -40,4 +40,9 @@ class Post extends \Spawnia\Sailor\ObjectLike
             'title' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\StringConverter),
         ];
     }
+
+    public static function endpoint(): string
+    {
+        return 'polymorphic';
+    }
 }

@@ -11,7 +11,7 @@ use stdClass;
  */
 class Error extends Exception implements ClientAware
 {
-    use WrapsEndpointError;
+    use OriginatesFromEndpoint;
 
     /**
      * Description of the error intended for the developer as a guide to understand and correct the error.

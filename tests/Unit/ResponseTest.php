@@ -6,7 +6,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
-use Spawnia\Sailor\InvalidDataException;
+use Spawnia\Sailor\Error\InvalidDataException;
 use Spawnia\Sailor\Response;
 
 class ResponseTest extends TestCase

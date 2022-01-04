@@ -10,7 +10,7 @@ use GraphQL\Error\ClientAware;
  */
 class ResultErrorsException extends Exception implements ClientAware
 {
-    use WrapsEndpointError;
+    use OriginatesFromEndpoint;
 
     /**
      * @var array<int, Error>

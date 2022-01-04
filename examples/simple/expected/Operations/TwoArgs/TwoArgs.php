@@ -34,4 +34,9 @@ class TwoArgs extends \Spawnia\Sailor\ObjectLike
             'twoArgs' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\IDConverter),
         ];
     }
+
+    public static function endpoint(): string
+    {
+        return 'simple';
+    }
 }

@@ -8,7 +8,7 @@ use Spawnia\Sailor\Configuration;
 /**
  * @mixin ClientAware
  */
-trait WrapsEndpointError
+trait OriginatesFromEndpoint
 {
     /**
      * Name of the endpoint this error originates from.

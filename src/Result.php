@@ -9,7 +9,7 @@ use stdClass;
 /**
  * @property \Spawnia\Sailor\ObjectLike|null $data The result of executing the requested operation.
  */
-abstract class Result
+abstract class Result implements BelongsToEndpoint
 {
     /**
      * A non‐empty list of errors or `null` if there are no errors.
@@ -37,7 +37,7 @@ abstract class Result
     abstract public function errorFree(): ErrorFreeResult;
 
     /**
-     * The configured endpoint the result belongs to.
+     * The configured endpoint this class belongs to.
      */
     abstract public static function endpoint(): string;
 
