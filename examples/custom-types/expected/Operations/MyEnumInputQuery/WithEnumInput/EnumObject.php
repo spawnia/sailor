@@ -40,4 +40,9 @@ class EnumObject extends \Spawnia\Sailor\ObjectLike
             'default' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\EnumConverter),
         ];
     }
+
+    public static function endpoint(): string
+    {
+        return 'custom-types';
+    }
 }

@@ -5,6 +5,7 @@ namespace Spawnia\Sailor;
 use GraphQL\Executor\ExecutionResult;
 use Psr\Http\Message\ResponseInterface;
 use Safe\Exceptions\JsonException;
+use Spawnia\Sailor\Error\InvalidDataException;
 use stdClass;
 
 /**
@@ -99,22 +100,6 @@ class Response
         }
 
         return $instance;
-    }
-
-    /**
-     * Throw an exception if errors are present in the result.
-     *
-     * @throws \Spawnia\Sailor\ResultErrorsException
-     *
-     * @return $this
-     */
-    public function assertErrorFree(): self
-    {
-        if (isset($this->errors)) {
-            throw new ResultErrorsException($this->errors);
-        }
-
-        return $this;
     }
 
     /**

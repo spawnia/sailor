@@ -34,4 +34,9 @@ class MyObjectQuery extends \Spawnia\Sailor\ObjectLike
             'singleObject' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Simple\Operations\MyObjectQuery\SingleObject\SomeObject),
         ];
     }
+
+    public static function endpoint(): string
+    {
+        return 'simple';
+    }
 }

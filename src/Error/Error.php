@@ -3,13 +3,16 @@
 namespace Spawnia\Sailor\Error;
 
 use Exception;
+use GraphQL\Error\ClientAware;
 use stdClass;
 
 /**
  * Representation of an error according to https://spec.graphql.org/October2021/#sec-Errors.
  */
-class Error extends Exception
+class Error extends Exception implements ClientAware
 {
+    use OriginatesFromEndpoint;
+
     /**
      * Description of the error intended for the developer as a guide to understand and correct the error.
      *

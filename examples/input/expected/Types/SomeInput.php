@@ -53,4 +53,9 @@ class SomeInput extends \Spawnia\Sailor\ObjectLike
             'nested' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Input\Types\SomeInput),
         ];
     }
+
+    public static function endpoint(): string
+    {
+        return 'input';
+    }
 }

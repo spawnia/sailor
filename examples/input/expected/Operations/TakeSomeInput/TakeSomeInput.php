@@ -34,4 +34,9 @@ class TakeSomeInput extends \Spawnia\Sailor\ObjectLike
             'takeSomeInput' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\IntConverter),
         ];
     }
+
+    public static function endpoint(): string
+    {
+        return 'input';
+    }
 }

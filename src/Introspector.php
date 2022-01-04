@@ -5,15 +5,21 @@ namespace Spawnia\Sailor;
 use GraphQL\Type\Introspection;
 use GraphQL\Utils\BuildClientSchema;
 use GraphQL\Utils\SchemaPrinter;
+use Spawnia\Sailor\Error\Error;
+use Spawnia\Sailor\Error\ResultErrorsException;
+use stdClass;
 use Throwable;
 
 class Introspector
 {
     protected EndpointConfig $endpointConfig;
 
-    public function __construct(EndpointConfig $endpointConfig)
+    protected string $endpointName;
+
+    public function __construct(EndpointConfig $endpointConfig, string $endpointName)
     {
         $this->endpointConfig = $endpointConfig;
+        $this->endpointName = $endpointName;
     }
 
     public function introspect(): void
@@ -41,12 +47,27 @@ class Introspector
 
     protected function fetchIntrospectionResult(Client $client, bool $directiveIsRepeatable): Response
     {
-        return $client
-            ->request(
-                Introspection::getIntrospectionQuery([
-                    'directiveIsRepeatable' => $directiveIsRepeatable,
-                ])
-            )
-            ->assertErrorFree();
+        $response = $client->request(
+            Introspection::getIntrospectionQuery([
+                'directiveIsRepeatable' => $directiveIsRepeatable,
+            ])
+        );
+
+        if (isset($response->errors)) {
+            throw new ResultErrorsException(
+                array_map(
+                    function (stdClass $raw): Error {
+                        $parsed = $this->endpointConfig->parseError($raw);
+                        $parsed->endpointName = $this->endpointName;
+
+                        return $parsed;
+                    },
+                    $response->errors
+                ),
+                $this->endpointName
+            );
+        }
+
+        return $response;
     }
 }

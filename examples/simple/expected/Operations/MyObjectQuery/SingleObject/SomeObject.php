@@ -34,4 +34,9 @@ class SomeObject extends \Spawnia\Sailor\ObjectLike
             'value' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\IntConverter),
         ];
     }
+
+    public static function endpoint(): string
+    {
+        return 'simple';
+    }
 }

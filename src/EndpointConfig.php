@@ -56,6 +56,14 @@ abstract class EndpointConfig
     }
 
     /**
+     * Is it safe to display the errors from the endpoint to clients?
+     */
+    public function errorsAreClientSafe(): bool
+    {
+        return false;
+    }
+
+    /**
      * Return a map from type names to a TypeConfig describing how to deal with them.
      *
      * @return array<string, TypeConfig>

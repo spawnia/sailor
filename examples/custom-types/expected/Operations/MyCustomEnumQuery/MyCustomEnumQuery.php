@@ -34,4 +34,9 @@ class MyCustomEnumQuery extends \Spawnia\Sailor\ObjectLike
             'withCustomEnum' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\CustomTypes\TypeConverters\CustomEnumConverter),
         ];
     }
+
+    public static function endpoint(): string
+    {
+        return 'custom-types';
+    }
 }
