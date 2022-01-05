@@ -331,10 +331,7 @@ class OperationGenerator implements ClassGenerator
             yield $stack->operation->build();
             yield $stack->result;
             yield $stack->errorFreeResult;
-
-            foreach ($stack->selectionStorage as $selection) {
-                yield $selection;
-            }
+            yield from $stack->selectionStorage;
         }
     }
 
