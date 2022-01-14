@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.17.1
+
 ### Fixed
 
 - Set errors property of `Spawnia\Sailor\Error\ResultErrorsException`

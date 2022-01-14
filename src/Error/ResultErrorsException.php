@@ -24,8 +24,14 @@ class ResultErrorsException extends Exception implements ClientAware
     {
         $this->errors = $errors;
         $this->endpointName = $endpointName;
-        $messages = array_map(static fn (Error $error): string => $error->message, $errors);
 
-        parent::__construct($endpointName . ': ' . implode(' | ', $messages));
+        $messages = implode(
+            ' | ',
+            array_map(
+                static fn(Error $error): string => $error->message,
+                $errors
+            )
+        );
+        parent::__construct("{$endpointName}: {$messages}");
     }
 }

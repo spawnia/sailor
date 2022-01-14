@@ -10,10 +10,10 @@ class ResultErrorsExceptionTest extends TestCase
 {
     public function testConstructor(): void
     {
-        $errors = [new Error('test message')];
-        $exception = new ResultErrorsException($errors, 'test');
+        $errors = [new Error('bar'), new Error('baz')];
+        $exception = new ResultErrorsException($errors, 'foo');
 
         self::assertSame($errors, $exception->errors);
-        self::assertSame('test: test message', $exception->getMessage());
+        self::assertSame('foo: bar | baz', $exception->getMessage());
     }
 }
