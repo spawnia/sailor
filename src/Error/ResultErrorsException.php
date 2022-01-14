@@ -22,6 +22,7 @@ class ResultErrorsException extends Exception implements ClientAware
      */
     public function __construct(array $errors, string $endpointName)
     {
+        $this->errors = $errors;
         $this->endpointName = $endpointName;
         $messages = array_map(static fn (Error $error): string => $error->message, $errors);
 
