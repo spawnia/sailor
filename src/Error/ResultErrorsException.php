@@ -28,7 +28,7 @@ class ResultErrorsException extends Exception implements ClientAware
         $messages = implode(
             ' | ',
             array_map(
-                static fn(Error $error): string => $error->message,
+                static fn (Error $error): string => $error->message,
                 $errors
             )
         );
