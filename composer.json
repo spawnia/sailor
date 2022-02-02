@@ -49,16 +49,16 @@
     "mockery/mockery": "Used in Operation::mock()"
   },
   "config": {
-    "platform": {
-      "php": "7.4.15"
-    },
-    "preferred-install": "dist",
-    "sort-packages": true,
     "allow-plugins": {
       "ergebnis/composer-normalize": true,
       "phpstan/extension-installer": true,
       "infection/extension-installer": true
-    }
+    },
+    "platform": {
+      "php": "7.4.15"
+    },
+    "preferred-install": "dist",
+    "sort-packages": true
   },
   "autoload": {
     "psr-4": {
