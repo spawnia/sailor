@@ -30,10 +30,7 @@ abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
      */
     public static function fromStdClass(stdClass $data): self
     {
-        static $instance;
-        $instance ??= new static();
-
-        return $instance->fromGraphQL($data);
+        return (new static())->fromGraphQL($data);
     }
 
     /**
@@ -87,7 +84,10 @@ abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
         return $serializable;
     }
 
-    public function fromGraphQL($value)
+    /**
+     * @return static
+     */
+    public function fromGraphQL($value): self
     {
         if (! $value instanceof stdClass) {
             throw new InvalidArgumentException('Expected stdClass, got: ' . gettype($value));

@@ -49,6 +49,11 @@
     "mockery/mockery": "Used in Operation::mock()"
   },
   "config": {
+    "allow-plugins": {
+      "ergebnis/composer-normalize": true,
+      "phpstan/extension-installer": true,
+      "infection/extension-installer": true
+    },
     "platform": {
       "php": "7.4.15"
     },
