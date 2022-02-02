@@ -24,9 +24,7 @@ class CustomEnumTypeConfig extends EnumTypeConfig
 
     public function generateClasses(): iterable
     {
-        foreach (parent::generateClasses() as $enum) {
-            yield $enum;
-        }
+        yield from parent::generateClasses();
 
         yield $this->makeTypeConverter($this->enumType, $this->endpointConfig);
     }

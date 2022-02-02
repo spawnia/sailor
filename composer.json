@@ -17,7 +17,7 @@
     "psr/http-client": "^1",
     "symfony/console": "^5 || ^6",
     "symfony/var-exporter": "^5.3 || ^6",
-    "thecodingmachine/safe": "^1",
+    "thecodingmachine/safe": "^1 || ^2",
     "webonyx/graphql-php": "dev-master"
   },
   "require-dev": {
