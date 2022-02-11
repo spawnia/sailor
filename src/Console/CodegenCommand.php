@@ -35,7 +35,7 @@ class CodegenCommand extends Command
             echo "Generating code for endpoint {$endpointName}...\n";
 
             $endpointConfig = Configuration::endpoint($endpointName);
-            if(!$endpointConfig instanceof EndpointConfig) {
+            if (! $endpointConfig instanceof EndpointConfig) {
                 continue;
             }
 
