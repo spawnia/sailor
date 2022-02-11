@@ -20,13 +20,8 @@ use Spawnia\Sailor\Type\StringTypeConfig;
 use Spawnia\Sailor\Type\TypeConfig;
 use stdClass;
 
-abstract class EndpointConfig
+abstract class EndpointConfig extends SchemaConfig
 {
-    /**
-     * Instantiate a client that will resolve the GraphQL operations.
-     */
-    abstract public function makeClient(): Client;
-
     /**
      * The namespace the generated classes will be created in.
      */
@@ -41,11 +36,6 @@ abstract class EndpointConfig
      * Where to look for .graphql files containing operations.
      */
     abstract public function searchPath(): string;
-
-    /**
-     * The location of the schema file that describes the endpoint.
-     */
-    abstract public function schemaPath(): string;
 
     /**
      * Instantiate an Error class from a plain GraphQL error.

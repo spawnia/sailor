@@ -14,11 +14,11 @@ final class Configuration
      * Loading the config is expensive and might happen repeatedly, so it is cached.
      * Make sure to always call @see Configuration::ensureEndpointsAreLoaded() before accessing this.
      *
-     * @var array<string, \Spawnia\Sailor\EndpointConfig>
+     * @var array<string, \Spawnia\Sailor\SchemaConfig>
      */
     private static array $endpoints;
 
-    public static function endpoint(string $name): EndpointConfig
+    public static function endpoint(string $name): SchemaConfig
     {
         self::ensureEndpointsAreLoaded();
 
@@ -30,7 +30,7 @@ final class Configuration
     }
 
     /**
-     * @return array<string, \Spawnia\Sailor\EndpointConfig>
+     * @return array<string, \Spawnia\Sailor\SchemaConfig>
      */
     public static function endpoints(): array
     {
@@ -39,7 +39,7 @@ final class Configuration
         return self::$endpoints;
     }
 
-    public static function setEndpoint(string $name, EndpointConfig $endpointConfig): void
+    public static function setEndpoint(string $name, SchemaConfig $endpointConfig): void
     {
         self::$endpoints[$name] = $endpointConfig;
     }

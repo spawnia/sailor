@@ -5,6 +5,7 @@ namespace Spawnia\Sailor\Console;
 use Spawnia\Sailor\Codegen\Generator;
 use Spawnia\Sailor\Codegen\Writer;
 use Spawnia\Sailor\Configuration;
+use Spawnia\Sailor\EndpointConfig;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -34,6 +35,9 @@ class CodegenCommand extends Command
             echo "Generating code for endpoint {$endpointName}...\n";
 
             $endpointConfig = Configuration::endpoint($endpointName);
+            if(!$endpointConfig instanceof EndpointConfig) {
+                continue;
+            }
 
             $generator = new Generator($endpointConfig, $endpointName);
             $files = $generator->generate();
