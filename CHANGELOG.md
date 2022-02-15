@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.18.2
+
+### Fixed
+
+- Validate endpoint names in `introspect` command are strings
+
 ## v0.18.1
 
 ### Fixed
