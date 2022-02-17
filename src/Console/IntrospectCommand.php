@@ -32,8 +32,12 @@ class IntrospectCommand extends Command
             $endpointNames = array_keys(Configuration::endpoints());
         }
 
-        /** @var string $endpointName */
         foreach ($endpointNames as $endpointName) {
+            if (! is_string($endpointName)) {
+                $notString = gettype($endpointName);
+                throw new \InvalidArgumentException("Expected --endpoint to be one or more strings, got {$notString}.");
+            }
+
             echo "Running introspection on endpoint {$endpointName}...\n";
             (new Introspector(
                 Configuration::endpoint($endpointName),

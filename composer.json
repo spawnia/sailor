@@ -1,15 +1,19 @@
 {
   "name": "spawnia/sailor",
-  "type": "library",
   "description": "A typesafe GraphQL client for PHP",
-  "homepage": "https://github.com/spawnia/sailor",
   "license": "MIT",
+  "type": "library",
   "authors": [
     {
       "name": "Benedikt Franke",
       "email": "benedikt@franke.tech"
     }
   ],
+  "homepage": "https://github.com/spawnia/sailor",
+  "support": {
+    "issues": "https://github.com/spawnia/sailor/issues",
+    "source": "https://github.com/spawnia/sailor"
+  },
   "require": {
     "php": "^7.4 || ^8",
     "ext-json": "*",
@@ -48,18 +52,6 @@
     "guzzlehttp/guzzle": "Enables using the built-in default Client",
     "mockery/mockery": "Used in Operation::mock()"
   },
-  "config": {
-    "allow-plugins": {
-      "ergebnis/composer-normalize": true,
-      "phpstan/extension-installer": true,
-      "infection/extension-installer": true
-    },
-    "platform": {
-      "php": "7.4.15"
-    },
-    "preferred-install": "dist",
-    "sort-packages": true
-  },
   "autoload": {
     "psr-4": {
       "Spawnia\\Sailor\\": "src/"
@@ -81,8 +73,16 @@
   "bin": [
     "sailor"
   ],
-  "support": {
-    "issues": "https://github.com/spawnia/sailor/issues",
-    "source": "https://github.com/spawnia/sailor"
+  "config": {
+    "allow-plugins": {
+      "ergebnis/composer-normalize": true,
+      "phpstan/extension-installer": true,
+      "infection/extension-installer": true
+    },
+    "platform": {
+      "php": "7.4.15"
+    },
+    "preferred-install": "dist",
+    "sort-packages": true
   }
 }
