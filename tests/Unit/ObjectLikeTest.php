@@ -38,4 +38,12 @@ class ObjectLikeTest extends TestCase
             'nonExistent' => 'foo',
         ]);
     }
+
+    public function testMissingRequired(): void
+    {
+        $this->expectExceptionObject(new InvalidDataException(
+            'Unknown property nonExistent, available properties: __typename, scalarWithArg.'
+        ));
+        MyScalarQuery::fromStdClass((object) []);
+    }
 }

@@ -95,10 +95,24 @@ abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
 
         $instance = new static();
 
+        $converters = $this->converters();
+        foreach ($converters as $name => $converter) {
+            try {
+                // @phpstan-ignore-next-line variable property access
+                $instance->{$name} = $converter->fromGraphQL($value->{$name} ?? null);
+                unset($value->{$name});
+            } catch (\Throwable $e) {
+                $endpoint = static::endpoint();
+                throw new InvalidDataException("{$endpoint}: Invalid value for field {$name}. {$e->getMessage()}");
+            }
+        }
+
         // @phpstan-ignore-next-line iteration over object
         foreach ($value as $name => $property) {
-            // @phpstan-ignore-next-line variable property access
-            $instance->{$name} = $this->converter($name)->fromGraphQL($property);
+            $endpoint = static::endpoint();
+            $availableProperties = implode(', ', array_keys($converters));
+
+            throw new InvalidDataException("{$endpoint}: Unknown property {$name}, available properties: {$availableProperties}.");
         }
 
         return $instance;
