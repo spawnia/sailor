@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CodegenCommand extends Command
 {
-    private const OPTION_CONFIGURATION = 'configuration';
+    private const OPTION_CONFIG = 'config';
 
     protected static $defaultName = 'codegen';
 
