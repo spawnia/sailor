@@ -25,7 +25,7 @@ class CodegenCommand extends Command
             self::OPTION_CONFIGURATION,
             'c',
             InputArgument::OPTIONAL,
-            'File to read configuration from. Default `sailor.php`.',
+            'Path to a configuration file. Default `sailor.php`.',
             'sailor.php'
         );
     }
