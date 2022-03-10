@@ -43,7 +43,7 @@ abstract class Operation implements BelongsToEndpoint
     abstract protected static function converters(): array;
 
     /**
-     * @param  mixed  ...$args
+     * @param  mixed  ...$args type depends on the subclass
      *
      * @return TResult
      */

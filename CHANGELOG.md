@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.19.0
+
+### Added
+
+- Allow customizing how documents are found
+
 ## v0.18.2
 
 ### Fixed

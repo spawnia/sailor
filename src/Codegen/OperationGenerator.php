@@ -200,7 +200,7 @@ class OperationGenerator implements ClassGenerator
                         'enter' => function (VariableDefinitionNode $variableDefinition) use ($typeInfo): void {
                             $name = $variableDefinition->variable->name->value;
 
-                            /** @var Type & InputType $type */
+                            /** @var Type&InputType $type */
                             $type = $typeInfo->getInputType();
 
                             /** @var Type&NamedType $namedType */
