@@ -185,12 +185,15 @@ class OperationGenerator implements ClassGenerator
 
                             /** @var ObjectType $operationType always present in validated schemas */
                             $operationType = $typeInfo->getType();
-                            $this->operationStack->pushSelection([
-                                $operationType->name => $this->makeObjectLikeBuilder($operationName),
-                            ]);
+                            $this->operationStack->setSelection(
+                                $this->currentNamespace(),
+                                [
+                                    $operationType->name => $this->makeObjectLikeBuilder($operationName),
+                                ]
+                            );
                         },
                         'leave' => function (OperationDefinitionNode $_): void {
-                            $this->finishSubtree();
+                            $this->moveUpNamespace();
 
                             // Store the current operation as we continue with the next one
                             $this->operationStorage[] = $this->operationStack;
@@ -223,7 +226,7 @@ class OperationGenerator implements ClassGenerator
                                 ? $field->alias->value
                                 : $field->name->value;
 
-                            $selectionClasses = $this->operationStack->peekSelection();
+                            $selectionClasses = $this->operationStack->selection($this->currentNamespace());
 
                             /** @var Type&OutputType $type */
                             $type = $typeInfo->getType();
@@ -241,9 +244,12 @@ class OperationGenerator implements ClassGenerator
                                 $phpType = $this->withCurrentNamespace($name);
                                 $phpDocType = "\\$phpType";
 
-                                $this->operationStack->pushSelection([
-                                    $name => $this->makeObjectLikeBuilder($name),
-                                ]);
+                                $this->operationStack->setSelection(
+                                    $this->currentNamespace(),
+                                    [
+                                        $name => $this->makeObjectLikeBuilder($name),
+                                    ]
+                                );
                                 $typeConverter = <<<PHP
                                     {$phpType}
                                     PHP;
@@ -268,7 +274,10 @@ class OperationGenerator implements ClassGenerator
                                 $phpType = 'object';
                                 $phpDocType = implode('|', $mapping);
 
-                                $this->operationStack->pushSelection($mappingSelection);
+                                $this->operationStack->setSelection(
+                                    $this->currentNamespace(),
+                                    $mappingSelection
+                                );
 
                                 $mappingCode = VarExporter::export($mapping);
                                 $typeConverter = <<<PHP
@@ -319,7 +328,7 @@ class OperationGenerator implements ClassGenerator
                             $namedType = Type::getNamedType($type);
 
                             if ($namedType instanceof CompositeType) {
-                                $this->finishSubtree();
+                                $this->moveUpNamespace();
                             }
                         },
                     ],
@@ -331,17 +340,12 @@ class OperationGenerator implements ClassGenerator
             yield $stack->operation->build();
             yield $stack->result;
             yield $stack->errorFreeResult;
-            yield from $stack->selectionStorage;
+            yield from $stack->buildSelections();
         }
     }
 
-    protected function finishSubtree(): void
+    protected function moveUpNamespace(): void
     {
-        // We are done with building this subtree of the selection set,
-        // so we move the current selections to storage.
-        $this->operationStack->popSelection();
-
-        // The namespace moves up a level
         array_pop($this->namespaceStack);
     }
 
