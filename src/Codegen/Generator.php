@@ -189,9 +189,11 @@ class Generator
             ->finder()
             ->documents();
 
-        $parsed = static::parseDocuments($documents);
-        static::validateDocuments($parsed);
+        // Ignore the schema itself, it never contains operation definitions
+        unset($documents[$this->endpointConfig->schemaPath()]);
 
-        return $parsed;
+        $parsed = static::parseDocuments($documents);
+
+        return static::validateDocuments($parsed);
     }
 }

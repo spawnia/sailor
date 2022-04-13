@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.20.2
+
+### Changed
+
+- Ignore the schema itself when looking for operations
+
 ## v0.20.1
 
 ### Changed
