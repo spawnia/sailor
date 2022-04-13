@@ -3,6 +3,7 @@
 namespace Spawnia\Sailor\Tests\Unit\Codegen;
 
 use GraphQL\Error\Error;
+use GraphQL\Language\AST\FragmentDefinitionNode;
 use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\Parser;
@@ -48,8 +49,9 @@ class GeneratorTest extends TestCase
         ];
 
         $parsed = Generator::parseDocuments($documents);
-        /** @var \GraphQL\Language\AST\FragmentDefinitionNode $fragment */
+
         $fragment = $parsed[$somePath]->definitions[0];
+        assert($fragment instanceof FragmentDefinitionNode);
 
         self::assertSame('Foo', $fragment->name->value);
     }
@@ -70,13 +72,17 @@ class GeneratorTest extends TestCase
         ];
 
         $parsed = Generator::parseDocuments($documents);
-        /** @var \GraphQL\Language\AST\OperationDefinitionNode $query */
+
         $query = $parsed[$somePath]->definitions[0];
+        assert($query instanceof OperationDefinitionNode);
 
-        self::assertSame('FooQuery', $query->name->value);
+        $queryName = $query->name;
+        assert($queryName instanceof NameNode);
 
-        /** @var \GraphQL\Language\AST\FragmentDefinitionNode $fragment */
+        self::assertSame('FooQuery', $queryName->value);
+
         $fragment = $parsed[$somePath]->definitions[1];
+        assert($fragment instanceof FragmentDefinitionNode);
 
         self::assertSame('Foo', $fragment->name->value);
     }
