@@ -194,6 +194,8 @@ class Generator
 
         $parsed = static::parseDocuments($documents);
 
-        return static::validateDocuments($parsed);
+        static::validateDocuments($parsed);
+
+        return $parsed;
     }
 }
