@@ -1,0 +1,20 @@
+query NestedWithFragments {
+    singleObject {
+        nested {
+            ...NestedFragment
+            ...SimpleFragment
+        }
+        ...NestedFragment
+        ...SimpleFragment
+    }
+}
+
+fragment NestedFragment on SomeObject {
+    nested {
+        ...SimpleFragment
+    }
+}
+
+fragment SimpleFragment on SomeObject {
+    value
+}

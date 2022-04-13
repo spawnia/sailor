@@ -4,6 +4,7 @@ namespace Spawnia\Sailor\Codegen;
 
 use GraphQL\Error\Error;
 use GraphQL\Error\SyntaxError;
+use GraphQL\Language\AST\FragmentDefinitionNode;
 use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
@@ -36,11 +37,17 @@ class Generator
             return [];
         }
 
+        $schema = $this->schema();
         $document = Merger::combine($parsedDocuments);
+
+        // Validate the document as defined by the user to give them an error
+        // message that is more closely related to their source code
+        Validator::validate($schema, $document);
+
+        $document = (new FoldFragments($document))->modify();
         AddTypename::modify($document);
 
-        $schema = $this->schema();
-
+        // Validate again to ensure the modifications we made were safe
         Validator::validate($schema, $document);
 
         foreach ((new OperationGenerator($schema, $document, $this->endpointConfig, $this->endpointName))->generate() as $class) {
@@ -151,17 +158,22 @@ class Generator
     /**
      * @param  array<string, \GraphQL\Language\AST\DocumentNode>  $parsed
      */
-    public static function ensureOperationsAreNamed(array $parsed): void
+    public static function validateDocuments(array $parsed): void
     {
         foreach ($parsed as $path => $documentNode) {
             foreach ($documentNode->definitions as $definition) {
-                if (! $definition instanceof OperationDefinitionNode) {
-                    throw new Error('Found unsupported definition in ' . $path, $definition);
+                if ($definition instanceof OperationDefinitionNode) {
+                    if (null === $definition->name) {
+                        throw new Error('Found unnamed operation definition in ' . $path, $definition);
+                    }
+                    continue;
                 }
 
-                if (null === $definition->name) {
-                    throw new Error('Found unnamed operation definition in ' . $path, $definition);
+                if ($definition instanceof FragmentDefinitionNode) {
+                    continue;
                 }
+
+                throw new Error('Found unsupported definition in ' . $path, $definition);
             }
         }
     }
@@ -185,7 +197,7 @@ class Generator
             ->documents();
 
         $parsed = static::parseDocuments($documents);
-        static::ensureOperationsAreNamed($parsed);
+        static::validateDocuments($parsed);
 
         return $parsed;
     }
