@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.20.1
+
+### Changed
+
+- Simply ignore non-executable definitions
+
 ## v0.20.0
 
 ### Added

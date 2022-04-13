@@ -2,7 +2,6 @@
 
 namespace Spawnia\Sailor\Tests\Unit\Codegen;
 
-use GraphQL\Error\Error;
 use GraphQL\Language\AST\FragmentDefinitionNode;
 use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\OperationDefinitionNode;
@@ -101,21 +100,6 @@ final class GeneratorTest extends TestCase
 
         self::expectExceptionMessageMatches("/$path/");
         Generator::parseDocuments($documents);
-    }
-
-    public function testFailsOnNonExecutableDefinitions(): void
-    {
-        $somePath = 'path';
-        $documents = [
-            $somePath => Parser::parse(/* @lang GraphQL */ '
-                type Query {
-                    foo: ID
-                }
-            '),
-        ];
-
-        $this->expectException(Error::class);
-        Generator::validateDocuments($documents);
     }
 
     public function testEnsureOperationsAreNamedPasses(): void

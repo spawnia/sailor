@@ -4,7 +4,6 @@ namespace Spawnia\Sailor\Codegen;
 
 use GraphQL\Error\Error;
 use GraphQL\Error\SyntaxError;
-use GraphQL\Language\AST\FragmentDefinitionNode;
 use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
@@ -162,18 +161,12 @@ class Generator
     {
         foreach ($parsed as $path => $documentNode) {
             foreach ($documentNode->definitions as $definition) {
-                if ($definition instanceof OperationDefinitionNode) {
-                    if (null === $definition->name) {
-                        throw new Error('Found unnamed operation definition in ' . $path, $definition);
-                    }
-                    continue;
+                switch (true) {
+                    case $definition instanceof OperationDefinitionNode:
+                        if (null === $definition->name) {
+                            throw new Error('Found unnamed operation definition in ' . $path, $definition);
+                        }
                 }
-
-                if ($definition instanceof FragmentDefinitionNode) {
-                    continue;
-                }
-
-                throw new Error('Found unsupported definition in ' . $path, $definition);
             }
         }
     }
