@@ -9,9 +9,23 @@ namespace Spawnia\Sailor\Input\Operations;
  */
 class TakeSomeInput extends \Spawnia\Sailor\Operation
 {
-    public static function execute(?\Spawnia\Sailor\Input\Types\SomeInput $input = null): TakeSomeInput\TakeSomeInputResult
+    /**
+     * @param \Spawnia\Sailor\Input\Types\SomeInput|null $input
+     */
+    public static function execute($input = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): TakeSomeInput\TakeSomeInputResult
     {
-        return self::executeOperation(...func_get_args());
+        return self::executeOperation(
+            $input,
+        );
+    }
+
+    protected static function converters(): array
+    {
+        static $converters;
+
+        return $converters ??= [
+            ['input', new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Input\Types\SomeInput)],
+        ];
     }
 
     public static function document(): string

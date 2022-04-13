@@ -8,6 +8,11 @@ class MyBenSampoEnumQueryResult extends \Spawnia\Sailor\Result
 {
     public ?MyBenSampoEnumQuery $data = null;
 
+    public static function endpoint(): string
+    {
+        return 'custom-types';
+    }
+
     protected function setData(\stdClass $data): void
     {
         $this->data = MyBenSampoEnumQuery::fromStdClass($data);

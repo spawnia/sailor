@@ -8,6 +8,11 @@ class TwoArgsResult extends \Spawnia\Sailor\Result
 {
     public ?TwoArgs $data = null;
 
+    public static function endpoint(): string
+    {
+        return 'simple';
+    }
+
     protected function setData(\stdClass $data): void
     {
         $this->data = TwoArgs::fromStdClass($data);

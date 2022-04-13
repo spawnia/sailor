@@ -8,6 +8,11 @@ class MyObjectQueryResult extends \Spawnia\Sailor\Result
 {
     public ?MyObjectQuery $data = null;
 
+    public static function endpoint(): string
+    {
+        return 'simple';
+    }
+
     protected function setData(\stdClass $data): void
     {
         $this->data = MyObjectQuery::fromStdClass($data);

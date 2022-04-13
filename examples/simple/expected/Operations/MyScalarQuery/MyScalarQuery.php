@@ -13,7 +13,7 @@ class MyScalarQuery extends \Spawnia\Sailor\ObjectLike
     /**
      * @param string|null $scalarWithArg
      */
-    public static function make($scalarWithArg = 1.7976931348623157E+308): self
+    public static function make($scalarWithArg = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): self
     {
         $instance = new self;
 
@@ -33,5 +33,10 @@ class MyScalarQuery extends \Spawnia\Sailor\ObjectLike
             '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
             'scalarWithArg' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\IDConverter),
         ];
+    }
+
+    public static function endpoint(): string
+    {
+        return 'simple';
     }
 }

@@ -4,6 +4,7 @@ namespace Spawnia\Sailor;
 
 use Mockery;
 use Mockery\MockInterface;
+use Spawnia\Sailor\Convert\TypeConverter;
 
 /**
  * Subclasses of this class are automatically generated.
@@ -15,7 +16,7 @@ use Mockery\MockInterface;
  *
  * @template TResult of Result
  */
-abstract class Operation
+abstract class Operation implements BelongsToEndpoint
 {
     /**
      * Map from child classes to their registered mocks.
@@ -32,17 +33,17 @@ abstract class Operation
     protected static array $clients = [];
 
     /**
-     * The configured endpoint the operation belongs to.
-     */
-    abstract public static function endpoint(): string;
-
-    /**
      * The GraphQL query string.
      */
     abstract public static function document(): string;
 
     /**
-     * @param  mixed  ...$args
+     * @return array<int, array{string, TypeConverter}>
+     */
+    abstract protected static function converters(): array;
+
+    /**
+     * @param  mixed  ...$args type depends on the subclass
      *
      * @return TResult
      */
@@ -74,11 +75,14 @@ abstract class Operation
     protected static function fetchResponse(array $args): Response
     {
         $variables = new \stdClass();
-        $executeMethod = new \ReflectionMethod(static::class, 'execute');
-        $parameters = $executeMethod->getParameters();
+        $arguments = static::converters();
         foreach ($args as $index => $arg) {
-            $parameter = $parameters[$index];
-            $variables->{$parameter->getName()} = $arg;
+            if (ObjectLike::UNDEFINED === $arg) {
+                continue;
+            }
+
+            [$name, $typeConverter] = $arguments[$index];
+            $variables->{$name} = $typeConverter->toGraphQL($arg);
         }
 
         $client = self::$clients[static::class]

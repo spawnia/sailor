@@ -118,6 +118,15 @@ For an improved experience, it is recommended to customize the enum generation/c
 Overwrite `EndpointConfig::configureTypes()` to specialize how Sailor deals with the types within your schema.
 See [examples/custom-types](examples/custom-types).
 
+### Error conversion
+
+Errors sent within the GraphQL response must follow the [response errors specification](http://spec.graphql.org/October2021/#sec-Errors).
+Sailor converts the plain `stdClass` obtained from decoding the JSON response into
+instances of `\Spawnia\Sailor\Error\Error` by default.
+
+If one of your endpoints returns structured data in `extensions`, you can customize how
+the plain errors are decoded into class instances by overwriting `EndpointConfig::parseError()`.
+
 ## Usage
 
 ### Introspection
@@ -190,14 +199,24 @@ or `$extensions` off of it:
 
 ```php
 $result->data        // `null` or a generated subclass of `\Spawnia\Sailor\ObjectLike`
-$result->errors      // `null` or a list of errors
+$result->errors      // `null` or a list of `\Spawnia\Sailor\Error\Error`
 $result->extensions  // `null` or an arbitrary map
 ```
+
+### Error handling
 
 You can ensure your query returned the proper data and contained no errors:
 
 ```php
-$errorFreeResult = $result->errorFree(); // Throws if there are errors
+$errorFreeResult = \Example\Api\Operations\HelloSailor::execute()
+    ->errorFree(); // Throws if there are errors or returns an error free result
+```
+
+If you don't need any data, but want to ensure a mutation succeeded:
+
+```php
+\Example\Api\Operations\SomeMutation::execute()
+    ->assertErrorFree(); // Throws if there are errors
 ```
 
 ### Queries with arguments
@@ -288,15 +307,15 @@ The following call *should* result in the previous JSON payload.
 SomeInput::make(requiredId: 1, firstOptional: null, secondOptional: 2);
 ```
 
-In order to generate partial inputs by default, optional named arguments have a special default value
-of `PHP_FLOAT_MAX - 1` which is equivalent to `1.7976931348623157E+308`. This allows Sailor to differentiate
-between explicitly passing `null` and not passing a value at all.
+In order to generate partial inputs by default, optional named arguments have a special default value:
+
+```php
+Spawnia\Sailor\ObjectLike::UNDEFINED = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.';
+```
 
 ```php
 class SomeInput extends \Spawnia\Sailor\ObjectLike
 {
-    const UNDEFINED = PHP_FLOAT_MAX - 1;
-
     /**
      * @param int $requiredId
      * @param int|null $firstOptional
@@ -304,8 +323,8 @@ class SomeInput extends \Spawnia\Sailor\ObjectLike
      */
     public static function make(
         $requiredId,
-        $firstOptional = self::UNDEFINED,
-        $secondOptional = self::UNDEFINED,
+        $firstOptional = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+        $secondOptional = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
     ): self {
         $instance = new self;
 
@@ -324,12 +343,11 @@ class SomeInput extends \Spawnia\Sailor\ObjectLike
 }
 ```
 
-In the unlikely case where you need to pass a float value that might be close to or exactly match
-the special value, you can assign it directly:
+In the unlikely case where you need to pass exactly this value, you can assign it directly:
 
 ```php
 $input = SomeInput::make(requiredId: 1);
-$input->secondOptional = $someFloat;
+$input->secondOptional = Spawnia\Sailor\ObjectLike::UNDEFINED;
 ```
 
 ## Testing

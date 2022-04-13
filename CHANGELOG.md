@@ -7,6 +7,74 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.19.0
+
+### Added
+
+- Allow customizing how documents are found
+
+## v0.18.2
+
+### Fixed
+
+- Validate endpoint names in `introspect` command are strings
+
+## v0.18.1
+
+### Fixed
+
+- Fix PHP 8.1 compatibility
+
+## v0.18.0
+
+### Added
+
+- Allow `thecodingmachine/safe` v2 as dependency
+
+## v0.17.1
+
+### Fixed
+
+- Set errors property of `Spawnia\Sailor\Error\ResultErrorsException`
+
+## v0.17.0
+
+### Changed
+
+- Use self-explanatory string value for `ObjectLike::UNDEFINED`
+
+## v0.16.0
+
+### Added
+
+- Add configuration `EndpointConfig::errorsAreClientSafe()` to propagate client-safety of endpoint errors
+
+### Changed
+
+- Move `Spawnia\Sailor\ResultErrorsException` to `Spawnia\Sailor\Error\ResultErrorsException`
+- Move `Spawnia\Sailor\InvalidDataException` to `Spawnia\Sailor\Error\InvalidDataException`
+- Include only messages in `ResultErrorsException::$message`, expose full `Error` objects as `ResultErrorsException::$errors`
+
+### Removed
+
+- Remove `Spawnia\Sailor\Response::assertErrorFree()`
+
+## v0.15.0
+
+### Added
+
+- Add ability to overwrite parsing of errors
+
+### Changed
+
+- Convert errors from plain `stdClass` to `Spawnia\Sailor\Error\Error` in results
+
+## v0.14.1
+
+### Fixed
+
+- Fix conversion of custom types used directly in variables
+
 ## v0.14.0
 
 ### Changed

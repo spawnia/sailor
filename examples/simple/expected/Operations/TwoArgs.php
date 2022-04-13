@@ -9,9 +9,28 @@ namespace Spawnia\Sailor\Simple\Operations;
  */
 class TwoArgs extends \Spawnia\Sailor\Operation
 {
-    public static function execute(?string $first = null, ?int $second = null): TwoArgs\TwoArgsResult
+    /**
+     * @param string|null $first
+     * @param int|null $second
+     */
+    public static function execute(
+        $first = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+        $second = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'
+    ): TwoArgs\TwoArgsResult {
+        return self::executeOperation(
+            $first,
+            $second,
+        );
+    }
+
+    protected static function converters(): array
     {
-        return self::executeOperation(...func_get_args());
+        static $converters;
+
+        return $converters ??= [
+            ['first', new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\StringConverter)],
+            ['second', new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\IntConverter)],
+        ];
     }
 
     public static function document(): string

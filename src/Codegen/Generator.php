@@ -11,7 +11,6 @@ use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PsrPrinter;
-use Nette\Utils\FileSystem;
 use Spawnia\Sailor\EndpointConfig;
 
 class Generator
@@ -187,17 +186,13 @@ class Generator
      */
     protected function parsedDocuments(): array
     {
-        $finder = new Finder($this->endpointConfig->searchPath());
-        $documents = $finder->documents();
+        $documents = $this->endpointConfig
+            ->finder()
+            ->documents();
 
         $parsed = static::parseDocuments($documents);
         static::validateDocuments($parsed);
 
         return $parsed;
-    }
-
-    protected function deleteGeneratedFiles(): void
-    {
-        FileSystem::delete($this->endpointConfig->targetPath());
     }
 }

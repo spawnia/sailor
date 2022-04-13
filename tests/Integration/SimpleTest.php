@@ -6,8 +6,8 @@ use Mockery;
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\EndpointConfig;
+use Spawnia\Sailor\Error\ResultErrorsException;
 use Spawnia\Sailor\Response;
-use Spawnia\Sailor\ResultErrorsException;
 use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery;
 use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery\MyObjectNestedQueryResult;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery;
@@ -100,7 +100,6 @@ class SimpleTest extends TestCase
 
         MyScalarQuery::mock()
             ->expects('execute')
-            ->with()
             ->andReturn(MyScalarQueryResult::fromStdClass((object) [
                 'data' => (object) [
                     'scalarWithArg' => $bar,
@@ -114,9 +113,11 @@ class SimpleTest extends TestCase
     {
         $message = 'some error';
 
+        $endpoint = Mockery::mock(EndpointConfig::class)->makePartial();
+        Configuration::setEndpoint(MyScalarQueryResult::endpoint(), $endpoint);
+
         MyScalarQuery::mock()
             ->expects('execute')
-            ->with()
             ->andReturn(MyScalarQueryResult::fromStdClass((object) [
                 'data' => null,
                 'errors' => [

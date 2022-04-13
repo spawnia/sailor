@@ -9,9 +9,23 @@ namespace Spawnia\Sailor\Polymorphic\Operations;
  */
 class UserOrPost extends \Spawnia\Sailor\Operation
 {
-    public static function execute(string $id): UserOrPost\UserOrPostResult
+    /**
+     * @param string $id
+     */
+    public static function execute($id): UserOrPost\UserOrPostResult
     {
-        return self::executeOperation(...func_get_args());
+        return self::executeOperation(
+            $id,
+        );
+    }
+
+    protected static function converters(): array
+    {
+        static $converters;
+
+        return $converters ??= [
+            ['id', new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\IDConverter)],
+        ];
     }
 
     public static function document(): string

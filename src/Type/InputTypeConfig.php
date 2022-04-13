@@ -58,6 +58,7 @@ class InputTypeConfig implements TypeConfig
         $builder = new ObjectLikeBuilder(
             $this->inputObjectType->name,
             $this->endpointConfig->typesNamespace(),
+            $this->endpointName
         );
 
         foreach ($this->inputObjectType->getFields() as $name => $field) {

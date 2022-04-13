@@ -13,7 +13,7 @@ class MyBenSampoEnumQuery extends \Spawnia\Sailor\ObjectLike
     /**
      * @param \Spawnia\Sailor\CustomTypes\Types\BenSampoEnum|null $withBenSampoEnum
      */
-    public static function make($withBenSampoEnum = 1.7976931348623157E+308): self
+    public static function make($withBenSampoEnum = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): self
     {
         $instance = new self;
 
@@ -33,5 +33,10 @@ class MyBenSampoEnumQuery extends \Spawnia\Sailor\ObjectLike
             '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
             'withBenSampoEnum' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\CustomTypes\TypeConverters\BenSampoEnumConverter),
         ];
+    }
+
+    public static function endpoint(): string
+    {
+        return 'custom-types';
     }
 }

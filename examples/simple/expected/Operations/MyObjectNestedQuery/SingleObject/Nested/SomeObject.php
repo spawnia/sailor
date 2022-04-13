@@ -13,7 +13,7 @@ class SomeObject extends \Spawnia\Sailor\ObjectLike
     /**
      * @param int|null $value
      */
-    public static function make($value = 1.7976931348623157E+308): self
+    public static function make($value = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): self
     {
         $instance = new self;
 
@@ -33,5 +33,10 @@ class SomeObject extends \Spawnia\Sailor\ObjectLike
             '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
             'value' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\IntConverter),
         ];
+    }
+
+    public static function endpoint(): string
+    {
+        return 'simple';
     }
 }

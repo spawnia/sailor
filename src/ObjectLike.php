@@ -4,11 +4,12 @@ namespace Spawnia\Sailor;
 
 use InvalidArgumentException;
 use Spawnia\Sailor\Convert\TypeConverter;
+use Spawnia\Sailor\Error\InvalidDataException;
 use stdClass;
 
-abstract class ObjectLike implements TypeConverter
+abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
 {
-    public const UNDEFINED = PHP_FLOAT_MAX - 1;
+    public const UNDEFINED = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.';
 
     /**
      * Necessary in order to be able to determine between explicit null and unset properties.
@@ -29,10 +30,7 @@ abstract class ObjectLike implements TypeConverter
      */
     public static function fromStdClass(stdClass $data): self
     {
-        static $instance;
-        $instance ??= new static();
-
-        return $instance->fromGraphQL($data);
+        return (new static())->fromGraphQL($data);
     }
 
     /**
@@ -86,7 +84,10 @@ abstract class ObjectLike implements TypeConverter
         return $serializable;
     }
 
-    public function fromGraphQL($value)
+    /**
+     * @return static
+     */
+    public function fromGraphQL($value): self
     {
         if (! $value instanceof stdClass) {
             throw new InvalidArgumentException('Expected stdClass, got: ' . gettype($value));
@@ -107,12 +108,10 @@ abstract class ObjectLike implements TypeConverter
     {
         $converters = $this->converters();
         if (! isset($converters[$name])) {
-            $availableProperties = implode(
-                ', ',
-                array_keys($converters)
-            );
+            $endpoint = static::endpoint();
+            $availableProperties = implode(', ', array_keys($converters));
 
-            throw new InvalidDataException("Unknown property {$name}, available properties: {$availableProperties}.");
+            throw new InvalidDataException("{$endpoint}: Unknown property {$name}, available properties: {$availableProperties}.");
         }
 
         return $converters[$name];

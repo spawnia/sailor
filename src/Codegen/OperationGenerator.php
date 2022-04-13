@@ -13,9 +13,7 @@ use GraphQL\Language\Visitor;
 use GraphQL\Type\Definition\CompositeType;
 use GraphQL\Type\Definition\InputType;
 use GraphQL\Type\Definition\InterfaceType;
-use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NamedType;
-use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\OutputType;
 use GraphQL\Type\Definition\Type;
@@ -25,7 +23,6 @@ use GraphQL\Type\Schema;
 use GraphQL\Utils\TypeComparators;
 use GraphQL\Utils\TypeInfo;
 use Nette\PhpGenerator\ClassType;
-use Nette\PhpGenerator\Parameter;
 use Nette\PhpGenerator\PhpNamespace;
 use Spawnia\Sailor\Convert\PolymorphicConverter;
 use Spawnia\Sailor\EndpointConfig;
@@ -97,11 +94,7 @@ class OperationGenerator implements ClassGenerator
                             $operationName = $nameNode->value;
 
                             // Generate a class to represent the query/mutation itself
-                            $operation = new ClassType($operationName, $this->makeNamespace());
-
-                            // The execute method is the public API of the operation
-                            $execute = $operation->addMethod('execute');
-                            $execute->setStatic();
+                            $operation = new OperationBuilder($operationName, $this->currentNamespace());
 
                             // It returns a typed result which is a new selection set class
                             $resultName = "{$operationName}Result";
@@ -111,41 +104,18 @@ class OperationGenerator implements ClassGenerator
                             $resultClass = $this->withCurrentNamespace($resultName);
 
                             // The base class contains most of the logic
-                            $operationBaseClass = Operation::class;
-                            $operation->setExtends($operationBaseClass);
-                            $operation->setComment("@extends \\{$operationBaseClass}<\\{$resultClass}>");
+                            $operation->extendOperation($resultClass);
 
-                            $execute->setReturnType($resultClass);
-                            $execute->setBody(
-                                <<<'PHP'
-                                    return self::executeOperation(...func_get_args());
-                                    PHP
-                            );
-
-                            // Store the actual query string in the operation
                             // TODO minify the query string https://github.com/webonyx/graphql-php/issues/1028
-                            $document = $operation->addMethod('document');
-                            $document->setStatic();
-                            $document->setReturnType('string');
-                            $operationString = Printer::doPrint($operationDefinition);
-                            $document->setBody(
-                                <<<PHP
-                                    return /* @lang GraphQL */ '{$operationString}';
-                                    PHP
-                            );
+                            $operation->storeDocument(Printer::doPrint($operationDefinition));
 
                             // Set the endpoint this operation belongs to
-                            $endpoint = $operation->addMethod('endpoint');
-                            $endpoint->setStatic();
-                            $endpoint->setReturnType('string');
-                            $endpoint->setBody(
-                                <<<PHP
-                                    return '{$this->endpointName}';
-                                    PHP
-                            );
+                            $operation->setEndpoint($this->endpointName);
 
                             $result = new ClassType($resultName, $this->makeNamespace());
                             $result->setExtends(Result::class);
+
+                            ClassHelper::setEndpoint($result, $this->endpointName);
 
                             $setData = $result->addMethod('setData');
                             $setData->setVisibility('protected');
@@ -201,6 +171,8 @@ class OperationGenerator implements ClassGenerator
                             $errorFreeResult = new ClassType($errorFreeResultName, $this->makeNamespace());
                             $errorFreeResult->setExtends(ErrorFreeResult::class);
 
+                            ClassHelper::setEndpoint($errorFreeResult, $this->endpointName);
+
                             $errorFreeDataProp = $errorFreeResult->addProperty('data');
                             $errorFreeDataProp->setType(
                                 $this->withCurrentNamespace($operationName)
@@ -226,29 +198,22 @@ class OperationGenerator implements ClassGenerator
                     ],
                     NodeKind::VARIABLE_DEFINITION => [
                         'enter' => function (VariableDefinitionNode $variableDefinition) use ($typeInfo): void {
-                            $parameter = new Parameter($variableDefinition->variable->name->value);
+                            $name = $variableDefinition->variable->name->value;
 
-                            if (null !== $variableDefinition->defaultValue) {
-                                // TODO support default values
-                            }
-
-                            /** @var Type & InputType $type */
+                            /** @var Type&InputType $type */
                             $type = $typeInfo->getInputType();
 
-                            if ($type instanceof NonNull) {
-                                $type = $type->getWrappedType();
-                            } else {
-                                $parameter->setNullable();
-                                $parameter->setDefaultValue(null);
-                            }
+                            /** @var Type&NamedType $namedType */
+                            $namedType = Type::getNamedType($type);
+                            $typeConfig = $this->types[$namedType->name];
 
-                            if ($type instanceof ListOfType) {
-                                $parameter->setType('array');
-                            } else {
-                                $parameter->setType($this->types[$type->name]->typeReference());
-                            }
-
-                            $this->operationStack->addParameterToOperation($parameter);
+                            $this->operationStack->operation->addVariable(
+                                $name,
+                                $type,
+                                $typeConfig->typeReference(),
+                                $typeConfig->typeConverter(),
+                                $variableDefinition->defaultValue,
+                            );
                         },
                     ],
                     NodeKind::FIELD => [
@@ -363,13 +328,10 @@ class OperationGenerator implements ClassGenerator
         );
 
         foreach ($this->operationStorage as $stack) {
-            yield $stack->operation;
+            yield $stack->operation->build();
             yield $stack->result;
             yield $stack->errorFreeResult;
-
-            foreach ($stack->selectionStorage as $selection) {
-                yield $selection;
-            }
+            yield from $stack->selectionStorage;
         }
     }
 
@@ -387,7 +349,8 @@ class OperationGenerator implements ClassGenerator
     {
         return new ObjectLikeBuilder(
             $name,
-            $this->currentNamespace()
+            $this->currentNamespace(),
+            $this->endpointName
         );
     }
 
