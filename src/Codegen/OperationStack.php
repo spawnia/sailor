@@ -12,11 +12,8 @@ class OperationStack
 
     public ClassType $errorFreeResult;
 
-    /** @var array<int, array<string, ObjectLikeBuilder>> */
-    public array $selectionStack = [];
-
-    /** @var array<int, ClassType> */
-    public array $selectionStorage = [];
+    /** @var array<string, array<string, ObjectLikeBuilder>> */
+    public array $selections = [];
 
     public function __construct(OperationBuilder $operation)
     {
@@ -26,36 +23,29 @@ class OperationStack
     /**
      * @param  array<string, ObjectLikeBuilder>  $selection
      */
-    public function pushSelection(array $selection): void
+    public function setSelection(string $namespace, array $selection): void
     {
-        $this->selectionStack[] = $selection;
+        // Ignore if already set, we already were in that subtree
+        $this->selections[$namespace] ??= $selection;
     }
 
     /**
-     * When building the current selection is finished, we move it to storage.
+     * @return iterable<ClassType>
      */
-    public function popSelection(): void
+    public function buildSelections(): iterable
     {
-        $selection = array_pop($this->selectionStack);
-        if (null === $selection) {
-            throw new \Exception('Emptied out the selection stack too quickly.');
-        }
-
-        foreach ($selection as $builder) {
-            $this->selectionStorage[] = $builder->build();
+        foreach ($this->selections as $selection) {
+            foreach ($selection as $builder) {
+                yield $builder->build();
+            }
         }
     }
 
     /**
      * @return array<string, ObjectLikeBuilder>
      */
-    public function peekSelection(): array
+    public function selection(string $namespace): array
     {
-        $selection = end($this->selectionStack);
-        if (false === $selection) {
-            throw new \Exception('The selection stack was unexpectedly empty.');
-        }
-
-        return $selection;
+        return $this->selections[$namespace];
     }
 }

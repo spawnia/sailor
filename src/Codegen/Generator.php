@@ -37,11 +37,17 @@ class Generator
             return [];
         }
 
+        $schema = $this->schema();
         $document = Merger::combine($parsedDocuments);
+
+        // Validate the document as defined by the user to give them an error
+        // message that is more closely related to their source code
+        Validator::validate($schema, $document);
+
+        $document = (new FoldFragments($document))->modify();
         AddTypename::modify($document);
 
-        $schema = $this->schema();
-
+        // Validate again to ensure the modifications we made were safe
         Validator::validate($schema, $document);
 
         foreach ((new OperationGenerator($schema, $document, $this->endpointConfig, $this->endpointName))->generate() as $class) {
