@@ -3,15 +3,15 @@
 namespace Spawnia\Sailor\Tests\Unit;
 
 use Mockery;
-use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Error\Error;
 use Spawnia\Sailor\Error\ResultErrorsException;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQuery;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQueryResult;
+use Spawnia\Sailor\Tests\TestCase;
 
-class ResultTest extends TestCase
+final class ResultTest extends TestCase
 {
     /**
      * @dataProvider isClientSafe

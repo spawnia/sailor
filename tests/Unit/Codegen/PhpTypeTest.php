@@ -5,10 +5,10 @@ namespace Spawnia\Sailor\Tests\Unit\Codegen;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\Type;
-use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Codegen\TypeWrapper;
+use Spawnia\Sailor\Tests\TestCase;
 
-class PhpTypeTest extends TestCase
+final class PhpTypeTest extends TestCase
 {
     public function testSimpleType(): void
     {

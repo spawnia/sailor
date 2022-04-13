@@ -3,13 +3,13 @@
 namespace Spawnia\Sailor\Tests\Unit;
 
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Spawnia\Sailor\Error\InvalidDataException;
 use Spawnia\Sailor\Response;
+use Spawnia\Sailor\Tests\TestCase;
 
-class ResponseTest extends TestCase
+final class ResponseTest extends TestCase
 {
     public function testFromResponseInterface(): void
     {

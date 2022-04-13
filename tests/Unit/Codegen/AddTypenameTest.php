@@ -4,10 +4,10 @@ namespace Spawnia\Sailor\Tests\Unit\Codegen;
 
 use GraphQL\Language\Parser;
 use GraphQL\Language\Printer;
-use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Codegen\AddTypename;
+use Spawnia\Sailor\Tests\TestCase;
 
-class AddTypenameTest extends TestCase
+final class AddTypenameTest extends TestCase
 {
     public function testSimpleQuery(): void
     {

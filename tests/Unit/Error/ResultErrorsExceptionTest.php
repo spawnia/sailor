@@ -2,11 +2,11 @@
 
 namespace Spawnia\Sailor\Tests\Unit\Error;
 
-use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Error\Error;
 use Spawnia\Sailor\Error\ResultErrorsException;
+use Spawnia\Sailor\Tests\TestCase;
 
-class ResultErrorsExceptionTest extends TestCase
+final class ResultErrorsExceptionTest extends TestCase
 {
     public function testConstructor(): void
     {

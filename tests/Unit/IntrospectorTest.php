@@ -4,7 +4,6 @@ namespace Spawnia\Sailor\Tests\Unit;
 
 use GraphQL\Type\Introspection;
 use GraphQL\Utils\BuildSchema;
-use PHPUnit\Framework\TestCase;
 use function Safe\file_get_contents;
 use function Safe\unlink;
 use Spawnia\Sailor\Client;
@@ -15,12 +14,13 @@ use Spawnia\Sailor\Introspector;
 use Spawnia\Sailor\Json;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
+use Spawnia\Sailor\Tests\TestCase;
 use stdClass;
 
 /**
  * @phpstan-import-type ResponseMock from MockClient
  */
-class IntrospectorTest extends TestCase
+final class IntrospectorTest extends TestCase
 {
     public const SCHEMA = /* @lang GraphQL */ <<<'GRAPHQL'
         type Query {
