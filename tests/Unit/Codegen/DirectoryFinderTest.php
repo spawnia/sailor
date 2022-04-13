@@ -2,10 +2,10 @@
 
 namespace Spawnia\Sailor\Tests\Unit\Codegen;
 
-use PHPUnit\Framework;
 use Spawnia\Sailor\Codegen\DirectoryFinder;
+use Spawnia\Sailor\Tests\TestCase;
 
-class DirectoryFinderTest extends Framework\TestCase
+final class DirectoryFinderTest extends TestCase
 {
     public function testFindsFiles(): void
     {

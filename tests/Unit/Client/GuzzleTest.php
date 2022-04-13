@@ -7,10 +7,10 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Client\Guzzle;
+use Spawnia\Sailor\Tests\TestCase;
 
-class GuzzleTest extends TestCase
+final class GuzzleTest extends TestCase
 {
     public function testRequest(): void
     {

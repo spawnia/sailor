@@ -3,11 +3,11 @@
 namespace Spawnia\Sailor\Tests\Unit\Testing;
 
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
+use Spawnia\Sailor\Tests\TestCase;
 
-class MockClientTest extends TestCase
+final class MockClientTest extends TestCase
 {
     public function testCallsMock(): void
     {

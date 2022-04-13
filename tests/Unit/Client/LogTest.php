@@ -2,10 +2,10 @@
 
 namespace Spawnia\Sailor\Tests\Unit\Client;
 
-use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Client\Log;
+use Spawnia\Sailor\Tests\TestCase;
 
-class LogTest extends TestCase
+final class LogTest extends TestCase
 {
     public const FILENAME = __DIR__ . '/LogTest.log';
 

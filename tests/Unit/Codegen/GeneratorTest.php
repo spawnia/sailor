@@ -7,10 +7,10 @@ use GraphQL\Language\AST\FragmentDefinitionNode;
 use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\Parser;
-use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Codegen\Generator;
+use Spawnia\Sailor\Tests\TestCase;
 
-class GeneratorTest extends TestCase
+final class GeneratorTest extends TestCase
 {
     public function testParseNamedOperationSuccessfully(): void
     {

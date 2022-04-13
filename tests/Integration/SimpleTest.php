@@ -14,7 +14,7 @@ use Spawnia\Sailor\Simple\Operations\MyScalarQuery;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQueryResult;
 use Spawnia\Sailor\Tests\TestCase;
 
-class SimpleTest extends TestCase
+final class SimpleTest extends TestCase
 {
     public function testRequest(): void
     {
