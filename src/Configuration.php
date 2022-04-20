@@ -49,9 +49,7 @@ final class Configuration
     private static function loadConfig(string $file): array
     {
         if (! file_exists($file)) {
-            \Safe\copy(__DIR__ . '/../sailor.php', $file);
-
-            throw ConfigurationException::missingFile($file);
+            throw ConfigurationException::missingFile($file, false);
         }
 
         $config = require $file;

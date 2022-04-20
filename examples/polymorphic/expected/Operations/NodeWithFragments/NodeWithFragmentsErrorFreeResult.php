@@ -10,7 +10,7 @@ class NodeWithFragmentsErrorFreeResult extends \Spawnia\Sailor\ErrorFreeResult
 
     public static function config(): string
     {
-        return '/home/bfranke/projects/sailor/tests/Integration/../../examples/polymorphic/sailor.php';
+        return '/home/bfranke/projects/sailor/examples/polymorphic/sailor.php';
     }
 
     public static function endpoint(): string

@@ -3,6 +3,7 @@
 namespace Spawnia\Sailor\Console;
 
 use Spawnia\Sailor\Configuration;
+use Spawnia\Sailor\ConfigurationException;
 use Spawnia\Sailor\EndpointConfig;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -48,6 +49,10 @@ trait InteractsWithEndpoints
         $configFile = $input->getOption('config');
         assert(is_string($configFile));
 
-        return $configFile;
+        if (! file_exists($configFile)) {
+            throw ConfigurationException::missingFile($configFile, true);
+        }
+
+        return \Safe\realpath($configFile);
     }
 }

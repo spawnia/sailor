@@ -14,8 +14,15 @@ final class ConfigurationException extends \Exception
         return new self("The given endpoint {$endpoint} does not exist in the configuration. You may want to add it to your `sailor.php`.");
     }
 
-    public static function missingFile(string $file): self
+    public static function missingFile(string $file, bool $createIfMissing): self
     {
-        return new self("The requested configuration file {$file} does not exist. An example configuration has been created, modify it to your needs and try again.");
+        $message = "The requested configuration file {$file} does not exist.";
+
+        if ($createIfMissing) {
+            \Safe\copy(__DIR__ . '/../sailor.php', $file);
+            $message .= ' An example configuration has been created, modify it to your needs and try again.';
+        }
+
+        return new self($message);
     }
 }

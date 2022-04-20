@@ -43,7 +43,7 @@ class TwoArgs extends \Spawnia\Sailor\Operation
 
     public static function config(): string
     {
-        return '/home/bfranke/projects/sailor/tests/Integration/../../examples/simple/sailor.php';
+        return '/home/bfranke/projects/sailor/examples/simple/sailor.php';
     }
 
     public static function endpoint(): string

@@ -19,7 +19,7 @@ final class CodegenTest extends TestCase
     public function testGeneratesExpectedCode(string $example): void
     {
         $examplePath = self::EXAMPLES_PATH . '/' . $example;
-        $configFile = "{$examplePath}/sailor.php";
+        $configFile = \Safe\realpath("{$examplePath}/sailor.php");
 
         $config = require $configFile;
         $endpoint = $config[$example];
