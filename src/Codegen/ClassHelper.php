@@ -6,12 +6,24 @@ use Nette\PhpGenerator\ClassType;
 
 class ClassHelper
 {
+    public static function setConfig(ClassType $class, string $configFile): void
+    {
+        $method = $class->addMethod('config');
+        $method->setStatic();
+        $method->setReturnType('string');
+        $method->setBody(
+            <<<PHP
+            return '{$configFile}';
+            PHP
+        );
+    }
+
     public static function setEndpoint(ClassType $class, string $endpointName): void
     {
-        $endpoint = $class->addMethod('endpoint');
-        $endpoint->setStatic();
-        $endpoint->setReturnType('string');
-        $endpoint->setBody(
+        $method = $class->addMethod('endpoint');
+        $method->setStatic();
+        $method->setReturnType('string');
+        $method->setBody(
             <<<PHP
             return '{$endpointName}';
             PHP

@@ -78,7 +78,7 @@ abstract class EndpointConfig
      *
      * @return array<string, TypeConfig>
      */
-    public function configureTypes(Schema $schema, string $endpointName): array
+    public function configureTypes(Schema $schema, string $configFile, string $endpointName): array
     {
         $typeConverters = [
             'Int' => new IntTypeConfig(),
@@ -92,7 +92,7 @@ abstract class EndpointConfig
             if ($type instanceof EnumType) {
                 $typeConverters[$name] = new EnumTypeConfig($this, $type);
             } elseif ($type instanceof InputObjectType) {
-                $typeConverters[$name] = new InputTypeConfig($this, $schema, $endpointName, $type);
+                $typeConverters[$name] = new InputTypeConfig($this, $schema, $configFile, $endpointName, $type);
             } elseif ($type instanceof ScalarType) {
                 $typeConverters[$name] ??= new ScalarTypeConfig();
             }

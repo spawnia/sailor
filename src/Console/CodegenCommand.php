@@ -4,56 +4,35 @@ namespace Spawnia\Sailor\Console;
 
 use Spawnia\Sailor\Codegen\Generator;
 use Spawnia\Sailor\Codegen\Writer;
-use Spawnia\Sailor\Configuration;
-use SplFileInfo;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class CodegenCommand extends Command
 {
-    private const OPTION_CONFIG = 'config';
+    use InteractsWithEndpoints;
 
     protected static $defaultName = 'codegen';
 
     protected function configure(): void
     {
         $this->setDescription('Generate code from your GraphQL files.');
-        $this->addArgument('endpoint', InputArgument::OPTIONAL, 'You may choose a specific endpoint. Uses all by default.');
-        $this->addOption(
-            self::OPTION_CONFIGURATION,
-            'c',
-            InputArgument::OPTIONAL,
-            'Path to a configuration file. Default `sailor.php`.',
-            'sailor.php'
-        );
+        $this->configureEndpoints();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $endpoint = $input->getArgument('endpoint');
-        $configurationFile = $input->getOption(self::OPTION_CONFIGURATION);
-        assert(is_string($configurationFile));
+        $endpoints = $this->endpoints($input);
 
-        $configuration = new Configuration(new SplFileInfo($configurationFile));
+        $configFile = $this->configFile($input);
 
-        if (null !== $endpoint) {
-            $endpointNames = (array) $endpoint;
-        } else {
-            $endpointNames = array_keys(Configuration::endpoints());
-        }
-
-        /** @var string $endpointName */
-        foreach ($endpointNames as $endpointName) {
+        foreach ($endpoints as $endpointName => $endpoint) {
             echo "Generating code for endpoint {$endpointName}...\n";
 
-            $endpointConfig = $configuration::endpoint($endpointName);
-
-            $generator = new Generator($endpointConfig, $endpointName);
+            $generator = new Generator($endpoint, $configFile, $endpointName);
             $files = $generator->generate();
 
-            $writer = new Writer($endpointConfig);
+            $writer = new Writer($endpoint);
             $writer->write($files);
         }
 

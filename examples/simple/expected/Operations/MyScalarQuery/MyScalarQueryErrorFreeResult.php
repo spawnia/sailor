@@ -8,6 +8,11 @@ class MyScalarQueryErrorFreeResult extends \Spawnia\Sailor\ErrorFreeResult
 {
     public MyScalarQuery $data;
 
+    public static function config(): string
+    {
+        return '/home/bfranke/projects/sailor/tests/Integration/../../examples/simple/sailor.php';
+    }
+
     public static function endpoint(): string
     {
         return 'simple';

@@ -16,12 +16,15 @@ class TypeConvertersGenerator implements ClassGenerator
 
     protected EndpointConfig $endpointConfig;
 
+    protected string $configFile;
+
     protected string $endpointName;
 
-    public function __construct(Schema $schema, EndpointConfig $endpointConfig, string $endpointName)
+    public function __construct(Schema $schema, EndpointConfig $endpointConfig, string $configFile, string $endpointName)
     {
         $this->schema = $schema;
         $this->endpointConfig = $endpointConfig;
+        $this->configFile = $configFile;
         $this->endpointName = $endpointName;
     }
 
@@ -32,7 +35,7 @@ class TypeConvertersGenerator implements ClassGenerator
             new PhpNamespace($this->endpointConfig->namespace())
         );
 
-        foreach ($this->endpointConfig->configureTypes($this->schema, $this->endpointName) as $name => $config) {
+        foreach ($this->endpointConfig->configureTypes($this->schema, $this->configFile, $this->endpointName) as $name => $config) {
             $method = $class->addMethod($name);
             $method->setStatic(true);
             $method->setReturnType($config->typeConverter());

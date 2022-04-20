@@ -79,7 +79,7 @@ final class CustomTypesTest extends TestCase
             ->withNoArgs()
             ->andReturn($client);
 
-        Configuration::setEndpoint(MyCustomEnumQuery::endpoint(), $endpoint);
+        Configuration::setEndpointFor(MyCustomEnumQuery::class, $endpoint);
 
         $result = MyCustomEnumQuery::execute(new CustomEnum($value));
         self::assertNull($result->data);

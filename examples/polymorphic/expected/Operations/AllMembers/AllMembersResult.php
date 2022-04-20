@@ -8,6 +8,11 @@ class AllMembersResult extends \Spawnia\Sailor\Result
 {
     public ?AllMembers $data = null;
 
+    public static function config(): string
+    {
+        return '/home/bfranke/projects/sailor/tests/Integration/../../examples/polymorphic/sailor.php';
+    }
+
     public static function endpoint(): string
     {
         return 'polymorphic';

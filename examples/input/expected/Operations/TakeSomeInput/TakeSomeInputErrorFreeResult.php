@@ -8,6 +8,11 @@ class TakeSomeInputErrorFreeResult extends \Spawnia\Sailor\ErrorFreeResult
 {
     public TakeSomeInput $data;
 
+    public static function config(): string
+    {
+        return '/home/bfranke/projects/sailor/tests/Integration/../../examples/input/sailor.php';
+    }
+
     public static function endpoint(): string
     {
         return 'input';

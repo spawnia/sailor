@@ -16,11 +16,14 @@ class Generator
 {
     protected EndpointConfig $endpointConfig;
 
+    protected string $configFile;
+
     protected string $endpointName;
 
-    public function __construct(EndpointConfig $endpointConfig, string $endpointName)
+    public function __construct(EndpointConfig $endpointConfig, string $configFile, string $endpointName)
     {
         $this->endpointConfig = $endpointConfig;
+        $this->configFile = $configFile;
         $this->endpointName = $endpointName;
     }
 
@@ -49,15 +52,15 @@ class Generator
         // Validate again to ensure the modifications we made were safe
         Validator::validate($schema, $document);
 
-        foreach ((new OperationGenerator($schema, $document, $this->endpointConfig, $this->endpointName))->generate() as $class) {
+        foreach ((new OperationGenerator($schema, $document, $this->endpointConfig, $this->configFile, $this->endpointName))->generate() as $class) {
             yield $this->makeFile($class);
         }
 
-        foreach ((new TypeConvertersGenerator($schema, $this->endpointConfig, $this->endpointName))->generate() as $class) {
+        foreach ((new TypeConvertersGenerator($schema, $this->endpointConfig, $this->configFile, $this->endpointName))->generate() as $class) {
             yield $this->makeFile($class);
         }
 
-        foreach ($this->endpointConfig->configureTypes($schema, $this->endpointName) as $typeConfig) {
+        foreach ($this->endpointConfig->configureTypes($schema, $this->configFile, $this->endpointName) as $typeConfig) {
             foreach ($typeConfig->generateClasses() as $class) {
                 yield $this->makeFile($class);
             }

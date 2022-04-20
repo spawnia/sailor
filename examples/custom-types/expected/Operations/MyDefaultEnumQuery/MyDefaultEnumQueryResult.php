@@ -8,6 +8,11 @@ class MyDefaultEnumQueryResult extends \Spawnia\Sailor\Result
 {
     public ?MyDefaultEnumQuery $data = null;
 
+    public static function config(): string
+    {
+        return '/home/bfranke/projects/sailor/tests/Integration/../../examples/custom-types/sailor.php';
+    }
+
     public static function endpoint(): string
     {
         return 'custom-types';

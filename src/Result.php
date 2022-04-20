@@ -37,11 +37,6 @@ abstract class Result implements BelongsToEndpoint
     abstract public function errorFree(): ErrorFreeResult;
 
     /**
-     * The configured endpoint this class belongs to.
-     */
-    abstract public static function endpoint(): string;
-
-    /**
      * @return static
      */
     public static function fromResponse(Response $response): self
@@ -94,11 +89,12 @@ abstract class Result implements BelongsToEndpoint
      */
     protected static function parseErrors(array $errors): array
     {
-        $endpoint = Configuration::endpoint(static::endpoint());
+        $endpoint = Configuration::endpoint(static::config(), static::endpoint());
 
         return array_map(
             static function (stdClass $raw) use ($endpoint): Error {
                 $parsed = $endpoint->parseError($raw);
+                $parsed->configFile = static::config();
                 $parsed->endpointName = static::endpoint();
 
                 return $parsed;
@@ -117,9 +113,7 @@ abstract class Result implements BelongsToEndpoint
     public function assertErrorFree(): self
     {
         if (isset($this->errors)) {
-            $exception = new ResultErrorsException($this->errors, static::endpoint());
-
-            throw $exception;
+            throw new ResultErrorsException($this->errors, static::config(), static::endpoint());
         }
 
         return $this;

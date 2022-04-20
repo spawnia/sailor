@@ -22,7 +22,7 @@ final class ResultTest extends TestCase
         $endpoint->expects('errorsAreClientSafe')
             ->once()
             ->andReturn($isClientSafe);
-        Configuration::setEndpoint(MyScalarQueryResult::endpoint(), $endpoint);
+        Configuration::setEndpointFor(MyScalarQueryResult::class, $endpoint);
 
         $result = new MyScalarQueryResult();
 
@@ -61,7 +61,7 @@ final class ResultTest extends TestCase
         $endpoint->expects('errorsAreClientSafe')
             ->once()
             ->andReturn($isClientSafe);
-        Configuration::setEndpoint(MyScalarQueryResult::endpoint(), $endpoint);
+        Configuration::setEndpointFor(MyScalarQueryResult::class, $endpoint);
 
         $result = new MyScalarQueryResult();
         $result->data = MyScalarQuery::fromStdClass((object) [
@@ -87,7 +87,7 @@ final class ResultTest extends TestCase
     public function testWithErrors(): void
     {
         $endpoint = Mockery::mock(EndpointConfig::class)->makePartial();
-        Configuration::setEndpoint(MyScalarQueryResult::endpoint(), $endpoint);
+        Configuration::setEndpointFor(MyScalarQueryResult::class, $endpoint);
 
         $message = 'foo';
 
@@ -120,7 +120,7 @@ final class ResultTest extends TestCase
         $endpoint->expects('errorsAreClientSafe')
             ->once()
             ->andReturn($isClientSafe);
-        Configuration::setEndpoint(MyScalarQueryResult::endpoint(), $endpoint);
+        Configuration::setEndpointFor(MyScalarQueryResult::class, $endpoint);
 
         $result = MyScalarQueryResult::fromErrors([
             (object) [

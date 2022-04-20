@@ -43,12 +43,15 @@ class OperationGenerator implements ClassGenerator
 
     protected EndpointConfig $endpointConfig;
 
+    protected string $configFile;
+
     protected string $endpointName;
 
-    public function __construct(Schema $schema, DocumentNode $document, EndpointConfig $endpointNameConfig, string $endpointName)
+    public function __construct(Schema $schema, DocumentNode $document, EndpointConfig $endpointNameConfig, string $configFile, string $endpointName)
     {
         $this->schema = $schema;
         $this->endpointConfig = $endpointNameConfig;
+        $this->configFile = $configFile;
         $this->endpointName = $endpointName;
         $this->document = $document;
     }
@@ -72,7 +75,7 @@ class OperationGenerator implements ClassGenerator
 
     public function generate(): iterable
     {
-        $this->types = $this->endpointConfig->configureTypes($this->schema, $this->endpointName);
+        $this->types = $this->endpointConfig->configureTypes($this->schema, $this->configFile, $this->endpointName);
         $this->namespaceStack[] = $this->endpointConfig->operationsNamespace();
 
         $typeInfo = new TypeInfo($this->schema);
@@ -109,12 +112,13 @@ class OperationGenerator implements ClassGenerator
                             // TODO minify the query string https://github.com/webonyx/graphql-php/issues/1028
                             $operation->storeDocument(Printer::doPrint($operationDefinition));
 
-                            // Set the endpoint this operation belongs to
+                            $operation->setConfig($this->configFile);
                             $operation->setEndpoint($this->endpointName);
 
                             $result = new ClassType($resultName, $this->makeNamespace());
                             $result->setExtends(Result::class);
 
+                            ClassHelper::setConfig($result, $this->configFile);
                             ClassHelper::setEndpoint($result, $this->endpointName);
 
                             $setData = $result->addMethod('setData');
@@ -171,6 +175,7 @@ class OperationGenerator implements ClassGenerator
                             $errorFreeResult = new ClassType($errorFreeResultName, $this->makeNamespace());
                             $errorFreeResult->setExtends(ErrorFreeResult::class);
 
+                            ClassHelper::setConfig($errorFreeResult, $this->configFile);
                             ClassHelper::setEndpoint($errorFreeResult, $this->endpointName);
 
                             $errorFreeDataProp = $errorFreeResult->addProperty('data');
@@ -354,6 +359,7 @@ class OperationGenerator implements ClassGenerator
         return new ObjectLikeBuilder(
             $name,
             $this->currentNamespace(),
+            $this->configFile,
             $this->endpointName
         );
     }

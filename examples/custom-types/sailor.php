@@ -48,10 +48,10 @@ return [
             return $mockClient;
         }
 
-        public function configureTypes(Schema $schema, string $endpointName): array
+        public function configureTypes(Schema $schema, string $configFile, string $endpointName): array
         {
             return array_merge(
-                parent::configureTypes($schema, $endpointName),
+                parent::configureTypes($schema, $configFile, $endpointName),
                 [
                     'BenSampoEnum' => new BenSampoEnumTypeConfig($this, $schema->getType('BenSampoEnum')),
                     'CustomEnum' => new CustomEnumTypeConfig($this, $schema->getType('CustomEnum')),

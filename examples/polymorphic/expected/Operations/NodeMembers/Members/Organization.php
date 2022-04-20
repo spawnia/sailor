@@ -27,6 +27,11 @@ class Organization extends \Spawnia\Sailor\ObjectLike
         ];
     }
 
+    public static function config(): string
+    {
+        return '/home/bfranke/projects/sailor/tests/Integration/../../examples/polymorphic/sailor.php';
+    }
+
     public static function endpoint(): string
     {
         return 'polymorphic';

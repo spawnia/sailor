@@ -36,6 +36,11 @@ class MyBenSampoEnumQuery extends \Spawnia\Sailor\Operation
         }';
     }
 
+    public static function config(): string
+    {
+        return '/home/bfranke/projects/sailor/tests/Integration/../../examples/custom-types/sailor.php';
+    }
+
     public static function endpoint(): string
     {
         return 'custom-types';

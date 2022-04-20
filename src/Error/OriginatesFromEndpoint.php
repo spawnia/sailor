@@ -11,17 +11,22 @@ use Spawnia\Sailor\Configuration;
 trait OriginatesFromEndpoint
 {
     /**
+     * Path to the config file the endpoint is defined in.
+     */
+    public string $configFile;
+
+    /**
      * Name of the endpoint this error originates from.
      */
     public string $endpointName;
 
     public function isClientSafe(): bool
     {
-        if (! isset($this->endpointName)) {
+        if (! isset($this->configFile, $this->endpointName)) {
             return false;
         }
 
-        return Configuration::endpoint($this->endpointName)
+        return Configuration::endpoint($this->configFile, $this->endpointName)
             ->errorsAreClientSafe();
     }
 
