@@ -6,7 +6,7 @@ use Spawnia\Sailor\Input\Operations\TakeSomeInput;
 use Spawnia\Sailor\Input\Types\SomeInput;
 use Spawnia\Sailor\Tests\TestCase;
 
-class InputTest extends TestCase
+final class InputTest extends TestCase
 {
     public function testSomeInput(): void
     {

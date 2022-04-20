@@ -1,0 +1,26 @@
+query NodeWithFragments($id: ID!) {
+    node(id: $id) {
+        node {
+            node {
+                id
+                ... on User {
+                    id
+                }
+            }
+        }
+        ... on Task {
+            done
+            node {
+                node {
+                    ... on User {
+                        name
+                    }
+                }
+            }
+        }
+        ... on Post {
+            id
+            title
+        }
+    }
+}

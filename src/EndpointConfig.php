@@ -8,6 +8,8 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Schema;
 use Nette\PhpGenerator\ClassType;
+use Spawnia\Sailor\Codegen\DirectoryFinder;
+use Spawnia\Sailor\Codegen\Finder;
 use Spawnia\Sailor\Error\Error;
 use Spawnia\Sailor\Type\BooleanTypeConfig;
 use Spawnia\Sailor\Type\EnumTypeConfig;
@@ -46,6 +48,14 @@ abstract class EndpointConfig
      * The location of the schema file that describes the endpoint.
      */
     abstract public function schemaPath(): string;
+
+    /**
+     * Instantiate a class to find GraphQL documents.
+     */
+    public function finder(): Finder
+    {
+        return new DirectoryFinder($this->searchPath());
+    }
 
     /**
      * Instantiate an Error class from a plain GraphQL error.

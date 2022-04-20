@@ -11,7 +11,7 @@ use Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node;
 use Spawnia\Sailor\Polymorphic\Operations\UserOrPost\UserOrPostResult;
 use Spawnia\Sailor\Tests\TestCase;
 
-class PolymorphicTest extends TestCase
+final class PolymorphicTest extends TestCase
 {
     public function testUserOrPost(): void
     {

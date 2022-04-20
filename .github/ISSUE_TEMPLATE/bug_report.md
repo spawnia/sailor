@@ -5,7 +5,7 @@ about: Report a bug
 ---
 
 <!-- Please file a bug report only if there is a problem with this library.
-To get help on an issue or ask a question, consult Stackoverflow. -->
+Get help or ask a question through [discussions](https://github.com/spawnia/sailor/discussions/new) -->
 
 **Describe the bug**
 

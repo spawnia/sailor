@@ -7,8 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
 - Allow specifying `--configuration` option to CLI commands to read specific config file
-- 
+
+## v0.20.2
+
+### Changed
+
+- Ignore the schema itself when looking for operations
+
+## v0.20.1
+
+### Changed
+
+- Simply ignore non-executable definitions
+
+## v0.20.0
+
+### Added
+
+- Support fragments
+
+### Fixed
+
+- Merge fields between diverging subtrees within inline fragments
+
+## v0.19.0
+
+### Added
+
+- Allow customizing how documents are found
+
 ## v0.18.2
 
 ### Fixed

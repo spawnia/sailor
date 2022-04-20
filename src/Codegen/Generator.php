@@ -10,7 +10,6 @@ use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PsrPrinter;
-use Nette\Utils\FileSystem;
 use Spawnia\Sailor\EndpointConfig;
 
 class Generator
@@ -37,11 +36,17 @@ class Generator
             return [];
         }
 
+        $schema = $this->schema();
         $document = Merger::combine($parsedDocuments);
+
+        // Validate the document as defined by the user to give them an error
+        // message that is more closely related to their source code
+        Validator::validate($schema, $document);
+
+        $document = (new FoldFragments($document))->modify();
         AddTypename::modify($document);
 
-        $schema = $this->schema();
-
+        // Validate again to ensure the modifications we made were safe
         Validator::validate($schema, $document);
 
         foreach ((new OperationGenerator($schema, $document, $this->endpointConfig, $this->endpointName))->generate() as $class) {
@@ -152,16 +157,15 @@ class Generator
     /**
      * @param  array<string, \GraphQL\Language\AST\DocumentNode>  $parsed
      */
-    public static function ensureOperationsAreNamed(array $parsed): void
+    public static function validateDocuments(array $parsed): void
     {
         foreach ($parsed as $path => $documentNode) {
             foreach ($documentNode->definitions as $definition) {
-                if (! $definition instanceof OperationDefinitionNode) {
-                    throw new Error('Found unsupported definition in ' . $path, $definition);
-                }
-
-                if (null === $definition->name) {
-                    throw new Error('Found unnamed operation definition in ' . $path, $definition);
+                switch (true) {
+                    case $definition instanceof OperationDefinitionNode:
+                        if (null === $definition->name) {
+                            throw new Error('Found unnamed operation definition in ' . $path, $definition);
+                        }
                 }
             }
         }
@@ -181,17 +185,17 @@ class Generator
      */
     protected function parsedDocuments(): array
     {
-        $finder = new Finder($this->endpointConfig->searchPath());
-        $documents = $finder->documents();
+        $documents = $this->endpointConfig
+            ->finder()
+            ->documents();
+
+        // Ignore the schema itself, it never contains operation definitions
+        unset($documents[$this->endpointConfig->schemaPath()]);
 
         $parsed = static::parseDocuments($documents);
-        static::ensureOperationsAreNamed($parsed);
+
+        static::validateDocuments($parsed);
 
         return $parsed;
-    }
-
-    protected function deleteGeneratedFiles(): void
-    {
-        FileSystem::delete($this->endpointConfig->targetPath());
     }
 }

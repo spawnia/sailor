@@ -7,7 +7,7 @@ use Spawnia\Sailor\Codegen\Generator;
 use Spawnia\Sailor\Codegen\Writer;
 use Spawnia\Sailor\Tests\TestCase;
 
-class CodegenTest extends TestCase
+final class CodegenTest extends TestCase
 {
     use AssertDirectory;
 

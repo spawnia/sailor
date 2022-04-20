@@ -4,10 +4,10 @@ namespace Spawnia\Sailor\Tests\Unit\Codegen;
 
 use GraphQL\Language\Parser;
 use GraphQL\Utils\BuildSchema;
-use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Codegen\Validator;
+use Spawnia\Sailor\Tests\TestCase;
 
-class ValidatorTest extends TestCase
+final class ValidatorTest extends TestCase
 {
     public function testValidateSuccess(): void
     {
