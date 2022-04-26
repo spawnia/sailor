@@ -52,28 +52,33 @@ class Generator
         // Validate again to ensure the modifications we made were safe
         Validator::validate($schema, $document);
 
-        foreach ((new OperationGenerator($schema, $document, $this->endpointConfig, $this->configFile, $this->endpointName))->generate() as $class) {
+        foreach ((new OperationGenerator($schema, $document, $this->endpointConfig))->generate() as $class) {
             yield $this->makeFile($class);
         }
 
-        foreach ((new TypeConvertersGenerator($schema, $this->endpointConfig, $this->configFile, $this->endpointName))->generate() as $class) {
+        foreach ((new TypeConvertersGenerator($schema, $this->endpointConfig))->generate() as $class) {
             yield $this->makeFile($class);
         }
 
-        foreach ($this->endpointConfig->configureTypes($schema, $this->configFile, $this->endpointName) as $typeConfig) {
+        foreach ($this->endpointConfig->configureTypes($schema) as $typeConfig) {
             foreach ($typeConfig->generateClasses() as $class) {
                 yield $this->makeFile($class);
             }
         }
 
-        foreach ($this->endpointConfig->generateClasses($schema, $document, $this->endpointName) as $class) {
+        foreach ($this->endpointConfig->generateClasses($schema, $document) as $class) {
             yield $this->makeFile($class);
         }
     }
 
     protected function makeFile(ClassType $classType): File
     {
-        ClassHelper::setEndpoint($classType, $this->endpointName);
+        $endpoint = $classType->addMethod('endpoint');
+        $endpoint->setStatic();
+        $endpoint->setReturnType('string');
+        $endpoint->setBody(<<<PHP
+            return '{$this->endpointName}';
+        PHP);
 
         $file = new File();
 
@@ -86,7 +91,12 @@ class Generator
         $targetDirectory = $this->targetDirectory($namespace);
         $file->directory = $targetDirectory;
 
-        ClassHelper::setConfig($classType, $this->relativeConfigPath($targetDirectory));
+        $config = $classType->addMethod('config');
+        $config->setStatic();
+        $config->setReturnType('string');
+        $config->setBody(<<<PHP
+            return {$this->relativeConfigPath($targetDirectory)};
+        PHP);
 
         $file->name = $classType->getName() . '.php';
         $file->content = self::asPhpFile($classType);

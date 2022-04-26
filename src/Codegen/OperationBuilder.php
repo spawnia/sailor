@@ -78,16 +78,6 @@ PHP
         );
     }
 
-    public function setConfig(string $configFile): void
-    {
-//        ClassHelper::setConfig($this->class, $configFile);
-    }
-
-    public function setEndpoint(string $endpointName): void
-    {
-//        ClassHelper::setEndpoint($this->class, $endpointName);
-    }
-
     /**
      * @param mixed $defaultValue any value
      */
