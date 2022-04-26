@@ -12,4 +12,9 @@ class MyEnumInputQueryErrorFreeResult extends \Spawnia\Sailor\ErrorFreeResult
     {
         return 'custom-types';
     }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../../sailor.php';
+    }
 }

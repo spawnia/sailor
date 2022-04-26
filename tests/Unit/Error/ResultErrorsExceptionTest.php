@@ -11,9 +11,9 @@ final class ResultErrorsExceptionTest extends TestCase
     public function testConstructor(): void
     {
         $errors = [new Error('bar'), new Error('baz')];
-        $exception = new ResultErrorsException($errors, 'foo');
+        $exception = new ResultErrorsException($errors, 'file.php', 'foo');
 
         self::assertSame($errors, $exception->errors);
-        self::assertSame('foo: bar | baz', $exception->getMessage());
+        self::assertSame('file.php(foo): bar | baz', $exception->getMessage());
     }
 }

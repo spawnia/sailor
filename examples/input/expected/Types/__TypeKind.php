@@ -14,4 +14,14 @@ class __TypeKind
     public const INPUT_OBJECT = 'INPUT_OBJECT';
     public const LIST = 'LIST';
     public const NON_NULL = 'NON_NULL';
+
+    public static function endpoint(): string
+    {
+        return 'input';
+    }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../sailor.php';
+    }
 }

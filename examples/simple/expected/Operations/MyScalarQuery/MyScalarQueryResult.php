@@ -8,11 +8,6 @@ class MyScalarQueryResult extends \Spawnia\Sailor\Result
 {
     public ?MyScalarQuery $data = null;
 
-    public static function endpoint(): string
-    {
-        return 'simple';
-    }
-
     protected function setData(\stdClass $data): void
     {
         $this->data = MyScalarQuery::fromStdClass($data);
@@ -34,5 +29,15 @@ class MyScalarQueryResult extends \Spawnia\Sailor\Result
     public function errorFree(): MyScalarQueryErrorFreeResult
     {
         return MyScalarQueryErrorFreeResult::fromResult($this);
+    }
+
+    public static function endpoint(): string
+    {
+        return 'simple';
+    }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../../sailor.php';
     }
 }

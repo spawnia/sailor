@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Allow specifying `--configuration` option to CLI commands to read specific config file
+
 ## v0.20.2
 
 ### Changed

@@ -58,4 +58,9 @@ class SomeInput extends \Spawnia\Sailor\ObjectLike
     {
         return 'input';
     }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../sailor.php';
+    }
 }

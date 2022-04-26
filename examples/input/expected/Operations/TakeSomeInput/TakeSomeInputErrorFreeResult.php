@@ -12,4 +12,9 @@ class TakeSomeInputErrorFreeResult extends \Spawnia\Sailor\ErrorFreeResult
     {
         return 'input';
     }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../../sailor.php';
+    }
 }

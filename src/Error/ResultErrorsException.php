@@ -20,9 +20,10 @@ class ResultErrorsException extends Exception implements ClientAware
     /**
      * @param array<int, Error> $errors
      */
-    public function __construct(array $errors, string $endpointName)
+    public function __construct(array $errors, string $configFile, string $endpointName)
     {
         $this->errors = $errors;
+        $this->configFile = $configFile;
         $this->endpointName = $endpointName;
 
         $messages = implode(
@@ -32,6 +33,6 @@ class ResultErrorsException extends Exception implements ClientAware
                 $errors
             )
         );
-        parent::__construct("{$endpointName}: {$messages}");
+        parent::__construct("{$configFile}({$endpointName}): {$messages}");
     }
 }

@@ -48,6 +48,9 @@ A file called `sailor.php` will be created in your project root.
 You can take a look at the example configuration to see what options
 are available for configuration: [`sailor.php`](sailor.php).
 
+If you would like to use multiple configuration files, specify which file
+to use through the `-c/--config` option.
+
 It is quite useful to include dynamic values in your configuration.
 You might use [PHP dotenv](https://github.com/vlucas/phpdotenv) to load
 environment variables (run `composer require vlucas/phpdotenv` if you do not have it installed already.).

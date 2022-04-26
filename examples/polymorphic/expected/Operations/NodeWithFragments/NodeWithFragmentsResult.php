@@ -8,11 +8,6 @@ class NodeWithFragmentsResult extends \Spawnia\Sailor\Result
 {
     public ?NodeWithFragments $data = null;
 
-    public static function endpoint(): string
-    {
-        return 'polymorphic';
-    }
-
     protected function setData(\stdClass $data): void
     {
         $this->data = NodeWithFragments::fromStdClass($data);
@@ -34,5 +29,15 @@ class NodeWithFragmentsResult extends \Spawnia\Sailor\Result
     public function errorFree(): NodeWithFragmentsErrorFreeResult
     {
         return NodeWithFragmentsErrorFreeResult::fromResult($this);
+    }
+
+    public static function endpoint(): string
+    {
+        return 'polymorphic';
+    }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../../sailor.php';
     }
 }

@@ -19,11 +19,12 @@ final class CodegenTest extends TestCase
     public function testGeneratesExpectedCode(string $example): void
     {
         $examplePath = self::EXAMPLES_PATH . '/' . $example;
+        $configFile = \Safe\realpath("{$examplePath}/sailor.php");
 
-        $config = require "{$examplePath}/sailor.php";
+        $config = require $configFile;
         $endpoint = $config[$example];
 
-        $generator = new Generator($endpoint, $example);
+        $generator = new Generator($endpoint, $configFile, $example);
         $files = $generator->generate();
 
         $writer = new Writer($endpoint);

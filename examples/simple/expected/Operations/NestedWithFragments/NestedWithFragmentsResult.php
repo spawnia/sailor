@@ -8,11 +8,6 @@ class NestedWithFragmentsResult extends \Spawnia\Sailor\Result
 {
     public ?NestedWithFragments $data = null;
 
-    public static function endpoint(): string
-    {
-        return 'simple';
-    }
-
     protected function setData(\stdClass $data): void
     {
         $this->data = NestedWithFragments::fromStdClass($data);
@@ -34,5 +29,15 @@ class NestedWithFragmentsResult extends \Spawnia\Sailor\Result
     public function errorFree(): NestedWithFragmentsErrorFreeResult
     {
         return NestedWithFragmentsErrorFreeResult::fromResult($this);
+    }
+
+    public static function endpoint(): string
+    {
+        return 'simple';
+    }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../../sailor.php';
     }
 }

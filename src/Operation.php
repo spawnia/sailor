@@ -86,7 +86,7 @@ abstract class Operation implements BelongsToEndpoint
         }
 
         $client = self::$clients[static::class]
-            ?? Configuration::endpoint(static::endpoint())
+            ?? Configuration::endpoint(static::config(), static::endpoint())
                 ->makeClient();
 
         return $client->request(static::document(), $variables);

@@ -16,9 +16,12 @@ class Introspector
 
     protected string $endpointName;
 
-    public function __construct(EndpointConfig $endpointConfig, string $endpointName)
+    protected string $configFile;
+
+    public function __construct(EndpointConfig $endpointConfig, string $configFile, string $endpointName)
     {
         $this->endpointConfig = $endpointConfig;
+        $this->configFile = $configFile;
         $this->endpointName = $endpointName;
     }
 
@@ -58,12 +61,14 @@ class Introspector
                 array_map(
                     function (stdClass $raw): Error {
                         $parsed = $this->endpointConfig->parseError($raw);
+                        $parsed->configFile = $this->configFile;
                         $parsed->endpointName = $this->endpointName;
 
                         return $parsed;
                     },
                     $response->errors
                 ),
+                $this->configFile,
                 $this->endpointName
             );
         }
