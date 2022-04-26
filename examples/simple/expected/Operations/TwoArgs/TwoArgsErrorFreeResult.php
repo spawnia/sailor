@@ -8,13 +8,13 @@ class TwoArgsErrorFreeResult extends \Spawnia\Sailor\ErrorFreeResult
 {
     public TwoArgs $data;
 
-    public static function config(): string
-    {
-        return '/home/bfranke/projects/sailor/examples/simple/sailor.php';
-    }
-
     public static function endpoint(): string
     {
         return 'simple';
+    }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../../sailor.php';
     }
 }

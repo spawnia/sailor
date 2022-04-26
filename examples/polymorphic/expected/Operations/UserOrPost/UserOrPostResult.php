@@ -8,16 +8,6 @@ class UserOrPostResult extends \Spawnia\Sailor\Result
 {
     public ?UserOrPost $data = null;
 
-    public static function config(): string
-    {
-        return '/home/bfranke/projects/sailor/examples/polymorphic/sailor.php';
-    }
-
-    public static function endpoint(): string
-    {
-        return 'polymorphic';
-    }
-
     protected function setData(\stdClass $data): void
     {
         $this->data = UserOrPost::fromStdClass($data);
@@ -39,5 +29,15 @@ class UserOrPostResult extends \Spawnia\Sailor\Result
     public function errorFree(): UserOrPostErrorFreeResult
     {
         return UserOrPostErrorFreeResult::fromResult($this);
+    }
+
+    public static function endpoint(): string
+    {
+        return 'polymorphic';
+    }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../../sailor.php';
     }
 }

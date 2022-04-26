@@ -43,13 +43,13 @@ class User extends \Spawnia\Sailor\ObjectLike
         ];
     }
 
-    public static function config(): string
-    {
-        return '/home/bfranke/projects/sailor/examples/polymorphic/sailor.php';
-    }
-
     public static function endpoint(): string
     {
         return 'polymorphic';
+    }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../../../../../sailor.php';
     }
 }

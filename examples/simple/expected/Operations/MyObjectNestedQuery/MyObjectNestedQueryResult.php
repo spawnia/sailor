@@ -8,16 +8,6 @@ class MyObjectNestedQueryResult extends \Spawnia\Sailor\Result
 {
     public ?MyObjectNestedQuery $data = null;
 
-    public static function config(): string
-    {
-        return '/home/bfranke/projects/sailor/examples/simple/sailor.php';
-    }
-
-    public static function endpoint(): string
-    {
-        return 'simple';
-    }
-
     protected function setData(\stdClass $data): void
     {
         $this->data = MyObjectNestedQuery::fromStdClass($data);
@@ -39,5 +29,15 @@ class MyObjectNestedQueryResult extends \Spawnia\Sailor\Result
     public function errorFree(): MyObjectNestedQueryErrorFreeResult
     {
         return MyObjectNestedQueryErrorFreeResult::fromResult($this);
+    }
+
+    public static function endpoint(): string
+    {
+        return 'simple';
+    }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../../sailor.php';
     }
 }

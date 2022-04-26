@@ -13,7 +13,7 @@ class ClassHelper
         $method->setReturnType('string');
         $method->setBody(
             <<<PHP
-            return '{$configFile}';
+            return {$configFile};
             PHP
         );
     }

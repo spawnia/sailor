@@ -8,16 +8,6 @@ class MyObjectQueryResult extends \Spawnia\Sailor\Result
 {
     public ?MyObjectQuery $data = null;
 
-    public static function config(): string
-    {
-        return '/home/bfranke/projects/sailor/examples/simple/sailor.php';
-    }
-
-    public static function endpoint(): string
-    {
-        return 'simple';
-    }
-
     protected function setData(\stdClass $data): void
     {
         $this->data = MyObjectQuery::fromStdClass($data);
@@ -39,5 +29,15 @@ class MyObjectQueryResult extends \Spawnia\Sailor\Result
     public function errorFree(): MyObjectQueryErrorFreeResult
     {
         return MyObjectQueryErrorFreeResult::fromResult($this);
+    }
+
+    public static function endpoint(): string
+    {
+        return 'simple';
+    }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../../sailor.php';
     }
 }

@@ -8,16 +8,6 @@ class MyBenSampoEnumQueryResult extends \Spawnia\Sailor\Result
 {
     public ?MyBenSampoEnumQuery $data = null;
 
-    public static function config(): string
-    {
-        return '/home/bfranke/projects/sailor/examples/custom-types/sailor.php';
-    }
-
-    public static function endpoint(): string
-    {
-        return 'custom-types';
-    }
-
     protected function setData(\stdClass $data): void
     {
         $this->data = MyBenSampoEnumQuery::fromStdClass($data);
@@ -39,5 +29,15 @@ class MyBenSampoEnumQueryResult extends \Spawnia\Sailor\Result
     public function errorFree(): MyBenSampoEnumQueryErrorFreeResult
     {
         return MyBenSampoEnumQueryErrorFreeResult::fromResult($this);
+    }
+
+    public static function endpoint(): string
+    {
+        return 'custom-types';
+    }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../../sailor.php';
     }
 }

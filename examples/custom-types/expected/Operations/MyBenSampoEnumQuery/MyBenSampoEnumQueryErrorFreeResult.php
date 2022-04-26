@@ -8,13 +8,13 @@ class MyBenSampoEnumQueryErrorFreeResult extends \Spawnia\Sailor\ErrorFreeResult
 {
     public MyBenSampoEnumQuery $data;
 
-    public static function config(): string
-    {
-        return '/home/bfranke/projects/sailor/examples/custom-types/sailor.php';
-    }
-
     public static function endpoint(): string
     {
         return 'custom-types';
+    }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../../sailor.php';
     }
 }

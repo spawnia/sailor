@@ -25,4 +25,14 @@ class __DirectiveLocation
     public const ENUM_VALUE = 'ENUM_VALUE';
     public const INPUT_OBJECT = 'INPUT_OBJECT';
     public const INPUT_FIELD_DEFINITION = 'INPUT_FIELD_DEFINITION';
+
+    public static function endpoint(): string
+    {
+        return 'custom-types';
+    }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../sailor.php';
+    }
 }

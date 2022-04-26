@@ -20,4 +20,14 @@ class BenSampoEnumConverter implements \Spawnia\Sailor\Convert\TypeConverter
         // @phpstan-ignore-next-line generated enum values are always strings
         return $value->value;
     }
+
+    public static function endpoint(): string
+    {
+        return 'custom-types';
+    }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../sailor.php';
+    }
 }

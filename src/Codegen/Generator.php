@@ -73,15 +73,20 @@ class Generator
 
     protected function makeFile(ClassType $classType): File
     {
+        ClassHelper::setEndpoint($classType, $this->endpointName);
+
         $file = new File();
 
         $phpNamespace = $classType->getNamespace();
         if (null === $phpNamespace) {
             throw new \Exception('Generated classes must have a namespace.');
         }
-        $file->directory = $this->targetDirectory(
-            $phpNamespace->getName()
-        );
+        $namespace = $phpNamespace->getName();
+
+        $targetDirectory = $this->targetDirectory($namespace);
+        $file->directory = $targetDirectory;
+
+        ClassHelper::setConfig($classType, $this->relativeConfigPath($targetDirectory));
 
         $file->name = $classType->getName() . '.php';
         $file->content = self::asPhpFile($classType);
@@ -95,6 +100,35 @@ class Generator
         $pathInTarget = str_replace('\\', '/', $pathInTarget);
 
         return $this->endpointConfig->targetPath() . $pathInTarget;
+    }
+
+    /**
+     * @see https://stackoverflow.com/a/2638272
+     */
+    protected function relativeConfigPath(string $fileDirectory): string
+    {
+        $from = explode('/', $fileDirectory);
+        $to = explode('/', $this->configFile);
+
+        $relativeParts = $to;
+
+        foreach ($from as $depth => $dir) {
+            if ($dir === $to[$depth]) {
+                array_shift($relativeParts);
+            } else {
+                $upwards = count($relativeParts) + count($from) - $depth;
+                $relativeParts = array_pad(
+                    $relativeParts,
+                    -$upwards,
+                    '..'
+                );
+                break;
+            }
+        }
+
+        $relative = implode('/', $relativeParts);
+
+        return "__DIR__ . '/{$relative}'";
     }
 
     public static function after(string $subject, string $search): string

@@ -8,16 +8,6 @@ class NodeMembersResult extends \Spawnia\Sailor\Result
 {
     public ?NodeMembers $data = null;
 
-    public static function config(): string
-    {
-        return '/home/bfranke/projects/sailor/examples/polymorphic/sailor.php';
-    }
-
-    public static function endpoint(): string
-    {
-        return 'polymorphic';
-    }
-
     protected function setData(\stdClass $data): void
     {
         $this->data = NodeMembers::fromStdClass($data);
@@ -39,5 +29,15 @@ class NodeMembersResult extends \Spawnia\Sailor\Result
     public function errorFree(): NodeMembersErrorFreeResult
     {
         return NodeMembersErrorFreeResult::fromResult($this);
+    }
+
+    public static function endpoint(): string
+    {
+        return 'polymorphic';
+    }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../../sailor.php';
     }
 }

@@ -31,7 +31,7 @@ class ObjectLikeBuilder
      */
     private array $optionalProperties = [];
 
-    public function __construct(string $name, string $namespace, string $configFile, string $endpointName)
+    public function __construct(string $name, string $namespace)
     {
         $class = new ClassType($name, new PhpNamespace($namespace));
 
@@ -54,9 +54,6 @@ return $converters ??= [
 PHP
         );
         $this->converters = $converters;
-
-        ClassHelper::setConfig($class, $configFile);
-        ClassHelper::setEndpoint($class, $endpointName);
 
         $this->class = $class;
     }

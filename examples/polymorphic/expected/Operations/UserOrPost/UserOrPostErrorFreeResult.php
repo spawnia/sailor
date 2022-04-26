@@ -8,13 +8,13 @@ class UserOrPostErrorFreeResult extends \Spawnia\Sailor\ErrorFreeResult
 {
     public UserOrPost $data;
 
-    public static function config(): string
-    {
-        return '/home/bfranke/projects/sailor/examples/polymorphic/sailor.php';
-    }
-
     public static function endpoint(): string
     {
         return 'polymorphic';
+    }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../../sailor.php';
     }
 }

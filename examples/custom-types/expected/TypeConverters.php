@@ -96,4 +96,14 @@ class TypeConverters
 
         return $converter ??= new \Spawnia\Sailor\CustomTypes\TypeConverters\CustomDateConverter();
     }
+
+    public static function endpoint(): string
+    {
+        return 'custom-types';
+    }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../sailor.php';
+    }
 }

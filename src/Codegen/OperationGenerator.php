@@ -118,8 +118,8 @@ class OperationGenerator implements ClassGenerator
                             $result = new ClassType($resultName, $this->makeNamespace());
                             $result->setExtends(Result::class);
 
-                            ClassHelper::setConfig($result, $this->configFile);
-                            ClassHelper::setEndpoint($result, $this->endpointName);
+//                            ClassHelper::setConfig($result, $this->configFile);
+//                            ClassHelper::setEndpoint($result, $this->endpointName);
 
                             $setData = $result->addMethod('setData');
                             $setData->setVisibility('protected');
@@ -175,8 +175,8 @@ class OperationGenerator implements ClassGenerator
                             $errorFreeResult = new ClassType($errorFreeResultName, $this->makeNamespace());
                             $errorFreeResult->setExtends(ErrorFreeResult::class);
 
-                            ClassHelper::setConfig($errorFreeResult, $this->configFile);
-                            ClassHelper::setEndpoint($errorFreeResult, $this->endpointName);
+//                            ClassHelper::setConfig($errorFreeResult, $this->configFile);
+//                            ClassHelper::setEndpoint($errorFreeResult, $this->endpointName);
 
                             $errorFreeDataProp = $errorFreeResult->addProperty('data');
                             $errorFreeDataProp->setType(

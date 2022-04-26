@@ -8,16 +8,6 @@ class TakeSomeInputResult extends \Spawnia\Sailor\Result
 {
     public ?TakeSomeInput $data = null;
 
-    public static function config(): string
-    {
-        return '/home/bfranke/projects/sailor/examples/input/sailor.php';
-    }
-
-    public static function endpoint(): string
-    {
-        return 'input';
-    }
-
     protected function setData(\stdClass $data): void
     {
         $this->data = TakeSomeInput::fromStdClass($data);
@@ -39,5 +29,15 @@ class TakeSomeInputResult extends \Spawnia\Sailor\Result
     public function errorFree(): TakeSomeInputErrorFreeResult
     {
         return TakeSomeInputErrorFreeResult::fromResult($this);
+    }
+
+    public static function endpoint(): string
+    {
+        return 'input';
+    }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../../sailor.php';
     }
 }
