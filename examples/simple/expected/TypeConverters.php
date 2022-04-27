@@ -54,4 +54,14 @@ class TypeConverters
 
         return $converter ??= new \Spawnia\Sailor\Convert\EnumConverter();
     }
+
+    public static function endpoint(): string
+    {
+        return 'simple';
+    }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../sailor.php';
+    }
 }

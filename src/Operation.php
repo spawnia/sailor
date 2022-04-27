@@ -43,7 +43,7 @@ abstract class Operation implements BelongsToEndpoint
     abstract protected static function converters(): array;
 
     /**
-     * @param  mixed  ...$args
+     * @param  mixed  ...$args type depends on the subclass
      *
      * @return TResult
      */
@@ -86,7 +86,7 @@ abstract class Operation implements BelongsToEndpoint
         }
 
         $client = self::$clients[static::class]
-            ?? Configuration::endpoint(static::endpoint())
+            ?? Configuration::endpoint(static::config(), static::endpoint())
                 ->makeClient();
 
         return $client->request(static::document(), $variables);

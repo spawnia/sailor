@@ -8,11 +8,6 @@ class TwoArgsResult extends \Spawnia\Sailor\Result
 {
     public ?TwoArgs $data = null;
 
-    public static function endpoint(): string
-    {
-        return 'simple';
-    }
-
     protected function setData(\stdClass $data): void
     {
         $this->data = TwoArgs::fromStdClass($data);
@@ -34,5 +29,15 @@ class TwoArgsResult extends \Spawnia\Sailor\Result
     public function errorFree(): TwoArgsErrorFreeResult
     {
         return TwoArgsErrorFreeResult::fromResult($this);
+    }
+
+    public static function endpoint(): string
+    {
+        return 'simple';
+    }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../../sailor.php';
     }
 }

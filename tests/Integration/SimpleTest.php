@@ -14,7 +14,7 @@ use Spawnia\Sailor\Simple\Operations\MyScalarQuery;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQueryResult;
 use Spawnia\Sailor\Tests\TestCase;
 
-class SimpleTest extends TestCase
+final class SimpleTest extends TestCase
 {
     public function testRequest(): void
     {
@@ -39,7 +39,7 @@ class SimpleTest extends TestCase
             ->withNoArgs()
             ->andReturn($client);
 
-        Configuration::setEndpoint(MyScalarQuery::endpoint(), $endpoint);
+        Configuration::setEndpointFor(MyScalarQuery::class, $endpoint);
 
         $result = MyScalarQuery::execute()->errorFree();
         self::assertSame($value, $result->data->scalarWithArg);
@@ -66,7 +66,7 @@ class SimpleTest extends TestCase
             ->withNoArgs()
             ->andReturn($client);
 
-        Configuration::setEndpoint(MyScalarQuery::endpoint(), $endpoint);
+        Configuration::setEndpointFor(MyScalarQuery::class, $endpoint);
 
         $result = MyScalarQuery::execute($value);
         self::assertNull($result->data);
@@ -87,7 +87,7 @@ class SimpleTest extends TestCase
         $endpoint = Mockery::mock(EndpointConfig::class);
         $endpoint->expects('makeClient')
             ->never();
-        Configuration::setEndpoint(MyScalarQuery::endpoint(), $endpoint);
+        Configuration::setEndpointFor(MyScalarQuery::class, $endpoint);
 
         MyScalarQuery::setClient($client);
         MyScalarQuery::execute($value);
@@ -114,7 +114,7 @@ class SimpleTest extends TestCase
         $message = 'some error';
 
         $endpoint = Mockery::mock(EndpointConfig::class)->makePartial();
-        Configuration::setEndpoint(MyScalarQueryResult::endpoint(), $endpoint);
+        Configuration::setEndpointFor(MyScalarQueryResult::class, $endpoint);
 
         MyScalarQuery::mock()
             ->expects('execute')

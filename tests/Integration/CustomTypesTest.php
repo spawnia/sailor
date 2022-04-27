@@ -17,7 +17,7 @@ use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Tests\TestCase;
 
-class CustomTypesTest extends TestCase
+final class CustomTypesTest extends TestCase
 {
     public function testDefaultEnum(): void
     {
@@ -79,7 +79,7 @@ class CustomTypesTest extends TestCase
             ->withNoArgs()
             ->andReturn($client);
 
-        Configuration::setEndpoint(MyCustomEnumQuery::endpoint(), $endpoint);
+        Configuration::setEndpointFor(MyCustomEnumQuery::class, $endpoint);
 
         $result = MyCustomEnumQuery::execute(new CustomEnum($value));
         self::assertNull($result->data);

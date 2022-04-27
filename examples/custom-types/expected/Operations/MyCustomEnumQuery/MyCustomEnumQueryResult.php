@@ -8,11 +8,6 @@ class MyCustomEnumQueryResult extends \Spawnia\Sailor\Result
 {
     public ?MyCustomEnumQuery $data = null;
 
-    public static function endpoint(): string
-    {
-        return 'custom-types';
-    }
-
     protected function setData(\stdClass $data): void
     {
         $this->data = MyCustomEnumQuery::fromStdClass($data);
@@ -34,5 +29,15 @@ class MyCustomEnumQueryResult extends \Spawnia\Sailor\Result
     public function errorFree(): MyCustomEnumQueryErrorFreeResult
     {
         return MyCustomEnumQueryErrorFreeResult::fromResult($this);
+    }
+
+    public static function endpoint(): string
+    {
+        return 'custom-types';
+    }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../../sailor.php';
     }
 }

@@ -78,11 +78,6 @@ PHP
         );
     }
 
-    public function setEndpoint(string $endpointName): void
-    {
-        ClassHelper::setEndpoint($this->class, $endpointName);
-    }
-
     /**
      * @param mixed $defaultValue any value
      */

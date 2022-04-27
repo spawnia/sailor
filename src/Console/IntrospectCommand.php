@@ -2,50 +2,35 @@
 
 namespace Spawnia\Sailor\Console;
 
-use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\Introspector;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class IntrospectCommand extends Command
 {
+    use InteractsWithEndpoints;
+
     protected static $defaultName = 'introspect';
 
     protected function configure(): void
     {
         $this->setDescription('Download a remote schema through introspection.');
-        $this->addArgument(
-            'endpoint',
-            InputArgument::OPTIONAL,
-            'You may choose a specific endpoint. Uses all by default.'
-        );
+        $this->configureEndpoints();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $endpoint = $input->getArgument('endpoint');
-        if (null !== $endpoint) {
-            $endpointNames = (array) $endpoint;
-        } else {
-            $endpointNames = array_keys(Configuration::endpoints());
-        }
+        $endpoints = $this->endpoints($input);
 
-        foreach ($endpointNames as $endpointName) {
-            if (! is_string($endpointName)) {
-                $notString = gettype($endpointName);
-                throw new \InvalidArgumentException("Expected --endpoint to be one or more strings, got {$notString}.");
-            }
+        $configFile = $this->configFile($input);
 
+        foreach ($endpoints as $endpointName => $endpoint) {
             echo "Running introspection on endpoint {$endpointName}...\n";
-            (new Introspector(
-                Configuration::endpoint($endpointName),
-                $endpointName
-            ))->introspect();
+            (new Introspector($endpoint, $configFile, $endpointName))->introspect();
         }
 
-        echo "Successfully introspected. You might want to rerun codegen: vendor/bin/sailor\n";
+        echo "Successfully introspected. Rerun codegen with: vendor/bin/sailor\n";
 
         return 0;
     }

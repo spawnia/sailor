@@ -47,4 +47,9 @@ class EnumObject extends \Spawnia\Sailor\ObjectLike
     {
         return 'custom-types';
     }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../../../sailor.php';
+    }
 }

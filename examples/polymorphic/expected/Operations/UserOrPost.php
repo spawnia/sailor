@@ -49,4 +49,9 @@ class UserOrPost extends \Spawnia\Sailor\Operation
     {
         return 'polymorphic';
     }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../sailor.php';
+    }
 }

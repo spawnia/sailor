@@ -5,7 +5,7 @@ namespace Spawnia\Sailor\Tests\Unit\Convert;
 use Spawnia\Sailor\Convert\FloatConverter;
 use Spawnia\Sailor\Convert\TypeConverter;
 
-class FloatConverterTest extends TypeConverterTest
+final class FloatConverterTest extends TypeConverterTest
 {
     public function testAcceptsInt(): void
     {

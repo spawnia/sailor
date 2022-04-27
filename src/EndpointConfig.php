@@ -8,6 +8,8 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Schema;
 use Nette\PhpGenerator\ClassType;
+use Spawnia\Sailor\Codegen\DirectoryFinder;
+use Spawnia\Sailor\Codegen\Finder;
 use Spawnia\Sailor\Error\Error;
 use Spawnia\Sailor\Type\BooleanTypeConfig;
 use Spawnia\Sailor\Type\EnumTypeConfig;
@@ -48,6 +50,14 @@ abstract class EndpointConfig
     abstract public function schemaPath(): string;
 
     /**
+     * Instantiate a class to find GraphQL documents.
+     */
+    public function finder(): Finder
+    {
+        return new DirectoryFinder($this->searchPath());
+    }
+
+    /**
      * Instantiate an Error class from a plain GraphQL error.
      */
     public function parseError(stdClass $error): Error
@@ -68,7 +78,7 @@ abstract class EndpointConfig
      *
      * @return array<string, TypeConfig>
      */
-    public function configureTypes(Schema $schema, string $endpointName): array
+    public function configureTypes(Schema $schema): array
     {
         $typeConverters = [
             'Int' => new IntTypeConfig(),
@@ -82,7 +92,7 @@ abstract class EndpointConfig
             if ($type instanceof EnumType) {
                 $typeConverters[$name] = new EnumTypeConfig($this, $type);
             } elseif ($type instanceof InputObjectType) {
-                $typeConverters[$name] = new InputTypeConfig($this, $schema, $endpointName, $type);
+                $typeConverters[$name] = new InputTypeConfig($this, $schema, $type);
             } elseif ($type instanceof ScalarType) {
                 $typeConverters[$name] ??= new ScalarTypeConfig();
             }
@@ -98,7 +108,7 @@ abstract class EndpointConfig
      *
      * @return iterable<ClassType>
      */
-    public function generateClasses(Schema $schema, DocumentNode $document, string $endpointName): iterable
+    public function generateClasses(Schema $schema, DocumentNode $document): iterable
     {
         return [];
     }

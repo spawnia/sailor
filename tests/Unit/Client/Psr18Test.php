@@ -4,8 +4,8 @@ namespace Spawnia\Sailor\Tests\Unit\Client;
 
 use GuzzleHttp\Psr7\Response;
 use Http\Mock\Client;
-use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Client\Psr18;
+use Spawnia\Sailor\Tests\TestCase;
 
 final class Psr18Test extends TestCase
 {

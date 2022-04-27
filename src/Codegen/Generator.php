@@ -10,18 +10,20 @@ use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PsrPrinter;
-use Nette\Utils\FileSystem;
 use Spawnia\Sailor\EndpointConfig;
 
 class Generator
 {
     protected EndpointConfig $endpointConfig;
 
+    protected string $configFile;
+
     protected string $endpointName;
 
-    public function __construct(EndpointConfig $endpointConfig, string $endpointName)
+    public function __construct(EndpointConfig $endpointConfig, string $configFile, string $endpointName)
     {
         $this->endpointConfig = $endpointConfig;
+        $this->configFile = $configFile;
         $this->endpointName = $endpointName;
     }
 
@@ -37,43 +39,64 @@ class Generator
             return [];
         }
 
-        $document = Merger::combine($parsedDocuments);
-        AddTypename::modify($document);
-
         $schema = $this->schema();
+        $document = Merger::combine($parsedDocuments);
 
+        // Validate the document as defined by the user to give them an error
+        // message that is more closely related to their source code
         Validator::validate($schema, $document);
 
-        foreach ((new OperationGenerator($schema, $document, $this->endpointConfig, $this->endpointName))->generate() as $class) {
+        $document = (new FoldFragments($document))->modify();
+        AddTypename::modify($document);
+
+        // Validate again to ensure the modifications we made were safe
+        Validator::validate($schema, $document);
+
+        foreach ((new OperationGenerator($schema, $document, $this->endpointConfig))->generate() as $class) {
             yield $this->makeFile($class);
         }
 
-        foreach ((new TypeConvertersGenerator($schema, $this->endpointConfig, $this->endpointName))->generate() as $class) {
+        foreach ((new TypeConvertersGenerator($schema, $this->endpointConfig))->generate() as $class) {
             yield $this->makeFile($class);
         }
 
-        foreach ($this->endpointConfig->configureTypes($schema, $this->endpointName) as $typeConfig) {
+        foreach ($this->endpointConfig->configureTypes($schema) as $typeConfig) {
             foreach ($typeConfig->generateClasses() as $class) {
                 yield $this->makeFile($class);
             }
         }
 
-        foreach ($this->endpointConfig->generateClasses($schema, $document, $this->endpointName) as $class) {
+        foreach ($this->endpointConfig->generateClasses($schema, $document) as $class) {
             yield $this->makeFile($class);
         }
     }
 
     protected function makeFile(ClassType $classType): File
     {
+        $endpoint = $classType->addMethod('endpoint');
+        $endpoint->setStatic();
+        $endpoint->setReturnType('string');
+        $endpoint->setBody(<<<PHP
+            return '{$this->endpointName}';
+        PHP);
+
         $file = new File();
 
         $phpNamespace = $classType->getNamespace();
         if (null === $phpNamespace) {
             throw new \Exception('Generated classes must have a namespace.');
         }
-        $file->directory = $this->targetDirectory(
-            $phpNamespace->getName()
-        );
+        $namespace = $phpNamespace->getName();
+
+        $targetDirectory = $this->targetDirectory($namespace);
+        $file->directory = $targetDirectory;
+
+        $config = $classType->addMethod('config');
+        $config->setStatic();
+        $config->setReturnType('string');
+        $config->setBody(<<<PHP
+            return {$this->relativeConfigPath($targetDirectory)};
+        PHP);
 
         $file->name = $classType->getName() . '.php';
         $file->content = self::asPhpFile($classType);
@@ -87,6 +110,35 @@ class Generator
         $pathInTarget = str_replace('\\', '/', $pathInTarget);
 
         return $this->endpointConfig->targetPath() . $pathInTarget;
+    }
+
+    /**
+     * @see https://stackoverflow.com/a/2638272
+     */
+    protected function relativeConfigPath(string $fileDirectory): string
+    {
+        $from = explode('/', $fileDirectory);
+        $to = explode('/', $this->configFile);
+
+        $relativeParts = $to;
+
+        foreach ($from as $depth => $dir) {
+            if ($dir === $to[$depth]) {
+                array_shift($relativeParts);
+            } else {
+                $upwards = count($relativeParts) + count($from) - $depth;
+                $relativeParts = array_pad(
+                    $relativeParts,
+                    -$upwards,
+                    '..'
+                );
+                break;
+            }
+        }
+
+        $relative = implode('/', $relativeParts);
+
+        return "__DIR__ . '/{$relative}'";
     }
 
     public static function after(string $subject, string $search): string
@@ -152,16 +204,15 @@ class Generator
     /**
      * @param  array<string, \GraphQL\Language\AST\DocumentNode>  $parsed
      */
-    public static function ensureOperationsAreNamed(array $parsed): void
+    public static function validateDocuments(array $parsed): void
     {
         foreach ($parsed as $path => $documentNode) {
             foreach ($documentNode->definitions as $definition) {
-                if (! $definition instanceof OperationDefinitionNode) {
-                    throw new Error('Found unsupported definition in ' . $path, $definition);
-                }
-
-                if (null === $definition->name) {
-                    throw new Error('Found unnamed operation definition in ' . $path, $definition);
+                switch (true) {
+                    case $definition instanceof OperationDefinitionNode:
+                        if (null === $definition->name) {
+                            throw new Error('Found unnamed operation definition in ' . $path, $definition);
+                        }
                 }
             }
         }
@@ -181,17 +232,17 @@ class Generator
      */
     protected function parsedDocuments(): array
     {
-        $finder = new Finder($this->endpointConfig->searchPath());
-        $documents = $finder->documents();
+        $documents = $this->endpointConfig
+            ->finder()
+            ->documents();
+
+        // Ignore the schema itself, it never contains operation definitions
+        unset($documents[$this->endpointConfig->schemaPath()]);
 
         $parsed = static::parseDocuments($documents);
-        static::ensureOperationsAreNamed($parsed);
+
+        static::validateDocuments($parsed);
 
         return $parsed;
-    }
-
-    protected function deleteGeneratedFiles(): void
-    {
-        FileSystem::delete($this->endpointConfig->targetPath());
     }
 }

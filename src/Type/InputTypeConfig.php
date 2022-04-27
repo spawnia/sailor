@@ -17,15 +17,12 @@ class InputTypeConfig implements TypeConfig
 
     private Schema $schema;
 
-    private string $endpointName;
-
     private InputObjectType $inputObjectType;
 
-    public function __construct(EndpointConfig $endpointConfig, Schema $schema, string $endpointName, InputObjectType $inputObjectType)
+    public function __construct(EndpointConfig $endpointConfig, Schema $schema, InputObjectType $inputObjectType)
     {
         $this->endpointConfig = $endpointConfig;
         $this->schema = $schema;
-        $this->endpointName = $endpointName;
         $this->inputObjectType = $inputObjectType;
     }
 
@@ -53,12 +50,11 @@ class InputTypeConfig implements TypeConfig
      */
     public function generateClasses(): iterable
     {
-        $typeConfigs = $this->endpointConfig->configureTypes($this->schema, $this->endpointName);
+        $typeConfigs = $this->endpointConfig->configureTypes($this->schema);
 
         $builder = new ObjectLikeBuilder(
             $this->inputObjectType->name,
             $this->endpointConfig->typesNamespace(),
-            $this->endpointName
         );
 
         foreach ($this->inputObjectType->getFields() as $name => $field) {

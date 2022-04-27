@@ -39,4 +39,9 @@ class SomeObject extends \Spawnia\Sailor\ObjectLike
     {
         return 'simple';
     }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../../../sailor.php';
+    }
 }
