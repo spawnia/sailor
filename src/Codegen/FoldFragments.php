@@ -89,7 +89,6 @@ class FoldFragments
                 $fragmentSelectionSet = $fragment->selectionSet;
                 $this->modifySelectionSet($fragmentSelectionSet);
 
-                // @phpstan-ignore-next-line TODO remove with graphql-php 15
                 $selections[] = new InlineFragmentNode([
                     'typeCondition' => $fragment->typeCondition,
                     'directives' => $fragment->directives,
