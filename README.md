@@ -33,7 +33,7 @@ Install Sailor through composer by running:
 
 If you want to use the built-in default Client (see [Client implementations](#client-implementations)):
 
-    composer require guzzle/guzzle
+    composer require guzzlehttp/guzzle
 
 If you want to use the PSR-18 Client and don't have
 PSR-17 Request and Stream factory implementations (see [Client implementations](#client-implementations)):
