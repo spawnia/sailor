@@ -6,12 +6,12 @@ namespace Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\Node;
 
 /**
  * @property string $__typename
- * @property \Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\Node\Node\User|\Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\Node\Node\Task|\Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\Node\Node\Post|null $node
+ * @property \Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\Node\Node\Post|\Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\Node\Node\Task|\Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\Node\Node\User|null $node
  */
 class User extends \Spawnia\Sailor\ObjectLike
 {
     /**
-     * @param \Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\Node\Node\User|\Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\Node\Node\Task|\Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\Node\Node\Post|null $node
+     * @param \Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\Node\Node\Post|\Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\Node\Node\Task|\Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\Node\Node\User|null $node
      */
     public static function make($node = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): self
     {
@@ -32,9 +32,9 @@ class User extends \Spawnia\Sailor\ObjectLike
         return $converters ??= [
             '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
             'node' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\PolymorphicConverter([
-            'User' => '\\Spawnia\\Sailor\\Polymorphic\\Operations\\NodeWithFragments\\Node\\Node\\Node\\User',
-            'Task' => '\\Spawnia\\Sailor\\Polymorphic\\Operations\\NodeWithFragments\\Node\\Node\\Node\\Task',
             'Post' => '\\Spawnia\\Sailor\\Polymorphic\\Operations\\NodeWithFragments\\Node\\Node\\Node\\Post',
+            'Task' => '\\Spawnia\\Sailor\\Polymorphic\\Operations\\NodeWithFragments\\Node\\Node\\Node\\Task',
+            'User' => '\\Spawnia\\Sailor\\Polymorphic\\Operations\\NodeWithFragments\\Node\\Node\\Node\\User',
         ])),
         ];
     }

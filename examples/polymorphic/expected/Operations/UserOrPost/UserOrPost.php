@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Spawnia\Sailor\Polymorphic\Operations\UserOrPost;
 
 /**
- * @property \Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node\User|\Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node\Task|\Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node\Post $node
+ * @property \Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node\Post|\Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node\Task|\Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node\User $node
  * @property string $__typename
  */
 class UserOrPost extends \Spawnia\Sailor\ObjectLike
 {
     /**
-     * @param \Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node\User|\Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node\Task|\Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node\Post $node
+     * @param \Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node\Post|\Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node\Task|\Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node\User $node
      */
     public static function make($node): self
     {
@@ -31,9 +31,9 @@ class UserOrPost extends \Spawnia\Sailor\ObjectLike
 
         return $converters ??= [
             'node' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\PolymorphicConverter([
-            'User' => '\\Spawnia\\Sailor\\Polymorphic\\Operations\\UserOrPost\\Node\\User',
-            'Task' => '\\Spawnia\\Sailor\\Polymorphic\\Operations\\UserOrPost\\Node\\Task',
             'Post' => '\\Spawnia\\Sailor\\Polymorphic\\Operations\\UserOrPost\\Node\\Post',
+            'Task' => '\\Spawnia\\Sailor\\Polymorphic\\Operations\\UserOrPost\\Node\\Task',
+            'User' => '\\Spawnia\\Sailor\\Polymorphic\\Operations\\UserOrPost\\Node\\User',
         ])),
             '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
         ];

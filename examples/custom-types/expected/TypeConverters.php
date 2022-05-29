@@ -41,6 +41,13 @@ class TypeConverters
         return $converter ??= new \Spawnia\Sailor\Convert\IDConverter();
     }
 
+    public static function EnumInput(): Types\EnumInput
+    {
+        static $converter;
+
+        return $converter ??= new \Spawnia\Sailor\CustomTypes\Types\EnumInput();
+    }
+
     public static function DefaultEnum(): \Spawnia\Sailor\Convert\EnumConverter
     {
         static $converter;
@@ -62,11 +69,18 @@ class TypeConverters
         return $converter ??= new \Spawnia\Sailor\CustomTypes\TypeConverters\BenSampoEnumConverter();
     }
 
-    public static function EnumInput(): Types\EnumInput
+    public static function DefaultDate(): \Spawnia\Sailor\Convert\ScalarConverter
     {
         static $converter;
 
-        return $converter ??= new \Spawnia\Sailor\CustomTypes\Types\EnumInput();
+        return $converter ??= new \Spawnia\Sailor\Convert\ScalarConverter();
+    }
+
+    public static function CustomDate(): TypeConverters\CustomDateConverter
+    {
+        static $converter;
+
+        return $converter ??= new \Spawnia\Sailor\CustomTypes\TypeConverters\CustomDateConverter();
     }
 
     public static function __TypeKind(): \Spawnia\Sailor\Convert\EnumConverter
@@ -81,20 +95,6 @@ class TypeConverters
         static $converter;
 
         return $converter ??= new \Spawnia\Sailor\Convert\EnumConverter();
-    }
-
-    public static function DefaultDate(): \Spawnia\Sailor\Convert\ScalarConverter
-    {
-        static $converter;
-
-        return $converter ??= new \Spawnia\Sailor\Convert\ScalarConverter();
-    }
-
-    public static function CustomDate(): TypeConverters\CustomDateConverter
-    {
-        static $converter;
-
-        return $converter ??= new \Spawnia\Sailor\CustomTypes\TypeConverters\CustomDateConverter();
     }
 
     public static function endpoint(): string
