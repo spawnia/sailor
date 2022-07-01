@@ -285,11 +285,6 @@ class OperationGenerator implements ClassGenerator
                             /** @var Type&NamedType $parentType */
                             $parentType = $typeInfo->getParentType();
 
-                            // Eases instantiation of mocked results
-                            $defaultValue = Introspection::TYPE_NAME_FIELD_NAME === $fieldName
-                                ? $parentType->name
-                                : null;
-
                             foreach ($selectionClasses as $name => $selection) {
                                 $selectionType = $this->schema->getType($name);
                                 if (null === $selectionType) {
@@ -297,6 +292,11 @@ class OperationGenerator implements ClassGenerator
                                 }
 
                                 if (TypeComparators::isTypeSubTypeOf($this->schema, $selectionType, $parentType)) {
+                                    // Eases instantiation of mocked results
+                                    $defaultValue = Introspection::TYPE_NAME_FIELD_NAME === $fieldName
+                                        ? $selectionType->name
+                                        : null;
+
                                     $selection->addProperty(
                                         $fieldName,
                                         $type,

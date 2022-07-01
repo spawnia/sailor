@@ -17,7 +17,7 @@ class User extends \Spawnia\Sailor\ObjectLike
     {
         $instance = new self;
 
-        $instance->__typename = 'Member';
+        $instance->__typename = 'User';
         if ($name !== self::UNDEFINED) {
             $instance->name = $name;
         }
