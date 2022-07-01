@@ -26,6 +26,8 @@ abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
     /**
      * Construct a new instance of itself using plain data.
      *
+     * For mocking test data, prefer make().
+     *
      * @return static
      */
     public static function fromStdClass(stdClass $data): self

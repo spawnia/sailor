@@ -30,6 +30,7 @@ final class SimpleTest extends TestCase
             })
             ->andReturn(Response::fromStdClass((object) [
                 'data' => (object) [
+                    '__typename' => 'Query',
                     'scalarWithArg' => $value,
                 ],
             ]));
@@ -101,11 +102,12 @@ final class SimpleTest extends TestCase
 
         MyScalarQuery::mock()
             ->expects('execute')
-            ->andReturn(MyScalarQueryResult::fromStdClass((object) [
-                'data' => (object) [
-                    'scalarWithArg' => $bar,
-                ],
-            ]));
+            ->andReturn(MyScalarQueryResult::fromData(
+                MyScalarQuery\MyScalarQuery::make(
+                    /* scalarWithArg: */ 
+                    $bar
+                )
+            ));
 
         self::assertSame($bar, MyScalarQuery::execute()->errorFree()->data->scalarWithArg);
     }
@@ -145,15 +147,18 @@ final class SimpleTest extends TestCase
             ->expects('execute')
             ->once()
             ->with()
-            ->andReturn(MyObjectNestedQueryResult::fromStdClass((object) [
-                'data' => (object) [
-                    'singleObject' => (object) [
-                        'nested' => (object) [
-                            'value' => $value,
-                        ],
-                    ],
-                ],
-            ]));
+            ->andReturn(MyObjectNestedQueryResult::fromData(
+                MyObjectNestedQuery\MyObjectNestedQuery::make(
+                /* singleObject: */
+                    MyObjectNestedQuery\SingleObject\SomeObject::make(
+                    /* nested: */
+                        MyObjectNestedQuery\SingleObject\Nested\SomeObject::make(
+                            /* value: */ 
+                            $value
+                        )
+                    )
+                )
+            ));
 
         $result = MyObjectNestedQuery::execute()->errorFree();
         $object = $result->data->singleObject;
@@ -170,13 +175,15 @@ final class SimpleTest extends TestCase
             ->expects('execute')
             ->once()
             ->with()
-            ->andReturn(MyObjectNestedQueryResult::fromStdClass((object) [
-                'data' => (object) [
-                    'singleObject' => (object) [
-                        'nested' => null,
-                    ],
-                ],
-            ]));
+            ->andReturn(MyObjectNestedQueryResult::fromData(
+                MyObjectNestedQuery\MyObjectNestedQuery::make(
+                /* singleObject: */
+                    MyObjectNestedQuery\SingleObject\SomeObject::make(
+                    /* nested: */
+                        null
+                    )
+                )
+            ));
 
         $result = MyObjectNestedQuery::execute()->errorFree();
         $object = $result->data->singleObject;

@@ -64,9 +64,10 @@ final class ResultTest extends TestCase
         Configuration::setEndpointFor(MyScalarQueryResult::class, $endpoint);
 
         $result = new MyScalarQueryResult();
-        $result->data = MyScalarQuery::fromStdClass((object) [
-            'scalarWithArg' => null,
-        ]);
+        $result->data = MyScalarQuery::make(
+            /* scalarWithArg: */ 
+            null,
+        );
 
         // No errors
         $result->errorFree();
