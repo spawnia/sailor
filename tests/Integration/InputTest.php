@@ -23,6 +23,7 @@ final class InputTest extends TestCase
         TakeSomeInput::mock()
             ->expects('execute')
             ->once()
+            // @phpstan-ignore-next-line loose comparison
             ->withArgs(fn (SomeInput $input): bool => $input == $someInput)
             ->andReturn(TakeSomeInput\TakeSomeInputResult::fromStdClass((object) [
                 'data' => (object) [

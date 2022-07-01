@@ -12,6 +12,7 @@ final class ObjectLikeTest extends TestCase
     {
         $bar = 'bar';
         $foo = MyScalarQuery::fromStdClass((object) [
+            '__typename' => 'Query',
             'scalarWithArg' => $bar,
         ]);
 
@@ -29,21 +30,33 @@ final class ObjectLikeTest extends TestCase
         self::assertSame($bar, $foo->scalarWithArg);
     }
 
-    public function testWrongKey(): void
+    public function testExtraneousKey(): void
     {
         $this->expectExceptionObject(new InvalidDataException(
-            'Unknown property nonExistent, available properties: __typename, scalarWithArg.'
+            'simple: Unknown property nonExistent, available properties: __typename, scalarWithArg.'
         ));
         MyScalarQuery::fromStdClass((object) [
-            'nonExistent' => 'foo',
+            '__typename' => 'Query',
+            'scalarWithArg' => 'foo',
+            'nonExistent' => 'bar',
         ]);
     }
 
-    public function testMissingRequired(): void
+    public function testMissingField(): void
     {
         $this->expectExceptionObject(new InvalidDataException(
-            'Unknown property nonExistent, available properties: __typename, scalarWithArg.'
+            'simple: Missing field __typename.'
         ));
         MyScalarQuery::fromStdClass((object) []);
+    }
+
+    public function testMissingRequiredValue(): void
+    {
+        $this->expectExceptionObject(new InvalidDataException(
+            'simple: Invalid value for field __typename. Expected non-null value, got null'
+        ));
+        MyScalarQuery::fromStdClass((object) [
+            '__typename' => null,
+        ]);
     }
 }

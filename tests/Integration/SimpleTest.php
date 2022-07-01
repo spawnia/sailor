@@ -25,6 +25,7 @@ final class SimpleTest extends TestCase
             ->once()
             ->withArgs(function (string $query, \stdClass $variables): bool {
                 return $query === MyScalarQuery::document()
+                    // @phpstan-ignore-next-line loose comparison
                     && $variables == new \stdClass();
             })
             ->andReturn(Response::fromStdClass((object) [
