@@ -27,11 +27,12 @@ final class CustomTypesTest extends TestCase
             ->expects('execute')
             ->once()
             ->with($value)
-            ->andReturn(MyDefaultEnumQuery\MyDefaultEnumQueryResult::fromStdClass((object) [
-                'data' => (object) [
-                    'withDefaultEnum' => $value,
-                ],
-            ]));
+            ->andReturn(MyDefaultEnumQuery\MyDefaultEnumQueryResult::fromData(
+                MyDefaultEnumQuery\MyDefaultEnumQuery::make(
+                    /* withDefaultEnum: */
+                    $value,
+                )
+            ));
 
         $result = MyDefaultEnumQuery::execute($value)->errorFree();
         self::assertSame($value, $result->data->withDefaultEnum);
@@ -45,11 +46,12 @@ final class CustomTypesTest extends TestCase
             ->expects('execute')
             ->once()
             ->with($value)
-            ->andReturn(MyCustomEnumQuery\MyCustomEnumQueryResult::fromStdClass((object) [
-                'data' => (object) [
-                    'withCustomEnum' => $value->value,
-                ],
-            ]));
+            ->andReturn(MyCustomEnumQuery\MyCustomEnumQueryResult::fromData(
+                MyCustomEnumQuery\MyCustomEnumQuery::make(
+                    /* withCustomEnum: */
+                    $value,
+                )
+            ));
 
         $result = MyCustomEnumQuery::execute($value)->errorFree();
 
@@ -93,11 +95,12 @@ final class CustomTypesTest extends TestCase
             ->expects('execute')
             ->once()
             ->with($value)
-            ->andReturn(MyBenSampoEnumQuery\MyBenSampoEnumQueryResult::fromStdClass((object) [
-                'data' => (object) [
-                    'withBenSampoEnum' => $value->value,
-                ],
-            ]));
+            ->andReturn(MyBenSampoEnumQuery\MyBenSampoEnumQueryResult::fromData(
+                MyBenSampoEnumQuery\MyBenSampoEnumQuery::make(
+                    /* withBenSampoEnum: */
+                    $value,
+                ),
+            ));
 
         $result = MyBenSampoEnumQuery::execute($value)->errorFree();
 
@@ -111,28 +114,37 @@ final class CustomTypesTest extends TestCase
         $custom = new CustomEnum(CustomEnum::B);
         $default = DefaultEnum::B;
 
-        $input = new EnumInput();
-        $input->custom = $custom;
-        $input->default = $default;
+        $input = EnumInput::make(
+            /* default: */
+            $default,
+            /* custom: */
+            $custom,
+        );
 
         MyEnumInputQuery::mock()
             ->expects('execute')
             ->once()
             ->with($input)
-            ->andReturn(MyEnumInputQuery\MyEnumInputQueryResult::fromStdClass((object) [
-                'data' => (object) [
-                    'withEnumInput' => $input->toStdClass(),
-                ],
-            ]));
+            ->andReturn(MyEnumInputQuery\MyEnumInputQueryResult::fromData(
+                MyEnumInputQuery\MyEnumInputQuery::make(
+                    /* withEnumInput: */
+                    MyEnumInputQuery\WithEnumInput\EnumObject::make(
+                        /* custom: */
+                        $custom,
+                        /* default: */
+                        $default,
+                    )
+                ),
+            ));
 
-        $result = MyEnumInputQuery::execute($input)->errorFree();
+        $result = MyEnumInputQuery::execute($input)
+            ->errorFree();
         $enumObject = $result->data->withEnumInput;
         self::assertNotNull($enumObject);
 
         $customEnum = $enumObject->custom;
         self::assertInstanceOf(CustomEnum::class, $customEnum);
-        self::assertSame($input->custom->value, $customEnum->value);
-
-        self::assertSame($input->default, $enumObject->default);
+        self::assertSame($custom->value, $customEnum->value);
+        self::assertSame($default, $enumObject->default);
     }
 }

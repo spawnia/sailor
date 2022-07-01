@@ -22,15 +22,17 @@ final class PolymorphicTest extends TestCase
             ->expects('execute')
             ->once()
             ->with($id)
-            ->andReturn(UserOrPostResult::fromStdClass((object) [
-                'data' => (object) [
-                    'node' => (object) [
-                        '__typename' => 'User',
-                        'id' => $id,
-                        'name' => $name,
-                    ],
-                ],
-            ]));
+            ->andReturn(UserOrPostResult::fromData(
+                UserOrPost\UserOrPost::make(
+                    /* node: */ 
+                    UserOrPost\Node\User::make(
+                        /* id: */ 
+                        $id,
+                        /* name: */ 
+                        $name,
+                    )
+                )
+            ));
 
         $result = UserOrPost::execute($id)->errorFree();
         $user = $result->data->node;
@@ -51,14 +53,14 @@ final class PolymorphicTest extends TestCase
             ->with()
             ->andReturn(AllMembersResult::fromData(
                 AllMembers\AllMembers::make(
-                    /* members: */ 
+                    /* members: */
                     [
                         AllMembers\Members\User::make(
-                            /* name: */ 
+                            /* name: */
                             $name,
                         ),
                         AllMembers\Members\Organization::make(
-                            /* code: */ 
+                            /* code: */
                             $code,
                         ),
                     ]

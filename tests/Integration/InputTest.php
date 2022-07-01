@@ -25,11 +25,12 @@ final class InputTest extends TestCase
             ->once()
             // @phpstan-ignore-next-line loose comparison
             ->withArgs(fn (SomeInput $input): bool => $input == $someInput)
-            ->andReturn(TakeSomeInput\TakeSomeInputResult::fromStdClass((object) [
-                'data' => (object) [
-                    'takeSomeInput' => $answer,
-                ],
-            ]));
+            ->andReturn(TakeSomeInput\TakeSomeInputResult::fromData(
+                TakeSomeInput\TakeSomeInput::make(
+                    /* takeSomeInput: */ 
+                    $answer,
+                )
+            ));
 
         $result = TakeSomeInput::execute($someInput)->errorFree();
         self::assertSame($answer, $result->data->takeSomeInput);
