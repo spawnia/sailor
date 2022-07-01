@@ -8,6 +8,12 @@ interface Node {
     node: Node
 }
 
+type User implements Node {
+    id: ID!
+    name: String
+    node: Node
+}
+
 type Post implements Node {
     id: ID!
     title: String
@@ -17,12 +23,6 @@ type Post implements Node {
 type Task implements Node {
     id: ID!
     done: Boolean!
-    node: Node
-}
-
-type User implements Node {
-    id: ID!
-    name: String
     node: Node
 }
 
