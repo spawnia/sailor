@@ -34,7 +34,7 @@ abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
     }
 
     /**
-     * Convert itself to a stdClass.
+     * Represent itself as plain data.
      */
     public function toStdClass(): stdClass
     {
@@ -71,12 +71,10 @@ abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
         if (! $value instanceof static) {
             $class = static::class;
             $notClass = gettype($value);
-
             throw new InvalidArgumentException("Expected instanceof {$class}, got: {$notClass}");
         }
 
         $serializable = new stdClass();
-
         foreach ($value->properties as $name => $property) {
             $serializable->{$name} = $this->converter($name)->toGraphQL($property);
         }
@@ -90,7 +88,9 @@ abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
     public function fromGraphQL($value): self
     {
         if (! $value instanceof stdClass) {
-            throw new InvalidArgumentException('Expected stdClass, got: ' . gettype($value));
+            $endpoint = static::endpoint();
+            $notStdClass = gettype($value);
+            throw new InvalidArgumentException("{$endpoint}: Expected stdClass, got: {$notStdClass}");
         }
 
         $instance = new static();
@@ -103,8 +103,7 @@ abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
             }
 
             try {
-                // @phpstan-ignore-next-line variable property access
-                $instance->{$name} = $converter->fromGraphQL($value->{$name} ?? null);
+                $instance->properties[$name] = $converter->fromGraphQL($value->{$name});
                 unset($value->{$name});
             } catch (\Throwable $e) {
                 $endpoint = static::endpoint();
@@ -114,10 +113,7 @@ abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
 
         // @phpstan-ignore-next-line iteration over object
         foreach ($value as $name => $property) {
-            $endpoint = static::endpoint();
-            $availableProperties = implode(', ', array_keys($converters));
-
-            throw new InvalidDataException("{$endpoint}: Unknown property {$name}, available properties: {$availableProperties}.");
+            throw static::unknownProperty($name, $converters);
         }
 
         return $instance;
@@ -127,12 +123,20 @@ abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
     {
         $converters = $this->converters();
         if (! isset($converters[$name])) {
-            $endpoint = static::endpoint();
-            $availableProperties = implode(', ', array_keys($converters));
-
-            throw new InvalidDataException("{$endpoint}: Unknown property {$name}, available properties: {$availableProperties}.");
+            throw static::unknownProperty($name, $converters);
         }
 
         return $converters[$name];
+    }
+
+    /**
+     * @param array<string, TypeConverter> $converters
+     */
+    protected static function unknownProperty(string $name, array $converters): InvalidDataException
+    {
+        $endpoint = static::endpoint();
+        $availableProperties = implode(', ', array_keys($converters));
+
+        return new InvalidDataException("{$endpoint}: Unknown property {$name}, available properties: {$availableProperties}.");
     }
 }
