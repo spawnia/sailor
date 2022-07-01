@@ -23,4 +23,14 @@ class CustomEnumConverter implements \Spawnia\Sailor\Convert\TypeConverter
 
         return $value->value;
     }
+
+    public static function endpoint(): string
+    {
+        return 'custom-types';
+    }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../sailor.php';
+    }
 }

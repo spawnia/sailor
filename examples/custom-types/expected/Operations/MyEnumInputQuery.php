@@ -44,4 +44,9 @@ class MyEnumInputQuery extends \Spawnia\Sailor\Operation
     {
         return 'custom-types';
     }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../sailor.php';
+    }
 }

@@ -4,71 +4,58 @@ namespace Spawnia\Sailor;
 
 final class Configuration
 {
-    /**
-     * We expect this file to reside in vendor/sailor/src/Operation.php,
-     * and expect users to place a config file in the project root.
-     */
-    public const EXPECTED_CONFIG_LOCATION = __DIR__ . '/../../../../sailor.php';
+    /** @var array<string, array<string, EndpointConfig>> */
+    public static array $configs;
 
-    /**
-     * Loading the config is expensive and might happen repeatedly, so it is cached.
-     * Make sure to always call @see Configuration::ensureEndpointsAreLoaded() before accessing this.
-     *
-     * @var array<string, \Spawnia\Sailor\EndpointConfig>
-     */
-    private static array $endpoints;
-
-    public static function endpoint(string $name): EndpointConfig
+    private function __construct()
     {
-        self::ensureEndpointsAreLoaded();
+    }
 
-        if (! isset(self::$endpoints[$name])) {
-            throw ConfigurationException::missingEndpoint($name);
+    public static function endpoint(string $file, string $endpoint): EndpointConfig
+    {
+        $endpoints = self::endpoints($file);
+
+        if (! isset($endpoints[$endpoint])) {
+            throw ConfigurationException::missingEndpoint($endpoint);
         }
 
-        return self::$endpoints[$name];
+        return $endpoints[$endpoint];
     }
 
     /**
      * @return array<string, \Spawnia\Sailor\EndpointConfig>
      */
-    public static function endpoints(): array
+    public static function endpoints(string $file): array
     {
-        self::ensureEndpointsAreLoaded();
-
-        return self::$endpoints;
+        return self::$configs[$file] ??= self::loadConfig($file);
     }
 
-    public static function setEndpoint(string $name, EndpointConfig $endpointConfig): void
+    public static function setEndpoint(string $file, string $name, EndpointConfig $endpointConfig): void
     {
-        self::$endpoints[$name] = $endpointConfig;
+        self::$configs[$file][$name] = $endpointConfig;
     }
 
-    private static function ensureEndpointsAreLoaded(): void
+    /**
+     * @param class-string<BelongsToEndpoint> $belongsToEndpoint
+     */
+    public static function setEndpointFor(string $belongsToEndpoint, EndpointConfig $endpointConfig): void
     {
-        if (! isset(self::$endpoints)) {
-            if (! file_exists(self::EXPECTED_CONFIG_LOCATION)) {
-                \Safe\copy(
-                    __DIR__ . '/../sailor.php',
-                    self::EXPECTED_CONFIG_LOCATION
-                );
+        self::$configs[$belongsToEndpoint::config()][$belongsToEndpoint::endpoint()] = $endpointConfig;
+    }
 
-                echo <<<'EOF'
-                    Sailor requires a configuration file to run.
-
-                    Created an example configuration "sailor.php" in your project root.
-                    Modify it to your needs and try again.
-
-                    EOF;
-                exit(1);
-            }
-
-            $endpoints = require self::EXPECTED_CONFIG_LOCATION;
-            if (! is_array($endpoints)) {
-                ConfigurationException::wrongReturnType(gettype($endpoints));
-            }
-
-            self::$endpoints = $endpoints;
+    /**
+     * @return array<string, EndpointConfig>
+     */
+    private static function loadConfig(string $file): array
+    {
+        if (! file_exists($file)) {
+            throw ConfigurationException::missingFile($file, false);
         }
+
+        $config = require $file;
+        assert(is_array($config), "Expected configuration file {$file} to return array of EndpointConfig");
+        /** @var array<string, EndpointConfig> $config */
+
+        return $config;
     }
 }

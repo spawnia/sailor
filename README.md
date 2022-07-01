@@ -25,11 +25,6 @@ GraphQL queries and works natively with the entire ecosystem of GraphQL tools.
 Sailor takes the plain queries you write and generates executable PHP code,
 using the server schema to generate typesafe operations and results.
 
-## Missing features
-
-Sailor does not support the following essential GraphQL features yet:
-- [Fragments](https://github.com/spawnia/sailor/issues/7)
-
 ## Installation
 
 Install Sailor through composer by running:
@@ -38,7 +33,7 @@ Install Sailor through composer by running:
 
 If you want to use the built-in default Client (see [Client implementations](#client-implementations)):
 
-    composer require guzzle/guzzle
+    composer require guzzlehttp/guzzle
 
 If you want to use the PSR-18 Client and don't have
 PSR-17 Request and Stream factory implementations (see [Client implementations](#client-implementations)):
@@ -52,6 +47,9 @@ A file called `sailor.php` will be created in your project root.
 
 You can take a look at the example configuration to see what options
 are available for configuration: [`sailor.php`](sailor.php).
+
+If you would like to use multiple configuration files, specify which file
+to use through the `-c/--config` option.
 
 It is quite useful to include dynamic values in your configuration.
 You might use [PHP dotenv](https://github.com/vlucas/phpdotenv) to load

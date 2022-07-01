@@ -1,11 +1,13 @@
 query UserOrPost($id: ID!) {
     node(id: $id) {
         id
-        ... on User {
-            name
-        }
+        ... UserWithName
         ... on Post {
             title
         }
     }
+}
+
+fragment UserWithName on User {
+    name
 }

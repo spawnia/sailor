@@ -2,18 +2,18 @@
 
 namespace Spawnia\Sailor\Tests\Unit\Error;
 
-use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Error\Error;
 use Spawnia\Sailor\Error\ResultErrorsException;
+use Spawnia\Sailor\Tests\TestCase;
 
-class ResultErrorsExceptionTest extends TestCase
+final class ResultErrorsExceptionTest extends TestCase
 {
     public function testConstructor(): void
     {
         $errors = [new Error('bar'), new Error('baz')];
-        $exception = new ResultErrorsException($errors, 'foo');
+        $exception = new ResultErrorsException($errors, 'file.php', 'foo');
 
         self::assertSame($errors, $exception->errors);
-        self::assertSame('foo: bar | baz', $exception->getMessage());
+        self::assertSame('file.php(foo): bar | baz', $exception->getMessage());
     }
 }

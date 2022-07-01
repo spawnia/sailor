@@ -3,15 +3,15 @@
 namespace Spawnia\Sailor\Tests\Unit;
 
 use Mockery;
-use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Error\Error;
 use Spawnia\Sailor\Error\ResultErrorsException;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQuery;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQueryResult;
+use Spawnia\Sailor\Tests\TestCase;
 
-class ResultTest extends TestCase
+final class ResultTest extends TestCase
 {
     /**
      * @dataProvider isClientSafe
@@ -22,7 +22,7 @@ class ResultTest extends TestCase
         $endpoint->expects('errorsAreClientSafe')
             ->once()
             ->andReturn($isClientSafe);
-        Configuration::setEndpoint(MyScalarQueryResult::endpoint(), $endpoint);
+        Configuration::setEndpointFor(MyScalarQueryResult::class, $endpoint);
 
         $result = new MyScalarQueryResult();
 
@@ -61,7 +61,7 @@ class ResultTest extends TestCase
         $endpoint->expects('errorsAreClientSafe')
             ->once()
             ->andReturn($isClientSafe);
-        Configuration::setEndpoint(MyScalarQueryResult::endpoint(), $endpoint);
+        Configuration::setEndpointFor(MyScalarQueryResult::class, $endpoint);
 
         $result = new MyScalarQueryResult();
         $result->data = MyScalarQuery::fromStdClass((object) [
@@ -87,7 +87,7 @@ class ResultTest extends TestCase
     public function testWithErrors(): void
     {
         $endpoint = Mockery::mock(EndpointConfig::class)->makePartial();
-        Configuration::setEndpoint(MyScalarQueryResult::endpoint(), $endpoint);
+        Configuration::setEndpointFor(MyScalarQueryResult::class, $endpoint);
 
         $message = 'foo';
 
@@ -120,7 +120,7 @@ class ResultTest extends TestCase
         $endpoint->expects('errorsAreClientSafe')
             ->once()
             ->andReturn($isClientSafe);
-        Configuration::setEndpoint(MyScalarQueryResult::endpoint(), $endpoint);
+        Configuration::setEndpointFor(MyScalarQueryResult::class, $endpoint);
 
         $result = MyScalarQueryResult::fromErrors([
             (object) [

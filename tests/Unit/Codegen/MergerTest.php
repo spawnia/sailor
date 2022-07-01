@@ -3,10 +3,10 @@
 namespace Spawnia\Sailor\Tests\Unit\Codegen;
 
 use GraphQL\Language\Parser;
-use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Codegen\Merger;
+use Spawnia\Sailor\Tests\TestCase;
 
-class MergerTest extends TestCase
+final class MergerTest extends TestCase
 {
     public function testCombine(): void
     {

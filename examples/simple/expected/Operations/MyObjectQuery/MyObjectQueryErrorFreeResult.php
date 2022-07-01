@@ -12,4 +12,9 @@ class MyObjectQueryErrorFreeResult extends \Spawnia\Sailor\ErrorFreeResult
     {
         return 'simple';
     }
+
+    public static function config(): string
+    {
+        return __DIR__ . '/../../../sailor.php';
+    }
 }

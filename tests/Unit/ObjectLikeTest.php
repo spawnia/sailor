@@ -2,11 +2,11 @@
 
 namespace Spawnia\Sailor\Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
 use Spawnia\Sailor\Error\InvalidDataException;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQuery;
+use Spawnia\Sailor\Tests\TestCase;
 
-class ObjectLikeTest extends TestCase
+final class ObjectLikeTest extends TestCase
 {
     public function testFromStdClass(): void
     {
