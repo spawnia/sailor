@@ -24,7 +24,7 @@ class Task extends \Spawnia\Sailor\ObjectLike
         if ($done !== self::UNDEFINED) {
             $instance->done = $done;
         }
-        $instance->__typename = 'Node';
+        $instance->__typename = 'Task';
         if ($node !== self::UNDEFINED) {
             $instance->node = $node;
         }

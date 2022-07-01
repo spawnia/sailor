@@ -27,7 +27,7 @@ class Post extends \Spawnia\Sailor\ObjectLike
         if ($id !== self::UNDEFINED) {
             $instance->id = $id;
         }
-        $instance->__typename = 'Node';
+        $instance->__typename = 'Post';
         if ($node !== self::UNDEFINED) {
             $instance->node = $node;
         }

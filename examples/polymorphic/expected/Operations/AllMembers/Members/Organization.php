@@ -20,7 +20,7 @@ class Organization extends \Spawnia\Sailor\ObjectLike
         if ($code !== self::UNDEFINED) {
             $instance->code = $code;
         }
-        $instance->__typename = 'Member';
+        $instance->__typename = 'Organization';
 
         return $instance;
     }
