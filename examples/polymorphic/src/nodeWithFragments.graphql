@@ -8,6 +8,10 @@ query NodeWithFragments($id: ID!) {
                 }
             }
         }
+        ... on Post {
+            id
+            title
+        }
         ... on Task {
             done
             node {
@@ -17,10 +21,6 @@ query NodeWithFragments($id: ID!) {
                     }
                 }
             }
-        }
-        ... on Post {
-            id
-            title
         }
     }
 }

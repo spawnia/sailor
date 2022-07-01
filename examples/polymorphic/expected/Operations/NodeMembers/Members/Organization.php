@@ -13,7 +13,7 @@ class Organization extends \Spawnia\Sailor\ObjectLike
     {
         $instance = new self;
 
-        $instance->__typename = 'Member';
+        $instance->__typename = 'Organization';
 
         return $instance;
     }

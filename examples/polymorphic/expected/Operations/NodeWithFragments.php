@@ -44,6 +44,10 @@ class NodeWithFragments extends \Spawnia\Sailor\Operation
                 }
               }
             }
+            ... on Post {
+              id
+              title
+            }
             ... on Task {
               done
               node {
@@ -55,10 +59,6 @@ class NodeWithFragments extends \Spawnia\Sailor\Operation
                   }
                 }
               }
-            }
-            ... on Post {
-              id
-              title
             }
           }
         }';

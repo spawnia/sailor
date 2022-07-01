@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments;
 
 /**
- * @property \Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\User|\Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\Task|\Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\Post $node
+ * @property \Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\User|\Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\Post|\Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\Task $node
  * @property string $__typename
  */
 class NodeWithFragments extends \Spawnia\Sailor\ObjectLike
 {
     /**
-     * @param \Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\User|\Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\Task|\Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\Post $node
+     * @param \Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\User|\Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\Post|\Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\Task $node
      */
     public static function make($node): self
     {
@@ -32,8 +32,8 @@ class NodeWithFragments extends \Spawnia\Sailor\ObjectLike
         return $converters ??= [
             'node' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\PolymorphicConverter([
             'User' => '\\Spawnia\\Sailor\\Polymorphic\\Operations\\NodeWithFragments\\Node\\User',
-            'Task' => '\\Spawnia\\Sailor\\Polymorphic\\Operations\\NodeWithFragments\\Node\\Task',
             'Post' => '\\Spawnia\\Sailor\\Polymorphic\\Operations\\NodeWithFragments\\Node\\Post',
+            'Task' => '\\Spawnia\\Sailor\\Polymorphic\\Operations\\NodeWithFragments\\Node\\Task',
         ])),
             '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
         ];
