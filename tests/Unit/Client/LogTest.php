@@ -58,6 +58,16 @@ final class LogTest extends TestCase
         ], $decoded);
     }
 
+    public function testNoRequests(): void
+    {
+        self::assertFileDoesNotExist(self::FILENAME);
+
+        $log = new Log(self::FILENAME);
+
+        self::assertFileExists(self::FILENAME);
+        self::assertCount(0, iterator_to_array($log->requests()));
+    }
+
     public function testClear(): void
     {
         \Safe\file_put_contents(self::FILENAME, 'foo');

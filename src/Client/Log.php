@@ -14,6 +14,8 @@ class Log implements Client
 
     public function __construct(string $filename)
     {
+        \Safe\touch($filename);
+
         $this->filename = $filename;
     }
 
