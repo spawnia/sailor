@@ -420,7 +420,7 @@ HelloSailorResult::fromErrors([
 ]);
 ```
 
-For PHP 8 users, there is a more ergonomic method of instantiating mocked results:
+For PHP 8 users, it is recommended to use named arguments to build complex mocked results:
 
 ```php
 HelloSailorResult::fromData(
