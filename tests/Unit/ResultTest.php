@@ -65,7 +65,7 @@ final class ResultTest extends TestCase
 
         $result = new MyScalarQueryResult();
         $result->data = MyScalarQuery::make(
-            /* scalarWithArg: */ 
+            /* scalarWithArg: */
             null,
         );
 

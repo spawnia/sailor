@@ -24,11 +24,11 @@ final class PolymorphicTest extends TestCase
             ->with($id)
             ->andReturn(UserOrPostResult::fromData(
                 UserOrPost\UserOrPost::make(
-                    /* node: */ 
+                    /* node: */
                     UserOrPost\Node\User::make(
-                        /* id: */ 
+                        /* id: */
                         $id,
-                        /* name: */ 
+                        /* name: */
                         $name,
                     )
                 )

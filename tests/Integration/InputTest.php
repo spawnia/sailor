@@ -27,7 +27,7 @@ final class InputTest extends TestCase
             ->withArgs(fn (SomeInput $input): bool => $input == $someInput)
             ->andReturn(TakeSomeInput\TakeSomeInputResult::fromData(
                 TakeSomeInput\TakeSomeInput::make(
-                    /* takeSomeInput: */ 
+                    /* takeSomeInput: */
                     $answer,
                 )
             ));

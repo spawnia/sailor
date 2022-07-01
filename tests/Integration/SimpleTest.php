@@ -104,7 +104,7 @@ final class SimpleTest extends TestCase
             ->expects('execute')
             ->andReturn(MyScalarQueryResult::fromData(
                 MyScalarQuery\MyScalarQuery::make(
-                    /* scalarWithArg: */ 
+                    /* scalarWithArg: */
                     $bar
                 )
             ));
@@ -153,7 +153,7 @@ final class SimpleTest extends TestCase
                     MyObjectNestedQuery\SingleObject\SomeObject::make(
                     /* nested: */
                         MyObjectNestedQuery\SingleObject\Nested\SomeObject::make(
-                            /* value: */ 
+                            /* value: */
                             $value
                         )
                     )
