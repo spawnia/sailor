@@ -387,19 +387,19 @@ When registered, the mock captures all calls to `HelloSailor::execute()`.
 Use it to build up expectations for what calls it should receive and mock returned results:
 
 ```php
+$hello = 'Hello, Sailor!';
+
 $mock
     ->expects('execute')
     ->once()
     ->with('Sailor')
-    ->andReturn(HelloSailorResult::fromStdClass((object) [
-        'data' => (object) [
-            'hello' => 'Hello, Sailor!',
-        ],
-    ]));
+    ->andReturn(HelloSailorResult::fromData(
+        HelloSailor\HelloSailor::make($hello),
+    ));
 
 $result = HelloSailor::execute('Sailor')->errorFree();
 
-self::assertSame('Hello, Sailor!', $result->data->hello);
+self::assertSame($hello, $result->data->hello);
 ```
 
 Subsequent calls to `::mock()` will return the initially registered mock instance.
