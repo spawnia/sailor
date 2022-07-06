@@ -22,8 +22,8 @@ class Escaper
     public static function escapeNamespace(string $name): string
     {
         $parts = explode('\\', $name);
-        foreach ($parts as $i => $part) {
-            $parts[$i] = self::escapeName($part);
+        foreach ($parts as &$part) {
+            $part = self::escapeName($part);
         }
 
         return implode('\\', $parts);
