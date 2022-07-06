@@ -2,9 +2,14 @@ type Query {
     scalarWithArg(arg: String): ID
     twoArgs(first: String, second: Int): ID
     singleObject: SomeObject
+    reservedKeywords: Switch
 }
 
 type SomeObject {
     value: Int
     nested: SomeObject
+}
+
+type Switch {
+    a: Int
 }
