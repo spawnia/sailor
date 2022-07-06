@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-- Add support for types and fields with name equivalent to any php keyword like `type Switch` or ```{ print { subfield } }```.
+- Add support for types and fields named equivalent to PHP keywords like `type Switch` or `{ print { subfield } }`.
 
 ## v0.21.2
 
