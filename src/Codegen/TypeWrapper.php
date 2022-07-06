@@ -8,11 +8,14 @@ use GraphQL\Type\Definition\Type;
 use Spawnia\Sailor\Convert\ListConverter;
 use Spawnia\Sailor\Convert\NonNullConverter;
 use Spawnia\Sailor\Convert\NullConverter;
+use function strpos;
 
 class TypeWrapper
 {
     public static function phpDoc(Type $type, string $typeReference, bool $shouldWrapWithNull = true): string
     {
+        $typeReference = self::escapeTypeReference($typeReference);
+
         if ($type instanceof NonNull) {
             return self::phpDoc($type->getWrappedType(), $typeReference, false);
         }
@@ -75,5 +78,14 @@ class TypeWrapper
         }
 
         return $typeReference;
+    }
+
+    private static function escapeTypeReference(string $name): string
+    {
+        if (false === strpos($name, '\\')) {
+            return $name;
+        }
+
+        return Escaper::escapeNamespace($name);
     }
 }
