@@ -76,6 +76,7 @@
   "config": {
     "allow-plugins": {
       "ergebnis/composer-normalize": true,
+      "ocramius/package-versions": true,
       "phpstan/extension-installer": true,
       "infection/extension-installer": true
     },
