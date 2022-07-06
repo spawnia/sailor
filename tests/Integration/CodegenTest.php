@@ -40,7 +40,8 @@ final class CodegenTest extends TestCase
     {
         yield ['custom-types'];
         yield ['input'];
-        yield ['simple'];
+        yield ['php-keywords'];
         yield ['polymorphic'];
+        yield ['simple'];
     }
 }

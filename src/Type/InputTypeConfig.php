@@ -7,6 +7,7 @@ use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use Nette\PhpGenerator\ClassType;
+use Spawnia\Sailor\Codegen\Escaper;
 use Spawnia\Sailor\Codegen\ObjectLikeBuilder;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\ObjectLike;
@@ -32,7 +33,7 @@ class InputTypeConfig implements TypeConfig
     public function className(): string
     {
         // @phpstan-ignore-next-line Method Spawnia\Sailor\Codegen\InputGenerator::className() should return class-string<Spawnia\Sailor\Type\Input> but returns string.
-        return $this->endpointConfig->typesNamespace() . '\\' . $this->inputObjectType->name;
+        return $this->endpointConfig->typesNamespace() . '\\' . Escaper::escapeClassName($this->inputObjectType->name);
     }
 
     public function typeConverter(): string

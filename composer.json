@@ -64,6 +64,7 @@
       "Spawnia\\Sailor\\CustomTypesSrc\\": "examples/custom-types/src/",
       "Spawnia\\Sailor\\Input\\": "examples/input/expected/",
       "Spawnia\\Sailor\\Simple\\": "examples/simple/expected/",
+      "Spawnia\\Sailor\\PhpKeywords\\": "examples/php-keywords/expected/",
       "Spawnia\\Sailor\\Polymorphic\\": "examples/polymorphic/expected/"
     },
     "files": [

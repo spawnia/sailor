@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Spawnia\Sailor\Simple\Operations\ReservedKeywords;
+namespace Spawnia\Sailor\Simple\Operations\_catch;
 
-class ReservedKeywordsResult extends \Spawnia\Sailor\Result
+class catchResult extends \Spawnia\Sailor\Result
 {
-    public ?ReservedKeywords $data = null;
+    public ?catch $data = null;
 
     protected function setData(\stdClass $data): void
     {
-        $this->data = ReservedKeywords::fromStdClass($data);
+        $this->data = catch::fromStdClass($data);
     }
 
     /**
@@ -18,7 +18,7 @@ class ReservedKeywordsResult extends \Spawnia\Sailor\Result
      *
      * @return static
      */
-    public static function fromData(ReservedKeywords $data): self
+    public static function fromData(catch $data): self
     {
         $instance = new static;
         $instance->data = $data;
@@ -26,14 +26,14 @@ class ReservedKeywordsResult extends \Spawnia\Sailor\Result
         return $instance;
     }
 
-    public function errorFree(): ReservedKeywordsErrorFreeResult
+    public function errorFree(): catchErrorFreeResult
     {
-        return ReservedKeywordsErrorFreeResult::fromResult($this);
+        return catchErrorFreeResult::fromResult($this);
     }
 
     public static function endpoint(): string
     {
-        return 'simple';
+        return 'php-keywords';
     }
 
     public static function config(): string

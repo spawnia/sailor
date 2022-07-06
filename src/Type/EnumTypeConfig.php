@@ -5,6 +5,7 @@ namespace Spawnia\Sailor\Type;
 use GraphQL\Type\Definition\EnumType;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpNamespace;
+use Spawnia\Sailor\Codegen\Escaper;
 use Spawnia\Sailor\Convert\EnumConverter;
 use Spawnia\Sailor\EndpointConfig;
 
@@ -40,13 +41,13 @@ class EnumTypeConfig implements TypeConfig
 
     public function enumClassName(): string
     {
-        return $this->endpointConfig->typesNamespace() . '\\' . $this->enumType->name;
+        return $this->endpointConfig->typesNamespace() . '\\' . Escaper::escapeClassName($this->enumType->name);
     }
 
     protected function makeEnumClass(): ClassType
     {
         $class = new ClassType(
-            $this->enumType->name,
+            Escaper::escapeClassName($this->enumType->name),
             new PhpNamespace($this->endpointConfig->typesNamespace())
         );
 
@@ -57,7 +58,10 @@ class EnumTypeConfig implements TypeConfig
     {
         foreach ($this->enumType->getValues() as $value) {
             $name = $value->name;
-            $class->addConstant($name, $name);
+            $class->addConstant(
+                Escaper::escapeMemberConstantName($name),
+                $name
+            );
         }
 
         return $class;

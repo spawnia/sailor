@@ -45,6 +45,7 @@ approve: ## Accept the current generated code as expected
 	$(call approve_example,custom-types)
 	$(call approve_example,input)
 	$(call approve_example,polymorphic)
+	$(call approve_example,php-keywords)
 	$(call approve_example,simple)
 
 vendor: composer.json composer.lock

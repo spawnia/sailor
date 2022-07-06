@@ -1,0 +1,15 @@
+type Query {
+    print: Switch
+}
+
+type Switch {
+    for: abstract
+}
+
+enum abstract {
+    class
+}
+
+input new {
+    unset: ID
+}

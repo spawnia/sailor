@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Spawnia\Sailor\Simple\Operations;
 
 /**
- * @extends \Spawnia\Sailor\Operation<\Spawnia\Sailor\Simple\Operations\ReservedKeywords\ReservedKeywordsResult>
+ * @extends \Spawnia\Sailor\Operation<\Spawnia\Sailor\Simple\Operations\_catch\catchResult>
  */
-class ReservedKeywords extends \Spawnia\Sailor\Operation
+class _catch extends \Spawnia\Sailor\Operation
 {
-    public static function execute(): ReservedKeywords\ReservedKeywordsResult
+    public static function execute(): _catch\catchResult
     {
         return self::executeOperation(
         );
@@ -25,18 +25,18 @@ class ReservedKeywords extends \Spawnia\Sailor\Operation
 
     public static function document(): string
     {
-        return /* @lang GraphQL */ 'query ReservedKeywords {
+        return /* @lang GraphQL */ 'query catch {
           __typename
-          print: reservedKeywords {
+          print {
             __typename
-            a
+            for
           }
         }';
     }
 
     public static function endpoint(): string
     {
-        return 'simple';
+        return 'php-keywords';
     }
 
     public static function config(): string

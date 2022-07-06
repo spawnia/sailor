@@ -97,7 +97,7 @@ class OperationGenerator implements ClassGenerator
                             $resultName = "{$operationName}Result";
 
                             // Related classes are put into a nested namespace
-                            $this->namespaceStack[] = $operationName;
+                            $this->namespaceStack[] = Escaper::escapeNamespaceName($operationName);
                             $resultClass = $this->withCurrentNamespace($resultName);
 
                             // The base class contains most of the logic
@@ -227,11 +227,11 @@ class OperationGenerator implements ClassGenerator
                             if ($namedType instanceof ObjectType) {
                                 // We go one level deeper into the selection set
                                 // To avoid naming conflicts, we add on another namespace
-                                $this->namespaceStack[] = ucfirst($fieldName);
+                                $this->namespaceStack[] = Escaper::escapeNamespaceName(ucfirst($fieldName));
 
                                 $name = $namedType->name;
 
-                                $phpType = $this->withCurrentNamespace($name);
+                                $phpType = $this->withCurrentNamespace(Escaper::escapeNamespaceName($name));
                                 $phpDocType = "\\$phpType";
 
                                 $this->operationStack->setSelection(
@@ -246,7 +246,7 @@ class OperationGenerator implements ClassGenerator
                             } elseif ($namedType instanceof InterfaceType || $namedType instanceof UnionType) {
                                 // We go one level deeper into the selection set
                                 // To avoid naming conflicts, we add on another namespace
-                                $this->namespaceStack[] = ucfirst($fieldName);
+                                $this->namespaceStack[] = Escaper::escapeNamespaceName(ucfirst($fieldName));
 
                                 /** @var PolymorphicMapping $mapping */
                                 $mapping = [];

@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Spawnia\Sailor\Simple\Operations\ReservedKeywords;
+namespace Spawnia\Sailor\Simple\Operations\_catch;
 
 /**
  * @property string $__typename
- * @property \Spawnia\Sailor\Simple\Operations\ReservedKeywords\_Print\_Switch|null $print
+ * @property \Spawnia\Sailor\Simple\Operations\_catch\_Print\_Switch|null $print
  */
-class ReservedKeywords extends \Spawnia\Sailor\ObjectLike
+class _catch extends \Spawnia\Sailor\ObjectLike
 {
     /**
-     * @param \Spawnia\Sailor\Simple\Operations\ReservedKeywords\_Print\_Switch|null $print
+     * @param \Spawnia\Sailor\Simple\Operations\_catch\_Print\_Switch|null $print
      */
     public static function make($print = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): self
     {
@@ -31,13 +31,13 @@ class ReservedKeywords extends \Spawnia\Sailor\ObjectLike
 
         return $converters ??= [
             '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
-            'print' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Simple\Operations\ReservedKeywords\_Print\_Switch),
+            'print' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Simple\Operations\_catch\_Print\_Switch),
         ];
     }
 
     public static function endpoint(): string
     {
-        return 'simple';
+        return 'php-keywords';
     }
 
     public static function config(): string

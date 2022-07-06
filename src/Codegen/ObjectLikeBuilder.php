@@ -34,8 +34,8 @@ class ObjectLikeBuilder
     public function __construct(string $name, string $namespace)
     {
         $class = new ClassType(
-            Escaper::escapeName($name),
-            new PhpNamespace(Escaper::escapeNamespace($namespace)) // TODO drop escape when min PHP version is 8.0+
+            Escaper::escapeClassName($name),
+            new PhpNamespace($namespace) // TODO drop escape when min PHP version is 8.0+
         );
 
         $class->addExtend(ObjectLike::class);
@@ -107,8 +107,6 @@ PHP
         $wrappedPhpDocType = TypeWrapper::phpDoc($type, $phpDocType);
 
         $this->class->addComment("@property {$wrappedPhpDocType} \${$name}");
-
-        $typeConverter = Escaper::escapeNamespace($typeConverter);
 
         $wrappedTypeConverter = TypeWrapper::converter($type, "new \\{$typeConverter}");
         $this->converters->addBody(/** @lang PHP */ "    '{$name}' => {$wrappedTypeConverter},");
