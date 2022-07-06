@@ -35,7 +35,7 @@ class ObjectLikeBuilder
     {
         $class = new ClassType(
             Escaper::escapeName($name),
-            new PhpNamespace(Escaper::escapeNamespace($namespace)) // Escape can be dropped when min PHP version is 8.0+
+            new PhpNamespace(Escaper::escapeNamespace($namespace)) // TODO drop escape when min PHP version is 8.0+
         );
 
         $class->addExtend(ObjectLike::class);
