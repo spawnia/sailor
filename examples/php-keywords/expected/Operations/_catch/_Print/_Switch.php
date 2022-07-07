@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Spawnia\Sailor\Simple\Operations\_catch\_Print;
+namespace Spawnia\Sailor\PhpKeywords\Operations\_catch\_Print;
 
 /**
  * @property string $__typename

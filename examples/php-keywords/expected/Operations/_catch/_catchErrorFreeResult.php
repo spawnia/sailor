@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Spawnia\Sailor\Simple\Operations\_catch;
+namespace Spawnia\Sailor\PhpKeywords\Operations\_catch;
 
-class catchErrorFreeResult extends \Spawnia\Sailor\ErrorFreeResult
+class _catchErrorFreeResult extends \Spawnia\Sailor\ErrorFreeResult
 {
-    public catch $data;
+    public _catch $data;
 
     public static function endpoint(): string
     {

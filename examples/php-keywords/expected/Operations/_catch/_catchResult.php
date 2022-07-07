@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Spawnia\Sailor\Simple\Operations\_catch;
+namespace Spawnia\Sailor\PhpKeywords\Operations\_catch;
 
-class catchResult extends \Spawnia\Sailor\Result
+class _catchResult extends \Spawnia\Sailor\Result
 {
-    public ?catch $data = null;
+    public ?_catch $data = null;
 
     protected function setData(\stdClass $data): void
     {
-        $this->data = catch::fromStdClass($data);
+        $this->data = _catch::fromStdClass($data);
     }
 
     /**
@@ -18,7 +18,7 @@ class catchResult extends \Spawnia\Sailor\Result
      *
      * @return static
      */
-    public static function fromData(catch $data): self
+    public static function fromData(_catch $data): self
     {
         $instance = new static;
         $instance->data = $data;
@@ -26,9 +26,9 @@ class catchResult extends \Spawnia\Sailor\Result
         return $instance;
     }
 
-    public function errorFree(): catchErrorFreeResult
+    public function errorFree(): _catchErrorFreeResult
     {
-        return catchErrorFreeResult::fromResult($this);
+        return _catchErrorFreeResult::fromResult($this);
     }
 
     public static function endpoint(): string

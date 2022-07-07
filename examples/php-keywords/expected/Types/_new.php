@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Spawnia\Sailor\Simple\Types;
+namespace Spawnia\Sailor\PhpKeywords\Types;
 
 /**
  * @property string|null $unset

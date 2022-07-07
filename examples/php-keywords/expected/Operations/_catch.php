@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Spawnia\Sailor\Simple\Operations;
+namespace Spawnia\Sailor\PhpKeywords\Operations;
 
 /**
- * @extends \Spawnia\Sailor\Operation<\Spawnia\Sailor\Simple\Operations\_catch\catchResult>
+ * @extends \Spawnia\Sailor\Operation<\Spawnia\Sailor\PhpKeywords\Operations\_catch\_catchResult>
  */
 class _catch extends \Spawnia\Sailor\Operation
 {
-    public static function execute(): _catch\catchResult
+    public static function execute(): _catch\_catchResult
     {
         return self::executeOperation(
         );
