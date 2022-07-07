@@ -2,6 +2,6 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$result = \Spawnia\Sailor\Simple\Operations\MyObjectQuery::execute();
+$result = \Spawnia\Sailor\PhpKeywords\Operations\_catch::execute();
 
-assert(42 === $result->data->singleObject->value);
+assert(\Spawnia\Sailor\PhpKeywords\Types\_abstract::_class === $result->data->print->for);

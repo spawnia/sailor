@@ -9,7 +9,7 @@ return [
     'php-keywords' => new class() extends EndpointConfig {
         public function namespace(): string
         {
-            return 'Spawnia\Sailor\Simple';
+            return 'Spawnia\Sailor\PhpKeywords';
         }
 
         public function targetPath(): string
@@ -35,9 +35,9 @@ return [
                 return Response::fromStdClass((object) [
                     'data' => (object) [
                         '__typename' => 'Query',
-                        'singleObject' => (object) [
-                            '__typename' => 'SomeObject',
-                            'value' => 42,
+                        'print' => (object) [
+                            '__typename' => 'Switch',
+                            'for' => 'class',
                         ],
                     ],
                 ]);
