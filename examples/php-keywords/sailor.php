@@ -37,6 +37,7 @@ return [
                         '__typename' => 'Query',
                         'print' => (object) [
                             '__typename' => 'Switch',
+                            'a' => 42,
                             'for' => 'class',
                         ],
                     ],

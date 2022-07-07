@@ -1,5 +1,8 @@
 query catch {
     print {
-        for
+        a
+        ... on Switch {
+            for
+        }
     }
 }

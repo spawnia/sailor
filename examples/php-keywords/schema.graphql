@@ -1,9 +1,18 @@
 type Query {
-    print: Switch
+    print: Parent
 }
 
-type Switch {
+interface Parent {
+    a: Int
+}
+
+type Switch implements Parent {
+    a: Int
     for: abstract
+}
+
+type AnotherType implements Parent {
+    a: Int
 }
 
 enum abstract {
