@@ -17,7 +17,7 @@
   "require": {
     "php": "^7.4 || ^8",
     "ext-json": "*",
-    "nette/php-generator": "^3.6.3",
+    "nette/php-generator": "^3.6.7",
     "psr/http-client": "^1",
     "symfony/console": "^5 || ^6",
     "symfony/var-exporter": "^5.3 || ^6",
@@ -64,6 +64,7 @@
       "Spawnia\\Sailor\\CustomTypesSrc\\": "examples/custom-types/src/",
       "Spawnia\\Sailor\\Input\\": "examples/input/expected/",
       "Spawnia\\Sailor\\Simple\\": "examples/simple/expected/",
+      "Spawnia\\Sailor\\PhpKeywords\\": "examples/php-keywords/expected/",
       "Spawnia\\Sailor\\Polymorphic\\": "examples/polymorphic/expected/"
     },
     "files": [
@@ -76,6 +77,7 @@
   "config": {
     "allow-plugins": {
       "ergebnis/composer-normalize": true,
+      "ocramius/package-versions": true,
       "phpstan/extension-installer": true,
       "infection/extension-installer": true
     },

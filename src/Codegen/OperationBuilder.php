@@ -33,7 +33,10 @@ class OperationBuilder
 
     public function __construct(string $name, string $namespace)
     {
-        $class = new ClassType($name, new PhpNamespace($namespace));
+        $class = new ClassType(
+            Escaper::escapeClassName($name),
+            new PhpNamespace($namespace)
+        );
 
         // The execute method is the public API of the operation
         $execute = $class->addMethod('execute');

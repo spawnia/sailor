@@ -1,7 +1,12 @@
 <?php declare(strict_types=1);
 
+use Spawnia\Sailor\CustomTypes\Operations\MyCustomEnumQuery;
+use Spawnia\Sailor\CustomTypes\Types\CustomEnum;
+
 require __DIR__ . '/../vendor/autoload.php';
 
-$result = \Spawnia\Sailor\Simple\Operations\MyObjectQuery::execute();
+$result = MyCustomEnumQuery::execute(
+    new CustomEnum(CustomEnum::A)
+);
 
-assert(42 === $result->data->singleObject->value);
+assert(CustomEnum::B === $result->data->withCustomEnum->value);

@@ -348,6 +348,11 @@ $input = SomeInput::make(requiredId: 1);
 $input->secondOptional = Spawnia\Sailor\ObjectLike::UNDEFINED;
 ```
 
+### PHP keyword collisions
+
+Since GraphQL uses a different set of reserved keywords, names of fields or types may collide with PHP keywords.
+Sailor prevents illegal usages of those names in generated code by prefixing them with a single underscore `_`.
+
 ## Testing
 
 Sailor provides first class support for testing by allowing you to mock operations.
@@ -420,7 +425,7 @@ HelloSailorResult::fromErrors([
 ]);
 ```
 
-For PHP 8 users, there is a more ergonomic method of instantiating mocked results:
+For PHP 8 users, it is recommended to use named arguments to build complex mocked results:
 
 ```php
 HelloSailorResult::fromData(

@@ -1,5 +1,5 @@
 .PHONY: it
-it: fix stan test ## Run the commonly used targets
+it: fix stan approve test test-examples ## Run the commonly used targets
 
 .PHONY: help
 help: ## Displays this list of targets with descriptions
@@ -13,11 +13,6 @@ fix: vendor
 stan: ## Runs static analysis with phpstan
 	mkdir -p .build/phpstan
 	vendor/bin/phpstan analyse --configuration=phpstan.neon
-
-.PHONY: codegen
-codegen: ## Runs the codegen tests
-	mkdir -p .build/phpunit
-	vendor/bin/phpunit --filter CodegenTest
 
 .PHONY: test
 test: ## Runs tests with phpunit
@@ -35,17 +30,18 @@ infection: ## Runs mutation tests with infection
 	mkdir -p .build/infection
 	vendor/bin/infection --ignore-msi-with-no-mutations --min-covered-msi=100 --min-msi=100
 
-define approve_example
-	rm -rf examples/$(1)/expected
-	cp -r examples/$(1)/generated examples/$(1)/expected
-endef
-
 .PHONY: approve
-approve: ## Accept the current generated code as expected
-	$(call approve_example,custom-types)
-	$(call approve_example,input)
-	$(call approve_example,polymorphic)
-	$(call approve_example,simple)
+approve: ## Generate code and approve it as expected
+	tests/generate-and-approve-examples.php
+
+.PHONY: test-examples
+test-examples: ## Test examples
+	cd examples/custom-types && ./test.sh
+	cd examples/input && ./test.sh
+	cd examples/install && ./test.sh
+	cd examples/php-keywords && ./test.sh
+	cd examples/polymorphic && ./test.sh
+	cd examples/simple && ./test.sh
 
 vendor: composer.json composer.lock
 	composer install

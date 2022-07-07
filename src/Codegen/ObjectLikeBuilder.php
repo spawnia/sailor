@@ -33,7 +33,10 @@ class ObjectLikeBuilder
 
     public function __construct(string $name, string $namespace)
     {
-        $class = new ClassType($name, new PhpNamespace($namespace));
+        $class = new ClassType(
+            $name,
+            new PhpNamespace($namespace) // TODO drop escape when min PHP version is 8.0+
+        );
 
         $class->addExtend(ObjectLike::class);
 
