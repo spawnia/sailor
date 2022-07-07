@@ -88,7 +88,7 @@ class OperationGenerator implements ClassGenerator
                              * @see Generator::ensureOperationsAreNamed()
                              */
                             $nameNode = $operationDefinition->name;
-                            $operationName = $nameNode->value;
+                            $operationName = Escaper::escapeClassName($nameNode->value);
 
                             // Generate a class to represent the query/mutation itself
                             $operation = new OperationBuilder($operationName, $this->currentNamespace());
@@ -97,7 +97,7 @@ class OperationGenerator implements ClassGenerator
                             $resultName = "{$operationName}Result";
 
                             // Related classes are put into a nested namespace
-                            $this->namespaceStack[] = Escaper::escapeNamespaceName($operationName);
+                            $this->namespaceStack[] = $operationName;
                             $resultClass = $this->withCurrentNamespace($resultName);
 
                             // The base class contains most of the logic
