@@ -87,7 +87,10 @@ jobs:
     strategy:
       matrix:
         example:
+          - custom-types
+          - input
           - install
+          - php-keywords
           - simple
           - polymorphic
 
