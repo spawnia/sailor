@@ -1,20 +1,16 @@
 <?php declare(strict_types=1);
 
-use GraphQL\Type\Schema;
 use Spawnia\Sailor\Client;
-use Spawnia\Sailor\CustomTypes\Types\CustomEnum;
-use Spawnia\Sailor\CustomTypesSrc\CustomDateTypeConfig;
-use Spawnia\Sailor\CustomTypesSrc\CustomEnumTypeConfig;
 use Spawnia\Sailor\EndpointConfig;
+use Spawnia\Sailor\PhpKeywords\Types\_abstract;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
-use Spawnia\Sailor\Type\BenSampoEnumTypeConfig;
 
 return [
-    'custom-types' => new class() extends EndpointConfig {
+    'php-keywords' => new class() extends EndpointConfig {
         public function namespace(): string
         {
-            return 'Spawnia\Sailor\CustomTypes';
+            return 'Spawnia\Sailor\PhpKeywords';
         }
 
         public function targetPath(): string
@@ -40,24 +36,17 @@ return [
                 return Response::fromStdClass((object) [
                     'data' => (object) [
                         '__typename' => 'Query',
-                        'withCustomEnum' => CustomEnum::B,
+                        'print' => (object) [
+                            '__typename' => 'Switch',
+                            'for' => _abstract::_class,
+                            'int' => 42,
+                            'as' => 69,
+                        ],
                     ],
                 ]);
             };
 
             return $mockClient;
-        }
-
-        public function configureTypes(Schema $schema): array
-        {
-            return array_merge(
-                parent::configureTypes($schema),
-                [
-                    'BenSampoEnum' => new BenSampoEnumTypeConfig($this, $schema->getType('BenSampoEnum')),
-                    'CustomEnum' => new CustomEnumTypeConfig($this, $schema->getType('CustomEnum')),
-                    'CustomDate' => new CustomDateTypeConfig($this, $schema->getType('CustomDate')),
-                ]
-            );
         }
     },
 ];

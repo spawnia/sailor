@@ -6,6 +6,7 @@ use BenSampo\Enum\Enum;
 use GraphQL\Type\Definition\Type;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Method;
+use Spawnia\Sailor\Codegen\Escaper;
 use Spawnia\Sailor\Convert\GeneratesTypeConverter;
 
 class BenSampoEnumTypeConfig extends EnumTypeConfig
@@ -60,7 +61,8 @@ class BenSampoEnumTypeConfig extends EnumTypeConfig
         $class->addExtend(Enum::class);
 
         foreach ($this->enumType->getValues() as $value) {
-            $class->addComment("@method static static {$value->name}()");
+            $constName = Escaper::escapeMemberConstantName($value->name);
+            $class->addComment("@method static static {$constName}()");
         }
 
         return parent::decorateEnumClass($class);

@@ -31,13 +31,13 @@ class EnumGenerator implements ClassGenerator
 
     public function className(): string
     {
-        return $this->endpointConfig->typesNamespace() . '\\' . $this->enumType->name;
+        return $this->endpointConfig->typesNamespace() . '\\' . Escaper::escapeClassName($this->enumType->name);
     }
 
     protected function makeClass(): ClassType
     {
         return new ClassType(
-            $this->enumType->name,
+            Escaper::escapeClassName($this->enumType->name),
             new PhpNamespace($this->endpointConfig->typesNamespace())
         );
     }
@@ -46,7 +46,10 @@ class EnumGenerator implements ClassGenerator
     {
         foreach ($this->enumType->getValues() as $value) {
             $name = $value->name;
-            $class->addConstant($name, $name);
+            $class->addConstant(
+                Escaper::escapeMemberConstantName($name),
+                $name
+            );
         }
 
         return $class;

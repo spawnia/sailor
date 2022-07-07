@@ -1,0 +1,11 @@
+query catch {
+    print {
+        int
+        ... on Switch {
+            for
+        }
+        ... on Abstract {
+            as: int
+        }
+    }
+}

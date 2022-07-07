@@ -3,6 +3,9 @@ set -euxo pipefail
 
 composer update
 
+echo Clean up previous runs
+rm -f sailor.php
+
 if vendor/bin/sailor; then
   echo Expected the initial run of vendor/bin/sailor to exit with an error
   exit 1;

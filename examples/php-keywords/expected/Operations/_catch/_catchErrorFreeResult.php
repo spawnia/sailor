@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Spawnia\Sailor\Simple\Operations\ReservedKeywords;
+namespace Spawnia\Sailor\PhpKeywords\Operations\_catch;
 
-class ReservedKeywordsErrorFreeResult extends \Spawnia\Sailor\ErrorFreeResult
+class _catchErrorFreeResult extends \Spawnia\Sailor\ErrorFreeResult
 {
-    public ReservedKeywords $data;
+    public _catch $data;
 
     public static function endpoint(): string
     {
-        return 'simple';
+        return 'php-keywords';
     }
 
     public static function config(): string

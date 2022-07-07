@@ -88,7 +88,7 @@ class OperationGenerator implements ClassGenerator
                              * @see Generator::ensureOperationsAreNamed()
                              */
                             $nameNode = $operationDefinition->name;
-                            $operationName = $nameNode->value;
+                            $operationName = Escaper::escapeClassName($nameNode->value);
 
                             // Generate a class to represent the query/mutation itself
                             $operation = new OperationBuilder($operationName, $this->currentNamespace());
@@ -227,11 +227,11 @@ class OperationGenerator implements ClassGenerator
                             if ($namedType instanceof ObjectType) {
                                 // We go one level deeper into the selection set
                                 // To avoid naming conflicts, we add on another namespace
-                                $this->namespaceStack[] = ucfirst($fieldName);
+                                $this->namespaceStack[] = Escaper::escapeNamespaceName(ucfirst($fieldName));
 
                                 $name = $namedType->name;
 
-                                $phpType = $this->withCurrentNamespace($name);
+                                $phpType = $this->withCurrentNamespace(Escaper::escapeNamespaceName($name));
                                 $phpDocType = "\\$phpType";
 
                                 $this->operationStack->setSelection(
@@ -246,7 +246,7 @@ class OperationGenerator implements ClassGenerator
                             } elseif ($namedType instanceof InterfaceType || $namedType instanceof UnionType) {
                                 // We go one level deeper into the selection set
                                 // To avoid naming conflicts, we add on another namespace
-                                $this->namespaceStack[] = ucfirst($fieldName);
+                                $this->namespaceStack[] = Escaper::escapeNamespaceName(ucfirst($fieldName));
 
                                 /** @var PolymorphicMapping $mapping */
                                 $mapping = [];
@@ -256,9 +256,10 @@ class OperationGenerator implements ClassGenerator
 
                                 foreach ($this->schema->getPossibleTypes($namedType) as $objectType) {
                                     $name = $objectType->name;
+                                    $escapedName = Escaper::escapeClassName($name);
 
-                                    $mapping[$name] = "\\{$this->withCurrentNamespace($name)}";
-                                    $mappingSelection[$name] = $this->makeObjectLikeBuilder($name);
+                                    $mapping[$name] = "\\{$this->withCurrentNamespace($escapedName)}";
+                                    $mappingSelection[$name] = $this->makeObjectLikeBuilder($escapedName);
                                 }
 
                                 $phpType = 'object';
