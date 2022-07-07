@@ -1,9 +1,14 @@
 type Query {
-    print: Switch
+    print: Abstract
 }
 
-type Switch {
+interface Abstract {
+    int: Int
+}
+
+type Switch implements Abstract {
     for: abstract
+    int: Int
 }
 
 enum abstract {

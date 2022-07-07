@@ -31,7 +31,9 @@ class _catch extends \Spawnia\Sailor\ObjectLike
 
         return $converters ??= [
             '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
-            'print' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\PhpKeywords\Operations\_catch\_Print\_Switch),
+            'print' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\PolymorphicConverter([
+            'Switch' => '\\Spawnia\\Sailor\\PhpKeywords\\Operations\\_catch\\_Print\\_Switch',
+        ])),
         ];
     }
 

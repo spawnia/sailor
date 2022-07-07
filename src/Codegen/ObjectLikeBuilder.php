@@ -34,7 +34,7 @@ class ObjectLikeBuilder
     public function __construct(string $name, string $namespace)
     {
         $class = new ClassType(
-            Escaper::escapeClassName($name),
+            $name,
             new PhpNamespace($namespace) // TODO drop escape when min PHP version is 8.0+
         );
 

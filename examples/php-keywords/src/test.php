@@ -2,6 +2,15 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$result = \Spawnia\Sailor\PhpKeywords\Operations\_catch::execute();
+use Spawnia\Sailor\PhpKeywords\Operations\_catch;
+use Spawnia\Sailor\PhpKeywords\Operations\_catch\_Print\_Switch;
+use Spawnia\Sailor\PhpKeywords\Types\_abstract;
 
-assert(\Spawnia\Sailor\PhpKeywords\Types\_abstract::_class === $result->data->print->for);
+$result = _catch::execute();
+
+$switch = $result->data->print;
+assert($switch instanceof _Switch);
+
+assert(_abstract::_class === $switch->for);
+assert(42 === $switch->int);
+assert(69 === $switch->as);

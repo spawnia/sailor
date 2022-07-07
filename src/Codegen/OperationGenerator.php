@@ -256,9 +256,10 @@ class OperationGenerator implements ClassGenerator
 
                                 foreach ($this->schema->getPossibleTypes($namedType) as $objectType) {
                                     $name = $objectType->name;
+                                    $escapedName = Escaper::escapeClassName($name);
 
-                                    $mapping[$name] = "\\{$this->withCurrentNamespace($name)}";
-                                    $mappingSelection[$name] = $this->makeObjectLikeBuilder($name);
+                                    $mapping[$name] = "\\{$this->withCurrentNamespace($escapedName)}";
+                                    $mappingSelection[$name] = $this->makeObjectLikeBuilder($escapedName);
                                 }
 
                                 $phpType = 'object';

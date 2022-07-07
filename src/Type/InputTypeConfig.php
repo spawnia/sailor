@@ -54,7 +54,7 @@ class InputTypeConfig implements TypeConfig
         $typeConfigs = $this->endpointConfig->configureTypes($this->schema);
 
         $builder = new ObjectLikeBuilder(
-            $this->inputObjectType->name,
+            Escaper::escapeClassName($this->inputObjectType->name),
             $this->endpointConfig->typesNamespace(),
         );
 

@@ -1,5 +1,5 @@
 .PHONY: it
-it: fix stan test ## Run the commonly used targets
+it: fix stan approve test test-examples ## Run the commonly used targets
 
 .PHONY: help
 help: ## Displays this list of targets with descriptions
