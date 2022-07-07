@@ -11,6 +11,7 @@
       }
     }
   ],
+  "minimum-stability": "dev",
   "scripts": {
     "move-package": "rsync -r ../../ sailor --exclude examples --exclude vendor --exclude .idea --exclude .build --delete",
     "pre-install-cmd": "@move-package",
