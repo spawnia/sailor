@@ -27,7 +27,6 @@ use Nette\PhpGenerator\PhpNamespace;
 use Spawnia\Sailor\Convert\PolymorphicConverter;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\ErrorFreeResult;
-use Spawnia\Sailor\Operation;
 use Spawnia\Sailor\Result;
 use Spawnia\Sailor\Type\TypeConfig;
 use Symfony\Component\VarExporter\VarExporter;
@@ -257,7 +256,7 @@ class OperationGenerator implements ClassGenerator
                                 foreach ($this->schema->getPossibleTypes($namedType) as $objectType) {
                                     $name = $objectType->name;
 
-                                    $mapping[$name] = "\\{$this->withCurrentNamespace($name)}";
+                                    $mapping[$name] = "\\{$this->withCurrentNamespace(Escaper::escapeNamespaceName($name))}";
                                     $mappingSelection[$name] = $this->makeObjectLikeBuilder($name);
                                 }
 

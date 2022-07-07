@@ -29,7 +29,10 @@ class _catch extends \Spawnia\Sailor\Operation
           __typename
           print {
             __typename
-            for
+            a
+            ... on Switch {
+              for
+            }
           }
         }';
     }

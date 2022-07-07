@@ -7,26 +7,19 @@ namespace Spawnia\Sailor\PhpKeywords\Operations\_catch\_Print;
 /**
  * @property string $__typename
  * @property int|null $a
- * @property string|null $for
  */
-class _Switch extends \Spawnia\Sailor\ObjectLike
+class AnotherType extends \Spawnia\Sailor\ObjectLike
 {
     /**
      * @param int|null $a
-     * @param string|null $for
      */
-    public static function make(
-        $a = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
-        $for = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'
-    ): self {
+    public static function make($a = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): self
+    {
         $instance = new self;
 
-        $instance->__typename = 'Switch';
+        $instance->__typename = 'AnotherType';
         if ($a !== self::UNDEFINED) {
             $instance->a = $a;
-        }
-        if ($for !== self::UNDEFINED) {
-            $instance->for = $for;
         }
 
         return $instance;
@@ -39,7 +32,6 @@ class _Switch extends \Spawnia\Sailor\ObjectLike
         return $converters ??= [
             '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
             'a' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\IntConverter),
-            'for' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\EnumConverter),
         ];
     }
 
