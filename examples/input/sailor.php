@@ -34,11 +34,8 @@ return [
             $mockClient->responseMocks[] = static function (): Response {
                 return Response::fromStdClass((object) [
                     'data' => (object) [
-                        '__typename' => 'Query',
-                        'singleObject' => (object) [
-                            '__typename' => 'SomeObject',
-                            'value' => 42,
-                        ],
+                        '__typename' => 'Mutation',
+                        'takeSomeInput' => 42,
                     ],
                 ]);
             };

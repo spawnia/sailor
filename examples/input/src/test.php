@@ -4,4 +4,4 @@ require __DIR__ . '/../vendor/autoload.php';
 
 $result = \Spawnia\Sailor\Input\Operations\TakeSomeInput::execute();
 
-assert(42 === $result->data->singleObject->value);
+assert(42 === $result->data->takeSomeInput);
