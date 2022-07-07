@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
 - Add support for types and fields named equivalent to PHP keywords like `type Switch` or `{ print { subfield } }`.
+
+### Removed
+
+- No longer generate class `TypeConverters`
 
 ## v0.21.2
 

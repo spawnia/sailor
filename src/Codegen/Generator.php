@@ -56,10 +56,6 @@ class Generator
             yield $this->makeFile($class);
         }
 
-//        foreach ((new TypeConvertersGenerator($schema, $this->endpointConfig))->generate() as $class) {
-//            yield $this->makeFile($class);
-//        }
-
         foreach ($this->endpointConfig->configureTypes($schema) as $typeConfig) {
             foreach ($typeConfig->generateClasses() as $class) {
                 yield $this->makeFile($class);
