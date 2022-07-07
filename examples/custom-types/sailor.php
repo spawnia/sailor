@@ -2,6 +2,7 @@
 
 use GraphQL\Type\Schema;
 use Spawnia\Sailor\Client;
+use Spawnia\Sailor\CustomTypes\Types\CustomEnum;
 use Spawnia\Sailor\CustomTypesSrc\CustomDateTypeConfig;
 use Spawnia\Sailor\CustomTypesSrc\CustomEnumTypeConfig;
 use Spawnia\Sailor\EndpointConfig;
@@ -39,10 +40,7 @@ return [
                 return Response::fromStdClass((object) [
                     'data' => (object) [
                         '__typename' => 'Query',
-                        'singleObject' => (object) [
-                            '__typename' => 'SomeObject',
-                            'value' => 42,
-                        ],
+                        'withCustomEnum' => CustomEnum::B,
                     ],
                 ]);
             };

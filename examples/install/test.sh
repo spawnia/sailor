@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euxo pipefail
 
+rm -f sailor.php
 composer update
 
 if vendor/bin/sailor; then

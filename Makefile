@@ -34,6 +34,15 @@ infection: ## Runs mutation tests with infection
 approve: ## Generate code and approve it as expected
 	tests/generate-and-approve-examples.php
 
+.PHONY: examples
+examples: ## Test examples
+	cd examples/custom-types && ./test.sh
+	cd examples/input && ./test.sh
+	cd examples/install && ./test.sh
+	cd examples/php-keywords && ./test.sh
+	cd examples/polymorphic && ./test.sh
+	cd examples/simple && ./test.sh
+
 vendor: composer.json composer.lock
 	composer install
 	composer validate

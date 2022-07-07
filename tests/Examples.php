@@ -41,7 +41,7 @@ final class Examples
         $writer->write($files);
     }
 
-    private static function examplePath(string $example): string
+    public static function examplePath(string $example): string
     {
         return Examples::EXAMPLES_PATH . '/' . $example;
     }
