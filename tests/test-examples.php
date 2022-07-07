@@ -9,5 +9,5 @@ foreach (Examples::EXAMPLES as $example) {
     $examplePath = Examples::examplePath($example);
 
     shell_exec("cd {$examplePath}");
-    shell_exec("./test.sh");
+    shell_exec('./test.sh');
 }
