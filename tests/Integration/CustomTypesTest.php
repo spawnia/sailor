@@ -81,6 +81,9 @@ final class CustomTypesTest extends TestCase
             ->withNoArgs()
             ->andReturn($client);
 
+        $endpoint->expects('fireEvent')
+            ->twice();
+
         Configuration::setEndpointFor(MyCustomEnumQuery::class, $endpoint);
 
         $result = MyCustomEnumQuery::execute(new CustomEnum($value));

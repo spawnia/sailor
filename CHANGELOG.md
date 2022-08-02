@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.23.0
+
+### Added
+
+- Add `fireEvent`-method to `EndpointConfig::class`
+
 ## v0.22.0
 
 ### Added

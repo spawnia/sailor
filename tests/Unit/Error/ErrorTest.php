@@ -89,6 +89,6 @@ final class ErrorTest extends TestCase
     }
 }
 JSON
-, \Safe\json_encode($error));
+            , \Safe\json_encode($error));
     }
 }

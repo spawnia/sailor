@@ -5,6 +5,8 @@ namespace Spawnia\Sailor;
 use Mockery;
 use Mockery\MockInterface;
 use Spawnia\Sailor\Convert\TypeConverter;
+use Spawnia\Sailor\Event\EndRequest;
+use Spawnia\Sailor\Event\StartRequest;
 
 /**
  * Subclasses of this class are automatically generated.
@@ -85,11 +87,16 @@ abstract class Operation implements BelongsToEndpoint
             $variables->{$name} = $typeConverter->toGraphQL($arg);
         }
 
-        $client = self::$clients[static::class]
-            ?? Configuration::endpoint(static::config(), static::endpoint())
-                ->makeClient();
+        $endpointConfig = Configuration::endpoint(static::config(), static::endpoint());
 
-        return $client->request(static::document(), $variables);
+        $client = self::$clients[static::class]
+            ?? $endpointConfig->makeClient();
+
+        $endpointConfig->fireEvent(new StartRequest(static::document(), $variables));
+        $response = $client->request(static::document(), $variables);
+        $endpointConfig->fireEvent(new EndRequest($response));
+
+        return $response;
     }
 
     /**
