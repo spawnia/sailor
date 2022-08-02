@@ -92,8 +92,10 @@ abstract class Operation implements BelongsToEndpoint
         $client = self::$clients[static::class]
             ?? $endpointConfig->makeClient();
 
-        $endpointConfig->fireEvent(new StartRequest(static::document(), $variables));
-        $response = $client->request(static::document(), $variables);
+        $document = static::document();
+
+        $endpointConfig->fireEvent(new StartRequest($document, $variables));
+        $response = $client->request($document, $variables);
         $endpointConfig->fireEvent(new EndRequest($response));
 
         return $response;
