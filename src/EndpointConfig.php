@@ -11,6 +11,8 @@ use Nette\PhpGenerator\ClassType;
 use Spawnia\Sailor\Codegen\DirectoryFinder;
 use Spawnia\Sailor\Codegen\Finder;
 use Spawnia\Sailor\Error\Error;
+use Spawnia\Sailor\Event\EndRequest;
+use Spawnia\Sailor\Event\StartRequest;
 use Spawnia\Sailor\Type\BooleanTypeConfig;
 use Spawnia\Sailor\Type\EnumTypeConfig;
 use Spawnia\Sailor\Type\FloatTypeConfig;
@@ -126,5 +128,12 @@ abstract class EndpointConfig
     public function typeConvertersNamespace(): string
     {
         return $this->namespace() . '\\TypeConverters';
+    }
+
+    /**
+     * @param StartRequest|EndRequest $event
+     */
+    public function fireEvent($event): void
+    {
     }
 }

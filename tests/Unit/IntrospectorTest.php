@@ -4,8 +4,10 @@ namespace Spawnia\Sailor\Tests\Unit;
 
 use GraphQL\Type\Introspection;
 use GraphQL\Utils\BuildSchema;
+
 use function Safe\file_get_contents;
 use function Safe\unlink;
+
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Error\InvalidDataException;

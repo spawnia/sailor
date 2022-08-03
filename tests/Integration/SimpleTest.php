@@ -7,6 +7,8 @@ use Spawnia\Sailor\Client;
 use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Error\ResultErrorsException;
+use Spawnia\Sailor\Event\EndRequest;
+use Spawnia\Sailor\Event\StartRequest;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery;
 use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery\MyObjectNestedQueryResult;
@@ -21,6 +23,12 @@ final class SimpleTest extends TestCase
         $value = 'bar';
 
         $client = Mockery::mock(Client::class);
+        $response = Response::fromStdClass((object) [
+            'data' => (object) [
+                '__typename' => 'Query',
+                'scalarWithArg' => $value,
+            ],
+        ]);
         $client->expects('request')
             ->once()
             ->withArgs(function (string $query, \stdClass $variables): bool {
@@ -28,18 +36,31 @@ final class SimpleTest extends TestCase
                     // @phpstan-ignore-next-line loose comparison
                     && $variables == new \stdClass();
             })
-            ->andReturn(Response::fromStdClass((object) [
-                'data' => (object) [
-                    '__typename' => 'Query',
-                    'scalarWithArg' => $value,
-                ],
-            ]));
+            ->andReturn($response);
 
         $endpoint = Mockery::mock(EndpointConfig::class);
         $endpoint->expects('makeClient')
             ->once()
             ->withNoArgs()
             ->andReturn($client);
+
+        $endpoint->expects('fireEvent')
+            ->once()
+            ->withArgs(
+                function (StartRequest $event): bool {
+                    return $event->document === MyScalarQuery::document()
+                        // @phpstan-ignore-next-line loose comparison
+                        && $event->variables == new \stdClass();
+                },
+            );
+
+        $endpoint->expects('fireEvent')
+            ->once()
+            ->withArgs(
+                function (EndRequest $event) use ($response): bool {
+                    return $event->response === $response;
+                },
+            );
 
         Configuration::setEndpointFor(MyScalarQuery::class, $endpoint);
 
@@ -52,21 +73,39 @@ final class SimpleTest extends TestCase
         $value = 'bar';
 
         $client = Mockery::mock(Client::class);
+        $response = Response::fromStdClass((object) [
+            'data' => null,
+        ]);
         $client->expects('request')
             ->once()
             ->withArgs(function (string $query, \stdClass $variables) use ($value): bool {
                 return $query === MyScalarQuery::document()
                     && $variables->arg === $value;
             })
-            ->andReturn(Response::fromStdClass((object) [
-                'data' => null,
-            ]));
+            ->andReturn($response);
 
         $endpoint = Mockery::mock(EndpointConfig::class);
         $endpoint->expects('makeClient')
             ->once()
             ->withNoArgs()
             ->andReturn($client);
+
+        $endpoint->expects('fireEvent')
+            ->once()
+            ->withArgs(
+                function (StartRequest $event) use ($value): bool {
+                    return $event->document === MyScalarQuery::document()
+                        && $event->variables->arg === $value;
+                },
+            );
+
+        $endpoint->expects('fireEvent')
+            ->once()
+            ->withArgs(
+                function (EndRequest $event) use ($response): bool {
+                    return $event->response === $response;
+                },
+            );
 
         Configuration::setEndpointFor(MyScalarQuery::class, $endpoint);
 
@@ -77,6 +116,9 @@ final class SimpleTest extends TestCase
     public function testRequestWithClient(): void
     {
         $value = 'bar';
+        $response = Response::fromStdClass((object) [
+            'data' => null,
+        ]);
 
         $client = Mockery::mock(Client::class);
         $client->expects('request')
@@ -84,11 +126,30 @@ final class SimpleTest extends TestCase
             ->withArgs(function (string $query, \stdClass $variables) use ($value): bool {
                 return $query === MyScalarQuery::document()
                     && $variables->arg === $value;
-            });
+            })
+            ->andReturn($response);
 
         $endpoint = Mockery::mock(EndpointConfig::class);
         $endpoint->expects('makeClient')
             ->never();
+
+        $endpoint->expects('fireEvent')
+            ->once()
+            ->withArgs(
+                function (StartRequest $event) use ($value): bool {
+                    return $event->document === MyScalarQuery::document()
+                        && $event->variables->arg === $value;
+                },
+            );
+
+        $endpoint->expects('fireEvent')
+            ->once()
+            ->withArgs(
+                function (EndRequest $event) use ($response): bool {
+                    return $event->response === $response;
+                },
+            );
+
         Configuration::setEndpointFor(MyScalarQuery::class, $endpoint);
 
         MyScalarQuery::setClient($client);
@@ -149,9 +210,9 @@ final class SimpleTest extends TestCase
             ->with()
             ->andReturn(MyObjectNestedQueryResult::fromData(
                 MyObjectNestedQuery\MyObjectNestedQuery::make(
-                /* singleObject: */
+                    /* singleObject: */
                     MyObjectNestedQuery\SingleObject\SomeObject::make(
-                    /* nested: */
+                        /* nested: */
                         MyObjectNestedQuery\SingleObject\Nested\SomeObject::make(
                             /* value: */
                             $value
@@ -177,9 +238,9 @@ final class SimpleTest extends TestCase
             ->with()
             ->andReturn(MyObjectNestedQueryResult::fromData(
                 MyObjectNestedQuery\MyObjectNestedQuery::make(
-                /* singleObject: */
+                    /* singleObject: */
                     MyObjectNestedQuery\SingleObject\SomeObject::make(
-                    /* nested: */
+                        /* nested: */
                         null
                     )
                 )
