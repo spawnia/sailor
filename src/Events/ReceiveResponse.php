@@ -1,10 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace Spawnia\Sailor\Event;
+namespace Spawnia\Sailor\Events;
 
 use Spawnia\Sailor\Response;
 
-class EndRequest
+/**
+ * Fired after receiving a GraphQL response from the client.
+ */
+class ReceiveResponse
 {
     public Response $response;
 

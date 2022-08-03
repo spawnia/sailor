@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add `fireEvent`-method to `EndpointConfig::class`
+- Pass events `StartRequest` and `EndRequest` to `EndpointConfig::handleEvent()`
 
 ## v0.22.0
 

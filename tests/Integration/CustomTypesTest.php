@@ -80,7 +80,7 @@ final class CustomTypesTest extends TestCase
             ->withNoArgs()
             ->andReturn($client);
 
-        $endpoint->expects('fireEvent')
+        $endpoint->expects('handleEvent')
             ->twice();
 
         Configuration::setEndpointFor(MyCustomEnumQuery::class, $endpoint);

@@ -2,9 +2,10 @@
 
 namespace Spawnia\Sailor;
 
-use stdClass;
 use function Safe\json_decode;
 use function Safe\json_encode;
+
+use stdClass;
 
 /**
  * @phpstan-type JsonValue array<int, mixed>|array<string, mixed>|stdClass|string|float|int|bool|null

@@ -7,8 +7,8 @@ use Spawnia\Sailor\Client;
 use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Error\ResultErrorsException;
-use Spawnia\Sailor\Event\EndRequest;
-use Spawnia\Sailor\Event\StartRequest;
+use Spawnia\Sailor\Events\ReceiveResponse;
+use Spawnia\Sailor\Events\StartRequest;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery;
 use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery\MyObjectNestedQueryResult;
@@ -22,21 +22,19 @@ final class SimpleTest extends TestCase
     public function testRequest(): void
     {
         $value = 'bar';
-
-        $client = Mockery::mock(Client::class);
         $response = Response::fromStdClass((object) [
             'data' => (object) [
                 '__typename' => 'Query',
                 'scalarWithArg' => $value,
             ],
         ]);
+
+        $client = Mockery::mock(Client::class);
         $client->expects('request')
             ->once()
-            ->withArgs(function (string $query, \stdClass $variables): bool {
-                return $query === MyScalarQuery::document()
-                    // @phpstan-ignore-next-line loose comparison
-                    && $variables == new \stdClass();
-            })
+            ->withArgs(fn (string $query, stdClass $variables): bool => $query === MyScalarQuery::document()
+                // @phpstan-ignore-next-line loose comparison
+                && $variables == new stdClass())
             ->andReturn($response);
 
         $endpoint = Mockery::mock(EndpointConfig::class);
@@ -44,45 +42,32 @@ final class SimpleTest extends TestCase
             ->once()
             ->withNoArgs()
             ->andReturn($client);
-
-        $endpoint->expects('fireEvent')
+        $endpoint->expects('handleEvent')
             ->once()
-            ->withArgs(
-                function (StartRequest $event): bool {
-                    return $event->document === MyScalarQuery::document()
-                        // @phpstan-ignore-next-line loose comparison
-                        && $event->variables == new \stdClass();
-                },
-            );
-
-        $endpoint->expects('fireEvent')
+            ->withArgs(fn (StartRequest $event): bool => $event->document === MyScalarQuery::document()
+                // @phpstan-ignore-next-line loose comparison
+                && $event->variables == new stdClass());
+        $endpoint->expects('handleEvent')
             ->once()
-            ->withArgs(
-                function (EndRequest $event) use ($response): bool {
-                    return $event->response === $response;
-                },
-            );
+            ->withArgs(fn (ReceiveResponse $event): bool => $event->response === $response);
 
         Configuration::setEndpointFor(MyScalarQuery::class, $endpoint);
 
-        $result = MyScalarQuery::execute()->errorFree();
-        self::assertSame($value, $result->data->scalarWithArg);
+        self::assertSame($value, MyScalarQuery::execute()->errorFree()->data->scalarWithArg);
     }
 
     public function testRequestWithVariable(): void
     {
         $value = 'bar';
-
-        $client = Mockery::mock(Client::class);
         $response = Response::fromStdClass((object) [
             'data' => null,
         ]);
+
+        $client = Mockery::mock(Client::class);
         $client->expects('request')
             ->once()
-            ->withArgs(function (string $query, \stdClass $variables) use ($value): bool {
-                return $query === MyScalarQuery::document()
-                    && $variables->arg === $value;
-            })
+            ->withArgs(fn (string $query, stdClass $variables): bool => $query === MyScalarQuery::document()
+                && $variables->arg === $value)
             ->andReturn($response);
 
         $endpoint = Mockery::mock(EndpointConfig::class);
@@ -90,28 +75,17 @@ final class SimpleTest extends TestCase
             ->once()
             ->withNoArgs()
             ->andReturn($client);
-
-        $endpoint->expects('fireEvent')
+        $endpoint->expects('handleEvent')
             ->once()
-            ->withArgs(
-                function (StartRequest $event) use ($value): bool {
-                    return $event->document === MyScalarQuery::document()
-                        && $event->variables->arg === $value;
-                },
-            );
-
-        $endpoint->expects('fireEvent')
+            ->withArgs(fn (StartRequest $event): bool => $event->document === MyScalarQuery::document()
+                && $event->variables->arg === $value);
+        $endpoint->expects('handleEvent')
             ->once()
-            ->withArgs(
-                function (EndRequest $event) use ($response): bool {
-                    return $event->response === $response;
-                },
-            );
+            ->withArgs(fn (ReceiveResponse $event): bool => $event->response === $response);
 
         Configuration::setEndpointFor(MyScalarQuery::class, $endpoint);
 
-        $result = MyScalarQuery::execute($value);
-        self::assertNull($result->data);
+        self::assertNull(MyScalarQuery::execute($value)->data);
     }
 
     public function testRequestWithClient(): void
@@ -124,32 +98,15 @@ final class SimpleTest extends TestCase
         $client = Mockery::mock(Client::class);
         $client->expects('request')
             ->once()
-            ->withArgs(function (string $query, \stdClass $variables) use ($value): bool {
-                return $query === MyScalarQuery::document()
-                    && $variables->arg === $value;
-            })
+            ->withArgs(fn (string $query, stdClass $variables): bool => $query === MyScalarQuery::document()
+                && $variables->arg === $value)
             ->andReturn($response);
 
         $endpoint = Mockery::mock(EndpointConfig::class);
         $endpoint->expects('makeClient')
             ->never();
-
-        $endpoint->expects('fireEvent')
-            ->once()
-            ->withArgs(
-                function (StartRequest $event) use ($value): bool {
-                    return $event->document === MyScalarQuery::document()
-                        && $event->variables->arg === $value;
-                },
-            );
-
-        $endpoint->expects('fireEvent')
-            ->once()
-            ->withArgs(
-                function (EndRequest $event) use ($response): bool {
-                    return $event->response === $response;
-                },
-            );
+        $endpoint->expects('handleEvent')
+            ->twice();
 
         Configuration::setEndpointFor(MyScalarQuery::class, $endpoint);
 
