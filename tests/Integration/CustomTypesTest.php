@@ -16,6 +16,7 @@ use Spawnia\Sailor\CustomTypes\Types\EnumInput;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Tests\TestCase;
+use stdClass;
 
 final class CustomTypesTest extends TestCase
 {
@@ -67,10 +68,8 @@ final class CustomTypesTest extends TestCase
         $client = Mockery::mock(Client::class);
         $client->expects('request')
             ->once()
-            ->withArgs(function (string $query, \stdClass $variables) use ($value): bool {
-                return $query === MyCustomEnumQuery::document()
-                    && $variables->value === $value;
-            })
+            ->withArgs(fn (string $query, stdClass $variables): bool => $query === MyCustomEnumQuery::document()
+                && $variables->value === $value)
             ->andReturn(Response::fromStdClass((object) [
                 'data' => null,
             ]));

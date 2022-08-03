@@ -15,6 +15,7 @@ use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery\MyObjectNestedQueryResu
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQueryResult;
 use Spawnia\Sailor\Tests\TestCase;
+use stdClass;
 
 final class SimpleTest extends TestCase
 {

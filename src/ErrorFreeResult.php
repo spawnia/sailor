@@ -3,6 +3,7 @@
 namespace Spawnia\Sailor;
 
 use Spawnia\Sailor\Error\ResultErrorsException;
+use stdClass;
 
 /**
  * @property \Spawnia\Sailor\ObjectLike|null $data The result of executing the requested operation.
@@ -12,7 +13,7 @@ abstract class ErrorFreeResult
     /**
      * Optional, can be an arbitrary map if present.
      */
-    public ?\stdClass $extensions;
+    public ?stdClass $extensions;
 
     /**
      * @throws \Spawnia\Sailor\Error\ResultErrorsException
