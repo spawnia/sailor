@@ -91,7 +91,7 @@ class Generator
         $config->setStatic();
         $config->setReturnType('string');
         $config->setBody(<<<PHP
-            return {$this->relativeConfigPath($targetDirectory)};
+            return {$this->configPath($targetDirectory)};
         PHP);
 
         $file->name = $classType->getName() . '.php';
@@ -111,9 +111,9 @@ class Generator
     /**
      * @see https://stackoverflow.com/a/2638272
      */
-    protected function relativeConfigPath(string $fileDirectory): string
+    protected function configPath(string $directory): string
     {
-        $from = explode('/', $fileDirectory);
+        $from = explode('/', $directory);
         $to = explode('/', $this->configFile);
 
         $relativeParts = $to;
@@ -123,18 +123,14 @@ class Generator
                 array_shift($relativeParts);
             } else {
                 $upwards = count($relativeParts) + count($from) - $depth;
-                $relativeParts = array_pad(
-                    $relativeParts,
-                    -$upwards,
-                    '..'
-                );
+                $relativeParts = array_pad($relativeParts, -$upwards, '..');
                 break;
             }
         }
 
         $relative = implode('/', $relativeParts);
 
-        return "__DIR__ . '/{$relative}'";
+        return "\\Safe\\realpath(__DIR__ . '/{$relative}')";
     }
 
     public static function after(string $subject, string $search): string

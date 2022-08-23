@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.23.1
+
+### Fixed
+
+- Normalize path to config file
+
 ## v0.23.0
 
 ### Added
