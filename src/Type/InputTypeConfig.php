@@ -71,7 +71,6 @@ class InputTypeConfig implements TypeConfig
                 $name,
                 $field->getType(),
                 $typeReference,
-                $typeReference,
                 $typeConfig->typeConverter(),
                 $field->defaultValue,
             );

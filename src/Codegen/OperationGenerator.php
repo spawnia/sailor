@@ -304,7 +304,6 @@ class OperationGenerator implements ClassGenerator
                                         $fieldName,
                                         $type,
                                         $phpDocType,
-                                        $phpType,
                                         $typeConverter,
                                         $defaultValue,
                                     );
