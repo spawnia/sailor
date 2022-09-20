@@ -345,6 +345,7 @@ class OperationGenerator implements ClassGenerator
         return new ObjectLikeBuilder(
             $name,
             $this->currentNamespace(),
+            false,
         );
     }
 

@@ -15,6 +15,8 @@ use Spawnia\Sailor\ObjectLike;
  */
 class ObjectLikeBuilder
 {
+    private bool $isInputType;
+
     private ClassType $class;
 
     private Method $make;
@@ -31,7 +33,7 @@ class ObjectLikeBuilder
      */
     private array $optionalProperties = [];
 
-    public function __construct(string $name, string $namespace)
+    public function __construct(string $name, string $namespace, bool $isInputType)
     {
         $class = new ClassType(
             $name,
@@ -59,6 +61,7 @@ PHP
         $this->converters = $converters;
 
         $this->class = $class;
+        $this->isInputType = $isInputType;
     }
 
     /**
@@ -104,7 +107,7 @@ PHP
      */
     protected function buildProperty(string $name, Type $type, string $phpDocType, string $phpType, string $typeConverter, $defaultValue): void
     {
-        $wrappedPhpDocType = TypeWrapper::phpDoc($type, $phpDocType);
+        $wrappedPhpDocType = TypeWrapper::phpDoc($type, $phpDocType, $this->isInputType);
 
         $this->class->addComment("@property {$wrappedPhpDocType} \${$name}");
 

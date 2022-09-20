@@ -33,6 +33,9 @@ class ListConverter implements TypeConverter
             throw new \InvalidArgumentException('Expected array, got ' . gettype($value));
         }
 
-        return array_map([$this->ofType, 'toGraphQL'], $value);
+        $graphQLValues = array_map([$this->ofType, 'toGraphQL'], $value);
+
+        // Accept any incoming array as if it were a proper list
+        return array_values($graphQLValues);
     }
 }

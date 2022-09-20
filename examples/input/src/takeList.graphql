@@ -1,0 +1,3 @@
+mutation TakeList($values: [Int]) {
+    takeList(values: $values)
+}

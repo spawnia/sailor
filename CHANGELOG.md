@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.24.0
+
+### Added
+
+- Accept any array as inputs and serialize it as a list
+
 ## v0.23.1
 
 ### Fixed

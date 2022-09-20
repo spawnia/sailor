@@ -1,4 +1,5 @@
 type Mutation {
+    takeList(values: [Int]): [Int]
     takeSomeInput(input: SomeInput): Int
 }
 

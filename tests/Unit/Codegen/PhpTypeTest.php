@@ -16,7 +16,8 @@ final class PhpTypeTest extends TestCase
             'MyScalarQuery|null',
             TypeWrapper::phpDoc(
                 Type::id(),
-                'MyScalarQuery'
+                'MyScalarQuery',
+                false
             )
         );
     }
@@ -29,12 +30,13 @@ final class PhpTypeTest extends TestCase
                 new NonNull(
                     Type::id()
                 ),
-                'MyScalarQuery'
+                'MyScalarQuery',
+                false
             )
         );
     }
 
-    public function testListOfType(): void
+    public function testListOfTypeOutput(): void
     {
         self::assertSame(
             'array<int, MyScalarQuery|null>|null',
@@ -42,7 +44,22 @@ final class PhpTypeTest extends TestCase
                 new ListOfType(
                     Type::id()
                 ),
-                'MyScalarQuery'
+                'MyScalarQuery',
+                false
+            )
+        );
+    }
+
+    public function testListOfTypeInput(): void
+    {
+        self::assertSame(
+            'array<MyScalarQuery|null>|null',
+            TypeWrapper::phpDoc(
+                new ListOfType(
+                    Type::id()
+                ),
+                'MyScalarQuery',
+                true
             )
         );
     }
@@ -59,7 +76,8 @@ final class PhpTypeTest extends TestCase
                         )
                     )
                 ),
-                'MyScalarQuery'
+                'MyScalarQuery',
+                false
             )
         );
     }
@@ -76,7 +94,8 @@ final class PhpTypeTest extends TestCase
                         )
                     )
                 ),
-                'MyScalarQuery'
+                'MyScalarQuery',
+                false
             )
         );
     }
