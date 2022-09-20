@@ -304,7 +304,6 @@ class OperationGenerator implements ClassGenerator
                                         $fieldName,
                                         $type,
                                         $phpDocType,
-                                        $phpType,
                                         $typeConverter,
                                         $defaultValue,
                                     );
@@ -345,6 +344,7 @@ class OperationGenerator implements ClassGenerator
         return new ObjectLikeBuilder(
             $name,
             $this->currentNamespace(),
+            false,
         );
     }
 

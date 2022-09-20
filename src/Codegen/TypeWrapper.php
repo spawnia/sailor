@@ -11,22 +11,28 @@ use Spawnia\Sailor\Convert\NullConverter;
 
 class TypeWrapper
 {
-    public static function phpDoc(Type $type, string $typeReference, bool $shouldWrapWithNull = true): string
-    {
+    public static function phpDoc(
+        Type $type,
+        string $typeReference,
+        bool $isInputType,
+        bool $shouldWrapWithNull = true
+    ): string {
         if ($type instanceof NonNull) {
-            return self::phpDoc($type->getWrappedType(), $typeReference, false);
+            return self::phpDoc($type->getWrappedType(), $typeReference, $isInputType, false);
         }
 
         if ($shouldWrapWithNull) {
-            $nullable = self::phpDoc($type, $typeReference, false);
+            $nullable = self::phpDoc($type, $typeReference, $isInputType, false);
 
             return "{$nullable}|null";
         }
 
         if ($type instanceof ListOfType) {
-            $inArray = self::phpDoc($type->getWrappedType(), $typeReference);
+            // Allow any array as inputs, no matter the key
+            $keyType = $isInputType ? '' : 'int, ';
+            $inArray = self::phpDoc($type->getWrappedType(), $typeReference, $isInputType);
 
-            return "array<int, {$inArray}>";
+            return "array<{$keyType}{$inArray}>";
         }
 
         return $typeReference;
