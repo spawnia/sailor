@@ -11,7 +11,7 @@ class PolymorphicChildrenTest extends TestCase
     public function testPolymorphicSubChildren(): void
     {
         $id = '1';
-        $name = 'blarg';
+        $title = 'blarg';
 
         $expected = (object) [
             'nodes' => [
@@ -21,16 +21,25 @@ class PolymorphicChildrenTest extends TestCase
                         'id' => "$id.1.5",
                         '__typename' => 'Task',
                     ],
-                    'name' => $name,
+                    'name' => null,
                     '__typename' => 'User',
                 ],
                 (object) [
                     'id' => "$id.2",
+                    'node' => (object) [
+                        'id' => "$id.2.5",
+                        '__typename' => 'Post',
+                    ],
+                    'title' => $title,
                     '__typename' => 'Post',
                 ],
                 (object) [
                     'id' => "$id.3",
                     'done' => true,
+                    'node' => (object) [
+                        'id' => "$id.3.5",
+                        '__typename' => 'User',
+                    ],
                     '__typename' => 'Task',
                 ],
             ],
@@ -47,17 +56,27 @@ class PolymorphicChildrenTest extends TestCase
                         PolymorphicCommonSubChildren\Sub\Nodes\User::make(
                             $id . '.1',
                             PolymorphicCommonSubChildren\Sub\Nodes\Node\Task::make($id . '.1.5'),
-                            $name
+                            null
                         ),
-                        PolymorphicCommonSubChildren\Sub\Nodes\Post::make($id . '.2'),
-                        PolymorphicCommonSubChildren\Sub\Nodes\Task::make($id . '.3', true),
+                        PolymorphicCommonSubChildren\Sub\Nodes\Post::make(
+                            $id . '.2',
+                            PolymorphicCommonSubChildren\Sub\Nodes\Node\Post::make($id . '.2.5'),
+                            $title
+                        ),
+                        PolymorphicCommonSubChildren\Sub\Nodes\Task::make(
+                            $id . '.3',
+                            true,
+                            PolymorphicCommonSubChildren\Sub\Nodes\Node\User::make($id . '.3.5'),
+                        ),
                     ])
                 )
             ));
 
         $result = PolymorphicCommonSubChildren::execute()->errorFree();
         $polymorphic = $result->data->sub;
+        $stdClass = $polymorphic->toStdClass();
 
-        self::assertEquals($expected, $polymorphic->toStdClass());
+        self::assertEquals($expected, $stdClass);
+        self::assertEquals($polymorphic, PolymorphicCommonSubChildren\Sub\Sub::fromStdClass($stdClass));
     }
 }
