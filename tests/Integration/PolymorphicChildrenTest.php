@@ -16,28 +16,25 @@ class PolymorphicChildrenTest extends TestCase
         $expected = (object) [
             'nodes' => [
                 (object) [
-                    'id' => "$id.1",
+                    'id' => "{$id}.1",
                     'node' => (object) [
-                        'id' => "$id.1.5",
+                        'id' => "{$id}.1.5",
                         '__typename' => 'Task',
                     ],
                     'name' => null,
                     '__typename' => 'User',
                 ],
                 (object) [
-                    'id' => "$id.2",
-                    'node' => (object) [
-                        'id' => "$id.2.5",
-                        '__typename' => 'Post',
-                    ],
+                    'id' => "{$id}.2",
+                    'node' => null,
                     'title' => $title,
                     '__typename' => 'Post',
                 ],
                 (object) [
-                    'id' => "$id.3",
+                    'id' => "{$id}.3",
                     'done' => true,
                     'node' => (object) [
-                        'id' => "$id.3.5",
+                        'id' => "{$id}.3.5",
                         '__typename' => 'User',
                     ],
                     '__typename' => 'Task',
@@ -54,19 +51,28 @@ class PolymorphicChildrenTest extends TestCase
                     /* sub: */
                     PolymorphicCommonSubChildren\Sub\Sub::make([
                         PolymorphicCommonSubChildren\Sub\Nodes\User::make(
-                            $id . '.1',
-                            PolymorphicCommonSubChildren\Sub\Nodes\Node\Task::make($id . '.1.5'),
+                            /* id: */
+                            "{$id}.1",
+                            /* node: */
+                            PolymorphicCommonSubChildren\Sub\Nodes\Node\Task::make("{$id}.1.5"),
+                            /* name: */
                             null
                         ),
                         PolymorphicCommonSubChildren\Sub\Nodes\Post::make(
-                            $id . '.2',
-                            PolymorphicCommonSubChildren\Sub\Nodes\Node\Post::make($id . '.2.5'),
+                            /* id: */
+                            "{$id}.2",
+                            /* node: */
+                            null,
+                            /* title: */
                             $title
                         ),
                         PolymorphicCommonSubChildren\Sub\Nodes\Task::make(
-                            $id . '.3',
+                            /* id: */
+                            "{$id}.3",
+                            /* done: */
                             true,
-                            PolymorphicCommonSubChildren\Sub\Nodes\Node\User::make($id . '.3.5'),
+                            /* node: */
+                            PolymorphicCommonSubChildren\Sub\Nodes\Node\User::make("{$id}.3.5"),
                         ),
                     ])
                 )
