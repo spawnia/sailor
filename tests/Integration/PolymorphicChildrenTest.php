@@ -6,7 +6,7 @@ use Spawnia\Sailor\Polymorphic\Operations\PolymorphicCommonSubChildren;
 use Spawnia\Sailor\Polymorphic\Operations\PolymorphicCommonSubChildren\PolymorphicCommonSubChildrenResult;
 use Spawnia\Sailor\Tests\TestCase;
 
-class PolymorphicChildrenTest extends TestCase
+final class PolymorphicChildrenTest extends TestCase
 {
     public function testPolymorphicSubChildren(): void
     {
