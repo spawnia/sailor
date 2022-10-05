@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Implement `PolymorphicConverter::toGraphQL()`
+
 ## v0.24.0
 
 ### Added
