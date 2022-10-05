@@ -56,6 +56,7 @@ class InputTypeConfig implements TypeConfig
         $builder = new ObjectLikeBuilder(
             Escaper::escapeClassName($this->inputObjectType->name),
             $this->endpointConfig->typesNamespace(),
+            true,
         );
 
         foreach ($this->inputObjectType->getFields() as $name => $field) {
@@ -69,7 +70,6 @@ class InputTypeConfig implements TypeConfig
             $builder->addProperty(
                 $name,
                 $field->getType(),
-                $typeReference,
                 $typeReference,
                 $typeConfig->typeConverter(),
                 $field->defaultValue,

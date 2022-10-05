@@ -4,9 +4,10 @@ namespace Spawnia\Sailor\Testing;
 
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\Response;
+use stdClass;
 
 /**
- * @phpstan-type ResponseMock callable(string, \stdClass|null): Response
+ * @phpstan-type ResponseMock callable(string, stdClass|null): Response
  */
 class MockClient implements Client
 {
@@ -20,7 +21,7 @@ class MockClient implements Client
      */
     public array $storedRequests = [];
 
-    public function request(string $query, \stdClass $variables = null): Response
+    public function request(string $query, stdClass $variables = null): Response
     {
         $this->storedRequests[] = new MockRequest($query, $variables);
 

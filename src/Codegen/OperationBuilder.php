@@ -116,7 +116,7 @@ PHP
      */
     protected function buildVariable(string $name, Type $type, string $typeReference, string $typeConverter, $defaultValue): void
     {
-        $wrappedPhpDocType = TypeWrapper::phpDoc($type, $typeReference);
+        $wrappedPhpDocType = TypeWrapper::phpDoc($type, $typeReference, true);
 
         $wrappedTypeConverter = TypeWrapper::converter($type, "new \\{$typeConverter}");
 

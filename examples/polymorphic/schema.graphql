@@ -1,6 +1,7 @@
 type Query {
     node(id: ID!): Node!
     members: [Member!]!
+    sub: Sub!
 }
 
 interface Node {
@@ -31,3 +32,7 @@ type Organization {
 }
 
 union Member = User | Organization
+
+type Sub {
+    nodes: [Node]
+}

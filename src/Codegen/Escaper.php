@@ -3,6 +3,7 @@
 namespace Spawnia\Sailor\Codegen;
 
 use Nette\PhpGenerator\Helpers;
+
 use function strtolower;
 
 class Escaper

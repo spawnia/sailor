@@ -2,9 +2,16 @@
 
 namespace Spawnia\Sailor\Tests\Integration;
 
+use Mockery;
+use Spawnia\Sailor\Client;
+use Spawnia\Sailor\Configuration;
+use Spawnia\Sailor\EndpointConfig;
+use Spawnia\Sailor\Input\Operations\TakeList;
 use Spawnia\Sailor\Input\Operations\TakeSomeInput;
 use Spawnia\Sailor\Input\Types\SomeInput;
+use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Tests\TestCase;
+use stdClass;
 
 final class InputTest extends TestCase
 {
@@ -34,6 +41,34 @@ final class InputTest extends TestCase
 
         $result = TakeSomeInput::execute($someInput)->errorFree();
         self::assertSame($answer, $result->data->takeSomeInput);
+    }
+
+    public function testList(): void
+    {
+        $values = ['unimportant' => 1, 'foo' => 2, 0 => 3, 5 => 4];
+
+        $response = Response::fromStdClass((object) [
+            'data' => null,
+        ]);
+
+        $client = Mockery::mock(Client::class);
+        $client->expects('request')
+            ->once()
+            ->withArgs(fn (string $query, stdClass $variables): bool => $query === TakeList::document()
+                && $variables->values === [1, 2, 3, 4])
+            ->andReturn($response);
+
+        $endpoint = Mockery::mock(EndpointConfig::class);
+        $endpoint->expects('makeClient')
+            ->once()
+            ->withNoArgs()
+            ->andReturn($client);
+        $endpoint->expects('handleEvent')
+            ->twice();
+
+        Configuration::setEndpointFor(TakeList::class, $endpoint);
+
+        self::assertNull(TakeList::execute($values)->data);
     }
 
     public function testMake(): void

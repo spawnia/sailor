@@ -5,13 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+[See releases on GitHub.](https://github.com/spawnia/sailor/releases).
+
 ## Unreleased
+
+## v0.25.0
+
+### Added
+
+- Implement `PolymorphicConverter::toGraphQL()`
+
+## v0.24.0
+
+### Added
+
+- Accept any array as inputs and serialize it as a list
+
+## v0.23.1
+
+### Fixed
+
+- Normalize path to config file
+
+## v0.23.0
+
+### Added
+
+- Pass events `StartRequest` and `ReceiveResponse` to `EndpointConfig::handleEvent()`
 
 ## v0.22.0
 
 ### Added
 
-- Add support for types and fields named equivalent to PHP keywords like `type Switch` or `{ print { subfield } }`.
+- Add support for types and fields named equivalent to PHP keywords like `type Switch` or `{ print { subfield } }`
 
 ### Removed
 

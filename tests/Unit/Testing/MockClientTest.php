@@ -6,13 +6,14 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
 use Spawnia\Sailor\Tests\TestCase;
+use stdClass;
 
 final class MockClientTest extends TestCase
 {
     public function testCallsMock(): void
     {
         $query = 'simple';
-        $variables = new \stdClass();
+        $variables = new stdClass();
 
         $response = new Response();
 

@@ -348,6 +348,13 @@ $input = SomeInput::make(requiredId: 1);
 $input->secondOptional = Spawnia\Sailor\ObjectLike::UNDEFINED;
 ```
 
+### Events
+
+Sailor calls `EndpointConfig::handleEvent()` with the following events during the execution lifecycle:
+
+1. [StartRequest](src/Events/StartRequest.php): Fired after calling `execute()` on an `Operation`, before invoking the client.
+2. [ReceiveResponse](src/Events/ReceiveResponse.php): Fired after receiving a GraphQL response from the client.
+
 ### PHP keyword collisions
 
 Since GraphQL uses a different set of reserved keywords, names of fields or types may collide with PHP keywords.

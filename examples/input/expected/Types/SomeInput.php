@@ -6,7 +6,7 @@ namespace Spawnia\Sailor\Input\Types;
 
 /**
  * @property string $required
- * @property array<int, array<int, int|null>> $matrix
+ * @property array<array<int|null>> $matrix
  * @property string|null $optional
  * @property \Spawnia\Sailor\Input\Types\SomeInput|null $nested
  */
@@ -14,7 +14,7 @@ class SomeInput extends \Spawnia\Sailor\ObjectLike
 {
     /**
      * @param string $required
-     * @param array<int, array<int, int|null>> $matrix
+     * @param array<array<int|null>> $matrix
      * @param string|null $optional
      * @param \Spawnia\Sailor\Input\Types\SomeInput|null $nested
      */
@@ -61,6 +61,6 @@ class SomeInput extends \Spawnia\Sailor\ObjectLike
 
     public static function config(): string
     {
-        return __DIR__ . '/../../sailor.php';
+        return \Safe\realpath(__DIR__ . '/../../sailor.php');
     }
 }

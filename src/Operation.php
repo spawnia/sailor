@@ -5,6 +5,9 @@ namespace Spawnia\Sailor;
 use Mockery;
 use Mockery\MockInterface;
 use Spawnia\Sailor\Convert\TypeConverter;
+use Spawnia\Sailor\Events\ReceiveResponse;
+use Spawnia\Sailor\Events\StartRequest;
+use stdClass;
 
 /**
  * Subclasses of this class are automatically generated.
@@ -55,7 +58,7 @@ abstract class Operation implements BelongsToEndpoint
             return $mock::execute(...$args);
         }
 
-        $response = self::fetchResponse($args);
+        $response = static::fetchResponse($args);
 
         $child = static::class;
         $parts = explode('\\', $child);
@@ -74,7 +77,27 @@ abstract class Operation implements BelongsToEndpoint
      */
     protected static function fetchResponse(array $args): Response
     {
-        $variables = new \stdClass();
+        $endpointConfig = Configuration::endpoint(static::config(), static::endpoint());
+
+        $document = static::document();
+        $variables = static::variables($args);
+
+        $endpointConfig->handleEvent(new StartRequest($document, $variables));
+
+        $client = self::$clients[static::class] ?? $endpointConfig->makeClient();
+        $response = $client->request($document, $variables);
+
+        $endpointConfig->handleEvent(new ReceiveResponse($response));
+
+        return $response;
+    }
+
+    /**
+     * @param array<int, mixed> $args
+     */
+    protected static function variables(array $args): stdClass
+    {
+        $variables = new stdClass();
         $arguments = static::converters();
         foreach ($args as $index => $arg) {
             if (ObjectLike::UNDEFINED === $arg) {
@@ -85,11 +108,7 @@ abstract class Operation implements BelongsToEndpoint
             $variables->{$name} = $typeConverter->toGraphQL($arg);
         }
 
-        $client = self::$clients[static::class]
-            ?? Configuration::endpoint(static::config(), static::endpoint())
-                ->makeClient();
-
-        return $client->request(static::document(), $variables);
+        return $variables;
     }
 
     /**
@@ -97,9 +116,8 @@ abstract class Operation implements BelongsToEndpoint
      */
     public static function mock(): MockInterface
     {
-        // @phpstan-ignore-next-line The type of MockInterface matches up, I promise
-        return self::$mocks[static::class]
-            ??= Mockery::mock(static::class);
+        // @phpstan-ignore-next-line I solemnly swear the type of MockInterface matches
+        return self::$mocks[static::class] ??= Mockery::mock(static::class);
     }
 
     public static function clearMocks(): void

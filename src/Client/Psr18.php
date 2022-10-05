@@ -7,9 +7,12 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
+
 use function Safe\json_encode;
+
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\Response;
+use stdClass;
 
 class Psr18 implements Client
 {
@@ -33,7 +36,7 @@ class Psr18 implements Client
         $this->streamFactory = $streamFactory ?? new Psr17Factory();
     }
 
-    public function request(string $query, \stdClass $variables = null): Response
+    public function request(string $query, stdClass $variables = null): Response
     {
         $response = $this->client->sendRequest(
             $this->composeRequest($query, $variables)
@@ -42,7 +45,7 @@ class Psr18 implements Client
         return Response::fromResponseInterface($response);
     }
 
-    protected function composeRequest(string $query, ?\stdClass $variables = null): RequestInterface
+    protected function composeRequest(string $query, ?stdClass $variables = null): RequestInterface
     {
         $request = $this->requestFactory->createRequest('POST', $this->url);
 

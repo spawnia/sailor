@@ -11,6 +11,8 @@ use Nette\PhpGenerator\ClassType;
 use Spawnia\Sailor\Codegen\DirectoryFinder;
 use Spawnia\Sailor\Codegen\Finder;
 use Spawnia\Sailor\Error\Error;
+use Spawnia\Sailor\Events\ReceiveResponse;
+use Spawnia\Sailor\Events\StartRequest;
 use Spawnia\Sailor\Type\BooleanTypeConfig;
 use Spawnia\Sailor\Type\EnumTypeConfig;
 use Spawnia\Sailor\Type\FloatTypeConfig;
@@ -50,11 +52,12 @@ abstract class EndpointConfig
     abstract public function schemaPath(): string;
 
     /**
-     * Instantiate a class to find GraphQL documents.
+     * Will be called with events that happen during the execution lifecycle.
+     *
+     * @param StartRequest|ReceiveResponse $event
      */
-    public function finder(): Finder
+    public function handleEvent(object $event): void
     {
-        return new DirectoryFinder($this->searchPath());
     }
 
     /**
@@ -111,6 +114,14 @@ abstract class EndpointConfig
     public function generateClasses(Schema $schema, DocumentNode $document): iterable
     {
         return [];
+    }
+
+    /**
+     * Instantiate a class to find GraphQL documents.
+     */
+    public function finder(): Finder
+    {
+        return new DirectoryFinder($this->searchPath());
     }
 
     public function typesNamespace(): string

@@ -46,6 +46,6 @@ class AllMembers extends \Spawnia\Sailor\Operation
 
     public static function config(): string
     {
-        return __DIR__ . '/../../sailor.php';
+        return \Safe\realpath(__DIR__ . '/../../sailor.php');
     }
 }
