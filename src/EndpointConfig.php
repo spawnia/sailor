@@ -6,6 +6,7 @@ use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ScalarType;
+use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use Nette\PhpGenerator\ClassType;
 use Spawnia\Sailor\Codegen\DirectoryFinder;
@@ -84,11 +85,11 @@ abstract class EndpointConfig
     public function configureTypes(Schema $schema): array
     {
         $typeConfigs = [
-            'Int' => new IntTypeConfig(),
-            'Float' => new FloatTypeConfig(),
-            'String' => new StringTypeConfig(),
-            'Boolean' => new BooleanTypeConfig(),
-            'ID' => new IDTypeConfig(),
+            Type::INT => new IntTypeConfig(),
+            Type::FLOAT => new FloatTypeConfig(),
+            Type::STRING => new StringTypeConfig(),
+            Type::BOOLEAN => new BooleanTypeConfig(),
+            Type::ID => new IDTypeConfig(),
         ];
 
         foreach ($schema->getTypeMap() as $name => $type) {
