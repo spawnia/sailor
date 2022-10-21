@@ -83,7 +83,7 @@ abstract class EndpointConfig
      */
     public function configureTypes(Schema $schema): array
     {
-        $typeConverters = [
+        $typeConfigs = [
             'Int' => new IntTypeConfig(),
             'Float' => new FloatTypeConfig(),
             'String' => new StringTypeConfig(),
@@ -93,15 +93,15 @@ abstract class EndpointConfig
 
         foreach ($schema->getTypeMap() as $name => $type) {
             if ($type instanceof EnumType) {
-                $typeConverters[$name] = new EnumTypeConfig($this, $type);
+                $typeConfigs[$name] = new EnumTypeConfig($this, $type);
             } elseif ($type instanceof InputObjectType) {
-                $typeConverters[$name] = new InputObjectTypeConfig($this, $schema, $type);
+                $typeConfigs[$name] = new InputObjectTypeConfig($this, $schema, $type);
             } elseif ($type instanceof ScalarType) {
-                $typeConverters[$name] ??= new ScalarTypeConfig();
+                $typeConfigs[$name] ??= new ScalarTypeConfig();
             }
         }
 
-        return $typeConverters;
+        return $typeConfigs;
     }
 
     /**
