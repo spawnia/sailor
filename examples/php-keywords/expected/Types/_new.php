@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Spawnia\Sailor\PhpKeywords\Types;
 
 /**
- * @property string|null $unset
+ * @property float|int|null $unset
  */
 class _new extends \Spawnia\Sailor\ObjectLike
 {
     /**
-     * @param string|null $unset
+     * @param float|int|null $unset
      */
     public static function make($unset = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): self
     {
@@ -28,7 +28,7 @@ class _new extends \Spawnia\Sailor\ObjectLike
         static $converters;
 
         return $converters ??= [
-            'unset' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\IDConverter),
+            'unset' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\FloatConverter),
         ];
     }
 

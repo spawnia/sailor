@@ -13,6 +13,19 @@ class IDConverter implements TypeConverter
      */
     public function fromGraphQL($value): string
     {
+        return $this->toString($value);
+    }
+
+    public function toGraphQL($value): string
+    {
+        return $this->toString($value);
+    }
+
+    /**
+     * @param mixed $value Should be int or string
+     */
+    protected function toString($value): string
+    {
         if (is_string($value)) {
             return $value;
         }
@@ -21,15 +34,7 @@ class IDConverter implements TypeConverter
             return (string) $value;
         }
 
-        throw new \InvalidArgumentException('Expected int|string, got: ' . gettype($value));
-    }
-
-    public function toGraphQL($value): string
-    {
-        if (! is_string($value)) {
-            throw new \InvalidArgumentException('Expected string, got ' . gettype($value));
-        }
-
-        return $value;
+        $notIntOrString = gettype($value);
+        throw new \InvalidArgumentException("Expected int|string, got: {$notIntOrString}");
     }
 }

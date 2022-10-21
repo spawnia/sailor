@@ -29,6 +29,8 @@ use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\ErrorFreeResult;
 use Spawnia\Sailor\Operation;
 use Spawnia\Sailor\Result;
+use Spawnia\Sailor\Type\InputTypeConfig;
+use Spawnia\Sailor\Type\OutputTypeConfig;
 use Spawnia\Sailor\Type\TypeConfig;
 use Symfony\Component\VarExporter\VarExporter;
 
@@ -199,11 +201,12 @@ class OperationGenerator implements ClassGenerator
                             /** @var Type&NamedType $namedType */
                             $namedType = Type::getNamedType($type);
                             $typeConfig = $this->types[$namedType->name];
+                            assert($typeConfig instanceof InputTypeConfig);
 
                             $this->operationStack->operation->addVariable(
                                 $name,
                                 $type,
-                                $typeConfig->typeReference(),
+                                $typeConfig->inputTypeReference(),
                                 $typeConfig->typeConverter(),
                                 $variableDefinition->defaultValue,
                             );
@@ -276,7 +279,8 @@ class OperationGenerator implements ClassGenerator
                                     PHP;
                             } else {
                                 $typeConfig = $this->types[$namedType->name];
-                                $phpType = $typeConfig->typeReference();
+                                assert($typeConfig instanceof OutputTypeConfig);
+                                $phpType = $typeConfig->outputTypeReference();
                                 $phpDocType = $phpType;
                                 $typeConverter = <<<PHP
                                     {$typeConfig->typeConverter()}

@@ -6,6 +6,7 @@ use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ScalarType;
+use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use Nette\PhpGenerator\ClassType;
 use Spawnia\Sailor\Codegen\DirectoryFinder;
@@ -17,7 +18,7 @@ use Spawnia\Sailor\Type\BooleanTypeConfig;
 use Spawnia\Sailor\Type\EnumTypeConfig;
 use Spawnia\Sailor\Type\FloatTypeConfig;
 use Spawnia\Sailor\Type\IDTypeConfig;
-use Spawnia\Sailor\Type\InputTypeConfig;
+use Spawnia\Sailor\Type\InputObjectTypeConfig;
 use Spawnia\Sailor\Type\IntTypeConfig;
 use Spawnia\Sailor\Type\ScalarTypeConfig;
 use Spawnia\Sailor\Type\StringTypeConfig;
@@ -83,25 +84,25 @@ abstract class EndpointConfig
      */
     public function configureTypes(Schema $schema): array
     {
-        $typeConverters = [
-            'Int' => new IntTypeConfig(),
-            'Float' => new FloatTypeConfig(),
-            'String' => new StringTypeConfig(),
-            'Boolean' => new BooleanTypeConfig(),
-            'ID' => new IDTypeConfig(),
+        $typeConfigs = [
+            Type::INT => new IntTypeConfig(),
+            Type::FLOAT => new FloatTypeConfig(),
+            Type::STRING => new StringTypeConfig(),
+            Type::BOOLEAN => new BooleanTypeConfig(),
+            Type::ID => new IDTypeConfig(),
         ];
 
         foreach ($schema->getTypeMap() as $name => $type) {
             if ($type instanceof EnumType) {
-                $typeConverters[$name] = new EnumTypeConfig($this, $type);
+                $typeConfigs[$name] = new EnumTypeConfig($this, $type);
             } elseif ($type instanceof InputObjectType) {
-                $typeConverters[$name] = new InputTypeConfig($this, $schema, $type);
+                $typeConfigs[$name] = new InputObjectTypeConfig($this, $schema, $type);
             } elseif ($type instanceof ScalarType) {
-                $typeConverters[$name] ??= new ScalarTypeConfig();
+                $typeConfigs[$name] ??= new ScalarTypeConfig();
             }
         }
 
-        return $typeConverters;
+        return $typeConfigs;
     }
 
     /**

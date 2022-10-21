@@ -4,16 +4,26 @@ namespace Spawnia\Sailor\Type;
 
 use Spawnia\Sailor\Convert\BooleanConverter;
 
-class BooleanTypeConfig implements TypeConfig
+class BooleanTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeConfig
 {
     public function typeConverter(): string
     {
         return BooleanConverter::class;
     }
 
-    public function typeReference(): string
+    protected function typeReference(): string
     {
         return 'bool';
+    }
+
+    public function inputTypeReference(): string
+    {
+        return $this->typeReference();
+    }
+
+    public function outputTypeReference(): string
+    {
+        return $this->typeReference();
     }
 
     public function generateClasses(): iterable

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Spawnia\Sailor\Input\Types;
 
 /**
- * @property string $required
+ * @property int|string $required
  * @property array<array<int|null>> $matrix
  * @property string|null $optional
  * @property \Spawnia\Sailor\Input\Types\SomeInput|null $nested
@@ -13,7 +13,7 @@ namespace Spawnia\Sailor\Input\Types;
 class SomeInput extends \Spawnia\Sailor\ObjectLike
 {
     /**
-     * @param string $required
+     * @param int|string $required
      * @param array<array<int|null>> $matrix
      * @param string|null $optional
      * @param \Spawnia\Sailor\Input\Types\SomeInput|null $nested
