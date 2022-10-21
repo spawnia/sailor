@@ -16,5 +16,5 @@ enum abstract {
 }
 
 input new {
-    unset: ID
+    unset: Float
 }

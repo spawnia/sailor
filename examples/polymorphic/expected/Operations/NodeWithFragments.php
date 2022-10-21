@@ -10,7 +10,7 @@ namespace Spawnia\Sailor\Polymorphic\Operations;
 class NodeWithFragments extends \Spawnia\Sailor\Operation
 {
     /**
-     * @param string $id
+     * @param int|string $id
      */
     public static function execute($id): NodeWithFragments\NodeWithFragmentsResult
     {

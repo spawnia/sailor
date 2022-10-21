@@ -17,7 +17,7 @@ use Spawnia\Sailor\Type\BooleanTypeConfig;
 use Spawnia\Sailor\Type\EnumTypeConfig;
 use Spawnia\Sailor\Type\FloatTypeConfig;
 use Spawnia\Sailor\Type\IDTypeConfig;
-use Spawnia\Sailor\Type\InputTypeConfig;
+use Spawnia\Sailor\Type\InputObjectTypeConfig;
 use Spawnia\Sailor\Type\IntTypeConfig;
 use Spawnia\Sailor\Type\ScalarTypeConfig;
 use Spawnia\Sailor\Type\StringTypeConfig;
@@ -95,7 +95,7 @@ abstract class EndpointConfig
             if ($type instanceof EnumType) {
                 $typeConverters[$name] = new EnumTypeConfig($this, $type);
             } elseif ($type instanceof InputObjectType) {
-                $typeConverters[$name] = new InputTypeConfig($this, $schema, $type);
+                $typeConverters[$name] = new InputObjectTypeConfig($this, $schema, $type);
             } elseif ($type instanceof ScalarType) {
                 $typeConverters[$name] ??= new ScalarTypeConfig();
             }

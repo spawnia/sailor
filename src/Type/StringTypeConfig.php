@@ -4,16 +4,26 @@ namespace Spawnia\Sailor\Type;
 
 use Spawnia\Sailor\Convert\StringConverter;
 
-class StringTypeConfig implements TypeConfig
+class StringTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeConfig
 {
     public function typeConverter(): string
     {
         return StringConverter::class;
     }
 
-    public function typeReference(): string
+    protected function typeReference(): string
     {
         return 'string';
+    }
+
+    public function inputTypeReference(): string
+    {
+        return $this->typeReference();
+    }
+
+    public function outputTypeReference(): string
+    {
+        return $this->typeReference();
     }
 
     public function generateClasses(): iterable
