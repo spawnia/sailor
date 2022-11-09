@@ -3,7 +3,6 @@
 namespace Spawnia\Sailor\Convert;
 
 use Spawnia\Sailor\ObjectLike;
-use stdClass;
 
 /**
  * @phpstan-type PolymorphicMapping array<string, class-string<ObjectLike>>
@@ -25,7 +24,7 @@ class PolymorphicConverter implements TypeConverter
 
     public function fromGraphQL($value): ObjectLike
     {
-        if (! $value instanceof stdClass) {
+        if (! $value instanceof \stdClass) {
             throw new \InvalidArgumentException('Expected stdClass, got: ' . gettype($value));
         }
 

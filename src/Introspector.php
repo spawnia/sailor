@@ -8,7 +8,6 @@ use GraphQL\Utils\SchemaPrinter;
 use Spawnia\Sailor\Error\Error;
 use Spawnia\Sailor\Error\ResultErrorsException;
 use stdClass;
-use Throwable;
 
 class Introspector
 {
@@ -31,7 +30,7 @@ class Introspector
 
         try {
             $introspectionResult = $this->fetchIntrospectionResult($client, true);
-        } catch (Throwable $_) {
+        } catch (\Throwable $_) {
             $introspectionResult = $this->fetchIntrospectionResult($client, false);
         }
 
@@ -59,7 +58,7 @@ class Introspector
         if (isset($response->errors)) {
             throw new ResultErrorsException(
                 array_map(
-                    function (stdClass $raw): Error {
+                    function (\stdClass $raw): Error {
                         $parsed = $this->endpointConfig->parseError($raw);
                         $parsed->configFile = $this->configFile;
                         $parsed->endpointName = $this->endpointName;

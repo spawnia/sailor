@@ -2,12 +2,10 @@
 
 namespace Spawnia\Sailor;
 
-use Mockery;
 use Mockery\MockInterface;
 use Spawnia\Sailor\Convert\TypeConverter;
 use Spawnia\Sailor\Events\ReceiveResponse;
 use Spawnia\Sailor\Events\StartRequest;
-use stdClass;
 
 /**
  * Subclasses of this class are automatically generated.
@@ -66,6 +64,7 @@ abstract class Operation implements BelongsToEndpoint
 
         /** @var class-string<TResult> $resultClass */
         $resultClass = $child . '\\' . $basename . 'Result';
+        assert(class_exists($resultClass));
 
         return $resultClass::fromResponse($response);
     }
@@ -95,9 +94,9 @@ abstract class Operation implements BelongsToEndpoint
     /**
      * @param array<int, mixed> $args
      */
-    protected static function variables(array $args): stdClass
+    protected static function variables(array $args): \stdClass
     {
-        $variables = new stdClass();
+        $variables = new \stdClass();
         $arguments = static::converters();
         foreach ($args as $index => $arg) {
             if (ObjectLike::UNDEFINED === $arg) {
@@ -117,7 +116,7 @@ abstract class Operation implements BelongsToEndpoint
     public static function mock(): MockInterface
     {
         // @phpstan-ignore-next-line I solemnly swear the type of MockInterface matches
-        return self::$mocks[static::class] ??= Mockery::mock(static::class);
+        return self::$mocks[static::class] ??= \Mockery::mock(static::class);
     }
 
     public static function clearMocks(): void

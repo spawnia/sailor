@@ -11,11 +11,8 @@ use GraphQL\Language\AST\VariableDefinitionNode;
 use GraphQL\Language\Printer;
 use GraphQL\Language\Visitor;
 use GraphQL\Type\Definition\CompositeType;
-use GraphQL\Type\Definition\InputType;
 use GraphQL\Type\Definition\InterfaceType;
-use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\OutputType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Introspection;
@@ -84,12 +81,9 @@ class OperationGenerator implements ClassGenerator
                     // A named operation, e.g. "mutation FooMutation", maps to a class
                     NodeKind::OPERATION_DEFINITION => [
                         'enter' => function (OperationDefinitionNode $operationDefinition) use ($typeInfo): void {
-                            /**
-                             * @var NameNode $nameNode we validated every operation node is named
-                             *
-                             * @see Generator::ensureOperationsAreNamed()
-                             */
                             $nameNode = $operationDefinition->name;
+                            assert($nameNode instanceof NameNode, 'we validated every operation node is named in Generator::ensureOperationsAreNamed()');
+
                             $operationName = Escaper::escapeClassName($nameNode->value);
 
                             // Generate a class to represent the query/mutation itself
@@ -175,8 +169,8 @@ class OperationGenerator implements ClassGenerator
                             $this->operationStack->result = $result;
                             $this->operationStack->errorFreeResult = $errorFreeResult;
 
-                            /** @var ObjectType $operationType always present in validated schemas */
                             $operationType = $typeInfo->getType();
+                            assert($operationType instanceof ObjectType, 'always present in validated schemas');
                             $this->operationStack->setSelection(
                                 $this->currentNamespace(),
                                 [
@@ -195,11 +189,12 @@ class OperationGenerator implements ClassGenerator
                         'enter' => function (VariableDefinitionNode $variableDefinition) use ($typeInfo): void {
                             $name = $variableDefinition->variable->name->value;
 
-                            /** @var Type&InputType $type */
                             $type = $typeInfo->getInputType();
+                            assert(null !== $type, 'schema is validated');
 
-                            /** @var Type&NamedType $namedType */
                             $namedType = Type::getNamedType($type);
+                            assert(null !== $namedType, 'schema is validated');
+
                             $typeConfig = $this->types[$namedType->name];
                             assert($typeConfig instanceof InputTypeConfig);
 
@@ -221,11 +216,11 @@ class OperationGenerator implements ClassGenerator
 
                             $selectionClasses = $this->operationStack->selection($this->currentNamespace());
 
-                            /** @var Type&OutputType $type */
                             $type = $typeInfo->getType();
+                            assert(null !== $type, 'schema is validated');
 
-                            /** @var Type&NamedType $namedType */
                             $namedType = Type::getNamedType($type);
+                            assert(null !== $namedType, 'schema is validated');
 
                             if ($namedType instanceof ObjectType) {
                                 // We go one level deeper into the selection set
@@ -235,7 +230,7 @@ class OperationGenerator implements ClassGenerator
                                 $name = $namedType->name;
 
                                 $phpType = $this->withCurrentNamespace(Escaper::escapeNamespaceName($name));
-                                $phpDocType = "\\$phpType";
+                                $phpDocType = "\\{$phpType}";
 
                                 $this->operationStack->setSelection(
                                     $this->currentNamespace(),
@@ -315,11 +310,11 @@ class OperationGenerator implements ClassGenerator
                             }
                         },
                         'leave' => function (FieldNode $_) use ($typeInfo): void {
-                            /** @var Type&OutputType $type */
                             $type = $typeInfo->getType();
+                            assert(null !== $type, 'schema is validated');
 
-                            /** @var Type&NamedType $namedType */
                             $namedType = Type::getNamedType($type);
+                            assert(null !== $namedType, 'schema is validated');
 
                             if ($namedType instanceof CompositeType) {
                                 $this->moveUpNamespace();

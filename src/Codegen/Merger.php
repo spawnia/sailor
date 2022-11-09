@@ -8,12 +8,12 @@ use GraphQL\Language\AST\NodeList;
 class Merger
 {
     /**
-     * @param  array<string, DocumentNode>  $documents
+     * @param array<string, DocumentNode> $documents
      */
     public static function combine(array $documents): DocumentNode
     {
-        /** @var DocumentNode $root */
         $root = array_pop($documents);
+        assert($root instanceof DocumentNode);
 
         // @phpstan-ignore-next-line Contravariance
         $root->definitions = array_reduce(

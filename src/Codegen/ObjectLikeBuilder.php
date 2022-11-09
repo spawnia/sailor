@@ -115,7 +115,7 @@ PHP
         $this->converters->addBody(/** @lang PHP */ "    '{$name}' => {$wrappedTypeConverter},");
 
         if (Introspection::TYPE_NAME_FIELD_NAME === $name) {
-            /** @var string $defaultValue set to parent type name in OperationGenerator */
+            assert(is_string($defaultValue), 'set to parent type name in OperationGenerator');
             $this->make->addBody("\$instance->{$name} = '{$defaultValue}';");
         } else {
             $this->make->addComment("@param {$wrappedPhpDocType} \${$name}");

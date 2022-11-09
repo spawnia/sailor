@@ -23,7 +23,6 @@ use Spawnia\Sailor\Type\IntTypeConfig;
 use Spawnia\Sailor\Type\ScalarTypeConfig;
 use Spawnia\Sailor\Type\StringTypeConfig;
 use Spawnia\Sailor\Type\TypeConfig;
-use stdClass;
 
 abstract class EndpointConfig
 {
@@ -64,7 +63,7 @@ abstract class EndpointConfig
     /**
      * Instantiate an Error class from a plain GraphQL error.
      */
-    public function parseError(stdClass $error): Error
+    public function parseError(\stdClass $error): Error
     {
         return Error::fromStdClass($error);
     }

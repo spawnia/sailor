@@ -2,10 +2,8 @@
 
 namespace Spawnia\Sailor;
 
-use InvalidArgumentException;
 use Spawnia\Sailor\Convert\TypeConverter;
 use Spawnia\Sailor\Error\InvalidDataException;
-use stdClass;
 
 abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
 {
@@ -30,7 +28,7 @@ abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
      *
      * @return static
      */
-    public static function fromStdClass(stdClass $data): self
+    public static function fromStdClass(\stdClass $data): self
     {
         return (new static())->fromGraphQL($data);
     }
@@ -38,7 +36,7 @@ abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
     /**
      * Represent itself as plain data.
      */
-    public function toStdClass(): stdClass
+    public function toStdClass(): \stdClass
     {
         return $this->toGraphQL($this);
     }
@@ -68,15 +66,15 @@ abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
         return isset($this->properties[$name]);
     }
 
-    public function toGraphQL($value): stdClass
+    public function toGraphQL($value): \stdClass
     {
         if (! $value instanceof static) {
             $class = static::class;
             $notClass = gettype($value);
-            throw new InvalidArgumentException("Expected instanceof {$class}, got: {$notClass}");
+            throw new \InvalidArgumentException("Expected instanceof {$class}, got: {$notClass}");
         }
 
-        $serializable = new stdClass();
+        $serializable = new \stdClass();
         foreach ($value->properties as $name => $property) {
             $serializable->{$name} = $this->converter($name)->toGraphQL($property);
         }
@@ -89,10 +87,10 @@ abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
      */
     public function fromGraphQL($value): self
     {
-        if (! $value instanceof stdClass) {
+        if (! $value instanceof \stdClass) {
             $endpoint = static::endpoint();
             $notStdClass = gettype($value);
-            throw new InvalidArgumentException("{$endpoint}: Expected stdClass, got: {$notStdClass}");
+            throw new \InvalidArgumentException("{$endpoint}: Expected stdClass, got: {$notStdClass}");
         }
 
         $instance = new static();

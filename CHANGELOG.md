@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.26.1
+
+### Fixed
+
+- Include client directives when inlining fragments
+
 ## v0.26.0
 
 ### Added
