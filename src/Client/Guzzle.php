@@ -5,7 +5,6 @@ namespace Spawnia\Sailor\Client;
 use GuzzleHttp\Client as GuzzleClient;
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\Response;
-use stdClass;
 
 class Guzzle implements Client
 {
@@ -22,7 +21,7 @@ class Guzzle implements Client
         $this->guzzle = new GuzzleClient($config);
     }
 
-    public function request(string $query, stdClass $variables = null): Response
+    public function request(string $query, \stdClass $variables = null): Response
     {
         $json = ['query' => $query];
         if (! is_null($variables)) {

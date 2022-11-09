@@ -2,7 +2,6 @@
 
 namespace Spawnia\Sailor\Tests\Integration;
 
-use Mockery;
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\CustomTypes\Operations\MyBenSampoEnumQuery;
@@ -16,7 +15,6 @@ use Spawnia\Sailor\CustomTypes\Types\EnumInput;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Tests\TestCase;
-use stdClass;
 
 final class CustomTypesTest extends TestCase
 {
@@ -65,16 +63,16 @@ final class CustomTypesTest extends TestCase
     {
         $value = CustomEnum::A;
 
-        $client = Mockery::mock(Client::class);
+        $client = \Mockery::mock(Client::class);
         $client->expects('request')
             ->once()
-            ->withArgs(fn (string $query, stdClass $variables): bool => $query === MyCustomEnumQuery::document()
+            ->withArgs(fn (string $query, \stdClass $variables): bool => $query === MyCustomEnumQuery::document()
                 && $variables->value === $value)
             ->andReturn(Response::fromStdClass((object) [
                 'data' => null,
             ]));
 
-        $endpoint = Mockery::mock(EndpointConfig::class);
+        $endpoint = \Mockery::mock(EndpointConfig::class);
         $endpoint->expects('makeClient')
             ->once()
             ->withNoArgs()

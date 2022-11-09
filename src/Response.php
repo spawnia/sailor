@@ -6,7 +6,6 @@ use GraphQL\Executor\ExecutionResult;
 use Psr\Http\Message\ResponseInterface;
 use Safe\Exceptions\JsonException;
 use Spawnia\Sailor\Error\InvalidDataException;
-use stdClass;
 
 /**
  * Represents a response sent by a GraphQL server.
@@ -20,19 +19,19 @@ class Response
     /**
      * The result of the execution of the requested operation.
      */
-    public ?stdClass $data;
+    public ?\stdClass $data;
 
     /**
      * Non‐empty list of errors, where each error is a map.
      *
-     * @var array<int, stdClass>|null
+     * @var array<int, \stdClass>|null
      */
     public ?array $errors;
 
     /**
      * This entry, if set, must have a map as its value.
      */
-    public ?stdClass $extensions;
+    public ?\stdClass $extensions;
 
     public static function fromResponseInterface(ResponseInterface $response): self
     {
@@ -60,14 +59,14 @@ class Response
             throw new InvalidDataException("Received a response that is invalid JSON: {$json}", 0, $jsonException);
         }
 
-        if (! $response instanceof stdClass) {
+        if (! $response instanceof \stdClass) {
             throw new InvalidDataException("A response to a GraphQL operation must be a map, got: {$json}");
         }
 
         return self::fromStdClass($response);
     }
 
-    public static function fromStdClass(stdClass $rawResponse): self
+    public static function fromStdClass(\stdClass $rawResponse): self
     {
         $hasData = property_exists($rawResponse, 'data');
         $hasErrors = property_exists($rawResponse, 'errors');
@@ -120,7 +119,7 @@ class Response
         }
 
         foreach ($errors as $error) {
-            if (! $error instanceof stdClass) {
+            if (! $error instanceof \stdClass) {
                 throw new InvalidDataException('Each error in the response must be a map, got: ' . \Safe\json_encode($error));
             }
 
@@ -144,7 +143,7 @@ class Response
     protected static function validateData($data): void
     {
         if (
-            $data instanceof stdClass
+            $data instanceof \stdClass
             || null === $data
         ) {
             return;
@@ -162,7 +161,7 @@ class Response
      */
     protected static function validateExtensions($extensions): void
     {
-        if (! $extensions instanceof stdClass) {
+        if (! $extensions instanceof \stdClass) {
             throw new InvalidDataException('The response entry "extensions" must be a map.');
         }
     }

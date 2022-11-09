@@ -5,7 +5,6 @@ namespace Spawnia\Sailor\Client;
 use Generator;
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\Response;
-use stdClass;
 
 class Log implements Client
 {
@@ -20,7 +19,7 @@ class Log implements Client
         $this->filename = $filename;
     }
 
-    public function request(string $query, stdClass $variables = null): Response
+    public function request(string $query, \stdClass $variables = null): Response
     {
         $log = \Safe\json_encode([
             'query' => $query,
@@ -46,7 +45,7 @@ class Log implements Client
      *      variables: array<string, mixed>|null,
      * }>
      */
-    public function requests(): Generator
+    public function requests(): \Generator
     {
         $file = \Safe\fopen($this->filename, 'r');
 
