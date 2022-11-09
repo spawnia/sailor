@@ -2,14 +2,12 @@
 
 namespace Spawnia\Sailor\Error;
 
-use Exception;
 use GraphQL\Error\ClientAware;
-use stdClass;
 
 /**
  * Representation of an error according to https://spec.graphql.org/October2021/#sec-Errors.
  */
-class Error extends Exception implements ClientAware
+class Error extends \Exception implements ClientAware
 {
     use OriginatesFromEndpoint;
 
@@ -38,14 +36,14 @@ class Error extends Exception implements ClientAware
     /**
      * Arbitrary additional information.
      */
-    public ?stdClass $extensions;
+    public ?\stdClass $extensions;
 
     public function __construct(string $message)
     {
         parent::__construct($message);
     }
 
-    public static function fromStdClass(stdClass $error): self
+    public static function fromStdClass(\stdClass $error): self
     {
         $instance = new static($error->message);
 

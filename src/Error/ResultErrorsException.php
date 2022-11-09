@@ -2,13 +2,12 @@
 
 namespace Spawnia\Sailor\Error;
 
-use Exception;
 use GraphQL\Error\ClientAware;
 
 /**
  * TODO implement \GraphQL\Error\ProvidesExtensions once upgrading to graphql-php:15.
  */
-class ResultErrorsException extends Exception implements ClientAware
+class ResultErrorsException extends \Exception implements ClientAware
 {
     use OriginatesFromEndpoint;
 

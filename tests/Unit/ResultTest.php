@@ -2,7 +2,6 @@
 
 namespace Spawnia\Sailor\Tests\Unit;
 
-use Mockery;
 use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Error\Error;
@@ -18,7 +17,7 @@ final class ResultTest extends TestCase
      */
     public function testThrowErrors(bool $isClientSafe): void
     {
-        $endpoint = Mockery::mock(EndpointConfig::class);
+        $endpoint = \Mockery::mock(EndpointConfig::class);
         $endpoint->expects('errorsAreClientSafe')
             ->once()
             ->andReturn($isClientSafe);
@@ -57,7 +56,7 @@ final class ResultTest extends TestCase
      */
     public function testErrorFree(bool $isClientSafe): void
     {
-        $endpoint = Mockery::mock(EndpointConfig::class);
+        $endpoint = \Mockery::mock(EndpointConfig::class);
         $endpoint->expects('errorsAreClientSafe')
             ->once()
             ->andReturn($isClientSafe);
@@ -87,7 +86,7 @@ final class ResultTest extends TestCase
 
     public function testWithErrors(): void
     {
-        $endpoint = Mockery::mock(EndpointConfig::class)->makePartial();
+        $endpoint = \Mockery::mock(EndpointConfig::class)->makePartial();
         Configuration::setEndpointFor(MyScalarQueryResult::class, $endpoint);
 
         $message = 'foo';
@@ -117,7 +116,7 @@ final class ResultTest extends TestCase
      */
     public function testFromErrors(bool $isClientSafe): void
     {
-        $endpoint = Mockery::mock(EndpointConfig::class)->makePartial();
+        $endpoint = \Mockery::mock(EndpointConfig::class)->makePartial();
         $endpoint->expects('errorsAreClientSafe')
             ->once()
             ->andReturn($isClientSafe);

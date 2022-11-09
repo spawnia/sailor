@@ -230,7 +230,7 @@ class OperationGenerator implements ClassGenerator
                                 $name = $namedType->name;
 
                                 $phpType = $this->withCurrentNamespace(Escaper::escapeNamespaceName($name));
-                                $phpDocType = "\\$phpType";
+                                $phpDocType = "\\{$phpType}";
 
                                 $this->operationStack->setSelection(
                                     $this->currentNamespace(),

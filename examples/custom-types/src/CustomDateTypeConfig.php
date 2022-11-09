@@ -2,7 +2,6 @@
 
 namespace Spawnia\Sailor\CustomTypesSrc;
 
-use DateTime;
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 use Nette\PhpGenerator\ClassType;
@@ -34,7 +33,7 @@ class CustomDateTypeConfig implements TypeConfig
 
     public function typeReference(): string
     {
-        return '\\' . DateTime::class;
+        return '\\' . \DateTime::class;
     }
 
     public function generateClasses(): iterable
@@ -44,7 +43,7 @@ class CustomDateTypeConfig implements TypeConfig
 
     protected function decorateTypeConverterClass(Type $type, ClassType $class, Method $fromGraphQL, Method $toGraphQL): ClassType
     {
-        $dateTimeClass = DateTime::class;
+        $dateTimeClass = \DateTime::class;
         $format = self::FORMAT;
 
         $fromGraphQL->setReturnType($dateTimeClass);

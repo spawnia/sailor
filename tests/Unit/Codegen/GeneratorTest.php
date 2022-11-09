@@ -98,7 +98,7 @@ final class GeneratorTest extends TestCase
             $path /* @lang GraphQL */ => 'invalid GraphQL',
         ];
 
-        self::expectExceptionMessageMatches("/$path/");
+        self::expectExceptionMessageMatches("/{$path}/");
         Generator::parseDocuments($documents);
     }
 
@@ -127,7 +127,7 @@ final class GeneratorTest extends TestCase
             '),
         ];
 
-        self::expectExceptionMessageMatches("/$path/");
+        self::expectExceptionMessageMatches("/{$path}/");
         Generator::validateDocuments($documents);
     }
 }
