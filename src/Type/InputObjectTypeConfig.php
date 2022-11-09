@@ -3,7 +3,6 @@
 namespace Spawnia\Sailor\Type;
 
 use GraphQL\Type\Definition\InputObjectType;
-use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use Nette\PhpGenerator\ClassType;
@@ -65,8 +64,9 @@ class InputObjectTypeConfig implements TypeConfig, InputTypeConfig
         foreach ($this->inputObjectType->getFields() as $name => $field) {
             $fieldType = $field->getType();
 
-            /** @var Type&NamedType $namedType guaranteed since we pass in a non-null type */
             $namedType = Type::getNamedType($fieldType);
+            assert(null !== $namedType, 'guaranteed since we pass in a non-null type');
+
             $typeConfig = $typeConfigs[$namedType->name];
             assert($typeConfig instanceof InputTypeConfig);
 

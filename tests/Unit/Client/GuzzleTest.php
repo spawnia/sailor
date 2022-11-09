@@ -32,8 +32,8 @@ final class GuzzleTest extends TestCase
             $response->data
         );
 
-        /** @var Request $request */
         $request = $container[0]['request'];
+        assert($request instanceof Request);
 
         self::assertSame('POST', $request->getMethod());
         self::assertSame(/* @lang JSON */ '{"query":"{simple}"}', $request->getBody()->getContents());

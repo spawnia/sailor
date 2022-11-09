@@ -66,6 +66,7 @@ abstract class Operation implements BelongsToEndpoint
 
         /** @var class-string<TResult> $resultClass */
         $resultClass = $child . '\\' . $basename . 'Result';
+        assert(class_exists($resultClass));
 
         return $resultClass::fromResponse($response);
     }
