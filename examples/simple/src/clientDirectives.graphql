@@ -16,3 +16,7 @@ query ClientDirectiveInlineFragmentQuery($value: Boolean!) {
         twoArgs
     }
 }
+
+query SkipNonNullable($value: Boolean!) {
+    nonNullable @skip(if: $value)
+}
