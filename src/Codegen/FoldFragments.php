@@ -89,9 +89,13 @@ class FoldFragments
                 $fragmentSelectionSet = $fragment->selectionSet;
                 $this->modifySelectionSet($fragmentSelectionSet);
 
+                if (count($fragment->directives) > 0) {
+                    throw new \Exception("Found directives on fragment {$fragment->name->value}, but can not use it because they will be inlined.");
+                }
+
                 $selections[] = new InlineFragmentNode([
                     'typeCondition' => $fragment->typeCondition,
-                    'directives' => $fragment->directives,
+                    'directives' => $selection->directives,
                     'selectionSet' => $fragmentSelectionSet,
                 ]);
             }

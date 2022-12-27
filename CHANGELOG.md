@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.26.1
+
+### Fixed
+
+- Include client directives when inlining fragments
+
+## v0.26.0
+
+### Added
+
+- Accept `int` in arguments of type `ID` and `Float`
+
+### Changed
+
+- Split `TypeConfig::typeReference()` into `InputTypeConfig::inputTypeReference()` and `OutputTypeConfig::outputTypeReference()`
+
 ## v0.25.0
 
 ### Added

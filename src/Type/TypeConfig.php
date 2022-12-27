@@ -20,13 +20,6 @@ interface TypeConfig
     public function typeConverter(): string;
 
     /**
-     * Reference to the type for usage in PHPDocs, e.g. string, \Foo\Bar.
-     *
-     * Make sure that class names begin with a backslash and are thus fully qualified.
-     */
-    public function typeReference(): string;
-
-    /**
      * Return any number of generated class definitions to write to files.
      *
      * @return iterable<ClassType>

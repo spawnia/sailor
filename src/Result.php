@@ -4,7 +4,6 @@ namespace Spawnia\Sailor;
 
 use Spawnia\Sailor\Error\Error;
 use Spawnia\Sailor\Error\ResultErrorsException;
-use stdClass;
 
 /**
  * @property \Spawnia\Sailor\ObjectLike|null $data The result of executing the requested operation.
@@ -24,12 +23,12 @@ abstract class Result implements BelongsToEndpoint
     /**
      * Optional, can be an arbitrary map if present.
      */
-    public ?stdClass $extensions = null;
+    public ?\stdClass $extensions = null;
 
     /**
      * Decode the raw data into proper types and set it.
      */
-    abstract protected function setData(stdClass $data): void;
+    abstract protected function setData(\stdClass $data): void;
 
     /**
      * Throws if errors are present in the result or returns an error free result.
@@ -60,7 +59,7 @@ abstract class Result implements BelongsToEndpoint
     /**
      * @return static
      */
-    public static function fromStdClass(stdClass $stdClass): self
+    public static function fromStdClass(\stdClass $stdClass): self
     {
         return static::fromResponse(
             Response::fromStdClass($stdClass)
@@ -70,7 +69,7 @@ abstract class Result implements BelongsToEndpoint
     /**
      * Useful for instantiation of failed mocked results.
      *
-     * @param array<int, stdClass> $errors
+     * @param array<int, \stdClass> $errors
      *
      * @return static
      */
@@ -83,7 +82,7 @@ abstract class Result implements BelongsToEndpoint
     }
 
     /**
-     * @param array<int, stdClass> $errors
+     * @param array<int, \stdClass> $errors
      *
      * @return array<int, Error>
      */
@@ -92,7 +91,7 @@ abstract class Result implements BelongsToEndpoint
         $endpoint = Configuration::endpoint(static::config(), static::endpoint());
 
         return array_map(
-            static function (stdClass $raw) use ($endpoint): Error {
+            static function (\stdClass $raw) use ($endpoint): Error {
                 $parsed = $endpoint->parseError($raw);
                 $parsed->configFile = static::config();
                 $parsed->endpointName = static::endpoint();

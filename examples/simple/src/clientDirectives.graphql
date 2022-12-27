@@ -1,0 +1,18 @@
+query ClientDirectiveQuery($value: Boolean!) {
+    scalarWithArg @skip(if: true)
+    twoArgs @include(if: $value)
+}
+
+fragment ClientDirectiveFragment on Query {
+    twoArgs
+}
+
+query ClientDirectiveFragmentSpreadQuery($value: Boolean!) {
+    ...ClientDirectiveFragment @skip(if: $value)
+}
+
+query ClientDirectiveInlineFragmentQuery($value: Boolean!) {
+    ... on Query @skip(if: $value) {
+        twoArgs
+    }
+}

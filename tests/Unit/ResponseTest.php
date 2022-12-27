@@ -8,7 +8,6 @@ use Psr\Http\Message\StreamInterface;
 use Spawnia\Sailor\Error\InvalidDataException;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Tests\TestCase;
-use stdClass;
 
 final class ResponseTest extends TestCase
 {
@@ -51,7 +50,7 @@ final class ResponseTest extends TestCase
     public function testFromInvalidJson(): void
     {
         $invalidJSON = /* @lang JSON */ 'foobar';
-        self::expectExceptionMessageMatches("/$invalidJSON/");
+        self::expectExceptionMessageMatches("/{$invalidJSON}/");
         Response::fromJson($invalidJSON);
     }
 
@@ -98,7 +97,7 @@ final class ResponseTest extends TestCase
     public function testNotAMap(): void
     {
         $invalidJSON = /* @lang JSON */ '"foobar"';
-        self::expectExceptionMessageMatches("/$invalidJSON/");
+        self::expectExceptionMessageMatches("/{$invalidJSON}/");
         Response::fromJson($invalidJSON);
     }
 
@@ -162,7 +161,7 @@ final class ResponseTest extends TestCase
         self::assertNull($response->data);
 
         $extensions = $response->extensions;
-        self::assertInstanceOf(stdClass::class, $extensions);
+        self::assertInstanceOf(\stdClass::class, $extensions);
         self::assertSame(123, $extensions->foo);
     }
 
@@ -178,7 +177,7 @@ final class ResponseTest extends TestCase
     public static function assertResponseIsFooBar(Response $response): void
     {
         $data = $response->data;
-        self::assertInstanceOf(stdClass::class, $data);
+        self::assertInstanceOf(\stdClass::class, $data);
         self::assertSame('bar', $data->foo);
     }
 }

@@ -6,17 +6,22 @@ class BooleanConverter implements TypeConverter
 {
     public function fromGraphQL($value): bool
     {
-        if (! is_bool($value)) {
-            throw new \InvalidArgumentException('Expected bool, got ' . gettype($value));
-        }
-
-        return $value;
+        return $this->toBool($value);
     }
 
     public function toGraphQL($value): bool
     {
+        return $this->toBool($value);
+    }
+
+    /**
+     * @param mixed $value Should be bool
+     */
+    protected function toBool($value): bool
+    {
         if (! is_bool($value)) {
-            throw new \InvalidArgumentException('Expected bool, got ' . gettype($value));
+            $notBool = gettype($value);
+            throw new \InvalidArgumentException("Expected bool, got {$notBool}");
         }
 
         return $value;

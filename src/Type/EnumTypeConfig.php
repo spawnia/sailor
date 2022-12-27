@@ -9,7 +9,7 @@ use Spawnia\Sailor\Codegen\Escaper;
 use Spawnia\Sailor\Convert\EnumConverter;
 use Spawnia\Sailor\EndpointConfig;
 
-class EnumTypeConfig implements TypeConfig
+class EnumTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeConfig
 {
     protected EndpointConfig $endpointConfig;
 
@@ -26,9 +26,19 @@ class EnumTypeConfig implements TypeConfig
         return EnumConverter::class;
     }
 
-    public function typeReference(): string
+    protected function typeReference(): string
     {
         return 'string';
+    }
+
+    public function inputTypeReference(): string
+    {
+        return $this->typeReference();
+    }
+
+    public function outputTypeReference(): string
+    {
+        return $this->typeReference();
     }
 
     /**
