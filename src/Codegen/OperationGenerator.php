@@ -12,7 +12,6 @@ use GraphQL\Language\Printer;
 use GraphQL\Language\Visitor;
 use GraphQL\Type\Definition\CompositeType;
 use GraphQL\Type\Definition\InterfaceType;
-use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
@@ -283,7 +282,7 @@ class OperationGenerator implements ClassGenerator
                             }
 
                             $parentType = $typeInfo->getParentType();
-                            assert($parentType !== null);
+                            assert(null !== $parentType);
 
                             foreach ($selectionClasses as $name => $selection) {
                                 $selectionType = $this->schema->getType($name);
