@@ -282,8 +282,8 @@ class OperationGenerator implements ClassGenerator
                                     PHP;
                             }
 
-                            /** @var Type&NamedType $parentType */
                             $parentType = $typeInfo->getParentType();
+                            assert($parentType !== null);
 
                             foreach ($selectionClasses as $name => $selection) {
                                 $selectionType = $this->schema->getType($name);
