@@ -32,19 +32,17 @@ return [
         {
             $mockClient = new MockClient();
 
-            $mockClient->responseMocks[] = static function (): Response {
-                return Response::fromStdClass((object) [
-                    'data' => (object) [
-                        '__typename' => 'Query',
-                        'print' => (object) [
-                            '__typename' => 'Switch',
-                            'for' => _abstract::_class,
-                            'int' => 42,
-                            'as' => 69,
-                        ],
+            $mockClient->responseMocks[] = static fn(): Response => Response::fromStdClass((object) [
+                'data' => (object) [
+                    '__typename' => 'Query',
+                    'print' => (object) [
+                        '__typename' => 'Switch',
+                        'for' => _abstract::_class,
+                        'int' => 42,
+                        'as' => 69,
                     ],
-                ]);
-            };
+                ],
+            ]);
 
             return $mockClient;
         }
