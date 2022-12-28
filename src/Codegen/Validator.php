@@ -28,12 +28,12 @@ class Validator
         }
 
         $formattedErrors = array_map(
-            static fn(Error $error): array => FormattedError::createFromException($error, DebugFlag::INCLUDE_DEBUG_MESSAGE),
+            static fn (Error $error): array => FormattedError::createFromException($error, DebugFlag::INCLUDE_DEBUG_MESSAGE),
             $errors
         );
 
         $errorStrings = array_map(
-            static fn(array $error): string => \Safe\json_encode($error),
+            static fn (array $error): string => \Safe\json_encode($error),
             $formattedErrors
         );
 

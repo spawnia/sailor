@@ -19,7 +19,7 @@ class Merger
         $root->definitions = array_reduce(
             $documents,
             // @phpstan-ignore-next-line Contravariance
-            static fn(NodeList $definitions, DocumentNode $document): NodeList => $definitions->merge($document->definitions),
+            static fn (NodeList $definitions, DocumentNode $document): NodeList => $definitions->merge($document->definitions),
             $root->definitions
         );
 
