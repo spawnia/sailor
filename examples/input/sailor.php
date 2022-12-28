@@ -31,14 +31,12 @@ return [
         {
             $mockClient = new MockClient();
 
-            $mockClient->responseMocks[] = static function (): Response {
-                return Response::fromStdClass((object) [
-                    'data' => (object) [
-                        '__typename' => 'Mutation',
-                        'takeSomeInput' => 42,
-                    ],
-                ]);
-            };
+            $mockClient->responseMocks[] = static fn(): Response => Response::fromStdClass((object) [
+                'data' => (object) [
+                    '__typename' => 'Mutation',
+                    'takeSomeInput' => 42,
+                ],
+            ]);
 
             return $mockClient;
         }

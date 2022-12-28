@@ -36,14 +36,12 @@ return [
         {
             $mockClient = new MockClient();
 
-            $mockClient->responseMocks[] = static function (): Response {
-                return Response::fromStdClass((object) [
-                    'data' => (object) [
-                        '__typename' => 'Query',
-                        'withCustomEnum' => CustomEnum::B,
-                    ],
-                ]);
-            };
+            $mockClient->responseMocks[] = static fn (): Response => Response::fromStdClass((object) [
+                'data' => (object) [
+                    '__typename' => 'Query',
+                    'withCustomEnum' => CustomEnum::B,
+                ],
+            ]);
 
             return $mockClient;
         }
