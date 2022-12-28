@@ -18,8 +18,15 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
 
+      - name: "Setup PHP"
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: none
+          extensions: mbstring
+          php-version: 8.1
+
       - name: "Validate composer.json and composer.lock"
-        run: php7.4 /usr/bin/composer validate
+        run: composer validate
 
   static-code-analysis:
     name: "Static Code Analysis"
@@ -30,11 +37,18 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
 
+      - name: "Setup PHP"
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: none
+          extensions: mbstring
+          php-version: 8.1
+
       - name: "Install locked dependencies with composer"
-        run: php7.4 /usr/bin/composer install --no-interaction --no-progress
+        run: composer install --no-interaction --no-progress
 
       - name: "Run phpstan/phpstan"
-        run: php7.4 vendor/bin/phpstan analyse --configuration=phpstan.neon
+        run: vendor/bin/phpstan analyse --configuration=phpstan.neon
 
   tests:
     name: "Tests"
@@ -103,7 +117,7 @@ jobs:
         with:
           coverage: none
           extensions: mbstring
-          php-version: 7.4
+          php-version: 8.1
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -124,7 +138,7 @@ jobs:
         with:
           coverage: pcov
           extensions: mbstring
-          php-version: 7.4
+          php-version: 8.1
 
       - name: "Install locked dependencies with composer"
         run: composer install --no-interaction --no-progress
@@ -149,7 +163,7 @@ jobs:
         with:
           coverage: xdebug
           extensions: mbstring
-          php-version: 7.4
+          php-version: 8.1
 
       - name: "Install locked dependencies with composer"
         run: composer install --no-interaction --no-progress
