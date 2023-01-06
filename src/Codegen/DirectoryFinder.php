@@ -37,6 +37,7 @@ class DirectoryFinder implements Finder
         return $contents;
     }
 
+    // @phpstan-ignore-next-line not providing generic type of RegexIterator
     protected function fileIterator(): \RegexIterator
     {
         $directory = new \RecursiveDirectoryIterator($this->rootPath);
