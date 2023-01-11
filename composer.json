@@ -22,7 +22,7 @@
     "symfony/console": "^5 || ^6",
     "symfony/var-exporter": "^5.3 || ^6",
     "thecodingmachine/safe": "^1 || ^2",
-    "webonyx/graphql-php": "^14.11.3"
+    "webonyx/graphql-php": "^14.11.3 || ^15"
   },
   "require-dev": {
     "bensampo/laravel-enum": "^3 || ^4.1",

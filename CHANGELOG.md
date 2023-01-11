@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.27.0
+
+### Added
+
+- Support `webonyx/graphql-php:^15`
+
 ## v0.26.1
 
 ### Fixed

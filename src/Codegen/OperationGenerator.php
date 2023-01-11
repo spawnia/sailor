@@ -24,7 +24,6 @@ use Nette\PhpGenerator\PhpNamespace;
 use Spawnia\Sailor\Convert\PolymorphicConverter;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\ErrorFreeResult;
-use Spawnia\Sailor\Operation;
 use Spawnia\Sailor\Result;
 use Spawnia\Sailor\Type\InputTypeConfig;
 use Spawnia\Sailor\Type\OutputTypeConfig;
@@ -283,9 +282,7 @@ class OperationGenerator implements ClassGenerator
                             }
 
                             $parentType = $typeInfo->getParentType();
-                            if (null === $parentType) {
-                                throw new \Exception("Unable to determine parent type of field {$fieldName}");
-                            }
+                            assert(null !== $parentType);
 
                             foreach ($selectionClasses as $name => $selection) {
                                 $selectionType = $this->schema->getType($name);

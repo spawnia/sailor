@@ -44,7 +44,7 @@ class TypeWrapper
     public static function converter(Type $type, string $innerConverter, bool $shouldWrapWithNull = true): string
     {
         if ($type instanceof NonNull) {
-            $nonNullable = self::converter($type->getOfType(), $innerConverter, false);
+            $nonNullable = self::converter($type->getWrappedType(), $innerConverter, false);
 
             $nonNullConverterClass = NonNullConverter::class;
 
@@ -60,7 +60,7 @@ class TypeWrapper
         }
 
         if ($type instanceof ListOfType) {
-            $inList = self::converter($type->getOfType(), $innerConverter);
+            $inList = self::converter($type->getWrappedType(), $innerConverter);
 
             $listConverterClass = ListConverter::class;
 

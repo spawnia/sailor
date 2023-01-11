@@ -93,7 +93,6 @@ class FoldFragments
                     throw new \Exception("Found directives on fragment {$fragment->name->value}, but can not use it because they will be inlined.");
                 }
 
-                // @phpstan-ignore-next-line TODO remove with graphql-php 15
                 $selections[] = new InlineFragmentNode([
                     'typeCondition' => $fragment->typeCondition,
                     'directives' => $selection->directives,
