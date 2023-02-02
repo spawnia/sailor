@@ -7,11 +7,10 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
-
-use function Safe\json_encode;
-
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\Response;
+
+use function Safe\json_encode;
 
 class Psr18 implements Client
 {
