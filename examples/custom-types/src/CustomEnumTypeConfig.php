@@ -60,7 +60,7 @@ class CustomEnumTypeConfig extends EnumTypeConfig
 
     protected function decorateEnumClass(ClassType $class): ClassType
     {
-        $class->addExtend(Enum::class);
+        $class->setExtends(Enum::class);
 
         return parent::decorateEnumClass($class);
     }
