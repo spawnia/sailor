@@ -40,7 +40,7 @@ class ObjectLikeBuilder
             new PhpNamespace($namespace) // TODO drop escape when min PHP version is 8.0+
         );
 
-        $class->addExtend(ObjectLike::class);
+        $class->setExtends(ObjectLike::class);
 
         $make = $class->addMethod('make');
         $make->setStatic(true);

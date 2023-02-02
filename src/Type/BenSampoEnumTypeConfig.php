@@ -58,7 +58,7 @@ class BenSampoEnumTypeConfig extends EnumTypeConfig
 
     protected function decorateEnumClass(ClassType $class): ClassType
     {
-        $class->addExtend(Enum::class);
+        $class->setExtends(Enum::class);
 
         foreach ($this->enumType->getValues() as $value) {
             $constName = Escaper::escapeMemberConstantName($value->name);

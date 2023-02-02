@@ -17,7 +17,7 @@
   "require": {
     "php": "^7.4 || ^8",
     "ext-json": "*",
-    "nette/php-generator": "^3.6.7",
+    "nette/php-generator": "^3.6.7 || ^4",
     "psr/http-client": "^1",
     "symfony/console": "^5 || ^6",
     "symfony/var-exporter": "^5.3 || ^6",
@@ -43,7 +43,7 @@
     "phpstan/phpstan-phpunit": "^1",
     "phpstan/phpstan-strict-rules": "^1",
     "phpunit/phpunit": "^9.5.2",
-    "spawnia/phpunit-assert-directory": "^2",
+    "spawnia/phpunit-assert-directory": "dev-php8 as 3.0.0",
     "symfony/var-dumper": "^5.2.3",
     "thecodingmachine/phpstan-safe-rule": "^1.1"
   },
@@ -52,6 +52,12 @@
     "guzzlehttp/guzzle": "Enables using the built-in default Client",
     "mockery/mockery": "Used in Operation::mock()"
   },
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/simpod/phpunit-assert-directory"
+    }
+  ],
   "autoload": {
     "psr-4": {
       "Spawnia\\Sailor\\": "src/"
