@@ -9,7 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-- Allow `nette/php-generator v4`
+## v0.28.0
+
+### Added
+
+- Support `nette/php-generator:^4`
 
 ## v0.27.0
 
