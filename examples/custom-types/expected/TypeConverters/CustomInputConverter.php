@@ -1,0 +1,32 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Spawnia\Sailor\CustomTypes\TypeConverters;
+
+class CustomInputConverter implements \Spawnia\Sailor\Convert\TypeConverter
+{
+    public function fromGraphQL($value): \Spawnia\Sailor\CustomTypesSrc\CustomObject
+    {
+        return new \Spawnia\Sailor\CustomTypesSrc\CustomObject($value->foo);
+    }
+
+    public function toGraphQL($value)
+    {
+        if (! $value instanceof \Spawnia\Sailor\CustomTypesSrc\CustomObject) {
+            throw new \InvalidArgumentException('Expected instanceof Spawnia\Sailor\CustomTypesSrc\CustomObject, got: '.gettype($value));
+        }
+
+        return $value;
+    }
+
+    public static function endpoint(): string
+    {
+        return 'custom-types';
+    }
+
+    public static function config(): string
+    {
+        return \Safe\realpath(__DIR__ . '/../../sailor.php');
+    }
+}

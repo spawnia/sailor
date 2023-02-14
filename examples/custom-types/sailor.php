@@ -5,6 +5,7 @@ use Spawnia\Sailor\Client;
 use Spawnia\Sailor\CustomTypes\Types\CustomEnum;
 use Spawnia\Sailor\CustomTypesSrc\CustomDateTypeConfig;
 use Spawnia\Sailor\CustomTypesSrc\CustomEnumTypeConfig;
+use Spawnia\Sailor\CustomTypesSrc\CustomObjectTypeConfig;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
@@ -42,6 +43,15 @@ return [
                     'withCustomEnum' => CustomEnum::B,
                 ],
             ]);
+            $mockClient->responseMocks[] = static fn (string $query, ?\stdClass $variables): Response => Response::fromStdClass((object) [
+                'data' => (object) [
+                    '__typename' => 'Query',
+                    'withCustomObject' => (object) [
+                        '__typename' => 'CustomObject',
+                        'foo' => $variables->value->foo ?? null,
+                    ],
+                ],
+            ]);
 
             return $mockClient;
         }
@@ -54,6 +64,7 @@ return [
                     'BenSampoEnum' => new BenSampoEnumTypeConfig($this, $schema->getType('BenSampoEnum')),
                     'CustomEnum' => new CustomEnumTypeConfig($this, $schema->getType('CustomEnum')),
                     'CustomDate' => new CustomDateTypeConfig($this, $schema->getType('CustomDate')),
+                    'CustomInput' => new CustomObjectTypeConfig($this, $schema->getType('CustomInput')),
                 ]
             );
         }

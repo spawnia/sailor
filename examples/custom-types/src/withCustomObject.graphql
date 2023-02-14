@@ -1,0 +1,5 @@
+query MyCustomObjectQuery($value: CustomInput) {
+    withCustomObject(value: $value) {
+        foo
+    }
+}

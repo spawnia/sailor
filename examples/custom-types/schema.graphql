@@ -3,6 +3,7 @@ type Query {
     withCustomEnum(value: CustomEnum): CustomEnum
     withBenSampoEnum(value: BenSampoEnum): BenSampoEnum
     withEnumInput(input: EnumInput): EnumObject
+    withCustomObject(value: CustomInput): CustomOutput
 }
 
 type EnumObject {
@@ -33,3 +34,11 @@ enum BenSampoEnum {
 scalar DefaultDate
 
 scalar CustomDate
+
+input CustomInput {
+    foo: String!
+}
+
+type CustomOutput {
+    foo: String!
+}
