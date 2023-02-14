@@ -85,7 +85,8 @@
       "ergebnis/composer-normalize": true,
       "ocramius/package-versions": true,
       "phpstan/extension-installer": true,
-      "infection/extension-installer": true
+      "infection/extension-installer": true,
+      "php-http/discovery": false
     },
     "platform": {
       "php": "7.4.15"
