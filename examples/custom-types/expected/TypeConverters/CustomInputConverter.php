@@ -8,6 +8,14 @@ class CustomInputConverter implements \Spawnia\Sailor\Convert\TypeConverter
 {
     public function fromGraphQL($value): \Spawnia\Sailor\CustomTypesSrc\CustomObject
     {
+        if (! $value instanceof \stdClass) {
+            throw new \InvalidArgumentException('Expected stdClass, got: '.gettype($value));
+        }
+
+        if (! property_exists($value, 'foo') {
+            throw new \InvalidArgumentException('Did not find expected property foo.');
+        }
+
         return new \Spawnia\Sailor\CustomTypesSrc\CustomObject($value->foo);
     }
 
@@ -17,7 +25,7 @@ class CustomInputConverter implements \Spawnia\Sailor\Convert\TypeConverter
             throw new \InvalidArgumentException('Expected instanceof Spawnia\Sailor\CustomTypesSrc\CustomObject, got: '.gettype($value));
         }
 
-        return $value;
+        return (array) $value;
     }
 
     public static function endpoint(): string
