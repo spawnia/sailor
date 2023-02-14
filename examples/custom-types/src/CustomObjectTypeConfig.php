@@ -57,7 +57,7 @@ final class CustomObjectTypeConfig implements TypeConfig, InputTypeConfig
                     throw new \InvalidArgumentException('Expected stdClass, got: '.gettype(\$value));
                 }
 
-                if (! property_exists(\$value, 'foo') {
+                if (! property_exists(\$value, 'foo')) {
                     throw new \InvalidArgumentException('Did not find expected property foo.');
                 }
 
