@@ -60,7 +60,7 @@ final class CustomObjectTypeConfig implements TypeConfig, InputTypeConfig
         $toGraphQL->setBody(
             <<<PHP
                 if (! \$value instanceof \\{$customObjectClass}) {
-                    throw new \InvalidArgumentException('Expected instanceof $customObjectClass, got: '.gettype(\$value));
+                    throw new \InvalidArgumentException('Expected instanceof {$customObjectClass}, got: '.gettype(\$value));
                 }
 
                 return \$value;
