@@ -53,6 +53,14 @@ final class CustomObjectTypeConfig implements TypeConfig, InputTypeConfig
         $fromGraphQL->setReturnType($customObjectClass);
         $fromGraphQL->setBody(
             <<<PHP
+                if (! \$value instanceof \\stdClass) {
+                    throw new \InvalidArgumentException('Expected stdClass, got: '.gettype(\$value));
+                }
+
+                if (! property_exists(\$value, 'foo') {
+                    throw new \InvalidArgumentException('Did not find expected property foo.');
+                }
+
                 return new \\{$customObjectClass}(\$value->foo);
                 PHP
         );
@@ -63,7 +71,7 @@ final class CustomObjectTypeConfig implements TypeConfig, InputTypeConfig
                     throw new \InvalidArgumentException('Expected instanceof {$customObjectClass}, got: '.gettype(\$value));
                 }
 
-                return \$value;
+                return (array) \$value;
                 PHP
         );
 
