@@ -209,9 +209,7 @@ class OperationGenerator implements ClassGenerator
                     NodeKind::FIELD => [
                         'enter' => function (FieldNode $field) use ($typeInfo): void {
                             // We are only interested in the name that will come from the server
-                            $fieldName = null !== $field->alias
-                                ? $field->alias->value
-                                : $field->name->value;
+                            $fieldName = $field->alias->value ?? $field->name->value;
 
                             $selectionClasses = $this->operationStack->selection($this->currentNamespace());
 
@@ -221,11 +219,25 @@ class OperationGenerator implements ClassGenerator
                             $namedType = Type::getNamedType($type);
                             assert(null !== $namedType, 'schema is validated');
 
-                            if ($namedType instanceof ObjectType) {
+                            if ($namedType instanceof CompositeType) {
                                 // We go one level deeper into the selection set
                                 // To avoid naming conflicts, we add on another namespace
                                 $this->namespaceStack[] = Escaper::escapeNamespaceName(ucfirst($fieldName));
+                            }
 
+                            $typeConfig = $this->types[$namedType->name] ?? null;
+                            if ($typeConfig !== null) {
+                                assert($typeConfig instanceof OutputTypeConfig);
+                                $phpDocType = $typeConfig->outputTypeReference();
+                                $typeConverter = <<<PHP
+                                        {$typeConfig->typeConverter()}
+                                        PHP;
+
+                                // TODO in this case, we have to stop further traversal
+                                if ($namedType instanceof CompositeType) {
+                                    $this->operationStack->setSelection($this->currentNamespace(), []);
+                                }
+                            } elseif ($namedType instanceof ObjectType) {
                                 $name = $namedType->name;
 
                                 $phpType = $this->withCurrentNamespace(Escaper::escapeNamespaceName($name));
@@ -241,10 +253,6 @@ class OperationGenerator implements ClassGenerator
                                     {$phpType}
                                     PHP;
                             } elseif ($namedType instanceof InterfaceType || $namedType instanceof UnionType) {
-                                // We go one level deeper into the selection set
-                                // To avoid naming conflicts, we add on another namespace
-                                $this->namespaceStack[] = Escaper::escapeNamespaceName(ucfirst($fieldName));
-
                                 /** @var PolymorphicMapping $mapping */
                                 $mapping = [];
 
@@ -271,12 +279,7 @@ class OperationGenerator implements ClassGenerator
                                     Spawnia\Sailor\Convert\PolymorphicConverter({$mappingCode})
                                     PHP;
                             } else {
-                                $typeConfig = $this->types[$namedType->name];
-                                assert($typeConfig instanceof OutputTypeConfig);
-                                $phpDocType = $typeConfig->outputTypeReference();
-                                $typeConverter = <<<PHP
-                                    {$typeConfig->typeConverter()}
-                                    PHP;
+                                throw new \Exception("Unexpected namedType {$namedType->name}.");
                             }
 
                             $parentType = $typeInfo->getParentType();

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\CustomTypes\TypeConverters;
 
-class CustomInputConverter implements \Spawnia\Sailor\Convert\TypeConverter
+class CustomOutputConverter implements \Spawnia\Sailor\Convert\TypeConverter
 {
     public function fromGraphQL($value): \Spawnia\Sailor\CustomTypesSrc\CustomObject
     {

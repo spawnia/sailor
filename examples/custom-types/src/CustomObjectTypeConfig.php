@@ -9,9 +9,10 @@ use Nette\PhpGenerator\Method;
 use Spawnia\Sailor\Convert\GeneratesTypeConverter;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Type\InputTypeConfig;
+use Spawnia\Sailor\Type\OutputTypeConfig;
 use Spawnia\Sailor\Type\TypeConfig;
 
-final class CustomObjectTypeConfig implements TypeConfig, InputTypeConfig
+final class CustomObjectTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeConfig
 {
     use GeneratesTypeConverter;
 
@@ -37,6 +38,11 @@ final class CustomObjectTypeConfig implements TypeConfig, InputTypeConfig
     }
 
     public function inputTypeReference(): string
+    {
+        return '\\' . CustomObject::class;
+    }
+
+    public function outputTypeReference(): string
     {
         return '\\' . CustomObject::class;
     }

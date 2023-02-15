@@ -65,6 +65,7 @@ return [
                     'CustomEnum' => new CustomEnumTypeConfig($this, $schema->getType('CustomEnum')),
                     'CustomDate' => new CustomDateTypeConfig($this, $schema->getType('CustomDate')),
                     'CustomInput' => new CustomObjectTypeConfig($this, $schema->getType('CustomInput')),
+                    'CustomOutput' => new CustomObjectTypeConfig($this, $schema->getType('CustomOutput')),
                 ]
             );
         }

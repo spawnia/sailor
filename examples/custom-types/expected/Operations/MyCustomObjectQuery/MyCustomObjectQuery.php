@@ -6,12 +6,12 @@ namespace Spawnia\Sailor\CustomTypes\Operations\MyCustomObjectQuery;
 
 /**
  * @property string $__typename
- * @property \Spawnia\Sailor\CustomTypes\Operations\MyCustomObjectQuery\WithCustomObject\CustomOutput|null $withCustomObject
+ * @property \Spawnia\Sailor\CustomTypesSrc\CustomObject|null $withCustomObject
  */
 class MyCustomObjectQuery extends \Spawnia\Sailor\ObjectLike
 {
     /**
-     * @param \Spawnia\Sailor\CustomTypes\Operations\MyCustomObjectQuery\WithCustomObject\CustomOutput|null $withCustomObject
+     * @param \Spawnia\Sailor\CustomTypesSrc\CustomObject|null $withCustomObject
      */
     public static function make($withCustomObject = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): self
     {
@@ -31,7 +31,7 @@ class MyCustomObjectQuery extends \Spawnia\Sailor\ObjectLike
 
         return $converters ??= [
             '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
-            'withCustomObject' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\CustomTypes\Operations\MyCustomObjectQuery\WithCustomObject\CustomOutput),
+            'withCustomObject' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\CustomTypes\TypeConverters\CustomOutputConverter),
         ];
     }
 
