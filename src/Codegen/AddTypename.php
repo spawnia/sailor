@@ -50,5 +50,9 @@ class AddTypename
                 static::purgeRedundant($selection->selectionSet);
             }
         }
+
+        // Restores numeric indexes
+        // TODO use ->reindex() with graphql-php 15
+        $selections->splice(0, 0, []);
     }
 }

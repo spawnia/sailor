@@ -2,8 +2,10 @@
 
 namespace Spawnia\Sailor\Tests\Unit\Codegen;
 
+use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\Parser;
 use GraphQL\Language\Printer;
+use GraphQL\Language\Visitor;
 use Spawnia\Sailor\Codegen\AddTypename;
 use Spawnia\Sailor\Tests\TestCase;
 
@@ -20,6 +22,7 @@ final class AddTypenameTest extends TestCase
         );
 
         AddTypename::modify($document);
+        self::assertPassesVisitor($document);
 
         self::assertSame(/** @lang GraphQL */ <<<'GRAPHQL'
             {
@@ -46,6 +49,7 @@ final class AddTypenameTest extends TestCase
         );
 
         AddTypename::modify($document);
+        self::assertPassesVisitor($document);
 
         self::assertSame(/** @lang GraphQL */ <<<'GRAPHQL'
             {
@@ -76,6 +80,7 @@ final class AddTypenameTest extends TestCase
         );
 
         AddTypename::modify($document);
+        self::assertPassesVisitor($document);
 
         self::assertSame(/** @lang GraphQL */ <<<'GRAPHQL'
             {
@@ -90,5 +95,43 @@ final class AddTypenameTest extends TestCase
             GRAPHQL,
             Printer::doPrint($document)
         );
+    }
+
+    public function testPurgeRedundant(): void
+    {
+        $document = Parser::parse(/** @lang GraphQL */ <<<'GRAPHQL'
+            {
+              __typename
+              foo
+              ... on Bar {
+                __typename
+                bar
+              }
+            }
+
+            GRAPHQL
+        );
+
+        AddTypename::modify($document);
+        self::assertPassesVisitor($document);
+
+        self::assertSame(/** @lang GraphQL */ <<<'GRAPHQL'
+            {
+              __typename
+              foo
+              ... on Bar {
+                bar
+              }
+            }
+
+            GRAPHQL,
+            Printer::doPrint($document)
+        );
+    }
+
+    private static function assertPassesVisitor(DocumentNode $document): void
+    {
+        // May throw if the AST is malformed
+        Visitor::visit($document, []);
     }
 }
