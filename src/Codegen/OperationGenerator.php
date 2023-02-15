@@ -35,6 +35,8 @@ use Symfony\Component\VarExporter\VarExporter;
  */
 class OperationGenerator implements ClassGenerator
 {
+    const NO_FURTHER_SELECTION_DUE_TO_CUSTOM_TYPE = [];
+
     protected Schema $schema;
 
     protected DocumentNode $document;
@@ -212,6 +214,9 @@ class OperationGenerator implements ClassGenerator
                             $fieldName = $field->alias->value ?? $field->name->value;
 
                             $selectionClasses = $this->operationStack->selection($this->currentNamespace());
+                            if ($selectionClasses === self::NO_FURTHER_SELECTION_DUE_TO_CUSTOM_TYPE) {
+                                return;
+                            }
 
                             $type = $typeInfo->getType();
                             assert(null !== $type, 'schema is validated');
@@ -235,7 +240,7 @@ class OperationGenerator implements ClassGenerator
 
                                 // TODO in this case, we have to stop further traversal
                                 if ($namedType instanceof CompositeType) {
-                                    $this->operationStack->setSelection($this->currentNamespace(), []);
+                                    $this->operationStack->setSelection($this->currentNamespace(), self::NO_FURTHER_SELECTION_DUE_TO_CUSTOM_TYPE);
                                 }
                             } elseif ($namedType instanceof ObjectType) {
                                 $name = $namedType->name;
