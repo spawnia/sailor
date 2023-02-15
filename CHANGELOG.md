@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Allow `EndpointConfig::configureTypes()` to customize object, interface and union type code generation
+
 ## v0.28.1
 
 ### Fixed
