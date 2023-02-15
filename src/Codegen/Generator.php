@@ -177,7 +177,7 @@ class Generator
             } catch (SyntaxError $error) {
                 throw new Error(
                     // Inform the user which file the error occurred in.
-                    $error->getMessage() . ' in ' . $path,
+                    "Failed to parse {$path}: {$error->getMessage()}.",
                     null,
                     $error->getSource(),
                     $error->getPositions()
@@ -195,11 +195,8 @@ class Generator
     {
         foreach ($parsed as $path => $documentNode) {
             foreach ($documentNode->definitions as $definition) {
-                switch (true) {
-                    case $definition instanceof OperationDefinitionNode:
-                        if (null === $definition->name) {
-                            throw new Error('Found unnamed operation definition in ' . $path, $definition);
-                        }
+                if ($definition instanceof OperationDefinitionNode && null === $definition->name) {
+                    throw new Error("Found unnamed operation definition in {$path}.", $definition);
                 }
             }
         }

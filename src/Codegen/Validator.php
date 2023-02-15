@@ -16,11 +16,7 @@ class Validator
         try {
             $errors = DocumentValidator::validate($schema, $document);
         } catch (\Throwable $e) {
-            throw new \Exception(
-                'Unexpected error while validating a query against the schema. Check if your schema is up to date.',
-                0,
-                $e
-            );
+            throw new \Exception('Unexpected error while validating a query against the schema. Check if your schema is up to date.', 0, $e);
         }
 
         if (0 === count($errors)) {
