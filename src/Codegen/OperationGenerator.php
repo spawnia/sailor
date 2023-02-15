@@ -226,7 +226,7 @@ class OperationGenerator implements ClassGenerator
                             }
 
                             $typeConfig = $this->types[$namedType->name] ?? null;
-                            if ($typeConfig !== null) {
+                            if (null !== $typeConfig) {
                                 assert($typeConfig instanceof OutputTypeConfig);
                                 $phpDocType = $typeConfig->outputTypeReference();
                                 $typeConverter = <<<PHP
