@@ -1,0 +1,11 @@
+query ExplicitTypename {
+    __typename
+    singleObject {
+        ...ObjectWithTypename
+    }
+}
+
+fragment ObjectWithTypename on SomeObject {
+    __typename
+    value
+}

@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.28.1
+
+### Fixed
+
+- Handle queries with explicit `__typename` in fragments
+
 ## v0.28.0
 
 ### Added
