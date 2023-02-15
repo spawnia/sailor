@@ -35,7 +35,7 @@ use Symfony\Component\VarExporter\VarExporter;
  */
 class OperationGenerator implements ClassGenerator
 {
-    const NO_FURTHER_SELECTION_DUE_TO_CUSTOM_TYPE = [];
+    public const NO_FURTHER_SELECTION_DUE_TO_CUSTOM_TYPE = [];
 
     protected Schema $schema;
 
@@ -214,7 +214,7 @@ class OperationGenerator implements ClassGenerator
                             $fieldName = $field->alias->value ?? $field->name->value;
 
                             $selectionClasses = $this->operationStack->selection($this->currentNamespace());
-                            if ($selectionClasses === self::NO_FURTHER_SELECTION_DUE_TO_CUSTOM_TYPE) {
+                            if (self::NO_FURTHER_SELECTION_DUE_TO_CUSTOM_TYPE === $selectionClasses) {
                                 return;
                             }
 
