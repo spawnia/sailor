@@ -259,7 +259,6 @@ class OperationGenerator implements ClassGenerator
                                     $mappingSelection[$name] = $this->makeObjectLikeBuilder($escapedName);
                                 }
 
-                                $phpType = 'object';
                                 $phpDocType = implode('|', $mapping);
 
                                 $this->operationStack->setSelection(
@@ -274,8 +273,7 @@ class OperationGenerator implements ClassGenerator
                             } else {
                                 $typeConfig = $this->types[$namedType->name];
                                 assert($typeConfig instanceof OutputTypeConfig);
-                                $phpType = $typeConfig->outputTypeReference();
-                                $phpDocType = $phpType;
+                                $phpDocType = $typeConfig->outputTypeReference();
                                 $typeConverter = <<<PHP
                                     {$typeConfig->typeConverter()}
                                     PHP;
