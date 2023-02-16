@@ -51,7 +51,7 @@ return [
                             '__typename' => 'Query',
                             'withCustomObject' => (object) [
                                 '__typename' => 'CustomObject',
-                                'foo' => $variables->value->foo ?? null,
+                                'foo' => $variables->value['foo'] ?? null,
                             ],
                         ],
                     ]);

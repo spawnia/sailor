@@ -2,6 +2,7 @@
 set -euxo pipefail
 
 composer update
+composer reinstall spawnia/sailor
 
 echo Clean up previous runs
 rm -f sailor.php
