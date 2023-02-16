@@ -62,25 +62,27 @@ final class IntrospectorTest extends TestCase
     public function validResponseMocks(): iterable
     {
         yield [
-            static fn(): Response => self::successfulIntrospectionMock(),
+            static fn (): Response => self::successfulIntrospectionMock(),
         ];
 
         yield [
-            static function(): Response {
+            static function (): Response {
                 static $called = false;
                 $response = $called ? self::responseWithErrorsMock() : self::successfulIntrospectionMock();
                 $called = true;
+
                 return $response;
-            }
+            },
         ];
 
         yield [
-            static function(): Response {
+            static function (): Response {
                 static $called = false;
                 $response = $called ? self::misbehavedServerMock() : self::successfulIntrospectionMock();
                 $called = true;
+
                 return $response;
-            }
+            },
         ];
     }
 
