@@ -29,16 +29,12 @@ return [
 
         public function makeClient(): Client
         {
-            $mockClient = new MockClient();
-
-            $mockClient->responseMocks[] = static fn(): Response => Response::fromStdClass((object) [
+            return new MockClient(static fn(): Response => Response::fromStdClass((object) [
                 'data' => (object) [
                     '__typename' => 'Mutation',
                     'takeSomeInput' => 42,
                 ],
-            ]);
-
-            return $mockClient;
+            ]));
         }
     },
 ];

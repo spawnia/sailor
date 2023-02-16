@@ -35,25 +35,30 @@ return [
 
         public function makeClient(): Client
         {
-            $mockClient = new MockClient();
+            return new MockClient(function (string $query, ?stdClass $variables): Response {
+                if (str_contains($query, 'withCustomEnum')) {
+                    return Response::fromStdClass((object) [
+                        'data' => (object) [
+                            '__typename' => 'Query',
+                            'withCustomEnum' => CustomEnum::B,
+                        ],
+                    ]);
+                }
 
-            $mockClient->responseMocks[] = static fn (): Response => Response::fromStdClass((object) [
-                'data' => (object) [
-                    '__typename' => 'Query',
-                    'withCustomEnum' => CustomEnum::B,
-                ],
-            ]);
-            $mockClient->responseMocks[] = static fn (string $query, ?\stdClass $variables): Response => Response::fromStdClass((object) [
-                'data' => (object) [
-                    '__typename' => 'Query',
-                    'withCustomObject' => (object) [
-                        '__typename' => 'CustomObject',
-                        'foo' => $variables->value->foo ?? null,
-                    ],
-                ],
-            ]);
+                if (str_contains($query, 'withCustomObject')) {
+                    return Response::fromStdClass((object) [
+                        'data' => (object) [
+                            '__typename' => 'Query',
+                            'withCustomObject' => (object) [
+                                '__typename' => 'CustomObject',
+                                'foo' => $variables->value->foo ?? null,
+                            ],
+                        ],
+                    ]);
+                }
 
-            return $mockClient;
+                throw new Exception("Unexpected query: {$query}.");
+            });
         }
 
         public function configureTypes(Schema $schema): array

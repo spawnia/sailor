@@ -35,11 +35,11 @@ final class IntrospectorTest extends TestCase
     /**
      * @dataProvider validResponseMocks
      *
-     * @param  array<int, ResponseMock>  $responseMocks
+     * @param  ResponseMock  $respond
      */
-    public function testPrintsIntrospection(array $responseMocks): void
+    public function testPrintsIntrospection(callable $respond): void
     {
-        $this->makeIntrospector($responseMocks)
+        $this->makeIntrospector($respond)
             ->introspect();
 
         self::assertFileExists(self::PATH);
@@ -52,62 +52,64 @@ final class IntrospectorTest extends TestCase
     {
         self::expectException(ResultErrorsException::class);
         $this
-            ->makeIntrospector([
-                self::responseWithErrorsMock(),
-                self::responseWithErrorsMock(),
-            ])
+            ->makeIntrospector(static fn (): Response => self::responseWithErrorsMock())
             ->introspect();
     }
 
     /**
-     * @return iterable<array{array<int, ResponseMock>}>
+     * @return iterable<array{ResponseMock}>
      */
     public function validResponseMocks(): iterable
     {
         yield [
-            [
-                self::successfulIntrospectionMock(),
-            ],
+            static fn(): Response => self::successfulIntrospectionMock(),
         ];
 
         yield [
-            [
-                self::responseWithErrorsMock(),
-                self::successfulIntrospectionMock(),
-            ],
+            static function(): Response {
+                static $i = 0;
+                $mock = [
+                    self::responseWithErrorsMock(),
+                    self::successfulIntrospectionMock(),
+                ][$i];
+                $i++;
+                return $mock;
+            }
         ];
 
         yield [
-            [
-                self::misbehavedServerMock(),
-                self::successfulIntrospectionMock(),
-            ],
+            static function(): Response {
+                static $i = 0;
+                $mock = [
+                    self::misbehavedServerMock(),
+                    self::successfulIntrospectionMock(),
+                ][$i];
+                $i++;
+                return $mock;
+            }
         ];
     }
 
     /**
-     * @param array<int, ResponseMock> $responseMocks
+     * @param ResponseMock $respond
      */
-    private function makeIntrospector(array $responseMocks): Introspector
+    private function makeIntrospector(callable $respond): Introspector
     {
-        $endpointConfig = new class($responseMocks) extends EndpointConfig {
-            /** @var array<int, callable> */
-            private array $responseMocks;
+        $endpointConfig = new class($respond) extends EndpointConfig {
+            /** @var ResponseMock */
+            private $respond;
 
             /**
-             * @param array<int, callable> $responseMocks
+             * @param ResponseMock $respond
              */
-            public function __construct(array $responseMocks)
+            public function __construct(callable $respond)
             {
-                $this->responseMocks = $responseMocks;
+                $this->respond = $respond;
             }
 
             public function makeClient(): Client
             {
-                $mockClient = new MockClient();
-                $mockClient->responseMocks = $this->responseMocks;
-
-                return $mockClient;
+                return new MockClient($this->respond);
             }
 
             public function schemaPath(): string
@@ -134,43 +136,28 @@ final class IntrospectorTest extends TestCase
         return new Introspector($endpointConfig, 'foo', 'bar');
     }
 
-    /**
-     * @return ResponseMock
-     */
-    public static function successfulIntrospectionMock(): callable
+    public static function successfulIntrospectionMock(): Response
     {
-        return static function (): Response {
-            $schema = BuildSchema::build(self::SCHEMA);
-            $introspection = Introspection::fromSchema($schema);
+        $schema = BuildSchema::build(self::SCHEMA);
+        $introspection = Introspection::fromSchema($schema);
 
-            $response = new Response();
-            // @phpstan-ignore-next-line We know an associative array converts to a stdClass
-            $response->data = Json::assocToStdClass($introspection);
+        $response = new Response();
+        // @phpstan-ignore-next-line We know an associative array converts to a stdClass
+        $response->data = Json::assocToStdClass($introspection);
 
-            return $response;
-        };
+        return $response;
     }
 
-    /**
-     * @return ResponseMock
-     */
-    private function responseWithErrorsMock(): callable
+    private function responseWithErrorsMock(): Response
     {
-        return static function (): Response {
-            $response = new Response();
-            $response->errors = [(object) ['message' => 'foo']];
+        $response = new Response();
+        $response->errors = [(object) ['message' => 'foo']];
 
-            return $response;
-        };
+        return $response;
     }
 
-    /**
-     * @return ResponseMock
-     */
-    private static function misbehavedServerMock(): callable
+    private static function misbehavedServerMock(): Response
     {
-        return static function (): Response {
-            throw new InvalidDataException('misbehaved server');
-        };
+        throw new InvalidDataException('misbehaved server');
     }
 }
