@@ -10,6 +10,7 @@ use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\AST\VariableDefinitionNode;
 use GraphQL\Language\Printer;
 use GraphQL\Language\Visitor;
+use GraphQL\Language\VisitorOperation;
 use GraphQL\Type\Definition\CompositeType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
@@ -209,14 +210,11 @@ class OperationGenerator implements ClassGenerator
                         },
                     ],
                     NodeKind::FIELD => [
-                        'enter' => function (FieldNode $field) use ($typeInfo): void {
+                        'enter' => function (FieldNode $field) use ($typeInfo): ?VisitorOperation {
                             // We are only interested in the name that will come from the server
                             $fieldName = $field->alias->value ?? $field->name->value;
 
                             $selectionClasses = $this->operationStack->selection($this->currentNamespace());
-                            if (self::NO_FURTHER_SELECTION_DUE_TO_CUSTOM_TYPE === $selectionClasses) {
-                                return;
-                            }
 
                             $type = $typeInfo->getType();
                             assert(null !== $type, 'schema is validated');
@@ -230,6 +228,7 @@ class OperationGenerator implements ClassGenerator
                                 $this->namespaceStack[] = Escaper::escapeNamespaceName(ucfirst($fieldName));
                             }
 
+                            $stopFurtherTraversal = false;
                             $typeConfig = $this->types[$namedType->name] ?? null;
                             if (null !== $typeConfig) {
                                 assert($typeConfig instanceof OutputTypeConfig);
@@ -238,10 +237,7 @@ class OperationGenerator implements ClassGenerator
                                         {$typeConfig->typeConverter()}
                                         PHP;
 
-                                // TODO in this case, we have to stop further traversal
-                                if ($namedType instanceof CompositeType) {
-                                    $this->operationStack->setSelection($this->currentNamespace(), self::NO_FURTHER_SELECTION_DUE_TO_CUSTOM_TYPE);
-                                }
+                                $stopFurtherTraversal = true;
                             } elseif ($namedType instanceof ObjectType) {
                                 $name = $namedType->name;
 
@@ -311,6 +307,10 @@ class OperationGenerator implements ClassGenerator
                                     );
                                 }
                             }
+
+                            return $stopFurtherTraversal
+                                ? Visitor::skipNode()
+                                : null;
                         },
                         'leave' => function (FieldNode $_) use ($typeInfo): void {
                             $type = $typeInfo->getType();
