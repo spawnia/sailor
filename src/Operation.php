@@ -128,4 +128,9 @@ abstract class Operation implements BelongsToEndpoint
     {
         self::$clients[static::class] = $client;
     }
+
+    public static function clearClients(): void
+    {
+        self::$clients = [];
+    }
 }
