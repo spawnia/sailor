@@ -13,13 +13,12 @@ use Spawnia\Sailor\Json;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
 use Spawnia\Sailor\Tests\TestCase;
-use stdClass;
 
 use function Safe\file_get_contents;
 use function Safe\unlink;
 
 /**
- * @phpstan-import-type ResponseMock from MockClient
+ * @phpstan-import-type Request from MockClient
  */
 final class IntrospectorTest extends TestCase
 {
@@ -33,13 +32,13 @@ final class IntrospectorTest extends TestCase
     public const PATH = __DIR__ . '/schema.graphql';
 
     /**
-     * @dataProvider validResponseMocks
+     * @dataProvider validRequests
      *
-     * @param  ResponseMock  $respond
+     * @param  Request  $request
      */
-    public function testPrintsIntrospection(callable $respond): void
+    public function testPrintsIntrospection(callable $request): void
     {
-        $this->makeIntrospector($respond)
+        $this->makeIntrospector($request)
             ->introspect();
 
         self::assertFileExists(self::PATH);
@@ -57,9 +56,9 @@ final class IntrospectorTest extends TestCase
     }
 
     /**
-     * @return iterable<array{ResponseMock}>
+     * @return iterable<array{Request}>
      */
-    public function validResponseMocks(): iterable
+    public function validRequests(): iterable
     {
         yield [
             static fn (): Response => self::successfulIntrospectionMock(),
@@ -68,7 +67,9 @@ final class IntrospectorTest extends TestCase
         yield [
             static function (): Response {
                 static $called = false;
-                $response = $called ? self::responseWithErrorsMock() : self::successfulIntrospectionMock();
+                $response = $called
+                    ? self::responseWithErrorsMock()
+                    : self::successfulIntrospectionMock();
                 $called = true;
 
                 return $response;
@@ -78,7 +79,9 @@ final class IntrospectorTest extends TestCase
         yield [
             static function (): Response {
                 static $called = false;
-                $response = $called ? self::misbehavedServerMock() : self::successfulIntrospectionMock();
+                $response = $called
+                    ? self::misbehavedServerMock()
+                    : self::successfulIntrospectionMock();
                 $called = true;
 
                 return $response;
@@ -87,22 +90,22 @@ final class IntrospectorTest extends TestCase
     }
 
     /**
-     * @param ResponseMock $respond
+     * @param Request $request
      */
-    private function makeIntrospector(callable $respond): Introspector
+    private function makeIntrospector(callable $request): Introspector
     {
-        $endpointConfig = new class($respond) extends EndpointConfig {
+        $endpointConfig = new class($request) extends EndpointConfig {
             /** @var callable */
-            private $respond;
+            private $request;
 
-            public function __construct(callable $respond)
+            public function __construct(callable $request)
             {
-                $this->respond = $respond;
+                $this->request = $request;
             }
 
             public function makeClient(): Client
             {
-                return new MockClient($this->respond);
+                return new MockClient($this->request);
             }
 
             public function schemaPath(): string

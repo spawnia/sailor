@@ -6,14 +6,14 @@ use Spawnia\Sailor\Client;
 use Spawnia\Sailor\Response;
 
 /**
- * @phpstan-type ResponseMock callable(string, \stdClass|null): Response
+ * @phpstan-type Request callable(string, \stdClass|null): Response
  */
 class MockClient implements Client
 {
     /**
-     * @var ResponseMock
+     * @var Request
      */
-    private $respond;
+    private $request;
 
     /**
      * @var array<int, MockRequest>
@@ -21,17 +21,17 @@ class MockClient implements Client
     public array $storedRequests = [];
 
     /**
-     * @param ResponseMock $respond
+     * @param Request $request
      */
-    public function __construct(callable $respond)
+    public function __construct(callable $request)
     {
-        $this->respond = $respond;
+        $this->request = $request;
     }
 
     public function request(string $query, \stdClass $variables = null): Response
     {
         $this->storedRequests[] = new MockRequest($query, $variables);
 
-        return ($this->respond)($query, $variables);
+        return ($this->request)($query, $variables);
     }
 }

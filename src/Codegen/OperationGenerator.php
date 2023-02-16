@@ -36,8 +36,6 @@ use Symfony\Component\VarExporter\VarExporter;
  */
 class OperationGenerator implements ClassGenerator
 {
-    public const NO_FURTHER_SELECTION_DUE_TO_CUSTOM_TYPE = [];
-
     protected Schema $schema;
 
     protected DocumentNode $document;
