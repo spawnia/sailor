@@ -77,7 +77,7 @@ final class CustomObjectTypeConfig implements TypeConfig, InputTypeConfig, Outpu
                     throw new \InvalidArgumentException('Expected instanceof {$customObjectClass}, got: '.gettype(\$value));
                 }
 
-                return (array) \$value;
+                return (object) (array) \$value;
                 PHP
         );
 

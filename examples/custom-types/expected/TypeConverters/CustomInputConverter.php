@@ -25,7 +25,7 @@ class CustomInputConverter implements \Spawnia\Sailor\Convert\TypeConverter
             throw new \InvalidArgumentException('Expected instanceof Spawnia\Sailor\CustomTypesSrc\CustomObject, got: '.gettype($value));
         }
 
-        return (array) $value;
+        return (object) (array) $value;
     }
 
     public static function endpoint(): string

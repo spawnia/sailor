@@ -41,7 +41,7 @@ class MockEndpointConfig extends EndpointConfig
     public function makeClient(): Client
     {
         return new MockClient(static function (): Response {
-            return throw new \Exception('No response configured.');
+            throw new \Exception('No response configured.');
         });
     }
 }

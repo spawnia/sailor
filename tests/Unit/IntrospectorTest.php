@@ -92,12 +92,9 @@ final class IntrospectorTest extends TestCase
     private function makeIntrospector(callable $respond): Introspector
     {
         $endpointConfig = new class($respond) extends EndpointConfig {
-            /** @var ResponseMock */
+            /** @var callable */
             private $respond;
 
-            /**
-             * @param ResponseMock $respond
-             */
             public function __construct(callable $respond)
             {
                 $this->respond = $respond;
