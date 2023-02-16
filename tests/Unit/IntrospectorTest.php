@@ -67,25 +67,19 @@ final class IntrospectorTest extends TestCase
 
         yield [
             static function(): Response {
-                static $i = 0;
-                $mock = [
-                    self::responseWithErrorsMock(),
-                    self::successfulIntrospectionMock(),
-                ][$i];
-                $i++;
-                return $mock;
+                static $called = false;
+                $response = $called ? self::responseWithErrorsMock() : self::successfulIntrospectionMock();
+                $called = true;
+                return $response;
             }
         ];
 
         yield [
             static function(): Response {
-                static $i = 0;
-                $mock = [
-                    self::misbehavedServerMock(),
-                    self::successfulIntrospectionMock(),
-                ][$i];
-                $i++;
-                return $mock;
+                static $called = false;
+                $response = $called ? self::misbehavedServerMock() : self::successfulIntrospectionMock();
+                $called = true;
+                return $response;
             }
         ];
     }
@@ -148,7 +142,7 @@ final class IntrospectorTest extends TestCase
         return $response;
     }
 
-    private function responseWithErrorsMock(): Response
+    private static function responseWithErrorsMock(): Response
     {
         $response = new Response();
         $response->errors = [(object) ['message' => 'foo']];
