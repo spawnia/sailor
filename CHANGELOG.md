@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.28.2
+
+### Fixed
+
+- Clear log file when instantiating `Log`
+
 ## v0.28.1
 
 ### Fixed

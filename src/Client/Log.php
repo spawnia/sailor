@@ -14,7 +14,7 @@ class Log implements Client
 
     public function __construct(string $filename)
     {
-        \Safe\touch($filename);
+        \Safe\file_put_contents($filename, '');
 
         $this->filename = $filename;
     }
