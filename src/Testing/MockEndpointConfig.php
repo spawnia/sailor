@@ -4,6 +4,7 @@ namespace Spawnia\Sailor\Testing;
 
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\EndpointConfig;
+use Spawnia\Sailor\Response;
 
 class MockEndpointConfig extends EndpointConfig
 {
@@ -39,6 +40,8 @@ class MockEndpointConfig extends EndpointConfig
 
     public function makeClient(): Client
     {
-        return new MockClient();
+        return new MockClient(static function (): Response {
+            throw new \Exception('No response configured.');
+        });
     }
 }

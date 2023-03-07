@@ -110,7 +110,6 @@ final class SimpleTest extends TestCase
 
         MyScalarQuery::setClient($client);
         MyScalarQuery::execute($value);
-        MyScalarQuery::setClient(null);
     }
 
     public function testMockResult(): void

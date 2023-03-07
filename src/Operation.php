@@ -83,7 +83,7 @@ abstract class Operation implements BelongsToEndpoint
 
         $endpointConfig->handleEvent(new StartRequest($document, $variables));
 
-        $client = self::$clients[static::class] ?? $endpointConfig->makeClient();
+        $client = self::$clients[static::class] ??= $endpointConfig->makeClient();
         $response = $client->request($document, $variables);
 
         $endpointConfig->handleEvent(new ReceiveResponse($response));
@@ -127,5 +127,10 @@ abstract class Operation implements BelongsToEndpoint
     public static function setClient(?Client $client): void
     {
         self::$clients[static::class] = $client;
+    }
+
+    public static function clearClients(): void
+    {
+        self::$clients = [];
     }
 }

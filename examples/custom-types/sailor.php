@@ -5,6 +5,7 @@ use Spawnia\Sailor\Client;
 use Spawnia\Sailor\CustomTypes\Types\CustomEnum;
 use Spawnia\Sailor\CustomTypesSrc\CustomDateTypeConfig;
 use Spawnia\Sailor\CustomTypesSrc\CustomEnumTypeConfig;
+use Spawnia\Sailor\CustomTypesSrc\CustomObjectTypeConfig;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
@@ -34,16 +35,30 @@ return [
 
         public function makeClient(): Client
         {
-            $mockClient = new MockClient();
+            return new MockClient(function (string $query, ?stdClass $variables): Response {
+                if (str_contains($query, 'withCustomEnum')) {
+                    return Response::fromStdClass((object) [
+                        'data' => (object) [
+                            '__typename' => 'Query',
+                            'withCustomEnum' => CustomEnum::B,
+                        ],
+                    ]);
+                }
 
-            $mockClient->responseMocks[] = static fn (): Response => Response::fromStdClass((object) [
-                'data' => (object) [
-                    '__typename' => 'Query',
-                    'withCustomEnum' => CustomEnum::B,
-                ],
-            ]);
+                if (str_contains($query, 'withCustomObject')) {
+                    return Response::fromStdClass((object) [
+                        'data' => (object) [
+                            '__typename' => 'Query',
+                            'withCustomObject' => (object) [
+                                '__typename' => 'CustomObject',
+                                'foo' => $variables->value->foo ?? null,
+                            ],
+                        ],
+                    ]);
+                }
 
-            return $mockClient;
+                throw new Exception("Unexpected query: {$query}.");
+            });
         }
 
         public function configureTypes(Schema $schema): array
@@ -54,6 +69,8 @@ return [
                     'BenSampoEnum' => new BenSampoEnumTypeConfig($this, $schema->getType('BenSampoEnum')),
                     'CustomEnum' => new CustomEnumTypeConfig($this, $schema->getType('CustomEnum')),
                     'CustomDate' => new CustomDateTypeConfig($this, $schema->getType('CustomDate')),
+                    'CustomInput' => new CustomObjectTypeConfig($this, $schema->getType('CustomInput')),
+                    'CustomOutput' => new CustomObjectTypeConfig($this, $schema->getType('CustomOutput')),
                 ]
             );
         }

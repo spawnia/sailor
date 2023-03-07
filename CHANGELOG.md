@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Allow `EndpointConfig::configureTypes()` to customize object, interface and union type code generation
+- Add `Operation::clearClients()` and `ClearsSailorClients`
+
+### Changed
+
+- Only instantiate client once per operation
+- Expect `callable $request` in `MockClient` constructor over pushing to `$responseMocks`
+
 ## v0.28.2
 
 ### Fixed
