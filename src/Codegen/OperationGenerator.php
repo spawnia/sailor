@@ -64,12 +64,12 @@ class OperationGenerator implements ClassGenerator
     /**
      * @var array<int, string>
      */
-    protected array $namespaceStack = [];
+    protected array $namespaceStack;
 
     public function generate(): iterable
     {
         $this->types = $this->endpointConfig->configureTypes($this->schema);
-        $this->namespaceStack[] = $this->endpointConfig->operationsNamespace();
+        $this->namespaceStack = [$this->endpointConfig->operationsNamespace()];
 
         $typeInfo = new TypeInfo($this->schema);
 
@@ -296,19 +296,19 @@ class OperationGenerator implements ClassGenerator
                                         ? $selectionType->name
                                         : null;
 
-                                    $selection->addProperty(
-                                        $fieldName,
-                                        $type,
-                                        $phpDocType,
-                                        $typeConverter,
-                                        $defaultValue,
-                                    );
+                                    $selection->addProperty($fieldName, $type, $phpDocType, $typeConverter, $defaultValue);
                                 }
                             }
 
-                            return $stopFurtherTraversal
-                                ? Visitor::skipNode()
-                                : null;
+                            if ($stopFurtherTraversal) {
+                                if ($namedType instanceof CompositeType) {
+                                    $this->moveUpNamespace();
+                                }
+
+                                return Visitor::skipNode();
+                            }
+
+                            return null;
                         },
                         'leave' => function (FieldNode $_) use ($typeInfo): void {
                             $type = $typeInfo->getType();

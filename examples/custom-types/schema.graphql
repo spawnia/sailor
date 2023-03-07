@@ -4,6 +4,7 @@ type Query {
     withBenSampoEnum(value: BenSampoEnum): BenSampoEnum
     withEnumInput(input: EnumInput): EnumObject
     withCustomObject(value: CustomInput): CustomOutput
+    withNestedCustomObject: NestedCustomObject
 }
 
 type EnumObject {
@@ -41,4 +42,9 @@ input CustomInput {
 
 type CustomOutput {
     foo: String!
+}
+
+type NestedCustomObject {
+    bar: CustomOutput
+    baz: CustomOutput
 }
