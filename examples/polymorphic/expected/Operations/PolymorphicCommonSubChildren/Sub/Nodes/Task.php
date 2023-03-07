@@ -20,7 +20,7 @@ class Task extends \Spawnia\Sailor\ObjectLike
     public static function make(
         $id,
         $done,
-        $node = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'
+        $node = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
     ): self {
         $instance = new self;
 

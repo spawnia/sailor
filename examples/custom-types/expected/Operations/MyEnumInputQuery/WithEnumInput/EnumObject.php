@@ -17,7 +17,7 @@ class EnumObject extends \Spawnia\Sailor\ObjectLike
      */
     public static function make(
         $custom = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
-        $default = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'
+        $default = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
     ): self {
         $instance = new self;
 
