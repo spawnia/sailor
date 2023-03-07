@@ -43,7 +43,8 @@ class EnumTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeConfig
     }
 
     /**
-     * @return iterable<ClassType|EnumTypeClass>
+     * @inheritDoc
+     * @return iterable<ClassLike>
      */
     public function generateClasses(): iterable
     {
