@@ -73,258 +73,254 @@ class OperationGenerator implements ClassGenerator
 
         $typeInfo = new TypeInfo($this->schema);
 
-        Visitor::visit(
-            $this->document,
-            Visitor::visitWithTypeInfo(
-                $typeInfo,
-                [
-                    // A named operation, e.g. "mutation FooMutation", maps to a class
-                    NodeKind::OPERATION_DEFINITION => [
-                        'enter' => function (OperationDefinitionNode $operationDefinition) use ($typeInfo): void {
-                            $nameNode = $operationDefinition->name;
-                            assert($nameNode instanceof NameNode, 'we validated every operation node is named in Generator::ensureOperationsAreNamed()');
+        // @phpstan-ignore-next-line specific node types in callables are not typed well yet
+        $visitorWithTypeInfo = Visitor::visitWithTypeInfo($typeInfo, [
+            // A named operation, e.g. "mutation FooMutation", maps to a class
+            NodeKind::OPERATION_DEFINITION => [
+                'enter' => function (OperationDefinitionNode $operationDefinition) use ($typeInfo): void {
+                    $nameNode = $operationDefinition->name;
+                    assert($nameNode instanceof NameNode, 'we validated every operation node is named in Generator::ensureOperationsAreNamed()');
 
-                            $operationName = Escaper::escapeClassName($nameNode->value);
+                    $operationName = Escaper::escapeClassName($nameNode->value);
 
-                            // Generate a class to represent the query/mutation itself
-                            $operation = new OperationBuilder($operationName, $this->currentNamespace());
+                    // Generate a class to represent the query/mutation itself
+                    $operation = new OperationBuilder($operationName, $this->currentNamespace());
 
-                            // It returns a typed result which is a new selection set class
-                            $resultName = "{$operationName}Result";
+                    // It returns a typed result which is a new selection set class
+                    $resultName = "{$operationName}Result";
 
-                            // Related classes are put into a nested namespace
-                            $this->namespaceStack[] = $operationName;
-                            $resultClass = $this->withCurrentNamespace($resultName);
+                    // Related classes are put into a nested namespace
+                    $this->namespaceStack[] = $operationName;
+                    $resultClass = $this->withCurrentNamespace($resultName);
 
-                            // The base class contains most of the logic
-                            $operation->extendOperation($resultClass);
+                    // The base class contains most of the logic
+                    $operation->extendOperation($resultClass);
 
-                            // TODO minify the query string https://github.com/webonyx/graphql-php/issues/1028
-                            $operation->storeDocument(Printer::doPrint($operationDefinition));
+                    // TODO minify the query string https://github.com/webonyx/graphql-php/issues/1028
+                    $operation->storeDocument(Printer::doPrint($operationDefinition));
 
-                            $result = new ClassType($resultName, $this->makeNamespace());
-                            $result->setExtends(Result::class);
+                    $result = new ClassType($resultName, $this->makeNamespace());
+                    $result->setExtends(Result::class);
 
-                            $setData = $result->addMethod('setData');
-                            $setData->setVisibility('protected');
-                            $dataParam = $setData->addParameter('data');
-                            $dataParam->setType('\\stdClass');
-                            $setData->setReturnType('void');
-                            $setData->setBody(
-                                <<<PHP
-                                    \$this->data = {$operationName}::fromStdClass(\$data);
-                                    PHP
-                            );
-
-                            $dataType = $this->withCurrentNamespace($operationName);
-
-                            $fromData = $result->addMethod('fromData');
-                            $fromData->setStatic(true);
-                            $dataParam = $fromData->addParameter('data');
-                            $dataParam->setType($dataType);
-                            $fromData->setReturnType('self');
-                            $fromData->addComment(
-                                <<<'PHPDOC'
-                                Useful for instantiation of successful mocked results.
-
-                                @return static
-                                PHPDOC
-                            );
-                            $fromData->setBody(
-                                <<<'PHP'
-                                $instance = new static;
-                                $instance->data = $data;
-
-                                return $instance;
+                    $setData = $result->addMethod('setData');
+                    $setData->setVisibility('protected');
+                    $dataParam = $setData->addParameter('data');
+                    $dataParam->setType('\\stdClass');
+                    $setData->setReturnType('void');
+                    $setData->setBody(
+                        <<<PHP
+                                \$this->data = {$operationName}::fromStdClass(\$data);
                                 PHP
-                            );
+                    );
 
-                            $dataProp = $result->addProperty('data', null);
-                            $dataProp->setType($dataType);
-                            $dataProp->setNullable(true);
+                    $dataType = $this->withCurrentNamespace($operationName);
 
-                            $errorFreeResultName = "{$operationName}ErrorFreeResult";
+                    $fromData = $result->addMethod('fromData');
+                    $fromData->setStatic(true);
+                    $dataParam = $fromData->addParameter('data');
+                    $dataParam->setType($dataType);
+                    $fromData->setReturnType('self');
+                    $fromData->addComment(
+                        <<<'PHPDOC'
+                            Useful for instantiation of successful mocked results.
 
-                            $errorFree = $result->addMethod('errorFree');
-                            $errorFree->setVisibility('public');
-                            $errorFree->setReturnType(
-                                $this->withCurrentNamespace($errorFreeResultName)
-                            );
-                            $errorFree->setBody(
-                                <<<PHP
-                                    return {$errorFreeResultName}::fromResult(\$this);
-                                    PHP
-                            );
+                            @return static
+                            PHPDOC
+                    );
+                    $fromData->setBody(
+                        <<<'PHP'
+                            $instance = new static;
+                            $instance->data = $data;
 
-                            $errorFreeResult = new ClassType($errorFreeResultName, $this->makeNamespace());
-                            $errorFreeResult->setExtends(ErrorFreeResult::class);
+                            return $instance;
+                            PHP
+                    );
 
-                            $errorFreeDataProp = $errorFreeResult->addProperty('data');
-                            $errorFreeDataProp->setType(
-                                $this->withCurrentNamespace($operationName)
-                            );
-                            $errorFreeDataProp->setNullable(false);
+                    $dataProp = $result->addProperty('data', null);
+                    $dataProp->setType($dataType);
+                    $dataProp->setNullable(true);
 
-                            $this->operationStack = new OperationStack($operation);
-                            $this->operationStack->result = $result;
-                            $this->operationStack->errorFreeResult = $errorFreeResult;
+                    $errorFreeResultName = "{$operationName}ErrorFreeResult";
 
-                            $operationType = $typeInfo->getType();
-                            assert($operationType instanceof ObjectType, 'always present in validated schemas');
-                            $this->operationStack->setSelection(
-                                $this->currentNamespace(),
-                                [
-                                    $operationType->name => $this->makeObjectLikeBuilder($operationName),
-                                ]
-                            );
-                        },
-                        'leave' => function (OperationDefinitionNode $_): void {
+                    $errorFree = $result->addMethod('errorFree');
+                    $errorFree->setVisibility('public');
+                    $errorFree->setReturnType(
+                        $this->withCurrentNamespace($errorFreeResultName)
+                    );
+                    $errorFree->setBody(
+                        <<<PHP
+                                return {$errorFreeResultName}::fromResult(\$this);
+                                PHP
+                    );
+
+                    $errorFreeResult = new ClassType($errorFreeResultName, $this->makeNamespace());
+                    $errorFreeResult->setExtends(ErrorFreeResult::class);
+
+                    $errorFreeDataProp = $errorFreeResult->addProperty('data');
+                    $errorFreeDataProp->setType(
+                        $this->withCurrentNamespace($operationName)
+                    );
+                    $errorFreeDataProp->setNullable(false);
+
+                    $this->operationStack = new OperationStack($operation);
+                    $this->operationStack->result = $result;
+                    $this->operationStack->errorFreeResult = $errorFreeResult;
+
+                    $operationType = $typeInfo->getType();
+                    assert($operationType instanceof ObjectType, 'always present in validated schemas');
+                    $this->operationStack->setSelection(
+                        $this->currentNamespace(),
+                        [
+                            $operationType->name => $this->makeObjectLikeBuilder($operationName),
+                        ]
+                    );
+                },
+                'leave' => function (OperationDefinitionNode $_): void {
+                    $this->moveUpNamespace();
+
+                    // Store the current operation as we continue with the next one
+                    $this->operationStorage[] = $this->operationStack;
+                },
+            ],
+            NodeKind::VARIABLE_DEFINITION => [
+                'enter' => function (VariableDefinitionNode $variableDefinition) use ($typeInfo): void {
+                    $name = $variableDefinition->variable->name->value;
+
+                    $type = $typeInfo->getInputType();
+                    assert(null !== $type, 'schema is validated');
+
+                    $namedType = Type::getNamedType($type);
+                    assert(null !== $namedType, 'schema is validated');
+
+                    $typeConfig = $this->types[$namedType->name];
+                    assert($typeConfig instanceof InputTypeConfig);
+
+                    $this->operationStack->operation->addVariable(
+                        $name,
+                        $type,
+                        $typeConfig->inputTypeReference(),
+                        $typeConfig->typeConverter(),
+                        $variableDefinition->defaultValue,
+                    );
+                },
+            ],
+            NodeKind::FIELD => [
+                'enter' => function (FieldNode $field) use ($typeInfo): ?VisitorOperation {
+                    // We are only interested in the name that will come from the server
+                    $fieldName = $field->alias->value ?? $field->name->value;
+
+                    $selectionClasses = $this->operationStack->selection($this->currentNamespace());
+
+                    $type = $typeInfo->getType();
+                    assert(null !== $type, 'schema is validated');
+
+                    $namedType = Type::getNamedType($type);
+                    assert(null !== $namedType, 'schema is validated');
+
+                    if ($namedType instanceof CompositeType) {
+                        // We go one level deeper into the selection set
+                        // To avoid naming conflicts, we add on another namespace
+                        $this->namespaceStack[] = Escaper::escapeNamespaceName(ucfirst($fieldName));
+                    }
+
+                    $stopFurtherTraversal = false;
+                    $typeConfig = $this->types[$namedType->name] ?? null;
+                    if (null !== $typeConfig) {
+                        assert($typeConfig instanceof OutputTypeConfig);
+                        $phpDocType = $typeConfig->outputTypeReference();
+                        $typeConverter = <<<PHP
+                                    {$typeConfig->typeConverter()}
+                                    PHP;
+
+                        $stopFurtherTraversal = true;
+                    } elseif ($namedType instanceof ObjectType) {
+                        $name = $namedType->name;
+
+                        $phpType = $this->withCurrentNamespace(Escaper::escapeNamespaceName($name));
+                        $phpDocType = "\\{$phpType}";
+
+                        $this->operationStack->setSelection(
+                            $this->currentNamespace(),
+                            [
+                                $name => $this->makeObjectLikeBuilder($name),
+                            ]
+                        );
+                        $typeConverter = <<<PHP
+                                {$phpType}
+                                PHP;
+                    } elseif ($namedType instanceof InterfaceType || $namedType instanceof UnionType) {
+                        /** @var PolymorphicMapping $mapping */
+                        $mapping = [];
+
+                        /** @var array<string, ObjectLikeBuilder> $mappingSelection */
+                        $mappingSelection = [];
+
+                        foreach ($this->schema->getPossibleTypes($namedType) as $objectType) {
+                            $name = $objectType->name;
+                            $escapedName = Escaper::escapeClassName($name);
+
+                            $mapping[$name] = "\\{$this->withCurrentNamespace($escapedName)}";
+                            $mappingSelection[$name] = $this->makeObjectLikeBuilder($escapedName);
+                        }
+
+                        $phpDocType = implode('|', $mapping);
+
+                        $this->operationStack->setSelection(
+                            $this->currentNamespace(),
+                            $mappingSelection
+                        );
+
+                        $mappingCode = VarExporter::export($mapping);
+                        $typeConverter = <<<PHP
+                                Spawnia\Sailor\Convert\PolymorphicConverter({$mappingCode})
+                                PHP;
+                    } else {
+                        throw new \Exception("Unexpected namedType {$namedType->name}.");
+                    }
+
+                    $parentType = $typeInfo->getParentType();
+                    assert(null !== $parentType);
+
+                    foreach ($selectionClasses as $name => $selection) {
+                        $selectionType = $this->schema->getType($name);
+                        if (null === $selectionType) {
+                            throw new \Exception("Unable to determine type of selection {$name}");
+                        }
+
+                        if (TypeComparators::isTypeSubTypeOf($this->schema, $selectionType, $parentType)) {
+                            // Eases instantiation of mocked results
+                            $defaultValue = Introspection::TYPE_NAME_FIELD_NAME === $fieldName
+                                ? $selectionType->name
+                                : null;
+
+                            $selection->addProperty($fieldName, $type, $phpDocType, $typeConverter, $defaultValue);
+                        }
+                    }
+
+                    if ($stopFurtherTraversal) {
+                        if ($namedType instanceof CompositeType) {
                             $this->moveUpNamespace();
+                        }
 
-                            // Store the current operation as we continue with the next one
-                            $this->operationStorage[] = $this->operationStack;
-                        },
-                    ],
-                    NodeKind::VARIABLE_DEFINITION => [
-                        'enter' => function (VariableDefinitionNode $variableDefinition) use ($typeInfo): void {
-                            $name = $variableDefinition->variable->name->value;
+                        return Visitor::skipNode();
+                    }
 
-                            $type = $typeInfo->getInputType();
-                            assert(null !== $type, 'schema is validated');
+                    return null;
+                },
+                'leave' => function (FieldNode $_) use ($typeInfo): void {
+                    $type = $typeInfo->getType();
+                    assert(null !== $type, 'schema is validated');
 
-                            $namedType = Type::getNamedType($type);
-                            assert(null !== $namedType, 'schema is validated');
+                    $namedType = Type::getNamedType($type);
+                    assert(null !== $namedType, 'schema is validated');
 
-                            $typeConfig = $this->types[$namedType->name];
-                            assert($typeConfig instanceof InputTypeConfig);
-
-                            $this->operationStack->operation->addVariable(
-                                $name,
-                                $type,
-                                $typeConfig->inputTypeReference(),
-                                $typeConfig->typeConverter(),
-                                $variableDefinition->defaultValue,
-                            );
-                        },
-                    ],
-                    NodeKind::FIELD => [
-                        'enter' => function (FieldNode $field) use ($typeInfo): ?VisitorOperation {
-                            // We are only interested in the name that will come from the server
-                            $fieldName = $field->alias->value ?? $field->name->value;
-
-                            $selectionClasses = $this->operationStack->selection($this->currentNamespace());
-
-                            $type = $typeInfo->getType();
-                            assert(null !== $type, 'schema is validated');
-
-                            $namedType = Type::getNamedType($type);
-                            assert(null !== $namedType, 'schema is validated');
-
-                            if ($namedType instanceof CompositeType) {
-                                // We go one level deeper into the selection set
-                                // To avoid naming conflicts, we add on another namespace
-                                $this->namespaceStack[] = Escaper::escapeNamespaceName(ucfirst($fieldName));
-                            }
-
-                            $stopFurtherTraversal = false;
-                            $typeConfig = $this->types[$namedType->name] ?? null;
-                            if (null !== $typeConfig) {
-                                assert($typeConfig instanceof OutputTypeConfig);
-                                $phpDocType = $typeConfig->outputTypeReference();
-                                $typeConverter = <<<PHP
-                                        {$typeConfig->typeConverter()}
-                                        PHP;
-
-                                $stopFurtherTraversal = true;
-                            } elseif ($namedType instanceof ObjectType) {
-                                $name = $namedType->name;
-
-                                $phpType = $this->withCurrentNamespace(Escaper::escapeNamespaceName($name));
-                                $phpDocType = "\\{$phpType}";
-
-                                $this->operationStack->setSelection(
-                                    $this->currentNamespace(),
-                                    [
-                                        $name => $this->makeObjectLikeBuilder($name),
-                                    ]
-                                );
-                                $typeConverter = <<<PHP
-                                    {$phpType}
-                                    PHP;
-                            } elseif ($namedType instanceof InterfaceType || $namedType instanceof UnionType) {
-                                /** @var PolymorphicMapping $mapping */
-                                $mapping = [];
-
-                                /** @var array<string, ObjectLikeBuilder> $mappingSelection */
-                                $mappingSelection = [];
-
-                                foreach ($this->schema->getPossibleTypes($namedType) as $objectType) {
-                                    $name = $objectType->name;
-                                    $escapedName = Escaper::escapeClassName($name);
-
-                                    $mapping[$name] = "\\{$this->withCurrentNamespace($escapedName)}";
-                                    $mappingSelection[$name] = $this->makeObjectLikeBuilder($escapedName);
-                                }
-
-                                $phpDocType = implode('|', $mapping);
-
-                                $this->operationStack->setSelection(
-                                    $this->currentNamespace(),
-                                    $mappingSelection
-                                );
-
-                                $mappingCode = VarExporter::export($mapping);
-                                $typeConverter = <<<PHP
-                                    Spawnia\Sailor\Convert\PolymorphicConverter({$mappingCode})
-                                    PHP;
-                            } else {
-                                throw new \Exception("Unexpected namedType {$namedType->name}.");
-                            }
-
-                            $parentType = $typeInfo->getParentType();
-                            assert(null !== $parentType);
-
-                            foreach ($selectionClasses as $name => $selection) {
-                                $selectionType = $this->schema->getType($name);
-                                if (null === $selectionType) {
-                                    throw new \Exception("Unable to determine type of selection {$name}");
-                                }
-
-                                if (TypeComparators::isTypeSubTypeOf($this->schema, $selectionType, $parentType)) {
-                                    // Eases instantiation of mocked results
-                                    $defaultValue = Introspection::TYPE_NAME_FIELD_NAME === $fieldName
-                                        ? $selectionType->name
-                                        : null;
-
-                                    $selection->addProperty($fieldName, $type, $phpDocType, $typeConverter, $defaultValue);
-                                }
-                            }
-
-                            if ($stopFurtherTraversal) {
-                                if ($namedType instanceof CompositeType) {
-                                    $this->moveUpNamespace();
-                                }
-
-                                return Visitor::skipNode();
-                            }
-
-                            return null;
-                        },
-                        'leave' => function (FieldNode $_) use ($typeInfo): void {
-                            $type = $typeInfo->getType();
-                            assert(null !== $type, 'schema is validated');
-
-                            $namedType = Type::getNamedType($type);
-                            assert(null !== $namedType, 'schema is validated');
-
-                            if ($namedType instanceof CompositeType) {
-                                $this->moveUpNamespace();
-                            }
-                        },
-                    ],
-                ]
-            )
-        );
+                    if ($namedType instanceof CompositeType) {
+                        $this->moveUpNamespace();
+                    }
+                },
+            ],
+        ]);
+        Visitor::visit($this->document, $visitorWithTypeInfo);
 
         foreach ($this->operationStorage as $stack) {
             yield $stack->operation->build();
