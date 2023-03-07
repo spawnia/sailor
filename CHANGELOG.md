@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### changed
+
+- Drops support for PHP 7.4.x as it is has reached PHP EOL.
+- Upgrades Nette/Generator always require 4.0.x
+- Updates webonyx/graphql-php to version ^15
+- Change interfaces and abstract method to type-hint for `Nette\PhpGenerator\ClassLike` instead of `Nette\PhpGenerator\ClassType`
+
 ## v0.29.0
 
 ### Added
