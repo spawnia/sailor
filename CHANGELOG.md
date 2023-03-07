@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-[See releases on GitHub.](https://github.com/spawnia/sailor/releases).
+[See releases on GitHub](https://github.com/spawnia/sailor/releases).
 
 ## Unreleased
 
@@ -17,7 +17,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Only instantiate client once per operation
-- Expect `callable $respond` in `MockClient` over `$
+- Expect `callable $request` in `MockClient` constructor over pushing to `$responseMocks`
+
+## v0.28.2
+
+### Fixed
+
+- Clear log file when instantiating `Log`
 
 ## v0.28.1
 
