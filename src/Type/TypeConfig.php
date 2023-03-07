@@ -2,7 +2,7 @@
 
 namespace Spawnia\Sailor\Type;
 
-use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\ClassLike;
 use Spawnia\Sailor\Convert\TypeConverter;
 
 /**
@@ -22,7 +22,7 @@ interface TypeConfig
     /**
      * Return any number of generated class definitions to write to files.
      *
-     * @return iterable<ClassType>
+     * @return iterable<ClassLike>
      */
     public function generateClasses(): iterable;
 }

@@ -4,6 +4,7 @@ namespace Spawnia\Sailor\Convert;
 
 use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
+use Nette\PhpGenerator\ClassLike;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpNamespace;
@@ -14,12 +15,12 @@ trait GeneratesTypeConverter
     /**
      * @param Type&NamedType $type
      */
-    abstract protected function decorateTypeConverterClass(Type $type, ClassType $class, Method $fromGraphQL, Method $toGraphQL): ClassType;
+    abstract protected function decorateTypeConverterClass(Type $type, ClassLike $class, Method $fromGraphQL, Method $toGraphQL): ClassLike;
 
     /**
      * @param Type&NamedType $type
      */
-    protected function makeTypeConverter(Type $type, EndpointConfig $endpointConfig): ClassType
+    protected function makeTypeConverter(Type $type, EndpointConfig $endpointConfig): ClassLike
     {
         $class = new ClassType(
             $this->typeConverterBaseName($type),

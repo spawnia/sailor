@@ -3,6 +3,7 @@
 namespace Spawnia\Sailor\CustomTypesSrc;
 
 use GraphQL\Type\Definition\Type;
+use Nette\PhpGenerator\ClassLike;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Method;
 use Spawnia\Sailor\Convert\GeneratesTypeConverter;
@@ -29,7 +30,7 @@ class CustomEnumTypeConfig extends EnumTypeConfig
         yield $this->makeTypeConverter($this->enumType, $this->endpointConfig);
     }
 
-    protected function decorateTypeConverterClass(Type $type, ClassType $class, Method $fromGraphQL, Method $toGraphQL): ClassType
+    protected function decorateTypeConverterClass(Type $type, ClassLike $class, Method $fromGraphQL, Method $toGraphQL): ClassType
     {
         $customEnumClass = $this->enumClassName();
 
@@ -58,7 +59,7 @@ class CustomEnumTypeConfig extends EnumTypeConfig
         return $class;
     }
 
-    protected function decorateEnumClass(ClassType $class): ClassType
+    protected function decorateEnumClass(ClassLike $class): ClassLike
     {
         $class->setExtends(Enum::class);
 

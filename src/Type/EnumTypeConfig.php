@@ -3,6 +3,7 @@
 namespace Spawnia\Sailor\Type;
 
 use GraphQL\Type\Definition\EnumType;
+use Nette\PhpGenerator\ClassLike;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpNamespace;
 use Spawnia\Sailor\Codegen\Escaper;
@@ -42,7 +43,7 @@ class EnumTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeConfig
     }
 
     /**
-     * @return iterable<ClassType>
+     * @return iterable<ClassType|EnumTypeClass>
      */
     public function generateClasses(): iterable
     {
@@ -54,7 +55,7 @@ class EnumTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeConfig
         return $this->endpointConfig->typesNamespace() . '\\' . Escaper::escapeClassName($this->enumType->name);
     }
 
-    protected function makeEnumClass(): ClassType
+    protected function makeEnumClass(): ClassLike
     {
         $class = new ClassType(
             Escaper::escapeClassName($this->enumType->name),
@@ -64,7 +65,7 @@ class EnumTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeConfig
         return $this->decorateEnumClass($class);
     }
 
-    protected function decorateEnumClass(ClassType $class): ClassType
+    protected function decorateEnumClass(ClassLike $class): ClassLike
     {
         foreach ($this->enumType->getValues() as $value) {
             $name = $value->name;

@@ -8,7 +8,9 @@ use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
+use Nette\PhpGenerator\ClassLike;
 use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\EnumType;
 use Nette\PhpGenerator\PsrPrinter;
 use Spawnia\Sailor\EndpointConfig;
 
@@ -67,7 +69,7 @@ class Generator
         }
     }
 
-    protected function makeFile(ClassType $classType): File
+    protected function makeFile(ClassType|EnumType $classType): File
     {
         $endpoint = $classType->addMethod('endpoint');
         $endpoint->setStatic();
@@ -144,7 +146,7 @@ class Generator
         return array_reverse($parts)[0];
     }
 
-    protected static function asPhpFile(ClassType $classType): string
+    protected static function asPhpFile(ClassType|EnumType $classType): string
     {
         $printer = new PsrPrinter();
         $phpNamespace = $classType->getNamespace();

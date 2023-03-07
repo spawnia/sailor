@@ -4,7 +4,7 @@ namespace Spawnia\Sailor\CustomTypesSrc;
 
 use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
-use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\ClassLike;
 use Nette\PhpGenerator\Method;
 use Spawnia\Sailor\Convert\GeneratesTypeConverter;
 use Spawnia\Sailor\EndpointConfig;
@@ -52,7 +52,7 @@ final class CustomObjectTypeConfig implements TypeConfig, InputTypeConfig, Outpu
         yield $this->makeTypeConverter($this->type, $this->endpointConfig);
     }
 
-    protected function decorateTypeConverterClass(Type $type, ClassType $class, Method $fromGraphQL, Method $toGraphQL): ClassType
+    protected function decorateTypeConverterClass(Type $type, ClassLike $class, Method $fromGraphQL, Method $toGraphQL): ClassLike
     {
         $customObjectClass = CustomObject::class;
 
