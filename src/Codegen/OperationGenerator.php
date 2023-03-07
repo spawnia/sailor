@@ -72,9 +72,7 @@ class OperationGenerator implements ClassGenerator
         $this->namespaceStack = [$this->endpointConfig->operationsNamespace()];
 
         $typeInfo = new TypeInfo($this->schema);
-
-        // @phpstan-ignore-next-line specific node types in callables are not typed well yet
-        $visitorWithTypeInfo = Visitor::visitWithTypeInfo($typeInfo, [
+        $visitorWithTypeInfo = Visitor::visitWithTypeInfo($typeInfo, [ // @phpstan-ignore-line specific node types in callables are not typed well yet
             // A named operation, e.g. "mutation FooMutation", maps to a class
             NodeKind::OPERATION_DEFINITION => [
                 'enter' => function (OperationDefinitionNode $operationDefinition) use ($typeInfo): void {
