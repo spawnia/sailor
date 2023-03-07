@@ -15,14 +15,14 @@
     "source": "https://github.com/spawnia/sailor"
   },
   "require": {
-    "php": "^7.4 || ^8",
+    "php": "^8.0",
     "ext-json": "*",
-    "nette/php-generator": "^3.6.7 || ^4",
+    "nette/php-generator": "^4.0",
     "psr/http-client": "^1",
     "symfony/console": "^5 || ^6",
     "symfony/var-exporter": "^5.3 || ^6",
     "thecodingmachine/safe": "^1 || ^2",
-    "webonyx/graphql-php": "^14.11.3 || ^15"
+    "webonyx/graphql-php": "^15"
   },
   "require-dev": {
     "bensampo/laravel-enum": "^3 || ^4.1",
@@ -87,9 +87,6 @@
       "phpstan/extension-installer": true,
       "infection/extension-installer": true,
       "php-http/discovery": false
-    },
-    "platform": {
-      "php": "7.4.15"
     },
     "preferred-install": "dist",
     "sort-packages": true
