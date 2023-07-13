@@ -1,20 +1,22 @@
 includes:
 - vendor/phpstan/phpstan/conf/bleedingEdge.neon
 parameters:
-	level: max
-	paths:
-	- examples/custom-types/expected
-	- examples/input/expected
-	- examples/polymorphic/expected
-	- examples/simple/expected
-	- src
-	- tests
-	tmpDir: %currentWorkingDirectory%/.build/phpstan
-	ignoreErrors:
-	- '#Call to deprecated method getNamespace\(\) of class Nette\\PhpGenerator\\ClassType#'
-	- '#Unsafe usage of new static.*#'
-
-	# Due to the workaround with ObjectLike::UNDEFINED
-	- '#Default value of the parameter .+ \(string\) of method .+::make\(\) is incompatible with type .+#'
-	- '#Default value of the parameter .+ \(string\) of method .+::execute\(\) is incompatible with type .+#'
-	- "#Strict comparison using !== between .+ and 'Special default…' will always evaluate to true#"
+  level: max
+  paths:
+  - examples/custom-types/expected
+  - examples/input/expected
+  - examples/polymorphic/expected
+  - examples/simple/expected
+  - src
+  - tests
+  tmpDir: .build/phpstan
+  ignoreErrors:
+  - '#Call to deprecated method getNamespace\(\) of class Nette\\PhpGenerator\\ClassType#'
+  - '#Unsafe usage of new static.*#'
+  # Due to the workaround with ObjectLike::UNDEFINED
+  - '#Default value of the parameter .+ \(string\) of method .+::make\(\) is incompatible with type .+#'
+  - '#Default value of the parameter .+ \(string\) of method .+::execute\(\) is incompatible with type .+#'
+  - "#Strict comparison using !== between .+ and 'Special default…' will always evaluate to true#"
+  # Install https://plugins.jetbrains.com/plugin/7677-awesome-console to make those links clickable
+  editorUrl: '%%relFile%%:%%line%%'
+  editorUrlTitle: '%%relFile%%:%%line%%'
