@@ -8,7 +8,7 @@ class MockRequest
 
     public ?\stdClass $variables;
 
-    public function __construct(string $query, ?\stdClass $variables = null)
+    public function __construct(string $query, \stdClass $variables = null)
     {
         $this->query = $query;
         $this->variables = $variables;
