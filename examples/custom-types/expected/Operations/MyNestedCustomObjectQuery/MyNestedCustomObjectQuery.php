@@ -13,7 +13,9 @@ class MyNestedCustomObjectQuery extends \Spawnia\Sailor\ObjectLike
     /**
      * @param \Spawnia\Sailor\CustomTypes\Operations\MyNestedCustomObjectQuery\WithNestedCustomObject\NestedCustomObject|null $withNestedCustomObject
      */
-    public static function make($withNestedCustomObject = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): self
+    public static function make(
+        $withNestedCustomObject = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+    ): self
     {
         $instance = new self;
 

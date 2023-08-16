@@ -16,8 +16,9 @@ class EnumInput extends \Spawnia\Sailor\ObjectLike
      */
     public static function make(
         $default = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
-        $custom = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'
-    ): self {
+        $custom = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+    ): self
+    {
         $instance = new self;
 
         if ($default !== self::UNDEFINED) {

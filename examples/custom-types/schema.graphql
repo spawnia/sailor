@@ -2,6 +2,7 @@ type Query {
     withDefaultEnum(value: DefaultEnum!): DefaultEnum!
     withCustomEnum(value: CustomEnum): CustomEnum
     withBenSampoEnum(value: BenSampoEnum): BenSampoEnum
+    withNativeEnum(value: NativeEnum): NativeEnum
     withEnumInput(input: EnumInput): EnumObject
     withCustomObject(value: CustomInput): CustomOutput
     withNestedCustomObject: NestedCustomObject
@@ -28,6 +29,11 @@ enum CustomEnum {
 }
 
 enum BenSampoEnum {
+    A
+    B
+}
+
+enum NativeEnum {
     A
     B
 }

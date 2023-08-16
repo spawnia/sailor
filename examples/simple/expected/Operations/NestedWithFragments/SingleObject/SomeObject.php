@@ -17,8 +17,9 @@ class SomeObject extends \Spawnia\Sailor\ObjectLike
      */
     public static function make(
         $nested = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
-        $value = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'
-    ): self {
+        $value = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+    ): self
+    {
         $instance = new self;
 
         $instance->__typename = 'SomeObject';

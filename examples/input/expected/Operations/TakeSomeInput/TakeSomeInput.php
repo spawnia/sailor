@@ -13,7 +13,9 @@ class TakeSomeInput extends \Spawnia\Sailor\ObjectLike
     /**
      * @param int|null $takeSomeInput
      */
-    public static function make($takeSomeInput = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): self
+    public static function make(
+        $takeSomeInput = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+    ): self
     {
         $instance = new self;
 

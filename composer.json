@@ -17,7 +17,7 @@
   "require": {
     "php": "^7.4 || ^8",
     "ext-json": "*",
-    "nette/php-generator": "^3.6.7 || ^4",
+    "nette/php-generator": "^3.6.7 || ^4.0.8",
     "psr/http-client": "^1",
     "symfony/console": "^5 || ^6",
     "symfony/var-exporter": "^5.3 || ^6",
@@ -29,21 +29,21 @@
     "composer/composer": "^2",
     "ergebnis/composer-normalize": "^2.13",
     "guzzlehttp/guzzle": "^7",
-    "infection/infection": "~0.21",
     "jangregor/phpstan-prophecy": "^1",
     "mll-lab/php-cs-fixer-config": "^4.3",
     "mockery/mockery": "^1.4",
     "nyholm/psr7": "^1.4",
+    "ocramius/package-versions": "^1 || ^2",
     "php-http/httplug": "^2",
     "php-http/mock-client": "^1.4",
     "phpstan/extension-installer": "^1",
-    "phpstan/phpstan": "^1",
+    "phpstan/phpstan": "^1.10.4",
     "phpstan/phpstan-deprecation-rules": "^1",
     "phpstan/phpstan-mockery": "^1",
     "phpstan/phpstan-phpunit": "^1",
     "phpstan/phpstan-strict-rules": "^1",
     "phpunit/phpunit": "^9.5.2",
-    "spawnia/phpunit-assert-directory": "dev-php8 as 3.0.0",
+    "spawnia/phpunit-assert-directory": "^2.1",
     "symfony/var-dumper": "^5.2.3",
     "thecodingmachine/phpstan-safe-rule": "^1.1"
   },
@@ -52,12 +52,6 @@
     "guzzlehttp/guzzle": "Enables using the built-in default Client",
     "mockery/mockery": "Used in Operation::mock()"
   },
-  "repositories": [
-    {
-      "type": "git",
-      "url": "https://github.com/simpod/phpunit-assert-directory"
-    }
-  ],
   "autoload": {
     "psr-4": {
       "Spawnia\\Sailor\\": "src/"
@@ -65,13 +59,13 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Spawnia\\Sailor\\Tests\\": "tests/",
-      "Spawnia\\Sailor\\CustomTypes\\": "examples/custom-types/expected/",
       "Spawnia\\Sailor\\CustomTypesSrc\\": "examples/custom-types/src/",
+      "Spawnia\\Sailor\\CustomTypes\\": "examples/custom-types/expected/",
       "Spawnia\\Sailor\\Input\\": "examples/input/expected/",
-      "Spawnia\\Sailor\\Simple\\": "examples/simple/expected/",
       "Spawnia\\Sailor\\PhpKeywords\\": "examples/php-keywords/expected/",
-      "Spawnia\\Sailor\\Polymorphic\\": "examples/polymorphic/expected/"
+      "Spawnia\\Sailor\\Polymorphic\\": "examples/polymorphic/expected/",
+      "Spawnia\\Sailor\\Simple\\": "examples/simple/expected/",
+      "Spawnia\\Sailor\\Tests\\": "tests/"
     },
     "files": [
       "vendor/symfony/var-dumper/Resources/functions/dump.php"
@@ -85,11 +79,7 @@
       "ergebnis/composer-normalize": true,
       "ocramius/package-versions": true,
       "phpstan/extension-installer": true,
-      "infection/extension-installer": true,
       "php-http/discovery": false
-    },
-    "platform": {
-      "php": "7.4.15"
     },
     "preferred-install": "dist",
     "sort-packages": true

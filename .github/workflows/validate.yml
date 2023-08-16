@@ -23,7 +23,7 @@ jobs:
         with:
           coverage: none
           extensions: mbstring
-          php-version: 8.1
+          php-version: 8.2
 
       - name: "Validate composer.json and composer.lock"
         run: composer validate
@@ -32,6 +32,20 @@ jobs:
     name: "Static Code Analysis"
 
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version:
+          - 7.4
+          - 8.0
+          - 8.1
+          - 8.2
+
+        dependencies:
+          - lowest
+          - locked
+          - highest
 
     steps:
       - name: "Checkout"
@@ -42,13 +56,22 @@ jobs:
         with:
           coverage: none
           extensions: mbstring
-          php-version: 8.1
+          php-version: ${{ matrix.php-version }}
+
+      - name: "Install lowest dependencies with composer"
+        if: matrix.dependencies == 'lowest'
+        run: composer update --prefer-lowest --no-interaction --no-progress
 
       - name: "Install locked dependencies with composer"
+        if: matrix.dependencies == 'locked'
         run: composer install --no-interaction --no-progress
 
+      - name: "Install highest dependencies with composer"
+        if: matrix.dependencies == 'highest'
+        run: composer update --no-interaction --no-progress
+
       - name: "Run phpstan/phpstan"
-        run: vendor/bin/phpstan analyse --configuration=phpstan.neon
+        run: vendor/bin/phpstan analyse
 
   tests:
     name: "Tests"
@@ -62,7 +85,7 @@ jobs:
           - 7.4
           - 8.0
           - 8.1
-
+          - 8.2
         dependencies:
           - lowest
           - locked
@@ -119,7 +142,7 @@ jobs:
         with:
           coverage: none
           extensions: mbstring
-          php-version: 8.1
+          php-version: 8.2
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -140,7 +163,7 @@ jobs:
         with:
           coverage: pcov
           extensions: mbstring
-          php-version: 8.1
+          php-version: 8.2
 
       - name: "Install locked dependencies with composer"
         run: composer install --no-interaction --no-progress
@@ -150,25 +173,3 @@ jobs:
 
       - name: "Send code coverage report to codecov.io"
         uses: codecov/codecov-action@v2
-
-  mutation-tests:
-    name: "Mutation Tests"
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v2
-
-      - name: "Setup PHP"
-        uses: shivammathur/setup-php@v2
-        with:
-          coverage: xdebug
-          extensions: mbstring
-          php-version: 8.1
-
-      - name: "Install locked dependencies with composer"
-        run: composer install --no-interaction --no-progress
-
-      - name: "Run mutation tests with infection/infection"
-        run: vendor/bin/infection

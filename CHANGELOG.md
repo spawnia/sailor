@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Add `NativeEnumTypeConfig` to generate native PHP enums https://github.com/spawnia/sailor/pull/92
+
 ## v0.29.0
 
 ### Added

@@ -22,8 +22,9 @@ class SomeInput extends \Spawnia\Sailor\ObjectLike
         $required,
         $matrix,
         $optional = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
-        $nested = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'
-    ): self {
+        $nested = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+    ): self
+    {
         $instance = new self;
 
         if ($required !== self::UNDEFINED) {

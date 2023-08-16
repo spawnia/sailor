@@ -13,7 +13,9 @@ class ClientDirectiveFragmentSpreadQuery extends \Spawnia\Sailor\ObjectLike
     /**
      * @param string|null $twoArgs
      */
-    public static function make($twoArgs = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): self
+    public static function make(
+        $twoArgs = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+    ): self
     {
         $instance = new self;
 

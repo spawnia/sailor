@@ -1,0 +1,3 @@
+query MyBenSampoEnumQuery($value: BenSampoEnum) {
+    withBenSampoEnum(value: $value)
+}

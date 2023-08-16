@@ -93,7 +93,7 @@ abstract class EndpointConfig
 
         foreach ($schema->getTypeMap() as $name => $type) {
             if ($type instanceof EnumType) {
-                $typeConfigs[$name] = new EnumTypeConfig($this, $type);
+                $typeConfigs[$name] = $this->enumTypeConfig($schema, $name, $type);
             } elseif ($type instanceof InputObjectType) {
                 $typeConfigs[$name] = new InputObjectTypeConfig($this, $schema, $type);
             } elseif ($type instanceof ScalarType) {
@@ -102,6 +102,11 @@ abstract class EndpointConfig
         }
 
         return $typeConfigs;
+    }
+
+    protected function enumTypeConfig(Schema $schema, string $name, EnumType $type): TypeConfig
+    {
+        return new EnumTypeConfig($this, $type);
     }
 
     /**
