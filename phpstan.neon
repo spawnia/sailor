@@ -23,7 +23,7 @@ parameters:
   - '#Nette\\PhpGenerator\\EnumType#' # TODO remove when we require nette/php-generator:^4
   - '#Unsafe usage of new static.*#' # Inheritance is necessary for this library
   - '#Call to deprecated function Safe\\substr\(\)#' # Useful as long as we support safe 1 and 2
-  - '#Function Safe\\shell_exec not found#' # Useful as long as we support safe 1 and 2
+  - '#Function shell_exec is unsafe to use#' # TODO not in safe-php 1
   # Magic property
   - '#Access to an undefined property Spawnia\\Sailor\\ErrorFreeResult::\$data.*#'
   - '#Access to an undefined property Spawnia\\Sailor\\Result::\$data.*#'

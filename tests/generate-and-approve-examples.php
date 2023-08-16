@@ -9,8 +9,8 @@ foreach (Examples::EXAMPLES as $example) {
     Examples::generate($example);
 
     $expectedPath = Examples::expectedPath($example);
-    \Safe\shell_exec("rm -rf {$expectedPath}");
+    shell_exec("rm -rf {$expectedPath}");
 
     $generatedPath = Examples::generatedPath($example);
-    \Safe\shell_exec("cp -r {$generatedPath} {$expectedPath}");
+    shell_exec("cp -r {$generatedPath} {$expectedPath}");
 }
