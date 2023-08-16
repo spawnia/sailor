@@ -53,6 +53,6 @@ trait GeneratesTypeConverter
      */
     protected function typeConverterBaseName(Type $type): string
     {
-        return "{$type->name()}Converter";
+        return "{$type->name}Converter";
     }
 }

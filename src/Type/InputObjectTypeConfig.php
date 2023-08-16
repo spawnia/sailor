@@ -67,7 +67,7 @@ class InputObjectTypeConfig implements TypeConfig, InputTypeConfig
             $namedType = Type::getNamedType($fieldType);
             assert(null !== $namedType, 'guaranteed since we pass in a non-null type');
 
-            $typeConfig = $typeConfigs[$namedType->name()];
+            $typeConfig = $typeConfigs[$namedType->name];
             assert($typeConfig instanceof InputTypeConfig);
 
             $builder->addProperty(

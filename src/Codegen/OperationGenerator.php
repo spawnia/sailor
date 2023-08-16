@@ -190,7 +190,7 @@ class OperationGenerator implements ClassGenerator
                     $namedType = Type::getNamedType($type);
                     assert(null !== $namedType, 'schema is validated');
 
-                    $typeConfig = $this->types[$namedType->name()];
+                    $typeConfig = $this->types[$namedType->name];
                     assert($typeConfig instanceof InputTypeConfig);
 
                     $this->operationStack->operation->addVariable(
@@ -222,7 +222,7 @@ class OperationGenerator implements ClassGenerator
                     }
 
                     $stopFurtherTraversal = false;
-                    $typeConfig = $this->types[$namedType->name()] ?? null;
+                    $typeConfig = $this->types[$namedType->name] ?? null;
                     if (null !== $typeConfig) {
                         assert($typeConfig instanceof OutputTypeConfig);
                         $phpDocType = $typeConfig->outputTypeReference();
@@ -273,7 +273,7 @@ class OperationGenerator implements ClassGenerator
                                 Spawnia\Sailor\Convert\PolymorphicConverter({$mappingCode})
                                 PHP;
                     } else {
-                        throw new \Exception("Unexpected namedType {$namedType->name()}.");
+                        throw new \Exception("Unexpected namedType {$namedType->name}.");
                     }
 
                     $parentType = $typeInfo->getParentType();
@@ -288,7 +288,7 @@ class OperationGenerator implements ClassGenerator
                         if (TypeComparators::isTypeSubTypeOf($this->schema, $selectionType, $parentType)) {
                             // Eases instantiation of mocked results
                             $defaultValue = Introspection::TYPE_NAME_FIELD_NAME === $fieldName
-                                ? $selectionType->name()
+                                ? $selectionType->name
                                 : null;
 
                             $selection->addProperty($fieldName, $type, $phpDocType, $typeConverter, $defaultValue);
