@@ -33,7 +33,7 @@
     "mll-lab/php-cs-fixer-config": "^4.3",
     "mockery/mockery": "^1.4",
     "nyholm/psr7": "^1.4",
-    "ocramius/package-versions": "^2.7",
+    "ocramius/package-versions": "^1 || ^2",
     "php-http/httplug": "^2",
     "php-http/mock-client": "^1.4",
     "phpstan/extension-installer": "^1",
