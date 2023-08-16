@@ -9,7 +9,6 @@ use Nette\PhpGenerator\EnumType as PhpGeneratorEnumType;
 use Nette\PhpGenerator\PhpNamespace;
 use Spawnia\Sailor\Codegen\Escaper;
 use Spawnia\Sailor\Convert\NativeEnumConverter;
-use Spawnia\Sailor\Convert\TypeConverter;
 use Spawnia\Sailor\EndpointConfig;
 
 /** Requires PHP 8.1 for native enum support. */
@@ -27,12 +26,8 @@ class NativeEnumTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeCon
 
     public function typeConverter(): string
     {
-        return $this->typeConverterClassName();
-    }
-
-    public function typeReference(): string
-    {
-        return "\\{$this->enumClassName()}";
+        // @phpstan-ignore-next-line PHPStan does not recognize the dynamically built class name
+        return $this->endpointConfig->typeConvertersNamespace() . '\\' . $this->typeConverterBaseName();
     }
 
     public function inputTypeReference(): string
@@ -49,6 +44,11 @@ class NativeEnumTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeCon
     {
         yield $this->makeEnumClass();
         yield $this->makeTypeConverter();
+    }
+
+    protected function typeReference(): string
+    {
+        return "\\{$this->enumClassName()}";
     }
 
     protected function makeTypeConverter(): ClassType
@@ -69,22 +69,18 @@ class NativeEnumTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeCon
         return $class;
     }
 
-    /**
-     * @return class-string<TypeConverter>
-     */
-    protected function typeConverterClassName(): string
-    {
-        // @phpstan-ignore-next-line PHPStan does not recognize the dynamically built class name
-        return $this->endpointConfig->typeConvertersNamespace() . '\\' . $this->typeConverterBaseName();
-    }
-
     protected function typeConverterBaseName(): string
     {
         return "{$this->enumType->name}Converter";
     }
 
+    protected function enumClassBaseName(): string
+    {
+        return Escaper::escapeClassName($this->enumType->name);
+    }
+
     /**
-     * @return class-string<\UnitEnum>
+     * @return class-string<\BackedEnum>
      */
     protected function enumClassName(): string
     {
@@ -100,14 +96,9 @@ class NativeEnumTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeCon
         );
 
         foreach ($this->enumType->getValues() as $value) {
-            $enum->addCase($value->name);
+            $enum->addCase($value->name, $value->name);
         }
 
         return $enum;
-    }
-
-    public function enumClassBaseName(): string
-    {
-        return Escaper::escapeClassName($this->enumType->name);
     }
 }

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Spawnia\Sailor\CustomTypes\Types;
 
-enum NativeEnum
+enum NativeEnum: string
 {
-    case A;
-    case B;
+    case A = 'A';
+    case B = 'B';
 
     public static function endpoint(): string
     {
