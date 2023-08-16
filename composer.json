@@ -29,7 +29,7 @@
     "composer/composer": "^2",
     "ergebnis/composer-normalize": "^2.13",
     "guzzlehttp/guzzle": "^7",
-    "infection/infection": "~0.21",
+    "infection/infection": "^0.21",
     "jangregor/phpstan-prophecy": "^1",
     "mll-lab/php-cs-fixer-config": "^4.3",
     "mockery/mockery": "^1.4",
@@ -65,13 +65,13 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Spawnia\\Sailor\\Tests\\": "tests/",
-      "Spawnia\\Sailor\\CustomTypes\\": "examples/custom-types/expected/",
       "Spawnia\\Sailor\\CustomTypesSrc\\": "examples/custom-types/src/",
+      "Spawnia\\Sailor\\CustomTypes\\": "examples/custom-types/expected/",
       "Spawnia\\Sailor\\Input\\": "examples/input/expected/",
-      "Spawnia\\Sailor\\Simple\\": "examples/simple/expected/",
       "Spawnia\\Sailor\\PhpKeywords\\": "examples/php-keywords/expected/",
-      "Spawnia\\Sailor\\Polymorphic\\": "examples/polymorphic/expected/"
+      "Spawnia\\Sailor\\Polymorphic\\": "examples/polymorphic/expected/",
+      "Spawnia\\Sailor\\Simple\\": "examples/simple/expected/",
+      "Spawnia\\Sailor\\Tests\\": "tests/"
     },
     "files": [
       "vendor/symfony/var-dumper/Resources/functions/dump.php"
