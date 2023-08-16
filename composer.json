@@ -29,7 +29,7 @@
     "composer/composer": "^2",
     "ergebnis/composer-normalize": "^2.13",
     "guzzlehttp/guzzle": "^7",
-    "infection/infection": "^0.21",
+    "infection/infection": "0.27",
     "jangregor/phpstan-prophecy": "^1",
     "mll-lab/php-cs-fixer-config": "^4.3",
     "mockery/mockery": "^1.4",
@@ -37,13 +37,13 @@
     "php-http/httplug": "^2",
     "php-http/mock-client": "^1.4",
     "phpstan/extension-installer": "^1",
-    "phpstan/phpstan": "^1",
+    "phpstan/phpstan": "^1.10.4",
     "phpstan/phpstan-deprecation-rules": "^1",
     "phpstan/phpstan-mockery": "^1",
     "phpstan/phpstan-phpunit": "^1",
     "phpstan/phpstan-strict-rules": "^1",
     "phpunit/phpunit": "^9.5.2",
-    "spawnia/phpunit-assert-directory": "dev-php8 as 3.0.0",
+    "spawnia/phpunit-assert-directory": "dev-support-safe-2 as 2.1.0",
     "symfony/var-dumper": "^5.2.3",
     "thecodingmachine/phpstan-safe-rule": "^1.1"
   },
@@ -52,12 +52,6 @@
     "guzzlehttp/guzzle": "Enables using the built-in default Client",
     "mockery/mockery": "Used in Operation::mock()"
   },
-  "repositories": [
-    {
-      "type": "git",
-      "url": "https://github.com/simpod/phpunit-assert-directory"
-    }
-  ],
   "autoload": {
     "psr-4": {
       "Spawnia\\Sailor\\": "src/"
