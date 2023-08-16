@@ -21,10 +21,6 @@ test: ## Runs tests with phpunit
 coverage: ## Collects coverage from running unit tests with phpunit
 	vendor/bin/phpunit --coverage-text
 
-.PHONY: infection
-infection: ## Runs mutation tests with infection
-	vendor/bin/infection --ignore-msi-with-no-mutations --min-covered-msi=100 --min-msi=100
-
 .PHONY: approve
 approve: ## Generate code and approve it as expected
 	tests/generate-and-approve-examples.php

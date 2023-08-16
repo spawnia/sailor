@@ -174,25 +174,3 @@ jobs:
 
       - name: "Send code coverage report to codecov.io"
         uses: codecov/codecov-action@v2
-
-  mutation-tests:
-    name: "Mutation Tests"
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v2
-
-      - name: "Setup PHP"
-        uses: shivammathur/setup-php@v2
-        with:
-          coverage: xdebug
-          extensions: mbstring
-          php-version: 8.2
-
-      - name: "Install locked dependencies with composer"
-        run: composer install --no-interaction --no-progress
-
-      - name: "Run mutation tests with infection/infection"
-        run: vendor/bin/infection

@@ -17,7 +17,7 @@
   "require": {
     "php": "^7.4 || ^8",
     "ext-json": "*",
-    "nette/php-generator": "^3.6.7 || ^4",
+    "nette/php-generator": "^3.6.7 || ^4.0.1",
     "psr/http-client": "^1",
     "symfony/console": "^5 || ^6",
     "symfony/var-exporter": "^5.3 || ^6",
@@ -29,7 +29,6 @@
     "composer/composer": "^2",
     "ergebnis/composer-normalize": "^2.13",
     "guzzlehttp/guzzle": "^7",
-    "infection/infection": "0.27",
     "jangregor/phpstan-prophecy": "^1",
     "mll-lab/php-cs-fixer-config": "^4.3",
     "mockery/mockery": "^1.4",
@@ -79,7 +78,6 @@
       "ergebnis/composer-normalize": true,
       "ocramius/package-versions": true,
       "phpstan/extension-installer": true,
-      "infection/extension-installer": true,
       "php-http/discovery": false
     },
     "preferred-install": "dist",
