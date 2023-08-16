@@ -12,8 +12,10 @@ parameters:
   reportUnmatchedIgnoredErrors: false # As long as we support multiple versions at once, there will be some dead spots
   ignoreErrors:
   - '#Call to deprecated method getNamespace\(\) of class Nette\\PhpGenerator\\Class.+#' # Alternative unclear
-  - '#Call to deprecated function Safe\\substr\(\)#' # Useful as long as we support safe 1 and 2
+  - '#Nette\\PhpGenerator\\EnumType#' # TODO remove when we require nette/php-generator:^4
   - '#Unsafe usage of new static.*#' # Inheritance is necessary for this library
+  - '#Call to deprecated function Safe\\substr\(\)#' # Useful as long as we support safe 1 and 2
+  - '#Function Safe\\shell_exec not found#' # Useful as long as we support safe 1 and 2
   # Magic property
   - '#Access to an undefined property Spawnia\\Sailor\\ErrorFreeResult::\$data.*#'
   - '#Access to an undefined property Spawnia\\Sailor\\Result::\$data.*#'
