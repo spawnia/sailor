@@ -9,6 +9,14 @@ parameters:
   - examples/simple/expected
   - src
   - tests
+  excludePaths:
+  # Native PHP enums, do not work with PHP 7.4
+  - examples/custom-types/expected/Operations/MyNativeEnumQuery.php
+  - examples/custom-types/expected/Operations/MyNativeEnumQuery/MyNativeEnumQuery.php
+  - examples/custom-types/expected/TypeConverters/NativeEnumConverter.php
+  - examples/custom-types/expected/Types/NativeEnum.php
+  - src/Convert/NativeEnumConverter.php
+  - src/Type/NativeEnumTypeConfig.php
   reportUnmatchedIgnoredErrors: false # As long as we support multiple versions at once, there will be some dead spots
   ignoreErrors:
   - '#Call to deprecated method getNamespace\(\) of class Nette\\PhpGenerator\\Class.+#' # Alternative unclear
