@@ -15,8 +15,9 @@ class TwoArgs extends \Spawnia\Sailor\Operation
      */
     public static function execute(
         $first = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
-        $second = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'
-    ): TwoArgs\TwoArgsResult {
+        $second = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+    ): TwoArgs\TwoArgsResult
+    {
         return self::executeOperation(
             $first,
             $second,

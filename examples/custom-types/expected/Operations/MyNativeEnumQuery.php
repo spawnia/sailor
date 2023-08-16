@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace Spawnia\Sailor\CustomTypes\Operations;
 
 /**
- * @extends \Spawnia\Sailor\Operation<\Spawnia\Sailor\CustomTypes\Operations\MyCustomEnumQuery\MyCustomEnumQueryResult>
+ * @extends \Spawnia\Sailor\Operation<\Spawnia\Sailor\CustomTypes\Operations\MyNativeEnumQuery\MyNativeEnumQueryResult>
  */
-class MyCustomEnumQuery extends \Spawnia\Sailor\Operation
+class MyNativeEnumQuery extends \Spawnia\Sailor\Operation
 {
     /**
-     * @param \Spawnia\Sailor\CustomTypes\Types\CustomEnum|null $value
+     * @param \Spawnia\Sailor\CustomTypes\Types\NativeEnum|null $value
      */
     public static function execute(
         $value = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
-    ): MyCustomEnumQuery\MyCustomEnumQueryResult
+    ): MyNativeEnumQuery\MyNativeEnumQueryResult
     {
         return self::executeOperation(
             $value,
@@ -26,15 +26,15 @@ class MyCustomEnumQuery extends \Spawnia\Sailor\Operation
         static $converters;
 
         return $converters ??= [
-            ['value', new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\CustomTypes\TypeConverters\CustomEnumConverter)],
+            ['value', new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\CustomTypes\TypeConverters\NativeEnumConverter)],
         ];
     }
 
     public static function document(): string
     {
-        return /* @lang GraphQL */ 'query MyCustomEnumQuery($value: CustomEnum) {
+        return /* @lang GraphQL */ 'query MyNativeEnumQuery($value: NativeEnum) {
           __typename
-          withCustomEnum(value: $value)
+          withNativeEnum(value: $value)
         }';
     }
 

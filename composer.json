@@ -88,9 +88,6 @@
       "infection/extension-installer": true,
       "php-http/discovery": false
     },
-    "platform": {
-      "php": "7.4.15"
-    },
     "preferred-install": "dist",
     "sort-packages": true
   }

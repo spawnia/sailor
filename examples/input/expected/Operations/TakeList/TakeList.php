@@ -13,7 +13,9 @@ class TakeList extends \Spawnia\Sailor\ObjectLike
     /**
      * @param array<int, int|null>|null $takeList
      */
-    public static function make($takeList = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): self
+    public static function make(
+        $takeList = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+    ): self
     {
         $instance = new self;
 

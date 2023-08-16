@@ -3,6 +3,7 @@
 namespace Spawnia\Sailor\Type;
 
 use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\EnumType;
 use Spawnia\Sailor\Convert\TypeConverter;
 
 /**
@@ -22,7 +23,7 @@ interface TypeConfig
     /**
      * Return any number of generated class definitions to write to files.
      *
-     * @return iterable<ClassType>
+     * @return iterable<ClassType|EnumType>
      */
     public function generateClasses(): iterable;
 }

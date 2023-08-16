@@ -13,7 +13,9 @@ class Sub extends \Spawnia\Sailor\ObjectLike
     /**
      * @param array<int, \Spawnia\Sailor\Polymorphic\Operations\PolymorphicCommonSubChildren\Sub\Nodes\User|\Spawnia\Sailor\Polymorphic\Operations\PolymorphicCommonSubChildren\Sub\Nodes\Post|\Spawnia\Sailor\Polymorphic\Operations\PolymorphicCommonSubChildren\Sub\Nodes\Task|null>|null $nodes
      */
-    public static function make($nodes = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): self
+    public static function make(
+        $nodes = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+    ): self
     {
         $instance = new self;
 

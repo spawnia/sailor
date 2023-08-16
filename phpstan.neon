@@ -11,8 +11,10 @@ parameters:
   - tests
   tmpDir: .build/phpstan
   ignoreErrors:
-  - '#Call to deprecated method getNamespace\(\) of class Nette\\PhpGenerator\\ClassType#'
+  - '#Call to deprecated method getNamespace\(\) of class Nette\\PhpGenerator\\Class.+#'
   - '#Unsafe usage of new static.*#'
+  - '#Access to an undefined property Spawnia\\Sailor\\ErrorFreeResult::\$data.*#'
+  - '#Access to an undefined property Spawnia\\Sailor\\Result::\$data.*#'
   # Due to the workaround with ObjectLike::UNDEFINED
   - '#Default value of the parameter .+ \(string\) of method .+::make\(\) is incompatible with type .+#'
   - '#Default value of the parameter .+ \(string\) of method .+::execute\(\) is incompatible with type .+#'

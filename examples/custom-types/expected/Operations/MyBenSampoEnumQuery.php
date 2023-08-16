@@ -12,7 +12,9 @@ class MyBenSampoEnumQuery extends \Spawnia\Sailor\Operation
     /**
      * @param \Spawnia\Sailor\CustomTypes\Types\BenSampoEnum|null $value
      */
-    public static function execute($value = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): MyBenSampoEnumQuery\MyBenSampoEnumQueryResult
+    public static function execute(
+        $value = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+    ): MyBenSampoEnumQuery\MyBenSampoEnumQueryResult
     {
         return self::executeOperation(
             $value,

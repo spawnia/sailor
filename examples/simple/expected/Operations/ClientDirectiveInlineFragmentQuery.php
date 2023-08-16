@@ -12,7 +12,9 @@ class ClientDirectiveInlineFragmentQuery extends \Spawnia\Sailor\Operation
     /**
      * @param bool $value
      */
-    public static function execute($value): ClientDirectiveInlineFragmentQuery\ClientDirectiveInlineFragmentQueryResult
+    public static function execute(
+        $value,
+    ): ClientDirectiveInlineFragmentQuery\ClientDirectiveInlineFragmentQueryResult
     {
         return self::executeOperation(
             $value,
