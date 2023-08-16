@@ -42,7 +42,7 @@
     "phpstan/phpstan-phpunit": "^1",
     "phpstan/phpstan-strict-rules": "^1",
     "phpunit/phpunit": "^9.5.2",
-    "spawnia/phpunit-assert-directory": "dev-support-safe-2 as 2.1.0",
+    "spawnia/phpunit-assert-directory": "^2.1",
     "symfony/var-dumper": "^5.2.3",
     "thecodingmachine/phpstan-safe-rule": "^1.1"
   },
