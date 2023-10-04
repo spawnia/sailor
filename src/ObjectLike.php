@@ -46,6 +46,7 @@ abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
      */
     public function __set(string $name, $value): void
     {
+        // Validate the property exists
         $this->converter($name);
 
         $this->properties[$name] = $value;
@@ -56,9 +57,11 @@ abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
      */
     public function __get(string $name)
     {
+        // Validate the property exists
         $this->converter($name);
 
-        return $this->properties[$name];
+        // Optional properties in inputs might not be set, so we default them to null when explicitly requested.
+        return $this->properties[$name] ?? null;
     }
 
     public function __isset(string $name): bool
