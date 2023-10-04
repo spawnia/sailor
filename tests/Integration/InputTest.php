@@ -104,4 +104,26 @@ final class InputTest extends TestCase
             (new SomeInput())->toGraphQL($input)
         );
     }
+
+    public function testOptional(): void
+    {
+        // TODO use named arguments in PHP 8
+        $input = SomeInput::make(
+            /* required: */
+            'foo',
+            /* matrix: */
+            [[]],
+            // Omitting the optional properties `optional` and `nested`
+        );
+
+        self::assertEquals(
+            (object) [
+                'required' => 'foo',
+                'matrix' => [[]],
+            ],
+            (new SomeInput())->toGraphQL($input)
+        );
+        self::assertNull($input->optional);
+        self::assertNull($input->nested);
+    }
 }
