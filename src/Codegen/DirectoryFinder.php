@@ -40,6 +40,10 @@ class DirectoryFinder implements Finder
     // @phpstan-ignore-next-line not providing generic type of RegexIterator
     protected function fileIterator(): \RegexIterator
     {
+        if (! \file_exists($this->rootPath)) {
+            \Safe\mkdir($this->rootPath, 0777, true);
+        }
+
         $directory = new \RecursiveDirectoryIterator($this->rootPath);
         $iterator = new \RecursiveIteratorIterator($directory);
 
