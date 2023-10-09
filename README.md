@@ -105,8 +105,8 @@ HelloSailor::setClient(null);
 
 ### Custom types
 
-Custom scalars are commonly serialized as strings. Without knowing about the contents of the type,
-Sailor can not do any conversions or provide more accurate type hints, so it uses `string`.
+Custom scalars are commonly serialized as strings, but may also use other representations.
+Without knowing about the contents of the type, Sailor can not do any conversions or provide more accurate type hints, so it uses `mixed`.
 
 Enums are only supported from PHP 8.1. Many projects simply used scalar values or an implementation
 that approximates enums through some kind of value class. Sailor is not opinionated and generates
