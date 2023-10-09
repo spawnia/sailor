@@ -1,4 +1,5 @@
 type Query {
+    withDefaultDate(value: DefaultDate!): DefaultDate!
     withDefaultEnum(value: DefaultEnum!): DefaultEnum!
     withCustomEnum(value: CustomEnum): CustomEnum
     withBenSampoEnum(value: BenSampoEnum): BenSampoEnum

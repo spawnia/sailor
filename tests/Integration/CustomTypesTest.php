@@ -6,6 +6,7 @@ use Spawnia\Sailor\Client;
 use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\CustomTypes\Operations\MyBenSampoEnumQuery;
 use Spawnia\Sailor\CustomTypes\Operations\MyCustomEnumQuery;
+use Spawnia\Sailor\CustomTypes\Operations\MyDefaultDateQuery;
 use Spawnia\Sailor\CustomTypes\Operations\MyDefaultEnumQuery;
 use Spawnia\Sailor\CustomTypes\Operations\MyEnumInputQuery;
 use Spawnia\Sailor\CustomTypes\Types\BenSampoEnum;
@@ -18,6 +19,37 @@ use Spawnia\Sailor\Tests\TestCase;
 
 final class CustomTypesTest extends TestCase
 {
+    /**
+     * @dataProvider validScalarValues
+     *
+     * @param mixed $value Can be any JSON encodable value
+     */
+    public function testDefaultDateAcceptsMixedScalarValues($value): void
+    {
+        MyDefaultDateQuery::mock()
+            ->expects('execute')
+            ->once()
+            ->with($value)
+            ->andReturn(MyDefaultDateQuery\MyDefaultDateQueryResult::fromData(
+                MyDefaultDateQuery\MyDefaultDateQuery::make(
+                    /* withDefaultDate: */
+                    $value,
+                )
+            ));
+
+        $result = MyDefaultDateQuery::execute($value)->errorFree();
+        self::assertSame($value, $result->data->withDefaultDate);
+    }
+
+    /** @return iterable<array{mixed}> */
+    public static function validScalarValues(): iterable
+    {
+        yield [1];
+        yield ['1'];
+        yield [['1', 1]];
+        yield [(object) ['a' => 1]];
+    }
+
     public function testDefaultEnum(): void
     {
         $value = DefaultEnum::A;
