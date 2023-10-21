@@ -12,6 +12,8 @@ use Spawnia\Sailor\Input\Types\SomeInput;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Tests\TestCase;
 
+use const PHP_MAJOR_VERSION;
+
 final class InputTest extends TestCase
 {
     public function testSomeInput(): void
@@ -130,14 +132,17 @@ final class InputTest extends TestCase
 
     public function testAccessUnknownProperty(): void
     {
-        // TODO use named arguments in PHP 8
-        $input = SomeInput::make(
-            /* required: */
-            'foo',
-            /* matrix: */
-            [[]],
+        if (PHP_MAJOR_VERSION < 8) {
+            $input = SomeInput::make('foo', [[]]);
+            goto skipPhp8;
+        }
+        $input = SomeInput::make // @phpstan-ignore-line minimum PHP already >= 8.0
+        (
+            required: 'foo',
+            matrix: [[]],
         );
 
+        skipPhp8:
         $this->expectExceptionObject(new InvalidDataException('input: Unknown property nonExistent, available properties: required, matrix, optional, nested.'));
         $input->nonExistent; // @phpstan-ignore-line intentionally wrong
     }
