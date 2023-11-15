@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.29.3
+
+### Fixed
+
+- Fix namespace printing with `nette/php-generator:^4.1.1`
+
 ## v0.29.2
 
 ### Fixed

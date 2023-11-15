@@ -9,6 +9,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
 use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\PhpNamespace;
 use Nette\PhpGenerator\PsrPrinter;
 use Spawnia\Sailor\EndpointConfig;
 
@@ -95,7 +96,7 @@ class Generator
         PHP);
 
         $file->name = $classType->getName() . '.php';
-        $file->content = self::asPhpFile($classType);
+        $file->content = self::asPhpFile($classType, $phpNamespace);
 
         return $file;
     }
@@ -144,18 +145,16 @@ class Generator
         return array_reverse($parts)[0];
     }
 
-    protected static function asPhpFile(ClassType $classType): string
+    protected static function asPhpFile(ClassType $classType, PhpNamespace $namespace): string
     {
         $printer = new PsrPrinter();
-        $phpNamespace = $classType->getNamespace();
-        $class = $printer->printClass($classType, $phpNamespace);
 
         return <<<PHP
-            <?php
+            <?php declare(strict_types=1);
 
-            declare(strict_types=1);
-
-            {$phpNamespace}{$class}
+            namespace {$namespace->getName()};
+            
+            {$printer->printClass($classType, $namespace)}
             PHP;
     }
 
