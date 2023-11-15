@@ -95,7 +95,7 @@ class Generator
         PHP);
 
         $file->name = $classType->getName() . '.php';
-        $file->content = self::asPhpFile($classType);
+        $file->content = self::asPhpFile($classType, $namespace);
 
         return $file;
     }
@@ -144,18 +144,25 @@ class Generator
         return array_reverse($parts)[0];
     }
 
-    protected static function asPhpFile(ClassType $classType): string
+    protected static function asPhpFile(ClassType $classType, string $namespace): string
     {
         $printer = new PsrPrinter();
         $phpNamespace = $classType->getNamespace();
         $class = $printer->printClass($classType, $phpNamespace);
+
+        $outputNamespace = (string) $phpNamespace;
+        if (empty(trim($outputNamespace))) {
+            $outputNamespace = "namespace {$namespace};
+
+";
+        }
 
         return <<<PHP
             <?php
 
             declare(strict_types=1);
 
-            {$phpNamespace}{$class}
+            {$outputNamespace}{$class}
             PHP;
     }
 
