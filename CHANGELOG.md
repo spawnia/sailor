@@ -9,7 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-- Allow symfony/console v7
+## v0.30.0
+
+### Added
+
+- Allow `symfony/console:^7`
 
 ## v0.29.3
 
