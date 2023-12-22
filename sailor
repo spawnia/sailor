@@ -15,8 +15,8 @@ if (file_exists(__DIR__.'/../../autoload.php')) {
 
 $console = new Application();
 
-$console->add(new CodegenCommand());
+$console->add(new CodegenCommand('codegen'));
 $console->setDefaultCommand('codegen');
-$console->add(new IntrospectCommand());
+$console->add(new IntrospectCommand('introspect'));
 
 $console->run();
