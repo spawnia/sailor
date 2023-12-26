@@ -105,7 +105,7 @@ abstract class Result implements BelongsToEndpoint
     /**
      * Throw an exception if errors are present in the result.
      *
-     * @throws \Spawnia\Sailor\Error\ResultErrorsException
+     * @throws ResultErrorsException
      *
      * @return $this
      */

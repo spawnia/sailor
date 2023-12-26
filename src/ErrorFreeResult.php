@@ -15,7 +15,7 @@ abstract class ErrorFreeResult
     public ?\stdClass $extensions;
 
     /**
-     * @throws \Spawnia\Sailor\Error\ResultErrorsException
+     * @throws ResultErrorsException
      *
      * @return static
      */
