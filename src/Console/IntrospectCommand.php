@@ -11,7 +11,10 @@ class IntrospectCommand extends Command
 {
     use InteractsWithEndpoints;
 
-    protected static $defaultName = 'introspect';
+    public function __construct(string $name = 'introspect')
+    {
+        parent::__construct($name);
+    }
 
     protected function configure(): void
     {

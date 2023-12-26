@@ -12,7 +12,10 @@ class CodegenCommand extends Command
 {
     use InteractsWithEndpoints;
 
-    protected static $defaultName = 'codegen';
+    public function __construct(string $name = 'codegen')
+    {
+        parent::__construct($name);
+    }
 
     protected function configure(): void
     {
