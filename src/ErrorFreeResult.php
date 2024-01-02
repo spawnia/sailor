@@ -5,7 +5,7 @@ namespace Spawnia\Sailor;
 use Spawnia\Sailor\Error\ResultErrorsException;
 
 /**
- * @property \Spawnia\Sailor\ObjectLike|null $data The result of executing the requested operation.
+ * @property ObjectLike|null $data The result of executing the requested operation.
  */
 abstract class ErrorFreeResult
 {
@@ -15,7 +15,7 @@ abstract class ErrorFreeResult
     public ?\stdClass $extensions;
 
     /**
-     * @throws \Spawnia\Sailor\Error\ResultErrorsException
+     * @throws ResultErrorsException
      *
      * @return static
      */

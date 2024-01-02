@@ -6,7 +6,7 @@ use Spawnia\Sailor\Error\Error;
 use Spawnia\Sailor\Error\ResultErrorsException;
 
 /**
- * @property \Spawnia\Sailor\ObjectLike|null $data The result of executing the requested operation.
+ * @property ObjectLike|null $data The result of executing the requested operation.
  */
 abstract class Result implements BelongsToEndpoint
 {
@@ -105,7 +105,7 @@ abstract class Result implements BelongsToEndpoint
     /**
      * Throw an exception if errors are present in the result.
      *
-     * @throws \Spawnia\Sailor\Error\ResultErrorsException
+     * @throws ResultErrorsException
      *
      * @return $this
      */
