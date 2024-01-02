@@ -163,7 +163,7 @@ class Generator
      *
      * @param  array<string, string>  $documents
      *
-     * @throws \GraphQL\Error\SyntaxError
+     * @throws SyntaxError
      *
      * @return array<string, \GraphQL\Language\AST\DocumentNode>
      */
