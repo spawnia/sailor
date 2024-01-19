@@ -13,6 +13,7 @@ use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery;
 use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery\MyObjectNestedQueryResult;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQueryResult;
+use Spawnia\Sailor\Simple\Operations\SkipNonNullable\SkipNonNullable;
 use Spawnia\Sailor\Tests\TestCase;
 
 final class SimpleTest extends TestCase
@@ -205,5 +206,14 @@ final class SimpleTest extends TestCase
         $object = $result->data->singleObject;
         self::assertNotNull($object);
         self::assertNull($object->nested);
+    }
+
+    public function testSkipNonNullable(): void
+    {
+        SkipNonNullable::fromStdClass((object) [
+            'data' => (object) [
+                '__typename' => 'Query',
+            ],
+        ]);
     }
 }
