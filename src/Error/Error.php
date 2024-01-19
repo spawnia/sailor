@@ -33,9 +33,7 @@ class Error extends \Exception implements ClientAware
      */
     public ?array $path;
 
-    /**
-     * Arbitrary additional information.
-     */
+    /** Arbitrary additional information. */
     public ?\stdClass $extensions;
 
     public function __construct(string $message)

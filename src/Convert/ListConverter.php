@@ -11,9 +11,7 @@ class ListConverter implements TypeConverter
         $this->ofType = $ofType;
     }
 
-    /**
-     * @return array<int, mixed>
-     */
+    /** @return array<int, mixed> */
     public function fromGraphQL($value): array
     {
         if (! is_array($value)) {
@@ -25,9 +23,7 @@ class ListConverter implements TypeConverter
         return array_map([$this->ofType, 'fromGraphQL'], $value);
     }
 
-    /**
-     * @return array<int, mixed>
-     */
+    /** @return array<int, mixed> */
     public function toGraphQL($value): array
     {
         if (! is_array($value)) {

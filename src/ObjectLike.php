@@ -16,9 +16,7 @@ abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
      */
     protected array $properties = [];
 
-    /**
-     * @return array<string, TypeConverter>
-     */
+    /** @return array<string, TypeConverter> */
     abstract protected function converters(): array;
 
     /**
@@ -33,17 +31,13 @@ abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
         return (new static())->fromGraphQL($data);
     }
 
-    /**
-     * Represent itself as plain data.
-     */
+    /** Represent itself as plain data. */
     public function toStdClass(): \stdClass
     {
         return $this->toGraphQL($this);
     }
 
-    /**
-     * @param mixed $value anything
-     */
+    /** @param mixed $value anything */
     public function __set(string $name, $value): void
     {
         // Validate the property exists
@@ -52,9 +46,7 @@ abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
         $this->properties[$name] = $value;
     }
 
-    /**
-     * @return mixed anything
-     */
+    /** @return mixed anything */
     public function __get(string $name)
     {
         // Validate the property exists
@@ -85,9 +77,7 @@ abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
         return $serializable;
     }
 
-    /**
-     * @return static
-     */
+    /** @return static */
     public function fromGraphQL($value): self
     {
         if (! $value instanceof \stdClass) {
@@ -132,9 +122,7 @@ abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
         return $converters[$name];
     }
 
-    /**
-     * @param array<string, TypeConverter> $converters
-     */
+    /** @param array<string, TypeConverter> $converters */
     protected static function unknownProperty(string $name, array $converters): InvalidDataException
     {
         $endpoint = static::endpoint();

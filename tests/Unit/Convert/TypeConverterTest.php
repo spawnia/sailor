@@ -35,8 +35,6 @@ abstract class TypeConverterTest extends TestCase
 
     abstract protected function typeConverter(): TypeConverter;
 
-    /**
-     * @return iterable<array{mixed, StdClassJsonValue}>
-     */
+    /** @return iterable<array{mixed, StdClassJsonValue}> */
     abstract public static function internalExternal(): iterable;
 }

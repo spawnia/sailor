@@ -14,9 +14,7 @@ class EnumConverter implements TypeConverter
         return $this->toString($value);
     }
 
-    /**
-     * @param mixed $value Should be string
-     */
+    /** @param mixed $value Should be string */
     protected function toString($value): string
     {
         if (! is_string($value)) {

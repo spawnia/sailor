@@ -8,7 +8,5 @@ namespace Spawnia\Sailor\Tests\Unit\Testing;
 class Invokable
 {
     // @phpstan-ignore-next-line
-    public function __invoke()
-    {
-    }
+    public function __invoke() {}
 }

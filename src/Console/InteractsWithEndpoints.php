@@ -14,9 +14,7 @@ use Symfony\Component\Console\Input\InputInterface;
  */
 trait InteractsWithEndpoints
 {
-    /**
-     * @return array<string, EndpointConfig>
-     */
+    /** @return array<string, EndpointConfig> */
     protected function endpoints(InputInterface $input): array
     {
         $configFile = $this->configFile($input);

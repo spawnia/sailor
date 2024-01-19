@@ -29,9 +29,7 @@ class InputObjectTypeConfig implements TypeConfig, InputTypeConfig
         $this->inputObjectType = $inputObjectType;
     }
 
-    /**
-     * @return class-string<ObjectLike>
-     */
+    /** @return class-string<ObjectLike> */
     public function className(): string
     {
         // @phpstan-ignore-next-line Method Spawnia\Sailor\Codegen\InputGenerator::className() should return class-string<Spawnia\Sailor\Type\Input> but returns string.
@@ -48,9 +46,7 @@ class InputObjectTypeConfig implements TypeConfig, InputTypeConfig
         return "\\{$this->className()}";
     }
 
-    /**
-     * @return iterable<ClassType>
-     */
+    /** @return iterable<ClassType> */
     public function generateClasses(): iterable
     {
         $typeConfigs = $this->endpointConfig->configureTypes($this->schema);
@@ -65,7 +61,7 @@ class InputObjectTypeConfig implements TypeConfig, InputTypeConfig
             $fieldType = $field->getType();
 
             $namedType = Type::getNamedType($fieldType);
-            assert(null !== $namedType, 'guaranteed since we pass in a non-null type');
+            assert($namedType !== null, 'guaranteed since we pass in a non-null type');
 
             $typeConfig = $typeConfigs[$namedType->name];
             assert($typeConfig instanceof InputTypeConfig);

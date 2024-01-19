@@ -12,9 +12,7 @@ use Spawnia\Sailor\Tests\TestCase;
 
 final class ResultTest extends TestCase
 {
-    /**
-     * @dataProvider isClientSafe
-     */
+    /** @dataProvider isClientSafe */
     public function testThrowErrors(bool $isClientSafe): void
     {
         $endpoint = \Mockery::mock(EndpointConfig::class);
@@ -42,18 +40,14 @@ final class ResultTest extends TestCase
         self::assertSame($isClientSafe, $exception->isClientSafe());
     }
 
-    /**
-     * @return iterable<array{bool}>
-     */
+    /** @return iterable<array{bool}> */
     public function isClientSafe(): iterable
     {
         yield [true];
         yield [false];
     }
 
-    /**
-     * @dataProvider isClientSafe
-     */
+    /** @dataProvider isClientSafe */
     public function testErrorFree(bool $isClientSafe): void
     {
         $endpoint = \Mockery::mock(EndpointConfig::class);
@@ -111,9 +105,7 @@ final class ResultTest extends TestCase
         self::assertNull($result->extensions);
     }
 
-    /**
-     * @dataProvider isClientSafe
-     */
+    /** @dataProvider isClientSafe */
     public function testFromErrors(bool $isClientSafe): void
     {
         $endpoint = \Mockery::mock(EndpointConfig::class)->makePartial();

@@ -20,18 +20,14 @@ class OperationStack
         $this->operation = $operation;
     }
 
-    /**
-     * @param  array<string, ObjectLikeBuilder>  $selection
-     */
+    /** @param  array<string, ObjectLikeBuilder>  $selection */
     public function setSelection(string $namespace, array $selection): void
     {
         // Ignore if already set, we already were in that subtree
         $this->selections[$namespace] ??= $selection;
     }
 
-    /**
-     * @return iterable<ClassType>
-     */
+    /** @return iterable<ClassType> */
     public function buildSelections(): iterable
     {
         foreach ($this->selections as $selection) {
@@ -41,9 +37,7 @@ class OperationStack
         }
     }
 
-    /**
-     * @return array<string, ObjectLikeBuilder>
-     */
+    /** @return array<string, ObjectLikeBuilder> */
     public function selection(string $namespace): array
     {
         return $this->selections[$namespace];

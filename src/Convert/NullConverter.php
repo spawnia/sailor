@@ -16,14 +16,14 @@ class NullConverter implements TypeConverter
 
     public function fromGraphQL($value)
     {
-        return null === $value
+        return $value === null
             ? null
             : $this->ofType->fromGraphQL($value);
     }
 
     public function toGraphQL($value)
     {
-        return null === $value
+        return $value === null
             ? null
             : $this->ofType->toGraphQL($value);
     }

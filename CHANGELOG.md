@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.31.0
+
+### Fixed
+
+- Allow `symfony/var-exporter:^7`
+
 ## v0.30.1
 
 ### Fixed

@@ -9,14 +9,10 @@ use Spawnia\Sailor\ObjectLike;
  */
 class PolymorphicConverter implements TypeConverter
 {
-    /**
-     * @var PolymorphicMapping
-     */
+    /** @var PolymorphicMapping */
     protected array $mapping;
 
-    /**
-     * @param  PolymorphicMapping  $mapping
-     */
+    /** @param  PolymorphicMapping  $mapping */
     public function __construct(array $mapping)
     {
         $this->mapping = $mapping;

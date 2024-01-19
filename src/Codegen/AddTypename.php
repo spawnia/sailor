@@ -38,12 +38,12 @@ class AddTypename
 
         foreach ($selections as $i => $selection) {
             if ($selection instanceof FieldNode) {
-                if (Introspection::TYPE_NAME_FIELD_NAME === $selection->name->value) {
+                if ($selection->name->value === Introspection::TYPE_NAME_FIELD_NAME) {
                     unset($selections[$i]);
                 }
 
                 $subSelectionSet = $selection->selectionSet;
-                if (null !== $subSelectionSet) {
+                if ($subSelectionSet !== null) {
                     static::ensurePresent($subSelectionSet);
                 }
             } elseif ($selection instanceof InlineFragmentNode) {

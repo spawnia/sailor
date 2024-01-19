@@ -20,7 +20,7 @@
     "nette/php-generator": "^3.6.7 || ^4",
     "psr/http-client": "^1",
     "symfony/console": "^5 || ^6 || ^7",
-    "symfony/var-exporter": "^5.3 || ^6",
+    "symfony/var-exporter": "^5.3 || ^6 || ^7",
     "thecodingmachine/safe": "^1 || ^2",
     "webonyx/graphql-php": "^14.11.3 || ^15"
   },
@@ -31,7 +31,7 @@
     "guzzlehttp/guzzle": "^7",
     "infection/infection": "~0.21",
     "jangregor/phpstan-prophecy": "^1",
-    "mll-lab/php-cs-fixer-config": "^4.3",
+    "mll-lab/php-cs-fixer-config": "^5",
     "mockery/mockery": "^1.4",
     "nyholm/psr7": "^1.4",
     "php-http/httplug": "^2",
@@ -43,7 +43,7 @@
     "phpstan/phpstan-phpunit": "^1",
     "phpstan/phpstan-strict-rules": "^1",
     "phpunit/phpunit": "^9.5.2",
-    "spawnia/phpunit-assert-directory": "dev-php8 as 3.0.0",
+    "spawnia/phpunit-assert-directory": "^2",
     "symfony/var-dumper": "^5.2.3",
     "thecodingmachine/phpstan-safe-rule": "^1.1"
   },
@@ -52,12 +52,6 @@
     "guzzlehttp/guzzle": "Enables using the built-in default Client",
     "mockery/mockery": "Used in Operation::mock()"
   },
-  "repositories": [
-    {
-      "type": "git",
-      "url": "https://github.com/simpod/phpunit-assert-directory"
-    }
-  ],
   "autoload": {
     "psr-4": {
       "Spawnia\\Sailor\\": "src/"

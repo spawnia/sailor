@@ -11,6 +11,6 @@ $result = _catch::execute();
 $switch = $result->data->print;
 assert($switch instanceof _Switch);
 
-assert(_abstract::_class === $switch->for);
-assert(42 === $switch->int);
-assert(69 === $switch->as);
+assert($switch->for === _abstract::_class);
+assert($switch->int === 42);
+assert($switch->as === 69);

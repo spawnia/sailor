@@ -12,9 +12,7 @@ class Guzzle implements Client
 
     protected GuzzleClient $guzzle;
 
-    /**
-     * @param  array<string, mixed>  $config
-     */
+    /** @param  array<string, mixed>  $config */
     public function __construct(string $uri, array $config = [])
     {
         $this->uri = $uri;

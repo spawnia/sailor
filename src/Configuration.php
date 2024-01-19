@@ -7,9 +7,7 @@ final class Configuration
     /** @var array<string, array<string, EndpointConfig>> */
     public static array $configs;
 
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     public static function endpoint(string $file, string $endpoint): EndpointConfig
     {
@@ -22,9 +20,7 @@ final class Configuration
         return $endpoints[$endpoint];
     }
 
-    /**
-     * @return array<string, \Spawnia\Sailor\EndpointConfig>
-     */
+    /** @return array<string, \Spawnia\Sailor\EndpointConfig> */
     public static function endpoints(string $file): array
     {
         return self::$configs[$file] ??= self::loadConfig($file);
@@ -35,17 +31,13 @@ final class Configuration
         self::$configs[$file][$name] = $endpointConfig;
     }
 
-    /**
-     * @param class-string<BelongsToEndpoint> $belongsToEndpoint
-     */
+    /** @param class-string<BelongsToEndpoint> $belongsToEndpoint */
     public static function setEndpointFor(string $belongsToEndpoint, EndpointConfig $endpointConfig): void
     {
         self::$configs[$belongsToEndpoint::config()][$belongsToEndpoint::endpoint()] = $endpointConfig;
     }
 
-    /**
-     * @return array<string, EndpointConfig>
-     */
+    /** @return array<string, EndpointConfig> */
     private static function loadConfig(string $file): array
     {
         if (! file_exists($file)) {

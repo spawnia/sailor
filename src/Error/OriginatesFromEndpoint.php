@@ -10,14 +10,10 @@ use Spawnia\Sailor\Configuration;
  */
 trait OriginatesFromEndpoint
 {
-    /**
-     * Path to the config file the endpoint is defined in.
-     */
+    /** Path to the config file the endpoint is defined in. */
     public string $configFile;
 
-    /**
-     * Name of the endpoint this error originates from.
-     */
+    /** Name of the endpoint this error originates from. */
     public string $endpointName;
 
     public function isClientSafe(): bool
@@ -30,9 +26,7 @@ trait OriginatesFromEndpoint
             ->errorsAreClientSafe();
     }
 
-    /**
-     * TODO remove when upgrading to graphql-php:15.
-     */
+    /** TODO remove when upgrading to graphql-php:15. */
     public function getCategory(): string
     {
         return 'sailor';

@@ -7,17 +7,13 @@ use Spawnia\Sailor\Tests\TestCase;
 
 final class CodegenTest extends TestCase
 {
-    /**
-     * @dataProvider examples
-     */
+    /** @dataProvider examples */
     public function testGeneratesExpectedCode(string $example): void
     {
         Examples::assertGeneratesExpectedCode($example);
     }
 
-    /**
-     * @return iterable<array{string}>
-     */
+    /** @return iterable<array{string}> */
     public static function examples(): iterable
     {
         foreach (Examples::EXAMPLES as $example) {

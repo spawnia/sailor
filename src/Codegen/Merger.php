@@ -7,9 +7,7 @@ use GraphQL\Language\AST\NodeList;
 
 class Merger
 {
-    /**
-     * @param array<string, DocumentNode> $documents
-     */
+    /** @param array<string, DocumentNode> $documents */
     public static function combine(array $documents): DocumentNode
     {
         $root = array_pop($documents);

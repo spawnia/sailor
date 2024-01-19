@@ -10,19 +10,13 @@ use Spawnia\Sailor\Response;
  */
 class MockClient implements Client
 {
-    /**
-     * @var Request
-     */
+    /** @var Request */
     private $request;
 
-    /**
-     * @var array<int, MockRequest>
-     */
+    /** @var array<int, MockRequest> */
     public array $storedRequests = [];
 
-    /**
-     * @param Request $request
-     */
+    /** @param Request $request */
     public function __construct(callable $request)
     {
         $this->request = $request;

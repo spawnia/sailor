@@ -9,9 +9,7 @@ use Spawnia\Sailor\Error\ResultErrorsException;
  */
 abstract class ErrorFreeResult
 {
-    /**
-     * Optional, can be an arbitrary map if present.
-     */
+    /** Optional, can be an arbitrary map if present. */
     public ?\stdClass $extensions;
 
     /**

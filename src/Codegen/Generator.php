@@ -36,7 +36,7 @@ class Generator
     public function generate(): iterable
     {
         $parsedDocuments = $this->parsedDocuments();
-        if ([] === $parsedDocuments) {
+        if ($parsedDocuments === []) {
             return [];
         }
 
@@ -80,7 +80,7 @@ class Generator
         $file = new File();
 
         $phpNamespace = $classType->getNamespace();
-        if (null === $phpNamespace) {
+        if ($phpNamespace === null) {
             throw new \Exception('Generated classes must have a namespace.');
         }
         $namespace = $phpNamespace->getName();
@@ -109,9 +109,7 @@ class Generator
         return $this->endpointConfig->targetPath() . $pathInTarget;
     }
 
-    /**
-     * @see https://stackoverflow.com/a/2638272
-     */
+    /** @see https://stackoverflow.com/a/2638272 */
     protected function configPath(string $directory): string
     {
         $from = explode('/', $directory);
@@ -136,7 +134,7 @@ class Generator
 
     public static function after(string $subject, string $search): string
     {
-        if ('' === $search) {
+        if ($search === '') {
             return $subject;
         }
 
@@ -187,14 +185,12 @@ class Generator
         return $parsed;
     }
 
-    /**
-     * @param  array<string, \GraphQL\Language\AST\DocumentNode>  $parsed
-     */
+    /** @param  array<string, \GraphQL\Language\AST\DocumentNode>  $parsed */
     public static function validateDocuments(array $parsed): void
     {
         foreach ($parsed as $path => $documentNode) {
             foreach ($documentNode->definitions as $definition) {
-                if ($definition instanceof OperationDefinitionNode && null === $definition->name) {
+                if ($definition instanceof OperationDefinitionNode && $definition->name === null) {
                     throw new Error("Found unnamed operation definition in {$path}.", $definition);
                 }
             }
@@ -210,9 +206,7 @@ class Generator
         return BuildSchema::build($schemaString);
     }
 
-    /**
-     * @return array<string, \GraphQL\Language\AST\DocumentNode>
-     */
+    /** @return array<string, \GraphQL\Language\AST\DocumentNode> */
     protected function parsedDocuments(): array
     {
         $documents = $this->endpointConfig

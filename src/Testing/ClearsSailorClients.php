@@ -6,9 +6,7 @@ use Spawnia\Sailor\Operation;
 
 trait ClearsSailorClients
 {
-    /**
-     * @after
-     */
+    /** @after */
     protected function tearDownSailorClients(): void
     {
         Operation::clearClients();
