@@ -21,14 +21,10 @@ class OperationBuilder
 
     private Method $converters;
 
-    /**
-     * @var array<PropertyArgs>
-     */
+    /** @var array<PropertyArgs> */
     private array $requiredVariables = [];
 
-    /**
-     * @var array<PropertyArgs>
-     */
+    /** @var array<PropertyArgs> */
     private array $optionalVariables = [];
 
     public function __construct(string $name, string $namespace)
@@ -81,14 +77,12 @@ PHP
         );
     }
 
-    /**
-     * @param mixed $defaultValue any value
-     */
+    /** @param mixed $defaultValue any value */
     public function addVariable(string $name, Type $type, string $typeReference, string $typeConverter, $defaultValue): void
     {
         $args = [$name, $type, $typeReference, $typeConverter, $defaultValue];
 
-        if ($type instanceof NonNull && null === $defaultValue) {
+        if ($type instanceof NonNull && $defaultValue === null) {
             $this->requiredVariables[] = $args;
         } else {
             $this->optionalVariables[] = $args;
@@ -111,9 +105,7 @@ PHP
         return $this->class;
     }
 
-    /**
-     * @param mixed $defaultValue any value
-     */
+    /** @param mixed $defaultValue any value */
     protected function buildVariable(string $name, Type $type, string $typeReference, string $typeConverter, $defaultValue): void
     {
         $wrappedPhpDocType = TypeWrapper::phpDoc($type, $typeReference, true);
@@ -131,7 +123,7 @@ PHP
 
         // TODO support default values properly
         $parameter = $this->execute->addParameter($name);
-        if (! $type instanceof NonNull || null !== $defaultValue) {
+        if (! $type instanceof NonNull || $defaultValue !== null) {
             $parameter->setNullable(true);
             $parameter->setDefaultValue(ObjectLike::UNDEFINED);
         }

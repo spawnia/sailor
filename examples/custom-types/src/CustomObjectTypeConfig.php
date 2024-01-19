@@ -18,14 +18,10 @@ final class CustomObjectTypeConfig implements TypeConfig, InputTypeConfig, Outpu
 
     private EndpointConfig $endpointConfig;
 
-    /**
-     * @var Type&NamedType
-     */
+    /** @var Type&NamedType */
     private Type $type;
 
-    /**
-     * @param Type&NamedType $type
-     */
+    /** @param Type&NamedType $type */
     public function __construct(EndpointConfig $endpointConfig, Type $type)
     {
         $this->endpointConfig = $endpointConfig;

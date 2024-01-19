@@ -51,19 +51,13 @@ class OperationGenerator implements ClassGenerator
 
     protected OperationStack $operationStack;
 
-    /**
-     * @var array<string, TypeConfig>
-     */
+    /** @var array<string, TypeConfig> */
     protected array $types;
 
-    /**
-     * @var array<int, OperationStack>
-     */
+    /** @var array<int, OperationStack> */
     protected array $operationStorage = [];
 
-    /**
-     * @var array<int, string>
-     */
+    /** @var array<int, string> */
     protected array $namespaceStack;
 
     public function generate(): iterable
@@ -185,10 +179,10 @@ class OperationGenerator implements ClassGenerator
                     $name = $variableDefinition->variable->name->value;
 
                     $type = $typeInfo->getInputType();
-                    assert(null !== $type, 'schema is validated');
+                    assert($type !== null, 'schema is validated');
 
                     $namedType = Type::getNamedType($type);
-                    assert(null !== $namedType, 'schema is validated');
+                    assert($namedType !== null, 'schema is validated');
 
                     $typeConfig = $this->types[$namedType->name];
                     assert($typeConfig instanceof InputTypeConfig);
@@ -210,10 +204,10 @@ class OperationGenerator implements ClassGenerator
                     $selectionClasses = $this->operationStack->selection($this->currentNamespace());
 
                     $type = $typeInfo->getType();
-                    assert(null !== $type, 'schema is validated');
+                    assert($type !== null, 'schema is validated');
 
                     $namedType = Type::getNamedType($type);
-                    assert(null !== $namedType, 'schema is validated');
+                    assert($namedType !== null, 'schema is validated');
 
                     if ($namedType instanceof CompositeType) {
                         // We go one level deeper into the selection set
@@ -223,7 +217,7 @@ class OperationGenerator implements ClassGenerator
 
                     $stopFurtherTraversal = false;
                     $typeConfig = $this->types[$namedType->name] ?? null;
-                    if (null !== $typeConfig) {
+                    if ($typeConfig !== null) {
                         assert($typeConfig instanceof OutputTypeConfig);
                         $phpDocType = $typeConfig->outputTypeReference();
                         $typeConverter = <<<PHP
@@ -277,17 +271,17 @@ class OperationGenerator implements ClassGenerator
                     }
 
                     $parentType = $typeInfo->getParentType();
-                    assert(null !== $parentType);
+                    assert($parentType !== null);
 
                     foreach ($selectionClasses as $name => $selection) {
                         $selectionType = $this->schema->getType($name);
-                        if (null === $selectionType) {
+                        if ($selectionType === null) {
                             throw new \Exception("Unable to determine type of selection {$name}");
                         }
 
                         if (TypeComparators::isTypeSubTypeOf($this->schema, $selectionType, $parentType)) {
                             // Eases instantiation of mocked results
-                            $defaultValue = Introspection::TYPE_NAME_FIELD_NAME === $fieldName
+                            $defaultValue = $fieldName === Introspection::TYPE_NAME_FIELD_NAME
                                 ? $selectionType->name
                                 : null;
 
@@ -307,10 +301,10 @@ class OperationGenerator implements ClassGenerator
                 },
                 'leave' => function (FieldNode $_) use ($typeInfo): void {
                     $type = $typeInfo->getType();
-                    assert(null !== $type, 'schema is validated');
+                    assert($type !== null, 'schema is validated');
 
                     $namedType = Type::getNamedType($type);
-                    assert(null !== $namedType, 'schema is validated');
+                    assert($namedType !== null, 'schema is validated');
 
                     if ($namedType instanceof CompositeType) {
                         $this->moveUpNamespace();

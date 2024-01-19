@@ -6,9 +6,7 @@ use Spawnia\Sailor\Operation;
 
 trait UsesSailorMocks
 {
-    /**
-     * @after
-     */
+    /** @after */
     protected function tearDownSailorMocks(): void
     {
         Operation::clearMocks();

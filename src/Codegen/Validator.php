@@ -19,7 +19,7 @@ class Validator
             throw new \Exception('Unexpected error while validating a query against the schema. Check if your schema is up to date.', 0, $e);
         }
 
-        if (0 === count($errors)) {
+        if (count($errors) === 0) {
             return;
         }
 

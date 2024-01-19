@@ -41,9 +41,7 @@ class EnumTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeConfig
         return $this->typeReference();
     }
 
-    /**
-     * @return iterable<ClassType>
-     */
+    /** @return iterable<ClassType> */
     public function generateClasses(): iterable
     {
         yield $this->makeEnumClass();

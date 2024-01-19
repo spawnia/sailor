@@ -11,14 +11,10 @@ class ResultErrorsException extends \Exception implements ClientAware
 {
     use OriginatesFromEndpoint;
 
-    /**
-     * @var array<int, Error>
-     */
+    /** @var array<int, Error> */
     public array $errors;
 
-    /**
-     * @param array<int, Error> $errors
-     */
+    /** @param array<int, Error> $errors */
     public function __construct(array $errors, string $configFile, string $endpointName)
     {
         $this->errors = $errors;

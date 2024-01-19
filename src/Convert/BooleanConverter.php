@@ -14,9 +14,7 @@ class BooleanConverter implements TypeConverter
         return $this->toBool($value);
     }
 
-    /**
-     * @param mixed $value Should be bool
-     */
+    /** @param mixed $value Should be bool */
     protected function toBool($value): bool
     {
         if (! is_bool($value)) {

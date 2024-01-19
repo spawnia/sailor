@@ -33,14 +33,10 @@ abstract class Operation implements BelongsToEndpoint
      */
     protected static array $clients = [];
 
-    /**
-     * The GraphQL query string.
-     */
+    /** The GraphQL query string. */
     abstract public static function document(): string;
 
-    /**
-     * @return array<int, array{string, TypeConverter}>
-     */
+    /** @return array<int, array{string, TypeConverter}> */
     abstract protected static function converters(): array;
 
     /**
@@ -51,7 +47,7 @@ abstract class Operation implements BelongsToEndpoint
     protected static function executeOperation(...$args): Result
     {
         $mock = self::$mocks[static::class] ?? null;
-        if (null !== $mock) {
+        if ($mock !== null) {
             // @phpstan-ignore-next-line This function is only present on child classes
             return $mock::execute(...$args);
         }
@@ -91,15 +87,13 @@ abstract class Operation implements BelongsToEndpoint
         return $response;
     }
 
-    /**
-     * @param array<int, mixed> $args
-     */
+    /** @param array<int, mixed> $args */
     protected static function variables(array $args): \stdClass
     {
         $variables = new \stdClass();
         $arguments = static::converters();
         foreach ($args as $index => $arg) {
-            if (ObjectLike::UNDEFINED === $arg) {
+            if ($arg === ObjectLike::UNDEFINED) {
                 continue;
             }
 
@@ -110,9 +104,7 @@ abstract class Operation implements BelongsToEndpoint
         return $variables;
     }
 
-    /**
-     * @return static&MockInterface
-     */
+    /** @return static&MockInterface */
     public static function mock(): MockInterface
     {
         // @phpstan-ignore-next-line I solemnly swear the type of MockInterface matches

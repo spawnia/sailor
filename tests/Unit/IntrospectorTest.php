@@ -55,9 +55,7 @@ final class IntrospectorTest extends TestCase
             ->introspect();
     }
 
-    /**
-     * @return iterable<array{Request}>
-     */
+    /** @return iterable<array{Request}> */
     public function validRequests(): iterable
     {
         yield [
@@ -89,9 +87,7 @@ final class IntrospectorTest extends TestCase
         ];
     }
 
-    /**
-     * @param Request $request
-     */
+    /** @param Request $request */
     private function makeIntrospector(callable $request): Introspector
     {
         $endpointConfig = new class($request) extends EndpointConfig {

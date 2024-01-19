@@ -26,29 +26,19 @@ use Spawnia\Sailor\Type\TypeConfig;
 
 abstract class EndpointConfig
 {
-    /**
-     * Instantiate a client that will resolve the GraphQL operations.
-     */
+    /** Instantiate a client that will resolve the GraphQL operations. */
     abstract public function makeClient(): Client;
 
-    /**
-     * The namespace the generated classes will be created in.
-     */
+    /** The namespace the generated classes will be created in. */
     abstract public function namespace(): string;
 
-    /**
-     * Path to the directory where the generated classes will be put.
-     */
+    /** Path to the directory where the generated classes will be put. */
     abstract public function targetPath(): string;
 
-    /**
-     * Where to look for .graphql files containing operations.
-     */
+    /** Where to look for .graphql files containing operations. */
     abstract public function searchPath(): string;
 
-    /**
-     * The location of the schema file that describes the endpoint.
-     */
+    /** The location of the schema file that describes the endpoint. */
     abstract public function schemaPath(): string;
 
     /**
@@ -56,21 +46,15 @@ abstract class EndpointConfig
      *
      * @param StartRequest|ReceiveResponse $event
      */
-    public function handleEvent(object $event): void
-    {
-    }
+    public function handleEvent(object $event): void {}
 
-    /**
-     * Instantiate an Error class from a plain GraphQL error.
-     */
+    /** Instantiate an Error class from a plain GraphQL error. */
     public function parseError(\stdClass $error): Error
     {
         return Error::fromStdClass($error);
     }
 
-    /**
-     * Is it safe to display the errors from the endpoint to clients?
-     */
+    /** Is it safe to display the errors from the endpoint to clients? */
     public function errorsAreClientSafe(): bool
     {
         return false;
@@ -116,9 +100,7 @@ abstract class EndpointConfig
         return [];
     }
 
-    /**
-     * Instantiate a class to find GraphQL documents.
-     */
+    /** Instantiate a class to find GraphQL documents. */
     public function finder(): Finder
     {
         return new DirectoryFinder($this->searchPath());

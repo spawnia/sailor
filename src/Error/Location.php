@@ -17,13 +17,9 @@ class Location
         return $instance;
     }
 
-    /**
-     * Line number starting from 1.
-     */
+    /** Line number starting from 1. */
     public int $line;
 
-    /**
-     * Column number starting from 1.
-     */
+    /** Column number starting from 1. */
     public int $column;
 }

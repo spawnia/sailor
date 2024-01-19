@@ -16,9 +16,7 @@ use Spawnia\Sailor\Error\InvalidDataException;
  */
 class Response
 {
-    /**
-     * The result of the execution of the requested operation.
-     */
+    /** The result of the execution of the requested operation. */
     public ?\stdClass $data;
 
     /**
@@ -28,14 +26,12 @@ class Response
      */
     public ?array $errors;
 
-    /**
-     * This entry, if set, must have a map as its value.
-     */
+    /** This entry, if set, must have a map as its value. */
     public ?\stdClass $extensions;
 
     public static function fromResponseInterface(ResponseInterface $response): self
     {
-        if (200 !== $response->getStatusCode()) {
+        if ($response->getStatusCode() !== 200) {
             throw new InvalidDataException("Response must have status code 200, got: {$response->getStatusCode()}");
         }
 
@@ -114,7 +110,7 @@ class Response
             throw new InvalidDataException('The response entry "errors" must be a list if present, got: ' . \Safe\json_encode($errors));
         }
 
-        if (0 === count($errors)) {
+        if (count($errors) === 0) {
             throw new InvalidDataException('The response entry "errors" must not be empty if present, got: ' . \Safe\json_encode($errors));
         }
 
@@ -144,7 +140,7 @@ class Response
     {
         if (
             $data instanceof \stdClass
-            || null === $data
+            || $data === null
         ) {
             return;
         }

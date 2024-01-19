@@ -14,9 +14,7 @@ class FloatConverter implements TypeConverter
         return $this->toFloat($value);
     }
 
-    /**
-     * @param mixed $value Should be float
-     */
+    /** @param mixed $value Should be float */
     protected function toFloat($value): float
     {
         // JSON floats can appear like ints

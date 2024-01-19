@@ -3,12 +3,8 @@
 namespace Spawnia\Sailor\Tests\Integration;
 
 use Spawnia\Sailor\Polymorphic\Operations\AllMembers;
-use Spawnia\Sailor\Polymorphic\Operations\AllMembers\AllMembersResult;
 use Spawnia\Sailor\Polymorphic\Operations\NodeMembers;
-use Spawnia\Sailor\Polymorphic\Operations\NodeMembers\NodeMembersResult;
 use Spawnia\Sailor\Polymorphic\Operations\UserOrPost;
-use Spawnia\Sailor\Polymorphic\Operations\UserOrPost\Node;
-use Spawnia\Sailor\Polymorphic\Operations\UserOrPost\UserOrPostResult;
 use Spawnia\Sailor\Tests\TestCase;
 
 final class PolymorphicTest extends TestCase
@@ -22,7 +18,7 @@ final class PolymorphicTest extends TestCase
             ->expects('execute')
             ->once()
             ->with($id)
-            ->andReturn(UserOrPostResult::fromData(
+            ->andReturn(UserOrPost\UserOrPostResult::fromData(
                 UserOrPost\UserOrPost::make(
                     /* node: */
                     UserOrPost\Node\User::make(
@@ -37,7 +33,7 @@ final class PolymorphicTest extends TestCase
         $result = UserOrPost::execute($id)->errorFree();
         $user = $result->data->node;
 
-        self::assertInstanceOf(Node\User::class, $user);
+        self::assertInstanceOf(UserOrPost\Node\User::class, $user);
         self::assertSame($id, $user->id);
         self::assertSame($name, $user->name);
     }
@@ -51,7 +47,7 @@ final class PolymorphicTest extends TestCase
             ->expects('execute')
             ->once()
             ->with()
-            ->andReturn(AllMembersResult::fromData(
+            ->andReturn(AllMembers\AllMembersResult::fromData(
                 AllMembers\AllMembers::make(
                     /* members: */
                     [
@@ -88,7 +84,7 @@ final class PolymorphicTest extends TestCase
             ->expects('execute')
             ->once()
             ->with()
-            ->andReturn(NodeMembersResult::fromData(
+            ->andReturn(NodeMembers\NodeMembersResult::fromData(
                 NodeMembers\NodeMembers::make(
                     /* members: */
                     [

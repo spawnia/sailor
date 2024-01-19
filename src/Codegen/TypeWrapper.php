@@ -38,9 +38,7 @@ class TypeWrapper
         return $typeReference;
     }
 
-    /**
-     * Wrap the code for an inner converter with converters for its wrapping types.
-     */
+    /** Wrap the code for an inner converter with converters for its wrapping types. */
     public static function converter(Type $type, string $innerConverter, bool $shouldWrapWithNull = true): string
     {
         if ($type instanceof NonNull) {

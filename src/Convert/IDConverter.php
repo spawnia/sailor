@@ -21,9 +21,7 @@ class IDConverter implements TypeConverter
         return $this->toString($value);
     }
 
-    /**
-     * @param mixed $value Should be int or string
-     */
+    /** @param mixed $value Should be int or string */
     protected function toString($value): string
     {
         if (is_string($value)) {

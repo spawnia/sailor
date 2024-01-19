@@ -2,6 +2,4 @@
 
 namespace Spawnia\Sailor\Error;
 
-class InvalidDataException extends \Exception
-{
-}
+class InvalidDataException extends \Exception {}
