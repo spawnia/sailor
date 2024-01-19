@@ -391,8 +391,10 @@ Otherwise, mocks are not reset between test methods, you might run into very con
 Mocks are registered per operation class:
 
 ```php
-/** @var \Mockery\MockInterface&\Example\Api\Operations\HelloSailor */
-$mock = \Example\Api\Operations\HelloSailor::mock();
+use Example\Api\Operations\HelloSailor;
+
+/** @var \Mockery\MockInterface&HelloSailor */
+$mock = HelloSailor::mock();
 ```
 
 When registered, the mock captures all calls to `HelloSailor::execute()`.
@@ -405,7 +407,7 @@ $mock
     ->expects('execute')
     ->once()
     ->with('Sailor')
-    ->andReturn(HelloSailorResult::fromData(
+    ->andReturn(HelloSailor\HelloSailorResult::fromData(
         HelloSailor\HelloSailor::make($hello),
     ));
 
@@ -425,7 +427,7 @@ assert($mock1 === $mock2); // true
 You can also simulate a result with errors:
 
 ```php
-HelloSailorResult::fromErrors([
+HelloSailor\HelloSailorResult::fromErrors([
     (object) [
         'message' => 'Something went wrong',
     ],
@@ -435,13 +437,13 @@ HelloSailorResult::fromErrors([
 For PHP 8 users, it is recommended to use named arguments to build complex mocked results:
 
 ```php
-HelloSailorResult::fromData(
-    HelloSailor::make(
+HelloSailor\HelloSailorResult::fromData(
+    HelloSailor\HelloSailor::make(
         hello: 'Hello, Sailor!',
-        nested: HelloSailor\Nested::make(
+        nested: HelloSailor\HelloSailor\Nested::make(
             hello: 'Hello again!',
-        )
-    )
+        ),
+    ),
 ))
 ```
 
