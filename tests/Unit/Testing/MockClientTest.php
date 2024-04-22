@@ -16,7 +16,7 @@ final class MockClientTest extends TestCase
         $response = new Response();
 
         $responseMock = self::createPartialMock(Invokable::class, ['__invoke']);
-        $responseMock->expects(self::once())
+        $responseMock->expects(self::exactly(2))
             ->method('__invoke')
             ->with($query, $variables)
             ->willReturn($response);
@@ -26,6 +26,13 @@ final class MockClientTest extends TestCase
         self::assertSame($response, $mockClient->request($query, $variables));
 
         $storedRequest = $mockClient->storedRequests[0];
+
+        self::assertSame($query, $storedRequest->query);
+        self::assertSame($variables, $storedRequest->variables);
+
+        $mockClient->requestAsync($query, $variables)->wait();
+
+        $storedRequest = $mockClient->storedRequests[1];
 
         self::assertSame($query, $storedRequest->query);
         self::assertSame($variables, $storedRequest->variables);

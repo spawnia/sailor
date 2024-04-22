@@ -39,4 +39,34 @@ final class GuzzleTest extends TestCase
         self::assertSame(/* @lang JSON */ '{"query":"{simple}"}', $request->getBody()->getContents());
         self::assertSame($uri, $request->getUri()->__toString());
     }
+
+    public function testAsyncRequest(): void
+    {
+        $container = [];
+        $history = Middleware::history($container);
+
+        $mock = new MockHandler([
+            new Response(200, [], /* @lang JSON */ '{"data": {"simple": "bar"}}'),
+        ]);
+        $stack = HandlerStack::create($mock);
+        $stack->push($history);
+
+        $uri = 'https://simple.bar/graphql';
+        $client = new Guzzle($uri, ['handler' => $stack]);
+        $promise = $client->requestAsync(/* @lang GraphQL */ '{simple}');
+
+        $response = $promise->wait();
+
+        self::assertEquals(
+            (object) ['simple' => 'bar'],
+            $response->data
+        );
+
+        $request = $container[0]['request'];
+        assert($request instanceof Request);
+
+        self::assertSame('POST', $request->getMethod());
+        self::assertSame(/* @lang JSON */ '{"query":"{simple}"}', $request->getBody()->getContents());
+        self::assertSame($uri, $request->getUri()->__toString());
+    }
 }

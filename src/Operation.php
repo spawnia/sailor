@@ -87,6 +87,64 @@ abstract class Operation implements BelongsToEndpoint
         return $response;
     }
 
+
+    /**
+     * @param  mixed  ...$args type depends on the subclass
+     *
+     * @return PromiseInterface
+     */
+    protected static function executeOperationAsync(...$args): PromiseInterface
+    {
+        $mock = self::$mocks[static::class] ?? null;
+        if ($mock !== null) {
+            // @phpstan-ignore-next-line This function is only present on child classes
+            return $mock::executeAsync(...$args);
+        }
+
+        return self::fetchResponseAsync($args)->then(
+            function ($response) {
+                $child = static::class;
+                $parts = explode('\\', $child);
+                $basename = end($parts);
+
+                $resultClass = $child . '\\' . $basename . 'Result';
+                assert(class_exists($resultClass));
+
+                return $resultClass::fromResponse($response);
+            }
+        );
+    }
+
+    /**
+     * Send an operation through the client and return the response.
+     *
+     * @param  array<int, mixed>  $args
+     */
+    protected static function fetchResponseAsync(array $args): PromiseInterface
+    {
+        $endpointConfig = Configuration::endpoint(static::config(), static::endpoint());
+
+        $document = static::document();
+        $variables = static::variables($args);
+
+        $endpointConfig->handleEvent(new StartRequest($document, $variables));
+
+        $client = self::$clients[static::class] ??= $endpointConfig->makeClient();
+        if (! $client instanceof AsyncClient) {
+            throw new \InvalidArgumentException('Please provide an async client in order to perform async requests.');
+        }
+
+        $promise = $client->requestAsync($document, $variables);
+
+        return $promise->then(
+            function (Response $response) use ($endpointConfig) {
+                $endpointConfig->handleEvent(new ReceiveResponse($response));
+                return $response;
+            }
+        );
+    }
+
+
     /** @param array<int, mixed> $args */
     protected static function variables(array $args): \stdClass
     {

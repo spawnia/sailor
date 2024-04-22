@@ -9,6 +9,7 @@ use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpNamespace;
 use Spawnia\Sailor\ObjectLike;
 use Spawnia\Sailor\Operation;
+use Spawnia\Sailor\PromiseInterface;
 
 /**
  * @phpstan-type PropertyArgs array{string, Type, string, string, mixed}
@@ -18,6 +19,8 @@ class OperationBuilder
     private ClassType $class;
 
     private Method $execute;
+
+    private Method $executeAsync;
 
     private Method $converters;
 
@@ -39,6 +42,11 @@ class OperationBuilder
         $execute->setStatic(true);
         $execute->addBody('return self::executeOperation(');
         $this->execute = $execute;
+
+        $executeAsync = $class->addMethod('executeAsync');
+        $executeAsync->setStatic(true);
+        $executeAsync->addBody('return self::executeOperationAsync(');
+        $this->executeAsync = $executeAsync;
 
         $converters = $class->addMethod('converters');
         $converters->setStatic(true);
@@ -63,6 +71,7 @@ PHP
         $this->class->setComment("@extends \\{$operationBaseClass}<\\{$resultClass}>");
 
         $this->execute->setReturnType($resultClass);
+        $this->executeAsync->setReturnType(PromiseInterface::class);
     }
 
     public function storeDocument(string $operationString): void
@@ -101,6 +110,7 @@ PHP
 
         $this->converters->addBody(/** @lang PHP */ '];');
         $this->execute->addBody(');');
+        $this->executeAsync->addBody(');');
 
         return $this->class;
     }
@@ -120,6 +130,7 @@ PHP
         $this->converters->addBody(/** @lang PHP */ "    ['{$name}', {$wrappedTypeConverter}],");
 
         $this->execute->addComment(/** @lang PHPDoc */ "@param {$wrappedPhpDocType} \${$name}");
+        $this->executeAsync->addComment(/** @lang PHPDoc */ "@param {$wrappedPhpDocType} \${$name}");
 
         // TODO support default values properly
         $parameter = $this->execute->addParameter($name);
@@ -128,6 +139,13 @@ PHP
             $parameter->setDefaultValue(ObjectLike::UNDEFINED);
         }
 
+        $parameterAsync = $this->executeAsync->addParameter($name);
+        if (! $type instanceof NonNull || $defaultValue !== null) {
+            $parameterAsync->setNullable(true);
+            $parameterAsync->setDefaultValue(ObjectLike::UNDEFINED);
+        }
+
         $this->execute->addBody(/** @lang PHP */ "    \${$name},");
+        $this->executeAsync->addBody(/** @lang PHP */ "    \${$name},");
     }
 }
