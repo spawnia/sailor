@@ -4,7 +4,6 @@ namespace Spawnia\Sailor\Testing;
 
 use GuzzleHttp\Promise\Promise;
 use Spawnia\Sailor\AsyncClient;
-use Spawnia\Sailor\Client;
 use Spawnia\Sailor\Response;
 
 /**
@@ -31,7 +30,7 @@ class MockClient implements AsyncClient
         return ($this->request)($query, $variables);
     }
 
-    public function requestAsync(string $query, ?\stdClass $variables = null): \Spawnia\Sailor\PromiseInterface
+    public function requestAsync(string $query, ?\stdClass $variables = null): Promise
     {
         $this->storedRequests[] = new MockRequest($query, $variables);
         $promise = new Promise(function () use (&$promise, $query, $variables) {
@@ -39,7 +38,6 @@ class MockClient implements AsyncClient
             /** @var Promise $promise */
             $promise->resolve($response);
         });
-
-        return new Client\GuzzlePromiseAdapter($promise);
+        return $promise;
     }
 }
