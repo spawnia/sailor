@@ -9,7 +9,6 @@ use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpNamespace;
 use Spawnia\Sailor\ObjectLike;
 use Spawnia\Sailor\Operation;
-use Spawnia\Sailor\PromiseInterface;
 
 /**
  * @phpstan-type PropertyArgs array{string, Type, string, string, mixed}
@@ -71,7 +70,6 @@ PHP
         $this->class->setComment("@extends \\{$operationBaseClass}<\\{$resultClass}>");
 
         $this->execute->setReturnType($resultClass);
-        $this->executeAsync->setReturnType(PromiseInterface::class);
     }
 
     public function storeDocument(string $operationString): void

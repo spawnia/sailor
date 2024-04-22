@@ -91,9 +91,9 @@ abstract class Operation implements BelongsToEndpoint
     /**
      * @param  mixed  ...$args type depends on the subclass
      *
-     * @return PromiseInterface
+     * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    protected static function executeOperationAsync(...$args): PromiseInterface
+    protected static function executeOperationAsync(...$args)
     {
         $mock = self::$mocks[static::class] ?? null;
         if ($mock !== null) {
@@ -120,7 +120,7 @@ abstract class Operation implements BelongsToEndpoint
      *
      * @param  array<int, mixed>  $args
      */
-    protected static function fetchResponseAsync(array $args): PromiseInterface
+    protected static function fetchResponseAsync(array $args)
     {
         $endpointConfig = Configuration::endpoint(static::config(), static::endpoint());
 

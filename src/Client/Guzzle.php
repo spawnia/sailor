@@ -3,9 +3,9 @@
 namespace Spawnia\Sailor\Client;
 
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\ResponseInterface;
 use Spawnia\Sailor\AsyncClient;
-use Spawnia\Sailor\PromiseInterface;
 use Spawnia\Sailor\Response;
 
 class Guzzle implements AsyncClient
@@ -42,10 +42,10 @@ class Guzzle implements AsyncClient
 
         $promise = $this->guzzle->postAsync($this->uri, ['json' => $json]);
 
-        return new GuzzlePromiseAdapter($promise->then(
+        return $promise->then(
             function (ResponseInterface $response) {
                 return Response::fromResponseInterface($response);
             }
-        ));
+        );
     }
 }
