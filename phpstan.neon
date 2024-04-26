@@ -10,9 +10,20 @@ parameters:
   - src
   - tests
   tmpDir: .build/phpstan
+  reportUnmatchedIgnoredErrors: false # As long as we support multiple PHP versions at once, there will be some dead spots
   ignoreErrors:
+  # Required in different versions
   - '#Call to deprecated method getNamespace\(\) of class Nette\\PhpGenerator\\ClassType#'
+  # Necessary when calling into generated client code, we know how it looks like
   - '#Unsafe usage of new static.*#'
+  # @property on interfaces or abstract classes
+  - '#Access to an undefined property GraphQL\\Type\\Definition\\NamedType&GraphQL\\Type\\Definition\\Type::\$name\.#'
+  - '#Access to an undefined property Spawnia\\Sailor\\Result::\$data\.#'
+  - '#Access to an undefined property Spawnia\\Sailor\\ErrorFreeResult::\$data\.#'
+  # Due to different versions of bensampo/laravel-enum
+  - '#extends generic class BenSampo\\Enum\\Enum but does not specify its types: TValue#'
+  # Due to different versions of PHPUnit, attributes are backwards-compatible though
+  - '#Attribute class PHPUnit\\Framework\\Attributes\\After does not exist\.#'
   # Due to the workaround with ObjectLike::UNDEFINED
   - '#Default value of the parameter .+ \(string\) of method .+::make\(\) is incompatible with type .+#'
   - '#Default value of the parameter .+ \(string\) of method .+::execute\(\) is incompatible with type .+#'

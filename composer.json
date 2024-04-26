@@ -25,7 +25,7 @@
     "webonyx/graphql-php": "^14.11.3 || ^15"
   },
   "require-dev": {
-    "bensampo/laravel-enum": "^3 || ^4.1",
+    "bensampo/laravel-enum": "^3 || ^4.1 || ^5 || ^6",
     "composer/composer": "^2",
     "ergebnis/composer-normalize": "^2.13",
     "guzzlehttp/guzzle": "^7",
@@ -37,11 +37,10 @@
     "php-http/mock-client": "^1.4",
     "phpstan/extension-installer": "^1",
     "phpstan/phpstan": "^1",
-    "phpstan/phpstan-deprecation-rules": "^1",
     "phpstan/phpstan-mockery": "^1",
     "phpstan/phpstan-phpunit": "^1",
     "phpstan/phpstan-strict-rules": "^1",
-    "phpunit/phpunit": "^9.5.2",
+    "phpunit/phpunit": "^9.5.2 || ^10 || ^11",
     "spawnia/phpunit-assert-directory": "^2",
     "symfony/var-dumper": "^5.2.3",
     "thecodingmachine/phpstan-safe-rule": "^1.1"

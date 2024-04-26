@@ -68,7 +68,7 @@ abstract class Operation implements BelongsToEndpoint
     /**
      * Send an operation through the client and return the response.
      *
-     * @param  array<int, mixed>  $args
+     * @param  array<mixed>  $args
      */
     protected static function fetchResponse(array $args): Response
     {
@@ -87,7 +87,7 @@ abstract class Operation implements BelongsToEndpoint
         return $response;
     }
 
-    /** @param array<int, mixed> $args */
+    /** @param array<mixed> $args */
     protected static function variables(array $args): \stdClass
     {
         $variables = new \stdClass();
