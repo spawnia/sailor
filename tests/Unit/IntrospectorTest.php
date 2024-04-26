@@ -56,7 +56,7 @@ final class IntrospectorTest extends TestCase
     }
 
     /** @return iterable<array{Request}> */
-    public function validRequests(): iterable
+    public static function validRequests(): iterable
     {
         yield [
             static fn (): Response => self::successfulIntrospectionMock(),

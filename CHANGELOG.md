@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.31.1
+
+### Added
+
+- Use PHPUnit 11 attributes for testing helpers
+
 ## v0.31.0
 
 ### Fixed

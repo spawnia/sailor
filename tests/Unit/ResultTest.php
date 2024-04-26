@@ -41,7 +41,7 @@ final class ResultTest extends TestCase
     }
 
     /** @return iterable<array{bool}> */
-    public function isClientSafe(): iterable
+    public static function isClientSafe(): iterable
     {
         yield [true];
         yield [false];
