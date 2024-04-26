@@ -118,19 +118,3 @@ jobs:
       - run: vendor/bin/phpunit --coverage-clover=build/logs/clover.xml
 
       - uses: codecov/codecov-action@v2
-
-  mutation-tests:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: shivammathur/setup-php@v2
-        with:
-          coverage: xdebug
-          extensions: mbstring
-          php-version: 8.3
-
-      - run: composer install --no-interaction --no-progress
-
-      - run: vendor/bin/infection

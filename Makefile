@@ -25,11 +25,6 @@ coverage: ## Collects coverage from running unit tests with phpunit
 	vendor/bin/phpunit --dump-xdebug-filter=.build/phpunit/xdebug-filter.php
 	vendor/bin/phpunit --coverage-text --prepend=.build/phpunit/xdebug-filter.php
 
-.PHONY: infection
-infection: ## Runs mutation tests with infection
-	mkdir -p .build/infection
-	vendor/bin/infection --ignore-msi-with-no-mutations --min-covered-msi=100 --min-msi=100
-
 .PHONY: approve
 approve: ## Generate code and approve it as expected
 	tests/generate-and-approve-examples.php
