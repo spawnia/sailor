@@ -22,7 +22,7 @@ class MockClient implements Client
         $this->request = $request;
     }
 
-    public function request(string $query, \stdClass $variables = null): Response
+    public function request(string $query, ?\stdClass $variables = null): Response
     {
         $this->storedRequests[] = new MockRequest($query, $variables);
 

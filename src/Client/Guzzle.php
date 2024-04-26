@@ -19,7 +19,7 @@ class Guzzle implements Client
         $this->guzzle = new GuzzleClient($config);
     }
 
-    public function request(string $query, \stdClass $variables = null): Response
+    public function request(string $query, ?\stdClass $variables = null): Response
     {
         $json = ['query' => $query];
         if (! is_null($variables)) {

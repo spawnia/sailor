@@ -19,7 +19,7 @@ class Log implements Client
         $this->filename = $filename;
     }
 
-    public function request(string $query, \stdClass $variables = null): Response
+    public function request(string $query, ?\stdClass $variables = null): Response
     {
         $log = \Safe\json_encode([
             'query' => $query,
