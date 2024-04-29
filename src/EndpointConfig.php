@@ -9,7 +9,6 @@ use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use Nette\PhpGenerator\ClassType;
-use Spawnia\Sailor\Codegen\DirectoryFinder;
 use Spawnia\Sailor\Codegen\Finder;
 use Spawnia\Sailor\Error\Error;
 use Spawnia\Sailor\Events\ReceiveResponse;
@@ -35,11 +34,11 @@ abstract class EndpointConfig
     /** Path to the directory where the generated classes will be put. */
     abstract public function targetPath(): string;
 
-    /** Where to look for .graphql files containing operations. */
-    abstract public function searchPath(): string;
-
     /** The location of the schema file that describes the endpoint. */
     abstract public function schemaPath(): string;
+
+    /** Instantiate a class to find GraphQL documents. */
+    abstract public function finder(): Finder;
 
     /**
      * Will be called with events that happen during the execution lifecycle.
@@ -98,12 +97,6 @@ abstract class EndpointConfig
     public function generateClasses(Schema $schema, DocumentNode $document): iterable
     {
         return [];
-    }
-
-    /** Instantiate a class to find GraphQL documents. */
-    public function finder(): Finder
-    {
-        return new DirectoryFinder($this->searchPath());
     }
 
     public function typesNamespace(): string

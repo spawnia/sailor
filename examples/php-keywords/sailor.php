@@ -1,6 +1,8 @@
 <?php declare(strict_types=1);
 
 use Spawnia\Sailor\Client;
+use Spawnia\Sailor\Codegen\DirectoryFinder;
+use Spawnia\Sailor\Codegen\Finder;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\PhpKeywords\Types\_abstract;
 use Spawnia\Sailor\Response;
@@ -18,14 +20,15 @@ return [
             return __DIR__ . '/generated';
         }
 
-        public function searchPath(): string
-        {
-            return __DIR__ . '/src';
-        }
-
         public function schemaPath(): string
         {
             return __DIR__ . '/schema.graphql';
+        }
+
+
+        public function finder(): Finder
+        {
+            return new DirectoryFinder(__DIR__ . '/src');
         }
 
         public function makeClient(): Client

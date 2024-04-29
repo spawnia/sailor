@@ -3,6 +3,7 @@
 namespace Spawnia\Sailor\Testing;
 
 use Spawnia\Sailor\Client;
+use Spawnia\Sailor\Codegen\Finder;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Response;
 
@@ -14,7 +15,7 @@ class MockEndpointConfig extends EndpointConfig
 
     public string $targetPath;
 
-    public string $searchPath;
+    public Finder $finder;
 
     public string $schemaPath;
 
@@ -28,14 +29,14 @@ class MockEndpointConfig extends EndpointConfig
         return $this->targetPath;
     }
 
-    public function searchPath(): string
-    {
-        return $this->searchPath;
-    }
-
     public function schemaPath(): string
     {
         return $this->schemaPath;
+    }
+
+    public function finder(): Finder
+    {
+        return $this->finder;
     }
 
     public function makeClient(): Client

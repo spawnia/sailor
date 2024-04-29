@@ -2,6 +2,8 @@
 
 use GraphQL\Type\Schema;
 use Spawnia\Sailor\Client;
+use Spawnia\Sailor\Codegen\DirectoryFinder;
+use Spawnia\Sailor\Codegen\Finder;
 use Spawnia\Sailor\CustomTypes\Types\CustomEnum;
 use Spawnia\Sailor\CustomTypesSrc\CustomDateTypeConfig;
 use Spawnia\Sailor\CustomTypesSrc\CustomEnumTypeConfig;
@@ -23,14 +25,14 @@ return [
             return __DIR__ . '/generated';
         }
 
-        public function searchPath(): string
-        {
-            return __DIR__ . '/src';
-        }
-
         public function schemaPath(): string
         {
             return __DIR__ . '/schema.graphql';
+        }
+
+        public function finder(): Finder
+        {
+            return new DirectoryFinder(__DIR__ . '/src');
         }
 
         public function makeClient(): Client

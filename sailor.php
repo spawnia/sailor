@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 
+use Spawnia\Sailor\Codegen\DirectoryFinder;
+use Spawnia\Sailor\Codegen\Finder;
 use Spawnia\Sailor\EndpointConfig;
 
 /*
@@ -41,16 +43,16 @@ return [
             return __DIR__ . '/generated/ExampleApi';
         }
 
-        /** Where to look for .graphql files containing operations. */
-        public function searchPath(): string
-        {
-            return __DIR__ . '/src';
-        }
-
         /** The location of the schema file that describes the endpoint. */
         public function schemaPath(): string
         {
             return __DIR__ . '/example.graphql';
+        }
+
+        /** Instantiate a class to find GraphQL documents. */
+        public function finder(): Finder
+        {
+            return new DirectoryFinder(__DIR__ . '/src');
         }
     },
 ];

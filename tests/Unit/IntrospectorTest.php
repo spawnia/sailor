@@ -5,6 +5,8 @@ namespace Spawnia\Sailor\Tests\Unit;
 use GraphQL\Type\Introspection;
 use GraphQL\Utils\BuildSchema;
 use Spawnia\Sailor\Client;
+use Spawnia\Sailor\Codegen\DirectoryFinder;
+use Spawnia\Sailor\Codegen\Finder;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Error\InvalidDataException;
 use Spawnia\Sailor\Error\ResultErrorsException;
@@ -119,9 +121,9 @@ final class IntrospectorTest extends TestCase
                 return 'simple';
             }
 
-            public function searchPath(): string
+            public function finder(): Finder
             {
-                return 'bar';
+                return new DirectoryFinder('bar');
             }
         };
 
