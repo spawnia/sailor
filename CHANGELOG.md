@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.32.1
+
+### Added
+
+- Include `extensions.debugMessage` in errors, if present
+
 ## v0.32.0
 
 ### Changed

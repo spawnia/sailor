@@ -10,10 +10,20 @@ final class ResultErrorsExceptionTest extends TestCase
 {
     public function testConstructor(): void
     {
-        $errors = [new Error('bar'), new Error('baz')];
+        $plainError = new Error('bar');
+
+        $errorWithDebugMessage = new Error('baz');
+        $errorWithDebugMessage->extensions = (object) [
+            'debugMessage' => 'debar',
+        ];
+
+        $errors = [
+            $plainError,
+            $errorWithDebugMessage,
+        ];
         $exception = new ResultErrorsException($errors, 'file.php', 'foo');
 
         self::assertSame($errors, $exception->errors);
-        self::assertSame('file.php(foo): bar | baz', $exception->getMessage());
+        self::assertSame('file.php(foo): bar | baz (debar)', $exception->getMessage());
     }
 }
