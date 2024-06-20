@@ -11,17 +11,17 @@ fix: vendor
 
 .PHONY: stan
 stan: ## Runs static analysis with phpstan
-	mkdir -p .build/phpstan
+	mkdir --parents .build/phpstan
 	vendor/bin/phpstan analyse --configuration=phpstan.neon
 
 .PHONY: test
 test: ## Runs tests with phpunit
-	mkdir -p .build/phpunit
+	mkdir --parents .build/phpunit
 	vendor/bin/phpunit
 
 .PHONY: coverage
 coverage: ## Collects coverage from running unit tests with phpunit
-	mkdir -p .build/phpunit
+	mkdir --parents .build/phpunit
 	vendor/bin/phpunit --dump-xdebug-filter=.build/phpunit/xdebug-filter.php
 	vendor/bin/phpunit --coverage-text --prepend=.build/phpunit/xdebug-filter.php
 

@@ -31,7 +31,10 @@ final class ErrorTest extends TestCase
             'bar',
         ];
 
+        $debugMessage = 'debug message';
+
         $extensions = (object) [
+            'debugMessage' => $debugMessage,
             'foo' => 123,
         ];
 
@@ -85,10 +88,13 @@ final class ErrorTest extends TestCase
         "bar"
     ],
     "extensions": {
+        "debugMessage": "debug message",
         "foo": 123
     }
 }
 JSON
             , \Safe\json_encode($error));
+
+        self::assertSame('some message (debug message)', $error->messageWithOptionalDebugMessage());
     }
 }
