@@ -276,26 +276,26 @@ class SomeInput extends \Spawnia\Sailor\ObjectLike
 }
 ```
 
-The following call:
+Given that implementation, the following call will produce the following JSON payload:
 
 ```php
 SomeInput::make(requiredId: 1, secondOptional: 2);
 ```
 
-Should produce the following JSON payload:
+```json
+{ "requiredId": 1, "firstOptional": null, "secondOptional": 2 }
+```
+
+However, we would like to produce the following JSON payload:
 
 ```json
 { "requiredId": 1, "secondOptional": 2 }
 ```
 
-However, from within `make()` there is no way to differentiate between an explicitly
+This is because from within `make()`, there is no way to differentiate between an explicitly
 passed optional named argument and one that has been assigned the default value.
-Thus, the resulting JSON payload will unintentionally modify `firstOptional` too, erasing
-whatever value it previously held.
-
-```json
-{ "requiredId": 1, "firstOptional": null, "secondOptional": 2 }
-```
+Thus, the resulting JSON payload will unintentionally modify `firstOptional` too,
+erasing whatever value it previously held.
 
 A naive solution to this would be to filter out any argument that is `null`.
 However, we would also like to be able to explicitly set the first optional value to `null`.
