@@ -249,7 +249,7 @@ Consider the following input:
 
 ```graphql
 input SomeInput {
-  requiredId: Int!,
+  requiredID: Int!,
   firstOptional: Int,
   secondOptional: Int,
 }
@@ -261,13 +261,13 @@ Suppose we allow instantiation in PHP with the following implementation:
 class SomeInput extends \Spawnia\Sailor\ObjectLike
 {
     public static function make(
-        int $requiredId,
+        int $requiredID,
         ?int $firstOptional = null,
         ?int $secondOptional = null,
     ): self {
         $instance = new self;
 
-        $instance->requiredId = $required;
+        $instance->requiredID = $required;
         $instance->firstOptional = $firstOptional;
         $instance->secondOptional = $secondOptional;
 
@@ -279,17 +279,17 @@ class SomeInput extends \Spawnia\Sailor\ObjectLike
 Given that implementation, the following call will produce the following JSON payload:
 
 ```php
-SomeInput::make(requiredId: 1, secondOptional: 2);
+SomeInput::make(requiredID: 1, secondOptional: 2);
 ```
 
 ```json
-{ "requiredId": 1, "firstOptional": null, "secondOptional": 2 }
+{ "requiredID": 1, "firstOptional": null, "secondOptional": 2 }
 ```
 
 However, we would like to produce the following JSON payload:
 
 ```json
-{ "requiredId": 1, "secondOptional": 2 }
+{ "requiredID": 1, "secondOptional": 2 }
 ```
 
 This is because from within `make()`, there is no way to differentiate between an explicitly
@@ -299,10 +299,10 @@ erasing whatever value it previously held.
 
 A naive solution to this would be to filter out any argument that is `null`.
 However, we would also like to be able to explicitly set the first optional value to `null`.
-The following call *should* result in the previous JSON payload.
+The following call *should* result in a JSON payload that contains `"firstOptional": null`.
 
 ```php
-SomeInput::make(requiredId: 1, firstOptional: null, secondOptional: 2);
+SomeInput::make(requiredID: 1, firstOptional: null, secondOptional: 2);
 ```
 
 In order to generate partial inputs by default, optional named arguments have a special default value:
@@ -315,19 +315,19 @@ Spawnia\Sailor\ObjectLike::UNDEFINED = 'Special default value that allows Sailor
 class SomeInput extends \Spawnia\Sailor\ObjectLike
 {
     /**
-     * @param int $requiredId
+     * @param int $requiredID
      * @param int|null $firstOptional
      * @param int|null $secondOptional
      */
     public static function make(
-        $requiredId,
+        $requiredID,
         $firstOptional = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
         $secondOptional = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
     ): self {
         $instance = new self;
 
-        if ($requiredId !== self::UNDEFINED) {
-            $instance->requiredId = $requiredId;
+        if ($requiredID !== self::UNDEFINED) {
+            $instance->requiredID = $requiredID;
         }
         if ($firstOptional !== self::UNDEFINED) {
             $instance->firstOptional = $firstOptional;
@@ -341,10 +341,26 @@ class SomeInput extends \Spawnia\Sailor\ObjectLike
 }
 ```
 
-In the unlikely case where you need to pass exactly this value, you can assign it directly:
+You may use `Spawnia\Sailor\ObjectLike::UNDEFINED` to omit nullable arguments completely:
 
 ```php
-$input = SomeInput::make(requiredId: 1);
+SomeInput::make(
+    requiredID: 1,
+    firstOptional: $maybeNull ?? Spawnia\Sailor\ObjectLike::UNDEFINED,
+);
+```
+
+If `$maybeNull` is `null`, this will result in the following JSON payload:
+
+```json
+{ "requiredID": 1 }
+```
+
+In the very unlikely case where you need to pass exactly the value of `Spawnia\Sailor\ObjectLike::UNDEFINED`,
+you can bypass the logic in `make()` and assign it directly:
+
+```php
+$input = SomeInput::make(requiredID: 1);
 $input->secondOptional = Spawnia\Sailor\ObjectLike::UNDEFINED;
 ```
 
