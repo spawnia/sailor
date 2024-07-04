@@ -45,11 +45,14 @@ PSR-17 Request and Stream factory implementations (see [Client implementations](
 Run `vendor/bin/sailor` to set up the configuration.
 A file called `sailor.php` will be created in your project root.
 
+A Sailor configuration file is expected to return an associative array
+where the keys are endpoint names and the values are instances of `Spawnia\Sailor\EndpointConfig`.
+
 You can take a look at the example configuration to see what options
 are available for configuration: [`sailor.php`](sailor.php).
 
-If you would like to use multiple configuration files, specify which file
-to use through the `-c/--config` option.
+If you would like to use multiple configuration files,
+specify which file to use through the `-c/--config` option.
 
 It is quite useful to include dynamic values in your configuration.
 You might use [PHP dotenv](https://github.com/vlucas/phpdotenv) to load

@@ -25,7 +25,7 @@ use Spawnia\Sailor\Type\TypeConfig;
 
 abstract class EndpointConfig
 {
-    /** Instantiate a client that will resolve the GraphQL operations. */
+    /** The client that will resolve the GraphQL operations. */
     abstract public function makeClient(): Client;
 
     /** The namespace the generated classes will be created in. */
@@ -37,7 +37,7 @@ abstract class EndpointConfig
     /** The location of the schema file that describes the endpoint. */
     abstract public function schemaPath(): string;
 
-    /** Instantiate a class to find GraphQL documents. */
+    /** How to locate documents that contain GraphQL operations. */
     abstract public function finder(): Finder;
 
     /**

@@ -19,9 +19,7 @@ use Spawnia\Sailor\Tests\TestCase;
 use function Safe\file_get_contents;
 use function Safe\unlink;
 
-/**
- * @phpstan-import-type Request from MockClient
- */
+/** @phpstan-import-type Request from MockClient */
 final class IntrospectorTest extends TestCase
 {
     public const SCHEMA = /* @lang GraphQL */ <<<'GRAPHQL'
