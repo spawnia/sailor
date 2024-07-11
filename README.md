@@ -4,7 +4,7 @@
 
 <div align="center">
 
-[![CI Status](https://github.com/spawnia/sailor/workflows/Continuous%20Integration/badge.svg)](https://github.com/spawnia/sailor/actions)
+[![CI Status](https://github.com/spawnia/sailor/workflows/Validate/badge.svg)](https://github.com/spawnia/sailor/actions)
 [![codecov](https://codecov.io/gh/spawnia/sailor/branch/master/graph/badge.svg)](https://codecov.io/gh/spawnia/sailor)
 
 [![Latest Stable Version](https://poser.pugx.org/spawnia/sailor/v/stable)](https://packagist.org/packages/spawnia/sailor)
