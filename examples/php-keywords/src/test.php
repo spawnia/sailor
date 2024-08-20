@@ -2,11 +2,11 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Spawnia\Sailor\PhpKeywords\Operations\_catch;
-use Spawnia\Sailor\PhpKeywords\Operations\_catch\_Print\_Switch;
+use Spawnia\Sailor\PhpKeywords\Operations\_Catch;
+use Spawnia\Sailor\PhpKeywords\Operations\_Catch\_Print\_Switch;
 use Spawnia\Sailor\PhpKeywords\Types\_abstract;
 
-$result = _catch::execute();
+$result = _Catch::execute();
 
 $switch = $result->data->print;
 assert($switch instanceof _Switch);

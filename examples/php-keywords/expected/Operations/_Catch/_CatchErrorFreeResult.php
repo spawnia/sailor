@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace Spawnia\Sailor\PhpKeywords\Operations\_catch;
+namespace Spawnia\Sailor\PhpKeywords\Operations\_Catch;
 
-class _catchErrorFreeResult extends \Spawnia\Sailor\ErrorFreeResult
+class _CatchErrorFreeResult extends \Spawnia\Sailor\ErrorFreeResult
 {
-    public _catch $data;
+    public _Catch $data;
 
     public static function endpoint(): string
     {

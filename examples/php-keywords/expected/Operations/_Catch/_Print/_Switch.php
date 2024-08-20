@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Spawnia\Sailor\PhpKeywords\Operations\_catch\_Print;
+namespace Spawnia\Sailor\PhpKeywords\Operations\_Catch\_Print;
 
 /**
  * @property string $__typename

@@ -3,11 +3,11 @@
 namespace Spawnia\Sailor\PhpKeywords\Operations;
 
 /**
- * @extends \Spawnia\Sailor\Operation<\Spawnia\Sailor\PhpKeywords\Operations\_catch\_catchResult>
+ * @extends \Spawnia\Sailor\Operation<\Spawnia\Sailor\PhpKeywords\Operations\_Catch\_CatchResult>
  */
-class _catch extends \Spawnia\Sailor\Operation
+class _Catch extends \Spawnia\Sailor\Operation
 {
-    public static function execute(): _catch\_catchResult
+    public static function execute(): _Catch\_CatchResult
     {
         return self::executeOperation(
         );
@@ -23,7 +23,7 @@ class _catch extends \Spawnia\Sailor\Operation
 
     public static function document(): string
     {
-        return /* @lang GraphQL */ 'query catch {
+        return /* @lang GraphQL */ 'query Catch {
           __typename
           print {
             __typename

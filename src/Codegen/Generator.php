@@ -4,7 +4,6 @@ namespace Spawnia\Sailor\Codegen;
 
 use GraphQL\Error\Error;
 use GraphQL\Error\SyntaxError;
-use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
@@ -45,13 +44,13 @@ class Generator
 
         // Validate the document as defined by the user to give them an error
         // message that is more closely related to their source code
-        Validator::validate($schema, $document);
+        Validator::validateDocumentWithSchema($schema, $document);
 
         $document = (new FoldFragments($document))->modify();
         AddTypename::modify($document);
 
         // Validate again to ensure the modifications we made were safe
-        Validator::validate($schema, $document);
+        Validator::validateDocumentWithSchema($schema, $document);
 
         foreach ((new OperationGenerator($schema, $document, $this->endpointConfig))->generate() as $class) {
             yield $this->makeFile($class);
@@ -185,18 +184,6 @@ class Generator
         return $parsed;
     }
 
-    /** @param  array<string, \GraphQL\Language\AST\DocumentNode>  $parsed */
-    public static function validateDocuments(array $parsed): void
-    {
-        foreach ($parsed as $path => $documentNode) {
-            foreach ($documentNode->definitions as $definition) {
-                if ($definition instanceof OperationDefinitionNode && $definition->name === null) {
-                    throw new Error("Found unnamed operation definition in {$path}.", $definition);
-                }
-            }
-        }
-    }
-
     protected function schema(): Schema
     {
         $schemaString = \Safe\file_get_contents(
@@ -218,7 +205,7 @@ class Generator
 
         $parsed = static::parseDocuments($documents);
 
-        static::validateDocuments($parsed);
+        Validator::validateDocuments($parsed);
 
         return $parsed;
     }

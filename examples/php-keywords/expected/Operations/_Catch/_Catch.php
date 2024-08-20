@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace Spawnia\Sailor\PhpKeywords\Operations\_catch;
+namespace Spawnia\Sailor\PhpKeywords\Operations\_Catch;
 
 /**
  * @property string $__typename
- * @property \Spawnia\Sailor\PhpKeywords\Operations\_catch\_Print\_Switch|null $print
+ * @property \Spawnia\Sailor\PhpKeywords\Operations\_Catch\_Print\_Switch|null $print
  */
-class _catch extends \Spawnia\Sailor\ObjectLike
+class _Catch extends \Spawnia\Sailor\ObjectLike
 {
     /**
-     * @param \Spawnia\Sailor\PhpKeywords\Operations\_catch\_Print\_Switch|null $print
+     * @param \Spawnia\Sailor\PhpKeywords\Operations\_Catch\_Print\_Switch|null $print
      */
     public static function make($print = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): self
     {
@@ -30,7 +30,7 @@ class _catch extends \Spawnia\Sailor\ObjectLike
         return $converters ??= [
             '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
             'print' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\PolymorphicConverter([
-            'Switch' => '\\Spawnia\\Sailor\\PhpKeywords\\Operations\\_catch\\_Print\\_Switch',
+            'Switch' => '\\Spawnia\\Sailor\\PhpKeywords\\Operations\\_Catch\\_Print\\_Switch',
         ])),
         ];
     }
