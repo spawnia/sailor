@@ -24,7 +24,7 @@ final class ValidatorTest extends TestCase
             simple
         }
         ');
-        Validator::validate($schema, $document);
+        Validator::validateDocumentWithSchema($schema, $document);
     }
 
     public function testValidateFailure(): void
@@ -42,7 +42,7 @@ final class ValidatorTest extends TestCase
         ');
 
         $this->expectException(\Exception::class);
-        Validator::validate($schema, $document);
+        Validator::validateDocumentWithSchema($schema, $document);
     }
 
     public function testValidateDocumentsPasses(): void

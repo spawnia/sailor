@@ -44,13 +44,13 @@ class Generator
 
         // Validate the document as defined by the user to give them an error
         // message that is more closely related to their source code
-        Validator::validate($schema, $document);
+        Validator::validateDocumentWithSchema($schema, $document);
 
         $document = (new FoldFragments($document))->modify();
         AddTypename::modify($document);
 
         // Validate again to ensure the modifications we made were safe
-        Validator::validate($schema, $document);
+        Validator::validateDocumentWithSchema($schema, $document);
 
         foreach ((new OperationGenerator($schema, $document, $this->endpointConfig))->generate() as $class) {
             yield $this->makeFile($class);
