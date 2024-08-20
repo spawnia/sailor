@@ -31,9 +31,7 @@ use Spawnia\Sailor\Type\OutputTypeConfig;
 use Spawnia\Sailor\Type\TypeConfig;
 use Symfony\Component\VarExporter\VarExporter;
 
-/**
- * @phpstan-import-type PolymorphicMapping from PolymorphicConverter
- */
+/** @phpstan-import-type PolymorphicMapping from PolymorphicConverter */
 class OperationGenerator implements ClassGenerator
 {
     protected Schema $schema;
@@ -99,11 +97,9 @@ class OperationGenerator implements ClassGenerator
                     $dataParam = $setData->addParameter('data');
                     $dataParam->setType('\\stdClass');
                     $setData->setReturnType('void');
-                    $setData->setBody(
-                        <<<PHP
-                                \$this->data = {$operationName}::fromStdClass(\$data);
-                                PHP
-                    );
+                    $setData->setBody(<<<PHP
+                    \$this->data = {$operationName}::fromStdClass(\$data);
+                    PHP);
 
                     $dataType = $this->withCurrentNamespace($operationName);
 
@@ -112,21 +108,17 @@ class OperationGenerator implements ClassGenerator
                     $dataParam = $fromData->addParameter('data');
                     $dataParam->setType($dataType);
                     $fromData->setReturnType('self');
-                    $fromData->addComment(
-                        <<<'PHPDOC'
-                            Useful for instantiation of successful mocked results.
+                    $fromData->addComment(<<<'PHPDOC'
+                    Useful for instantiation of successful mocked results.
 
-                            @return static
-                            PHPDOC
-                    );
-                    $fromData->setBody(
-                        <<<'PHP'
-                            $instance = new static;
-                            $instance->data = $data;
+                    @return static
+                    PHPDOC);
+                    $fromData->setBody(<<<'PHP'
+                    $instance = new static;
+                    $instance->data = $data;
 
-                            return $instance;
-                            PHP
-                    );
+                    return $instance;
+                    PHP);
 
                     $dataProp = $result->addProperty('data', null);
                     $dataProp->setType($dataType);
@@ -139,11 +131,9 @@ class OperationGenerator implements ClassGenerator
                     $errorFree->setReturnType(
                         $this->withCurrentNamespace($errorFreeResultName)
                     );
-                    $errorFree->setBody(
-                        <<<PHP
-                                return {$errorFreeResultName}::fromResult(\$this);
-                                PHP
-                    );
+                    $errorFree->setBody(<<<PHP
+                    return {$errorFreeResultName}::fromResult(\$this);
+                    PHP);
 
                     $errorFreeResult = new ClassType($errorFreeResultName, $this->makeNamespace());
                     $errorFreeResult->setExtends(ErrorFreeResult::class);
@@ -221,8 +211,8 @@ class OperationGenerator implements ClassGenerator
                         assert($typeConfig instanceof OutputTypeConfig);
                         $phpDocType = $typeConfig->outputTypeReference();
                         $typeConverter = <<<PHP
-                                    {$typeConfig->typeConverter()}
-                                    PHP;
+                        {$typeConfig->typeConverter()}
+                        PHP;
 
                         $stopFurtherTraversal = true;
                     } elseif ($namedType instanceof ObjectType) {
@@ -238,8 +228,8 @@ class OperationGenerator implements ClassGenerator
                             ]
                         );
                         $typeConverter = <<<PHP
-                                {$phpType}
-                                PHP;
+                        {$phpType}
+                        PHP;
                     } elseif ($namedType instanceof InterfaceType || $namedType instanceof UnionType) {
                         /** @var PolymorphicMapping $mapping */
                         $mapping = [];
@@ -264,8 +254,8 @@ class OperationGenerator implements ClassGenerator
 
                         $mappingCode = VarExporter::export($mapping);
                         $typeConverter = <<<PHP
-                                Spawnia\Sailor\Convert\PolymorphicConverter({$mappingCode})
-                                PHP;
+                        Spawnia\Sailor\Convert\PolymorphicConverter({$mappingCode})
+                        PHP;
                     } else {
                         throw new \Exception("Unexpected namedType {$namedType->name}.");
                     }

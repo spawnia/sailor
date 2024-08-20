@@ -53,29 +53,25 @@ final class CustomObjectTypeConfig implements TypeConfig, InputTypeConfig, Outpu
         $customObjectClass = CustomObject::class;
 
         $fromGraphQL->setReturnType($customObjectClass);
-        $fromGraphQL->setBody(
-            <<<PHP
-                if (! \$value instanceof \\stdClass) {
-                    throw new \InvalidArgumentException('Expected stdClass, got: '.gettype(\$value));
-                }
+        $fromGraphQL->setBody(<<<PHP
+        if (! \$value instanceof \\stdClass) {
+            throw new \InvalidArgumentException('Expected stdClass, got: '.gettype(\$value));
+        }
 
-                if (! property_exists(\$value, 'foo')) {
-                    throw new \InvalidArgumentException('Did not find expected property foo.');
-                }
+        if (! property_exists(\$value, 'foo')) {
+            throw new \InvalidArgumentException('Did not find expected property foo.');
+        }
 
-                return new \\{$customObjectClass}(\$value->foo);
-                PHP
-        );
+        return new \\{$customObjectClass}(\$value->foo);
+        PHP);
 
-        $toGraphQL->setBody(
-            <<<PHP
-                if (! \$value instanceof \\{$customObjectClass}) {
-                    throw new \InvalidArgumentException('Expected instanceof {$customObjectClass}, got: '.gettype(\$value));
-                }
+        $toGraphQL->setBody(<<<PHP
+        if (! \$value instanceof \\{$customObjectClass}) {
+            throw new \InvalidArgumentException('Expected instanceof {$customObjectClass}, got: '.gettype(\$value));
+        }
 
-                return (object) (array) \$value;
-                PHP
-        );
+        return (object) (array) \$value;
+        PHP);
 
         return $class;
     }

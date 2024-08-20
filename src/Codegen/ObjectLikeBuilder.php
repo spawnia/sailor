@@ -47,13 +47,11 @@ class ObjectLikeBuilder
         $converters = $class->addMethod('converters');
         $converters->setProtected();
         $converters->setReturnType('array');
-        $converters->addBody(
-            <<<'PHP'
-static $converters;
+        $converters->addBody(<<<'PHP'
+        static $converters;
 
-return $converters ??= [
-PHP
-        );
+        return $converters ??= [
+        PHP);
         $this->converters = $converters;
 
         $this->class = $class;
@@ -118,13 +116,11 @@ PHP
                 $parameter->setDefaultValue(ObjectLike::UNDEFINED);
             }
 
-            $this->make->addBody(
-                <<<PHP
-if (\${$name} !== self::UNDEFINED) {
-    \$instance->{$name} = \${$name};
-}
-PHP
-            );
+            $this->make->addBody(<<<PHP
+            if (\${$name} !== self::UNDEFINED) {
+                \$instance->{$name} = \${$name};
+            }
+            PHP);
         }
     }
 }

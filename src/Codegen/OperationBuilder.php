@@ -44,13 +44,11 @@ class OperationBuilder
         $converters->setStatic(true);
         $converters->setProtected();
         $converters->setReturnType('array');
-        $converters->addBody(
-            <<<'PHP'
-static $converters;
+        $converters->addBody(<<<'PHP'
+        static $converters;
 
-return $converters ??= [
-PHP
-        );
+        return $converters ??= [
+        PHP);
         $this->converters = $converters;
 
         $this->class = $class;
@@ -70,11 +68,9 @@ PHP
         $document = $this->class->addMethod('document');
         $document->setStatic();
         $document->setReturnType('string');
-        $document->setBody(
-            <<<PHP
-                                    return /* @lang GraphQL */ '{$operationString}';
-                                    PHP
-        );
+        $document->setBody(<<<PHP
+        return /* @lang GraphQL */ '{$operationString}';
+        PHP);
     }
 
     /** @param mixed $defaultValue any value */

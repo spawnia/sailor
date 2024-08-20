@@ -23,11 +23,11 @@ use function Safe\unlink;
 final class IntrospectorTest extends TestCase
 {
     public const SCHEMA = /* @lang GraphQL */ <<<'GRAPHQL'
-        type Query {
-          simple: ID
-        }
+    type Query {
+      simple: ID
+    }
 
-        GRAPHQL;
+    GRAPHQL;
 
     public const PATH = __DIR__ . '/schema.graphql';
 

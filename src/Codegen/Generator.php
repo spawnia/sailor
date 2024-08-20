@@ -74,7 +74,7 @@ class Generator
         $endpoint->setStatic();
         $endpoint->setReturnType('string');
         $endpoint->setBody(<<<PHP
-            return '{$this->endpointName}';
+        return '{$this->endpointName}';
         PHP);
 
         $file = new File();
@@ -92,7 +92,7 @@ class Generator
         $config->setStatic();
         $config->setReturnType('string');
         $config->setBody(<<<PHP
-            return {$this->configPath($targetDirectory)};
+        return {$this->configPath($targetDirectory)};
         PHP);
 
         $file->name = $classType->getName() . '.php';
@@ -148,12 +148,12 @@ class Generator
         $printer = new PsrPrinter();
 
         return <<<PHP
-            <?php declare(strict_types=1);
+        <?php declare(strict_types=1);
 
-            namespace {$namespace->getName()};
-            
-            {$printer->printClass($classType, $namespace)}
-            PHP;
+        namespace {$namespace->getName()};
+
+        {$printer->printClass($classType, $namespace)}
+        PHP;
     }
 
     /**

@@ -47,30 +47,26 @@ class CustomDateTypeConfig implements TypeConfig
         $format = self::FORMAT;
 
         $fromGraphQL->setReturnType($dateTimeClass);
-        $fromGraphQL->setBody(
-            <<<PHP
-                if (! is_string(\$value)) {
-                    throw new \InvalidArgumentException('Expected string, got: '.gettype(\$value));
-                }
+        $fromGraphQL->setBody(<<<PHP
+        if (! is_string(\$value)) {
+            throw new \InvalidArgumentException('Expected string, got: '.gettype(\$value));
+        }
 
-                \$date = \\{$dateTimeClass}::createFromFormat('{$format}', \$value);
-                if (\$date === false) {
-                    throw new \InvalidArgumentException("Expected date with format {$format}, got {\$value}");
-                }
+        \$date = \\{$dateTimeClass}::createFromFormat('{$format}', \$value);
+        if (\$date === false) {
+            throw new \InvalidArgumentException("Expected date with format {$format}, got {\$value}");
+        }
 
-                return \$date;
-                PHP
-        );
+        return \$date;
+        PHP);
 
-        $toGraphQL->setBody(
-            <<<PHP
-                if (! \$value instanceof \\{$dateTimeClass}) {
-                    throw new \InvalidArgumentException('Expected instanceof DateTime, got: '.gettype(\$value));
-                }
+        $toGraphQL->setBody(<<<PHP
+        if (! \$value instanceof \\{$dateTimeClass}) {
+            throw new \InvalidArgumentException('Expected instanceof DateTime, got: '.gettype(\$value));
+        }
 
-                return \$value->format('{$format}');
-                PHP
-        );
+        return \$value->format('{$format}');
+        PHP);
 
         return $class;
     }
