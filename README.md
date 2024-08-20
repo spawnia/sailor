@@ -156,7 +156,7 @@ query HelloSailor {
 }
 ```
 
-You must give all your operations unique names, the following example is invalid:
+You must give all your operations unique `PascalCase` names, the following example is invalid:
 
 ```graphql
 # Invalid, operations have to be named
@@ -167,6 +167,9 @@ query {
 # Invalid, names must be unique across all operations
 query Foo { ... }
 mutation Foo { ... }
+
+# Invalid, names must be PascalCase
+query camelCase { ... }
 ```
 
 ### Generate code
