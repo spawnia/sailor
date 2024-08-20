@@ -5,7 +5,6 @@ namespace Spawnia\Sailor\Tests\Unit\Codegen;
 use GraphQL\Language\AST\FragmentDefinitionNode;
 use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\OperationDefinitionNode;
-use GraphQL\Language\Parser;
 use Spawnia\Sailor\Codegen\Generator;
 use Spawnia\Sailor\Tests\TestCase;
 
@@ -15,11 +14,11 @@ final class GeneratorTest extends TestCase
     {
         $somePath = 'path';
         $documents = [
-            $somePath => /* @lang GraphQL */ '
+            $somePath => /* @lang GraphQL */ <<<'GRAPHQL'
                 query MyScalarQuery {
                     simple
                 }
-            ',
+                GRAPHQL,
         ];
 
         $parsed = Generator::parseDocuments($documents);
@@ -40,11 +39,11 @@ final class GeneratorTest extends TestCase
     {
         $somePath = 'path';
         $documents = [
-            $somePath => /* @lang GraphQL */ '
+            $somePath => /* @lang GraphQL */ <<<'GRAPHQL'
                 fragment Foo on Bar {
                     simple
                 }
-            ',
+                GRAPHQL,
         ];
 
         $parsed = Generator::parseDocuments($documents);
@@ -59,7 +58,7 @@ final class GeneratorTest extends TestCase
     {
         $somePath = 'path';
         $documents = [
-            $somePath => /* @lang GraphQL */ '
+            $somePath => /* @lang GraphQL */ <<<'GRAPHQL'
                 query FooQuery {
                     ...Foo
                 }
@@ -67,7 +66,7 @@ final class GeneratorTest extends TestCase
                 fragment Foo on Bar {
                     simple
                 }
-            ',
+                GRAPHQL,
         ];
 
         $parsed = Generator::parseDocuments($documents);
@@ -100,34 +99,5 @@ final class GeneratorTest extends TestCase
 
         self::expectExceptionMessageMatches("/{$path}/");
         Generator::parseDocuments($documents);
-    }
-
-    public function testEnsureOperationsAreNamedPasses(): void
-    {
-        self::expectNotToPerformAssertions();
-        $documents = [
-            'simple' => Parser::parse(/* @lang GraphQL */ '
-            query Name {
-                simple
-            }
-            '),
-        ];
-
-        Generator::validateDocuments($documents);
-    }
-
-    public function testEnsureOperationsAreNamedThrowsErrorWithPath(): void
-    {
-        $path = 'thisShouldBeInTheMessage';
-        $documents = [
-            $path => Parser::parse(/* @lang GraphQL */ '
-            {
-                unnamedQuery
-            }
-            '),
-        ];
-
-        self::expectExceptionMessageMatches("/{$path}/");
-        Generator::validateDocuments($documents);
     }
 }

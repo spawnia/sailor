@@ -1,4 +1,4 @@
-query catch {
+query Catch {
     print {
         int
         ... on Switch {

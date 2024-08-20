@@ -4,7 +4,6 @@ namespace Spawnia\Sailor\Codegen;
 
 use GraphQL\Error\Error;
 use GraphQL\Error\SyntaxError;
-use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
@@ -185,18 +184,6 @@ class Generator
         return $parsed;
     }
 
-    /** @param  array<string, \GraphQL\Language\AST\DocumentNode>  $parsed */
-    public static function validateDocuments(array $parsed): void
-    {
-        foreach ($parsed as $path => $documentNode) {
-            foreach ($documentNode->definitions as $definition) {
-                if ($definition instanceof OperationDefinitionNode && $definition->name === null) {
-                    throw new Error("Found unnamed operation definition in {$path}.", $definition);
-                }
-            }
-        }
-    }
-
     protected function schema(): Schema
     {
         $schemaString = \Safe\file_get_contents(
@@ -218,7 +205,7 @@ class Generator
 
         $parsed = static::parseDocuments($documents);
 
-        static::validateDocuments($parsed);
+        Validator::validateDocuments($parsed);
 
         return $parsed;
     }

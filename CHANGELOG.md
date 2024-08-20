@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.33.0
+
+### Changed
+
+- Validate operation names start with upper case characters
+
 ## v0.32.2
 
 ### Changed
