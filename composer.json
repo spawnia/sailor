@@ -30,6 +30,7 @@
     "ergebnis/composer-normalize": "^2.13",
     "guzzlehttp/guzzle": "^7",
     "jangregor/phpstan-prophecy": "^1",
+    "friendsofphp/php-cs-fixer": "3.63.*",
     "mll-lab/php-cs-fixer-config": "^5",
     "mockery/mockery": "^1.4",
     "nyholm/psr7": "^1.4",
