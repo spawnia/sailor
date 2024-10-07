@@ -11,9 +11,7 @@ use Spawnia\Sailor\Codegen\ObjectLikeBuilder;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\ObjectLike;
 
-/**
- * https://spec.graphql.org/draft/#sec-Input-Objects.
- */
+/** @see https://spec.graphql.org/draft/#sec-Input-Objects */
 class InputObjectTypeConfig implements TypeConfig, InputTypeConfig
 {
     private EndpointConfig $endpointConfig;
@@ -52,7 +50,7 @@ class InputObjectTypeConfig implements TypeConfig, InputTypeConfig
         $typeConfigs = $this->endpointConfig->configureTypes($this->schema);
 
         $builder = new ObjectLikeBuilder(
-            Escaper::escapeClassName($this->inputObjectType->name),
+            $this->inputObjectType->name,
             $this->endpointConfig->typesNamespace(),
             true,
         );

@@ -4,9 +4,7 @@ namespace Spawnia\Sailor\Events;
 
 use Spawnia\Sailor\Response;
 
-/**
- * Fired after receiving a GraphQL response from the client.
- */
+/** Fired after receiving a GraphQL response from the client. */
 class ReceiveResponse
 {
     public Response $response;

@@ -5,9 +5,7 @@ namespace Spawnia\Sailor\Error;
 use GraphQL\Error\ClientAware;
 use Spawnia\Sailor\Configuration;
 
-/**
- * @mixin ClientAware
- */
+/** @mixin ClientAware */
 trait OriginatesFromEndpoint
 {
     /** Path to the config file the endpoint is defined in. */
