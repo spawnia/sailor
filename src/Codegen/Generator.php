@@ -160,8 +160,6 @@ class Generator
      *
      * @param  array<string, string>  $documents
      *
-     * @throws SyntaxError
-     *
      * @return array<string, \GraphQL\Language\AST\DocumentNode>
      */
     public static function parseDocuments(array $documents): array

@@ -2,9 +2,7 @@
 
 namespace Spawnia\Sailor\Convert;
 
-/**
- * Short-circuit conversion of null.
- */
+/** Short-circuit conversion of null. */
 class NullConverter implements TypeConverter
 {
     protected TypeConverter $ofType;

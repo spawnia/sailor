@@ -5,9 +5,7 @@ namespace Spawnia\Sailor\Type;
 use Nette\PhpGenerator\ClassType;
 use Spawnia\Sailor\Convert\TypeConverter;
 
-/**
- * Specifies how Sailor should deal with a GraphQL type.
- */
+/** Specifies how Sailor should deal with a GraphQL type. */
 interface TypeConfig
 {
     /**

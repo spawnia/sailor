@@ -10,9 +10,7 @@ use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpNamespace;
 use Spawnia\Sailor\ObjectLike;
 
-/**
- * @phpstan-type PropertyArgs array{string, Type, string, string, mixed}
- */
+/** @phpstan-type PropertyArgs array{string, Type, string, string, mixed} */
 class ObjectLikeBuilder
 {
     private bool $isInputType;
@@ -32,7 +30,7 @@ class ObjectLikeBuilder
     public function __construct(string $name, string $namespace, bool $isInputType)
     {
         $class = new ClassType(
-            $name,
+            Escaper::escapeClassName($name),
             new PhpNamespace($namespace) // TODO drop escape when min PHP version is 8.0+
         );
 

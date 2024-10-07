@@ -9,3 +9,9 @@ query Catch {
         }
     }
 }
+
+query AllCases {
+    cases {
+        id
+    }
+}

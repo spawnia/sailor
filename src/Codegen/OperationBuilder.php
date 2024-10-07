@@ -10,9 +10,7 @@ use Nette\PhpGenerator\PhpNamespace;
 use Spawnia\Sailor\ObjectLike;
 use Spawnia\Sailor\Operation;
 
-/**
- * @phpstan-type PropertyArgs array{string, Type, string, string, mixed}
- */
+/** @phpstan-type PropertyArgs array{string, Type, string, string, mixed} */
 class OperationBuilder
 {
     private ClassType $class;

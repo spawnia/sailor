@@ -33,17 +33,37 @@ return [
 
         public function makeClient(): Client
         {
-            return new MockClient(static fn(): Response => Response::fromStdClass((object) [
-                'data' => (object) [
-                    '__typename' => 'Query',
-                    'print' => (object) [
-                        '__typename' => 'Switch',
-                        'for' => _abstract::_class,
-                        'int' => 42,
-                        'as' => 69,
-                    ],
-                ],
-            ]));
+            return new MockClient(function (string $query, ?stdClass $variables): Response {
+                if (str_contains($query, 'print')) {
+                    return Response::fromStdClass((object) [
+                        'data' => (object) [
+                            '__typename' => 'Query',
+                            'print' => (object) [
+                                '__typename' => 'Switch',
+                                'for' => _abstract::_class,
+                                'int' => 42,
+                                'as' => 69,
+                            ],
+                        ],
+                    ]);
+                }
+
+                if (str_contains($query, 'cases')) {
+                    return Response::fromStdClass((object) [
+                        'data' => (object) [
+                            '__typename' => 'Query',
+                            'cases' => [
+                                (object) [
+                                    '__typename' => 'Case',
+                                    'id' => 'asdf',
+                                ],
+                            ],
+                        ],
+                    ]);
+                }
+
+                throw new Exception("Unexpected query: {$query}.");
+            });
         }
     },
 ];

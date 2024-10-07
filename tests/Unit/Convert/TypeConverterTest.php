@@ -6,9 +6,7 @@ use Spawnia\Sailor\Convert\TypeConverter;
 use Spawnia\Sailor\Json;
 use Spawnia\Sailor\Tests\TestCase;
 
-/**
- * @phpstan-import-type StdClassJsonValue from Json
- */
+/** @phpstan-import-type StdClassJsonValue from Json */
 abstract class TypeConverterTest extends TestCase
 {
     /**

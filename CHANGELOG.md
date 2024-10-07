@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.33.1
+
+### Fixed
+
+- Escape class names of result types named after PHP reserved keywords
+
 ## v0.33.0
 
 ### Changed

@@ -2,9 +2,7 @@
 
 namespace Spawnia\Sailor\Convert;
 
-/**
- * https://spec.graphql.org/draft/#sec-ID.
- */
+/** @see https://spec.graphql.org/draft/#sec-ID */
 class IDConverter implements TypeConverter
 {
     /**

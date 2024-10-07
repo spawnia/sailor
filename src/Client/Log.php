@@ -41,8 +41,8 @@ class Log implements Client
 
     /**
      * @return Generator<int, array{
-     *      query: string,
-     *      variables: array<string, mixed>|null,
+     *   query: string,
+     *   variables: array<string, mixed>|null,
      * }>
      */
     public function requests(): \Generator

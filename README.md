@@ -202,9 +202,9 @@ holds the decoded response returned from the server. You can just grab the `$dat
 or `$extensions` off of it:
 
 ```php
-$result->data        // `null` or a generated subclass of `\Spawnia\Sailor\ObjectLike`
-$result->errors      // `null` or a list of `\Spawnia\Sailor\Error\Error`
-$result->extensions  // `null` or an arbitrary map
+$catchResult->data        // `null` or a generated subclass of `\Spawnia\Sailor\ObjectLike`
+$catchResult->errors      // `null` or a list of `\Spawnia\Sailor\Error\Error`
+$catchResult->extensions  // `null` or an arbitrary map
 ```
 
 ### Error handling
