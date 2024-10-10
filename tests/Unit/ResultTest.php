@@ -13,7 +13,7 @@ use Spawnia\Sailor\Tests\TestCase;
 final class ResultTest extends TestCase
 {
     /** @dataProvider isClientSafe */
-    public function testThrowErrors(bool $isClientSafe): void
+    public function testAssertErrorFree(bool $isClientSafe): void
     {
         $endpoint = \Mockery::mock(EndpointConfig::class);
         $endpoint->expects('errorsAreClientSafe')
@@ -56,14 +56,22 @@ final class ResultTest extends TestCase
             ->andReturn($isClientSafe);
         Configuration::setEndpointFor(MyScalarQueryResult::class, $endpoint);
 
-        $result = new MyScalarQueryResult();
-        $result->data = MyScalarQuery::make(
+        $data = MyScalarQuery::make(
             /* scalarWithArg: */
             null,
         );
+        $extensions = (object) [
+            'foo' => 'bar',
+        ];
+
+        $result = new MyScalarQueryResult();
+        $result->data = $data;
+        $result->extensions = $extensions;
 
         // No errors
-        $result->errorFree();
+        $errorFreeResult = $result->errorFree();
+        self::assertSame($data, $errorFreeResult->data);
+        self::assertSame($extensions, $errorFreeResult->extensions);
 
         $result->errors = [new Error('foo')];
 
@@ -78,7 +86,7 @@ final class ResultTest extends TestCase
         self::assertSame($isClientSafe, $exception->isClientSafe());
     }
 
-    public function testWithErrors(): void
+    public function testFromStdClass(): void
     {
         $endpoint = \Mockery::mock(EndpointConfig::class)->makePartial();
         Configuration::setEndpointFor(MyScalarQueryResult::class, $endpoint);
