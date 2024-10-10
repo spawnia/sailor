@@ -94,15 +94,11 @@ abstract class Result implements BelongsToEndpoint
      * Throw an exception if errors are present in the result.
      *
      * @throws ResultErrorsException
-     *
-     * @return $this
      */
-    public function assertErrorFree(): self
+    public function assertErrorFree(): void
     {
         if (isset($this->errors)) {
             throw new ResultErrorsException($this->errors, static::config(), static::endpoint());
         }
-
-        return $this;
     }
 }

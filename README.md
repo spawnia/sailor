@@ -198,25 +198,35 @@ $result = \Example\Api\Operations\HelloSailor::execute();
 ```
 
 The returned `$result` is going to be a class that extends `\Spawnia\Sailor\Result` and
-holds the decoded response returned from the server. You can just grab the `$data`, `$errors`
-or `$extensions` off of it:
+holds the decoded response returned from the server.
+You can just grab the `$data`, `$errors` or `$extensions` off of it:
 
 ```php
-$catchResult->data        // `null` or a generated subclass of `\Spawnia\Sailor\ObjectLike`
-$catchResult->errors      // `null` or a list of `\Spawnia\Sailor\Error\Error`
-$catchResult->extensions  // `null` or an arbitrary map
+$result->data       // `null` or a generated subclass of `\Spawnia\Sailor\ObjectLike`
+$result->errors     // `null` or a list of `\Spawnia\Sailor\Error\Error`
+$result->extensions // `null` or an arbitrary map
 ```
 
 ### Error handling
 
-You can ensure your query returned the proper data and contained no errors:
+You can ensure an operation returned the proper data and contained no errors:
 
 ```php
 $errorFreeResult = \Example\Api\Operations\HelloSailor::execute()
     ->errorFree(); // Throws if there are errors or returns an error free result
 ```
 
-If you don't need any data, but want to ensure a mutation succeeded:
+The `$errorFreeResult` is going to be a class that extends `\Spawnia\Sailor\ErrorFreeResult`.
+Given it can only be obtained by going through validation,
+it is guaranteed to have non-null `$data` and does not have `$errors`:
+
+```php
+$errorFreeResult->data       // a generated subclass of `\Spawnia\Sailor\ObjectLike`
+$errorFreeResult->extensions // `null` or an arbitrary map
+```
+
+If you do not need to access the data and just want to ensure a mutation was successful,
+the following is more efficient as it does not instantiate a new object:
 
 ```php
 \Example\Api\Operations\SomeMutation::execute()
