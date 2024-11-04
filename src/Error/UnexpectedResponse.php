@@ -13,9 +13,7 @@ class UnexpectedResponse extends \Exception
     /** @var array<string, list<string>> */
     public array $responseHeaders;
 
-    public static function statusCode(
-        ResponseInterface $response
-    ): self {
+    public static function statusCode(ResponseInterface $response): self {
         $statusCode = $response->getStatusCode();
         $responseBody = $response->getBody()->__toString();
 
@@ -30,8 +28,7 @@ class UnexpectedResponse extends \Exception
             ),
         );
         $self->statusCode = $statusCode;
-        /** @phpstan-ignore assign.propertyType */
-        $self->responseHeaders = $response->getHeaders();
+        $self->responseHeaders = $response->getHeaders(); // @phpstan-ignore assign.propertyType (an explanation why it is a false-positive)
         $self->responseBody = $responseBody;
 
         return $self;
