@@ -13,7 +13,8 @@ class UnexpectedResponse extends \Exception
     /** @var array<string, list<string>> */
     public array $responseHeaders;
 
-    public static function statusCode(ResponseInterface $response): self {
+    public static function statusCode(ResponseInterface $response): self
+    {
         $statusCode = $response->getStatusCode();
         $responseBody = $response->getBody()->__toString();
 
