@@ -21,12 +21,7 @@ class UnexpectedResponse extends \Exception
         $jsonEncodedHeaders = \Safe\json_encode($response->getHeaders(), JSON_PRETTY_PRINT);
 
         $self = new self(
-            \Safe\sprintf(
-                "Unexpected HTTP status code received: %d. Reason: \n%s\nHeaders:\n"
-                . $jsonEncodedHeaders,
-                $statusCode,
-                $responseBody,
-            ),
+            "Unexpected HTTP status code received: {$statusCode}. Reason: \n{$responseBody}\nHeaders:\n{$jsonEncodedHeaders}",
         );
         $self->statusCode = $statusCode;
         $self->responseHeaders = $response->getHeaders(); // @phpstan-ignore assign.propertyType
