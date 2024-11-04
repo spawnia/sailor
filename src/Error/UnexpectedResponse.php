@@ -29,7 +29,7 @@ class UnexpectedResponse extends \Exception
             ),
         );
         $self->statusCode = $statusCode;
-        $self->responseHeaders = $response->getHeaders(); // @phpstan-ignore assign.propertyType (an explanation why it is a false-positive)
+        $self->responseHeaders = $response->getHeaders(); // @phpstan-ignore assign.propertyType
         $self->responseBody = $responseBody;
 
         return $self;
