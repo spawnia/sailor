@@ -3,7 +3,6 @@
 namespace Spawnia\Sailor\Error;
 
 use Psr\Http\Message\ResponseInterface;
-use const JSON_PRETTY_PRINT;
 
 class UnexpectedResponse extends \Exception
 {
@@ -25,9 +24,7 @@ class UnexpectedResponse extends \Exception
         $this->responseHeaders = $responseHeaders;
 
         parent::__construct(
-            "Unexpected response received: {$statusCode}. Reason: \n{$responseBody}\nHeaders:\n" . \Safe\json_encode($responseHeaders, JSON_PRETTY_PRINT),
+            "Unexpected response received: {$statusCode}. Reason: \n{$responseBody}\nHeaders:\n" . \Safe\json_encode($responseHeaders, \JSON_PRETTY_PRINT),
         );
     }
-
-
 }
