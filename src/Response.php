@@ -6,6 +6,7 @@ use GraphQL\Executor\ExecutionResult;
 use Psr\Http\Message\ResponseInterface;
 use Safe\Exceptions\JsonException;
 use Spawnia\Sailor\Error\InvalidDataException;
+use Spawnia\Sailor\Error\UnexpectedResponse;
 
 /**
  * Represents a response sent by a GraphQL server.
@@ -29,10 +30,11 @@ class Response
     /** This entry, if set, must have a map as its value. */
     public ?\stdClass $extensions;
 
+    /** @throws UnexpectedResponse */
     public static function fromResponseInterface(ResponseInterface $response): self
     {
         if ($response->getStatusCode() !== 200) {
-            throw new InvalidDataException("Response must have status code 200, got: {$response->getStatusCode()}");
+            throw UnexpectedResponse::statusCode($response);
         }
 
         return self::fromJson(

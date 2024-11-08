@@ -12,5 +12,6 @@ foreach (Examples::EXAMPLES as $example) {
     shell_exec("rm -rf {$expectedPath}");
 
     $generatedPath = Examples::generatedPath($example);
-    shell_exec("cp --recursive {$generatedPath} {$expectedPath}");
+    // Using -R over --recursive for macOS compatibility
+    shell_exec("cp -R {$generatedPath} {$expectedPath}");
 }
