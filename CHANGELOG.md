@@ -9,7 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-- Introduce UnexpectedResponse exception
+## v0.35.0
+
+### Changed
+
+- Throw `Spawnia\Sailor\Error\UnexpectedResponse` on non-200 status codes
 
 ## v0.34.0
 
