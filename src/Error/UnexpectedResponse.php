@@ -3,6 +3,7 @@
 namespace Spawnia\Sailor\Error;
 
 use Psr\Http\Message\ResponseInterface;
+use const JSON_PRETTY_PRINT;
 
 class UnexpectedResponse extends \Exception
 {
@@ -10,23 +11,23 @@ class UnexpectedResponse extends \Exception
 
     public string $responseBody = '';
 
-    /** @var array<string, list<string>> */
+    /** @var array<string, array<string>> */
     public array $responseHeaders;
 
-    public static function statusCode(ResponseInterface $response): self
+    public function __construct(ResponseInterface $response)
     {
         $statusCode = $response->getStatusCode();
         $responseBody = $response->getBody()->__toString();
+        $responseHeaders = $response->getHeaders();
 
-        $jsonEncodedHeaders = \Safe\json_encode($response->getHeaders(), JSON_PRETTY_PRINT);
+        $this->statusCode = $statusCode;
+        $this->responseBody = $responseBody;
+        $this->responseHeaders = $responseHeaders;
 
-        $self = new self(
-            "Unexpected HTTP status code received: {$statusCode}. Reason: \n{$responseBody}\nHeaders:\n{$jsonEncodedHeaders}",
+        parent::__construct(
+            "Unexpected response received: {$statusCode}. Reason: \n{$responseBody}\nHeaders:\n" . \Safe\json_encode($responseHeaders, JSON_PRETTY_PRINT),
         );
-        $self->statusCode = $statusCode;
-        $self->responseHeaders = $response->getHeaders(); // @phpstan-ignore assign.propertyType
-        $self->responseBody = $responseBody;
-
-        return $self;
     }
+
+
 }
