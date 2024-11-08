@@ -34,7 +34,7 @@ class Response
     public static function fromResponseInterface(ResponseInterface $response): self
     {
         if ($response->getStatusCode() !== 200) {
-            throw new UnexpectedResponse($response);
+            throw UnexpectedResponse::statusCode($response);
         }
 
         return self::fromJson(
