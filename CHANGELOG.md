@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `NativeEnumTypeConfig` to generate native PHP enums https://github.com/spawnia/sailor/pull/92
 - Allow `thecodingmachine/safe` v3 as dependency
 - Add `CarbonTypeConfig`
 

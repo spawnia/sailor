@@ -43,16 +43,22 @@ final class Examples
 
     public static function examplePath(string $example): string
     {
-        return Examples::EXAMPLES_PATH . '/' . $example;
+        $basePath = Examples::EXAMPLES_PATH;
+
+        return "{$basePath}/{$example}";
     }
 
     public static function expectedPath(string $example): string
     {
-        return self::examplePath($example) . '/expected';
+        $examplePath = self::examplePath($example);
+
+        return "{$examplePath}/expected";
     }
 
     public static function generatedPath(string $example): string
     {
-        return self::examplePath($example) . '/generated';
+        $examplePath = self::examplePath($example);
+
+        return "{$examplePath}/generated";
     }
 }

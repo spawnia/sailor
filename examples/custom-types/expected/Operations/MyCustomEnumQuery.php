@@ -10,8 +10,9 @@ class MyCustomEnumQuery extends \Spawnia\Sailor\Operation
     /**
      * @param \Spawnia\Sailor\CustomTypes\Types\CustomEnum|null $value
      */
-    public static function execute($value = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): MyCustomEnumQuery\MyCustomEnumQueryResult
-    {
+    public static function execute(
+        $value = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+    ): MyCustomEnumQuery\MyCustomEnumQueryResult {
         return self::executeOperation(
             $value,
         );

@@ -1,24 +1,24 @@
 <?php declare(strict_types=1);
 
-namespace Spawnia\Sailor\CustomTypes\Operations\MyCustomObjectQuery;
+namespace Spawnia\Sailor\CustomTypes\Operations\MyNativeEnumQuery;
 
 /**
  * @property string $__typename
- * @property \Spawnia\Sailor\CustomTypesSrc\CustomObject|null $withCustomObject
+ * @property \Spawnia\Sailor\CustomTypes\Types\NativeEnum|null $withNativeEnum
  */
-class MyCustomObjectQuery extends \Spawnia\Sailor\ObjectLike
+class MyNativeEnumQuery extends \Spawnia\Sailor\ObjectLike
 {
     /**
-     * @param \Spawnia\Sailor\CustomTypesSrc\CustomObject|null $withCustomObject
+     * @param \Spawnia\Sailor\CustomTypes\Types\NativeEnum|null $withNativeEnum
      */
     public static function make(
-        $withCustomObject = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+        $withNativeEnum = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
     ): self {
         $instance = new self;
 
         $instance->__typename = 'Query';
-        if ($withCustomObject !== self::UNDEFINED) {
-            $instance->withCustomObject = $withCustomObject;
+        if ($withNativeEnum !== self::UNDEFINED) {
+            $instance->withNativeEnum = $withNativeEnum;
         }
 
         return $instance;
@@ -30,7 +30,7 @@ class MyCustomObjectQuery extends \Spawnia\Sailor\ObjectLike
 
         return $converters ??= [
             '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
-            'withCustomObject' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\CustomTypes\TypeConverters\CustomOutputConverter),
+            'withNativeEnum' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\CustomTypes\TypeConverters\NativeEnumConverter),
         ];
     }
 

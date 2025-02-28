@@ -10,8 +10,9 @@ class MyCustomObjectQuery extends \Spawnia\Sailor\Operation
     /**
      * @param \Spawnia\Sailor\CustomTypesSrc\CustomObject|null $value
      */
-    public static function execute($value = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): MyCustomObjectQuery\MyCustomObjectQueryResult
-    {
+    public static function execute(
+        $value = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+    ): MyCustomObjectQuery\MyCustomObjectQueryResult {
         return self::executeOperation(
             $value,
         );

@@ -11,8 +11,9 @@ class _Catch extends \Spawnia\Sailor\ObjectLike
     /**
      * @param \Spawnia\Sailor\PhpKeywords\Operations\_Catch\_Print\_Switch|null $print
      */
-    public static function make($print = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): self
-    {
+    public static function make(
+        $print = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+    ): self {
         $instance = new self;
 
         $instance->__typename = 'Query';

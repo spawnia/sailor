@@ -19,7 +19,6 @@ class ListConverter implements TypeConverter
             throw new \InvalidArgumentException("Expected array, got {$notArray}");
         }
 
-        // @phpstan-ignore-next-line Parameter #1 $callback of function array_map expects (callable(mixed): mixed)|null, array{Spawnia\Sailor\TypeConverter, 'fromGraphQL'} given.
         return array_map([$this->ofType, 'fromGraphQL'], $value);
     }
 

@@ -111,10 +111,10 @@ HelloSailor::setClient(null);
 Custom scalars are commonly serialized as strings, but may also use other representations.
 Without knowing about the contents of the type, Sailor can not do any conversions or provide more accurate type hints, so it uses `mixed`.
 
-Enums are only supported from PHP 8.1. Many projects simply used scalar values or an implementation
-that approximates enums through some kind of value class. Sailor is not opinionated and generates
-enums as a class with string constants and does no conversion - useful but not perfect.
-For an improved experience, it is recommended to customize the enum generation/conversion.
+Since enums are only supported from PHP 8.1 and this library still supports PHP 7.4,
+it generates enums as a class with string constants and handles values as `string`.
+You may leverage native PHP enums by overriding `EndpointConfig::enumTypeConfig()`
+and return an instance of `Spawnia\Sailor\Type\NativeEnumTypeConfig`.
 
 Overwrite `EndpointConfig::configureTypes()` to specialize how Sailor deals with the types within your schema.
 See [examples/custom-types](examples/custom-types).

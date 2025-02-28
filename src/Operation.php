@@ -48,7 +48,7 @@ abstract class Operation implements BelongsToEndpoint
     {
         $mock = self::$mocks[static::class] ?? null;
         if ($mock !== null) {
-            // @phpstan-ignore-next-line This function is only present on child classes
+            // @phpstan-ignore staticMethod.notFound (only present on child classes)
             return $mock::execute(...$args);
         }
 

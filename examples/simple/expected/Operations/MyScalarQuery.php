@@ -10,8 +10,9 @@ class MyScalarQuery extends \Spawnia\Sailor\Operation
     /**
      * @param string|null $arg
      */
-    public static function execute($arg = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): MyScalarQuery\MyScalarQueryResult
-    {
+    public static function execute(
+        $arg = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+    ): MyScalarQuery\MyScalarQueryResult {
         return self::executeOperation(
             $arg,
         );

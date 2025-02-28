@@ -9,13 +9,20 @@ parameters:
   - examples/simple/expected
   - src
   - tests
+  excludePaths:
+  # Native PHP enums, do not work with PHP 7.4
+  - examples/custom-types/expected/Operations/MyNativeEnumQuery.php
+  - examples/custom-types/expected/Operations/MyNativeEnumQuery/MyNativeEnumQuery.php
+  - examples/custom-types/expected/TypeConverters/NativeEnumConverter.php
+  - examples/custom-types/expected/Types/NativeEnum.php
+  - src/Convert/NativeEnumConverter.php
+  - src/Type/NativeEnumTypeConfig.php
   tmpDir: .build/phpstan
   reportUnmatchedIgnoredErrors: false # As long as we support multiple PHP versions at once, there will be some dead spots
   ignoreErrors:
   # Required in different versions
   - '#Call to deprecated method getNamespace\(\) of class Nette\\PhpGenerator\\ClassType#'
-  # Necessary when calling into generated client code, we know how it looks like
-  - '#Unsafe usage of new static.*#'
+  - '#Unsafe usage of new static.*#' # Necessary when calling into generated client code, we know how it looks like
   # @property on interfaces or abstract classes
   - '#Access to an undefined property GraphQL\\Type\\Definition\\NamedType&GraphQL\\Type\\Definition\\Type::\$name\.#'
   - '#Access to an undefined property Spawnia\\Sailor\\Result::\$data\.#'
@@ -24,10 +31,23 @@ parameters:
   - '#extends generic class BenSampo\\Enum\\Enum but does not specify its types: TValue#'
   # Due to different versions of PHPUnit, attributes are backwards-compatible though
   - '#Attribute class PHPUnit\\Framework\\Attributes\\After does not exist\.#'
+   # Alternative unclear
+  - '#Call to deprecated method getNamespace\(\) of class Nette\\PhpGenerator\\Class.+#'
+   # TODO remove when we require nette/php-generator:^4
+  - '#Nette\\PhpGenerator\\EnumType#'
+  # Useful as long as we support safe 1 and 2
+  - '#Call to deprecated function Safe\\substr\(\)#'
+  # TODO not in safe-php 1
+  - '#Function shell_exec is unsafe to use#'
+  # Magic property on an abstract class
+  - '#Access to an undefined property Spawnia\\Sailor\\ErrorFreeResult::\$data.*#'
+  - '#Access to an undefined property Spawnia\\Sailor\\Result::\$data.*#'
   # Due to the workaround with ObjectLike::UNDEFINED
   - '#Default value of the parameter .+ \(string\) of method .+::make\(\) is incompatible with type .+#'
   - '#Default value of the parameter .+ \(string\) of method .+::execute\(\) is incompatible with type .+#'
   - "#Strict comparison using !== between .+ and 'Special default…' will always evaluate to true#"
+  # TODO use name() when requiring graphql-php 15
+  - '#Access to an undefined property GraphQL\\Type\\Definition\\NamedType.*::\$name.#'
   # Install https://plugins.jetbrains.com/plugin/7677-awesome-console to make those links clickable
   editorUrl: '%%relFile%%:%%line%%'
   editorUrlTitle: '%%relFile%%:%%line%%'

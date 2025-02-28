@@ -3,16 +3,16 @@
 namespace Spawnia\Sailor\CustomTypes\Operations;
 
 /**
- * @extends \Spawnia\Sailor\Operation<\Spawnia\Sailor\CustomTypes\Operations\MyBenSampoEnumQuery\MyBenSampoEnumQueryResult>
+ * @extends \Spawnia\Sailor\Operation<\Spawnia\Sailor\CustomTypes\Operations\MyNativeEnumQuery\MyNativeEnumQueryResult>
  */
-class MyBenSampoEnumQuery extends \Spawnia\Sailor\Operation
+class MyNativeEnumQuery extends \Spawnia\Sailor\Operation
 {
     /**
-     * @param \Spawnia\Sailor\CustomTypes\Types\BenSampoEnum|null $value
+     * @param \Spawnia\Sailor\CustomTypes\Types\NativeEnum|null $value
      */
     public static function execute(
         $value = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
-    ): MyBenSampoEnumQuery\MyBenSampoEnumQueryResult {
+    ): MyNativeEnumQuery\MyNativeEnumQueryResult {
         return self::executeOperation(
             $value,
         );
@@ -23,15 +23,15 @@ class MyBenSampoEnumQuery extends \Spawnia\Sailor\Operation
         static $converters;
 
         return $converters ??= [
-            ['value', new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\CustomTypes\TypeConverters\BenSampoEnumConverter)],
+            ['value', new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\CustomTypes\TypeConverters\NativeEnumConverter)],
         ];
     }
 
     public static function document(): string
     {
-        return /* @lang GraphQL */ 'query MyBenSampoEnumQuery($value: BenSampoEnum) {
+        return /* @lang GraphQL */ 'query MyNativeEnumQuery($value: NativeEnum) {
           __typename
-          withBenSampoEnum(value: $value)
+          withNativeEnum(value: $value)
         }';
     }
 

@@ -11,8 +11,9 @@ class MyEnumInputQuery extends \Spawnia\Sailor\ObjectLike
     /**
      * @param \Spawnia\Sailor\CustomTypes\Operations\MyEnumInputQuery\WithEnumInput\EnumObject|null $withEnumInput
      */
-    public static function make($withEnumInput = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): self
-    {
+    public static function make(
+        $withEnumInput = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+    ): self {
         $instance = new self;
 
         $instance->__typename = 'Query';

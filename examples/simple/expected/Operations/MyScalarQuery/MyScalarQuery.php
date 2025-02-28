@@ -11,8 +11,9 @@ class MyScalarQuery extends \Spawnia\Sailor\ObjectLike
     /**
      * @param string|null $scalarWithArg
      */
-    public static function make($scalarWithArg = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): self
-    {
+    public static function make(
+        $scalarWithArg = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+    ): self {
         $instance = new self;
 
         $instance->__typename = 'Query';

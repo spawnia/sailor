@@ -17,7 +17,7 @@
   "require": {
     "php": "^7.4 || ^8",
     "ext-json": "*",
-    "nette/php-generator": "^3.6.7 || ^4",
+    "nette/php-generator": "^3.6.9 || ^4.1.7",
     "psr/http-client": "^1",
     "symfony/console": "^5 || ^6 || ^7",
     "symfony/var-exporter": "^5.3 || ^6 || ^7",
@@ -35,15 +35,17 @@
     "mockery/mockery": "^1.4",
     "nesbot/carbon": "^2.73 || ^3",
     "nyholm/psr7": "^1.4",
+    "ocramius/package-versions": "^1 || ^2",
     "php-http/httplug": "^2",
     "php-http/mock-client": "^1.4",
     "phpstan/extension-installer": "^1",
-    "phpstan/phpstan": "^1 || ^2",
+    "phpstan/phpstan": "^1.12.19 || ^2",
+    "phpstan/phpstan-deprecation-rules": "^1 || ^2",
     "phpstan/phpstan-mockery": "^1 || ^2",
     "phpstan/phpstan-phpunit": "^1 || ^2",
     "phpstan/phpstan-strict-rules": "^1 || ^2",
-    "phpunit/phpunit": "^9.5.2 || ^10 || ^11 || ^12",
-    "spawnia/phpunit-assert-directory": "^2",
+    "phpunit/phpunit": "^9.6.22 || ^10.5.45 || ^11.5.10 || ^12.0.5",
+    "spawnia/phpunit-assert-directory": "^2.1",
     "symfony/var-dumper": "^5.2.3 || ^6 || ^7",
     "thecodingmachine/phpstan-safe-rule": "^1.1"
   },
@@ -79,9 +81,6 @@
       "ocramius/package-versions": true,
       "php-http/discovery": false,
       "phpstan/extension-installer": true
-    },
-    "platform": {
-      "php": "7.4.15"
     },
     "preferred-install": "dist",
     "sort-packages": true

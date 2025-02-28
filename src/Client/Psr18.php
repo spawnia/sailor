@@ -53,7 +53,7 @@ class Psr18 implements Client
         }
         $bodyStream = $this->streamFactory->createStream(json_encode($body));
 
-        return $request
+        return $request // @phpstan-ignore-line returns RequestInterface since the methods return $this
             ->withHeader('Content-Type', 'application/json')
             ->withBody($bodyStream);
     }
