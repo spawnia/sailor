@@ -1,5 +1,6 @@
 type Query {
     withDefaultDate(value: DefaultDate!): DefaultDate!
+    withCarbonDate(value: CarbonDate!): CarbonDate!
     withDefaultEnum(value: DefaultEnum!): DefaultEnum!
     withCustomEnum(value: CustomEnum): CustomEnum
     withBenSampoEnum(value: BenSampoEnum): BenSampoEnum
@@ -34,6 +35,8 @@ enum BenSampoEnum {
 }
 
 scalar DefaultDate
+
+scalar CarbonDate
 
 scalar CustomDate
 
