@@ -52,7 +52,7 @@ class EnumTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeConfig
         $namespace = $this->endpointConfig->typesNamespace();
         $className = Escaper::escapeClassName($this->enumType->name);
 
-        return "{$namespace}\\{$className}";
+        return "{$namespace}\\{$className}"; // @phpstan-ignore return.type (class-string not inferred)
     }
 
     protected function makeEnumClass(): ClassType

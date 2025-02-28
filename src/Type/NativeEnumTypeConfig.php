@@ -26,8 +26,10 @@ class NativeEnumTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeCon
 
     public function typeConverter(): string
     {
-        // @phpstan-ignore-next-line PHPStan does not recognize the dynamically built class name
-        return $this->endpointConfig->typeConvertersNamespace() . '\\' . $this->typeConverterBaseName();
+        $namespace = $this->endpointConfig->typeConvertersNamespace();
+        $className = $this->typeConverterBaseName();
+
+        return "{$namespace}\\{$className}"; // @phpstan-ignore return.type (class-string not inferred)
     }
 
     public function inputTypeReference(): string

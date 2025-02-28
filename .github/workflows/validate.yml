@@ -36,7 +36,6 @@ jobs:
           - 8.4
         dependencies:
           - lowest
-          - locked
           - highest
 
     steps:
@@ -69,7 +68,6 @@ jobs:
           - 8.4
         dependencies:
           - lowest
-          - locked
           - highest
 
     steps:

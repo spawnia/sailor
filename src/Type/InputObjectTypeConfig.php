@@ -33,8 +33,7 @@ class InputObjectTypeConfig implements TypeConfig, InputTypeConfig
         $namespace = $this->endpointConfig->typesNamespace();
         $className = Escaper::escapeClassName($this->inputObjectType->name);
 
-        // @phpstan-ignore return.type (class-string not inferred)
-        return "{$namespace}\\{$className}";
+        return "{$namespace}\\{$className}"; // @phpstan-ignore return.type (class-string not inferred)
     }
 
     public function typeConverter(): string
