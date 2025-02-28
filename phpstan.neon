@@ -31,10 +31,14 @@ parameters:
   - '#extends generic class BenSampo\\Enum\\Enum but does not specify its types: TValue#'
   # Due to different versions of PHPUnit, attributes are backwards-compatible though
   - '#Attribute class PHPUnit\\Framework\\Attributes\\After does not exist\.#'
-  - '#Call to deprecated method getNamespace\(\) of class Nette\\PhpGenerator\\Class.+#' # Alternative unclear
-  - '#Nette\\PhpGenerator\\EnumType#' # TODO remove when we require nette/php-generator:^4
-  - '#Call to deprecated function Safe\\substr\(\)#' # Useful as long as we support safe 1 and 2
-  - '#Function shell_exec is unsafe to use#' # TODO not in safe-php 1
+   # Alternative unclear
+  - '#Call to deprecated method getNamespace\(\) of class Nette\\PhpGenerator\\Class.+#'
+   # TODO remove when we require nette/php-generator:^4
+  - '#Nette\\PhpGenerator\\EnumType#'
+  # Useful as long as we support safe 1 and 2
+  - '#Call to deprecated function Safe\\substr\(\)#'
+  # TODO not in safe-php 1
+  - '#Function shell_exec is unsafe to use#'
   # Magic property on an abstract class
   - '#Access to an undefined property Spawnia\\Sailor\\ErrorFreeResult::\$data.*#'
   - '#Access to an undefined property Spawnia\\Sailor\\Result::\$data.*#'
@@ -42,7 +46,8 @@ parameters:
   - '#Default value of the parameter .+ \(string\) of method .+::make\(\) is incompatible with type .+#'
   - '#Default value of the parameter .+ \(string\) of method .+::execute\(\) is incompatible with type .+#'
   - "#Strict comparison using !== between .+ and 'Special default…' will always evaluate to true#"
-  - '#Access to an undefined property GraphQL\\Type\\Definition\\NamedType.*::\$name.#' # TODO use name() when requiring graphql-php 15
+  # TODO use name() when requiring graphql-php 15
+  - '#Access to an undefined property GraphQL\\Type\\Definition\\NamedType.*::\$name.#'
   # Install https://plugins.jetbrains.com/plugin/7677-awesome-console to make those links clickable
   editorUrl: '%%relFile%%:%%line%%'
   editorUrlTitle: '%%relFile%%:%%line%%'
