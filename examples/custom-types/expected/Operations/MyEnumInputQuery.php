@@ -12,8 +12,7 @@ class MyEnumInputQuery extends \Spawnia\Sailor\Operation
      */
     public static function execute(
         $input = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
-    ): MyEnumInputQuery\MyEnumInputQueryResult
-    {
+    ): MyEnumInputQuery\MyEnumInputQueryResult {
         return self::executeOperation(
             $input,
         );

@@ -13,8 +13,7 @@ class MyBenSampoEnumQuery extends \Spawnia\Sailor\ObjectLike
      */
     public static function make(
         $withBenSampoEnum = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
-    ): self
-    {
+    ): self {
         $instance = new self;
 
         $instance->__typename = 'Query';

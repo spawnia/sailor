@@ -19,8 +19,7 @@ class _Switch extends \Spawnia\Sailor\ObjectLike
         $int = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
         $for = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
         $as = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
-    ): self
-    {
+    ): self {
         $instance = new self;
 
         $instance->__typename = 'Switch';

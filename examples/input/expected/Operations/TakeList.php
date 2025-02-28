@@ -12,8 +12,7 @@ class TakeList extends \Spawnia\Sailor\Operation
      */
     public static function execute(
         $values = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
-    ): TakeList\TakeListResult
-    {
+    ): TakeList\TakeListResult {
         return self::executeOperation(
             $values,
         );

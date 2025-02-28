@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\CustomTypes\Operations\MyNativeEnumQuery;
 
@@ -15,8 +13,7 @@ class MyNativeEnumQuery extends \Spawnia\Sailor\ObjectLike
      */
     public static function make(
         $withNativeEnum = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
-    ): self
-    {
+    ): self {
         $instance = new self;
 
         $instance->__typename = 'Query';

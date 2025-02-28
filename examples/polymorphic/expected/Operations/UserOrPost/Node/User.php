@@ -16,8 +16,7 @@ class User extends \Spawnia\Sailor\ObjectLike
     public static function make(
         $id,
         $name = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
-    ): self
-    {
+    ): self {
         $instance = new self;
 
         if ($id !== self::UNDEFINED) {

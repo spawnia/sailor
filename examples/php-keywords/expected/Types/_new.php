@@ -12,8 +12,7 @@ class _new extends \Spawnia\Sailor\ObjectLike
      */
     public static function make(
         $unset = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
-    ): self
-    {
+    ): self {
         $instance = new self;
 
         if ($unset !== self::UNDEFINED) {

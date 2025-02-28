@@ -12,8 +12,7 @@ class TakeSomeInput extends \Spawnia\Sailor\Operation
      */
     public static function execute(
         $input = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
-    ): TakeSomeInput\TakeSomeInputResult
-    {
+    ): TakeSomeInput\TakeSomeInputResult {
         return self::executeOperation(
             $input,
         );

@@ -79,9 +79,7 @@ class NativeEnumTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeCon
         return Escaper::escapeClassName($this->enumType->name);
     }
 
-    /**
-     * @return class-string<\BackedEnum>
-     */
+    /** @return class-string<\BackedEnum> */
     protected function enumClassName(): string
     {
         // @phpstan-ignore-next-line PHPStan does not recognize the dynamically built class name

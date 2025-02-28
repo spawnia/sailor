@@ -12,8 +12,7 @@ class ClientDirectiveFragmentSpreadQuery extends \Spawnia\Sailor\Operation
      */
     public static function execute(
         $value,
-    ): ClientDirectiveFragmentSpreadQuery\ClientDirectiveFragmentSpreadQueryResult
-    {
+    ): ClientDirectiveFragmentSpreadQuery\ClientDirectiveFragmentSpreadQueryResult {
         return self::executeOperation(
             $value,
         );
