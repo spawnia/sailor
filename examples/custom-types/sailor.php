@@ -11,7 +11,6 @@ use Spawnia\Sailor\CustomTypesSrc\CustomObjectTypeConfig;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
-use Spawnia\Sailor\Tests\Integration\CodegenTest;
 use Spawnia\Sailor\Type\BenSampoEnumTypeConfig;
 use Spawnia\Sailor\Type\CarbonTypeConfig;
 use Spawnia\Sailor\Type\NativeEnumTypeConfig;
@@ -68,22 +67,22 @@ return [
 
         public function configureTypes(Schema $schema): array
         {
-            return array_merge(
-                parent::configureTypes($schema),
-                [
-                    'BenSampoEnum' => new BenSampoEnumTypeConfig($this, $schema->getType('BenSampoEnum')),
-                    'CarbonDate' => new CarbonTypeConfig($this, $schema->getType('CarbonDate'), 'Y-m-d'),
-                    'CustomEnum' => new CustomEnumTypeConfig($this, $schema->getType('CustomEnum')),
-                    'CustomDate' => new CustomDateTypeConfig($this, $schema->getType('CustomDate')),
-                    'CustomInput' => new CustomObjectTypeConfig($this, $schema->getType('CustomInput')),
-                    'CustomOutput' => new CustomObjectTypeConfig($this, $schema->getType('CustomOutput')),
-                ],
-                CodegenTest::enumClassGenerationSupported()
-                    ? [
-                        'NativeEnum' => new NativeEnumTypeConfig($this, $schema->getType('NativeEnum')),
-                    ]
-                    : [],
-            );
+
+            $types = parent::configureTypes($schema);
+
+            $types['BenSampoEnum'] = new BenSampoEnumTypeConfig($this, $schema->getType('BenSampoEnum'));
+            $types['CarbonDate'] = new CarbonTypeConfig($this, $schema->getType('CarbonDate'), 'Y-m-d');
+            $types['CustomEnum'] = new CustomEnumTypeConfig($this, $schema->getType('CustomEnum'));
+            $types['CustomDate'] = new CustomDateTypeConfig($this, $schema->getType('CustomDate'));
+            $types['CustomInput'] = new CustomObjectTypeConfig($this, $schema->getType('CustomInput'));
+            $types['CustomOutput'] = new CustomObjectTypeConfig($this, $schema->getType('CustomOutput'));
+
+            // if we are running on PHP 8.1 or higher, we can use the native enum type
+            if (phpversion() >= '8.1') {
+                $types['NativeEnum'] = new NativeEnumTypeConfig($this, $schema->getType('NativeEnum'));
+            }
+
+            return $types;
         }
     },
 ];

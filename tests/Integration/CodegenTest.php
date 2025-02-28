@@ -2,7 +2,6 @@
 
 namespace Spawnia\Sailor\Tests\Integration;
 
-use PackageVersions\Versions;
 use Spawnia\Sailor\Tests\Examples;
 use Spawnia\Sailor\Tests\TestCase;
 
@@ -20,13 +19,5 @@ final class CodegenTest extends TestCase
         foreach (Examples::EXAMPLES as $example) {
             yield [$example];
         }
-    }
-
-    public static function enumClassGenerationSupported(): bool
-    {
-        $phpGeneratorVersion = Versions::getVersion('nette/php-generator');
-        $phpGeneratorMajorVersion = (int) $phpGeneratorVersion[1];
-
-        return $phpGeneratorMajorVersion >= 4;
     }
 }
