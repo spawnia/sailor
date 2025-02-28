@@ -11,12 +11,6 @@ final class CodegenTest extends TestCase
     /** @dataProvider examples */
     public function testGeneratesExpectedCode(string $example): void
     {
-        $phpGeneratorVersion = Versions::getVersion('nette/php-generator');
-        $phpGeneratorMajorVersion = (int) $phpGeneratorVersion[1];
-        if ($phpGeneratorMajorVersion < 4) {
-            self::markTestSkipped('Expectations for generated code only work with nette/php-generator 4 and above');
-        }
-
         Examples::assertGeneratesExpectedCode($example);
     }
 
@@ -26,5 +20,13 @@ final class CodegenTest extends TestCase
         foreach (Examples::EXAMPLES as $example) {
             yield [$example];
         }
+    }
+
+    public static function enumClassGenerationSupported(): bool
+    {
+        $phpGeneratorVersion = Versions::getVersion('nette/php-generator');
+        $phpGeneratorMajorVersion = (int) $phpGeneratorVersion[1];
+
+        return $phpGeneratorMajorVersion >= 4;
     }
 }

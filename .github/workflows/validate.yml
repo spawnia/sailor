@@ -51,6 +51,9 @@ jobs:
         with:
           dependency-versions: "${{ matrix.dependencies }}"
 
+      - if: ${{ matrix.php-version == '7.4' }}
+        run: make approve
+
       - run: vendor/bin/phpstan analyse --configuration=phpstan.neon
 
   tests:
@@ -82,6 +85,9 @@ jobs:
       - uses: ramsey/composer-install@v3
         with:
           dependency-versions: "${{ matrix.dependencies }}"
+
+      - if: ${{ matrix.php-version == '7.4' }}
+        run: make approve
 
       - run: vendor/bin/phpunit
 

@@ -11,6 +11,7 @@ use Spawnia\Sailor\CustomTypesSrc\CustomObjectTypeConfig;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
+use Spawnia\Sailor\Tests\Integration\CodegenTest;
 use Spawnia\Sailor\Type\BenSampoEnumTypeConfig;
 use Spawnia\Sailor\Type\CarbonTypeConfig;
 use Spawnia\Sailor\Type\NativeEnumTypeConfig;
@@ -76,8 +77,12 @@ return [
                     'CustomDate' => new CustomDateTypeConfig($this, $schema->getType('CustomDate')),
                     'CustomInput' => new CustomObjectTypeConfig($this, $schema->getType('CustomInput')),
                     'CustomOutput' => new CustomObjectTypeConfig($this, $schema->getType('CustomOutput')),
-                    'NativeEnum' => new NativeEnumTypeConfig($this, $schema->getType('NativeEnum')),
-                ]
+                ],
+                CodegenTest::enumClassGenerationSupported()
+                    ? [
+                        'NativeEnum' => new NativeEnumTypeConfig($this, $schema->getType('NativeEnum')),
+                    ]
+                    : [],
             );
         }
     },
