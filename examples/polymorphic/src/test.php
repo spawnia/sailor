@@ -11,4 +11,4 @@ $userOrPost = $result->data->node;
 
 assert($userOrPost instanceof UserOrPost\Node\User);
 assert($userOrPost->id === $id);
-assert('blarg' === $userOrPost->name);
+assert($userOrPost->name === 'blarg');

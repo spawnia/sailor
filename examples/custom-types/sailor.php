@@ -2,6 +2,8 @@
 
 use GraphQL\Type\Schema;
 use Spawnia\Sailor\Client;
+use Spawnia\Sailor\Codegen\DirectoryFinder;
+use Spawnia\Sailor\Codegen\Finder;
 use Spawnia\Sailor\CustomTypes\Types\CustomEnum;
 use Spawnia\Sailor\CustomTypesSrc\CustomDateTypeConfig;
 use Spawnia\Sailor\CustomTypesSrc\CustomEnumTypeConfig;
@@ -10,6 +12,7 @@ use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
 use Spawnia\Sailor\Type\BenSampoEnumTypeConfig;
+use Spawnia\Sailor\Type\CarbonTypeConfig;
 use Spawnia\Sailor\Type\NativeEnumTypeConfig;
 
 return [
@@ -24,14 +27,14 @@ return [
             return __DIR__ . '/generated';
         }
 
-        public function searchPath(): string
-        {
-            return __DIR__ . '/src';
-        }
-
         public function schemaPath(): string
         {
             return __DIR__ . '/schema.graphql';
+        }
+
+        public function finder(): Finder
+        {
+            return new DirectoryFinder(__DIR__ . '/src');
         }
 
         public function makeClient(): Client
@@ -68,6 +71,7 @@ return [
                 parent::configureTypes($schema),
                 [
                     'BenSampoEnum' => new BenSampoEnumTypeConfig($this, $schema->getType('BenSampoEnum')),
+                    'CarbonDate' => new CarbonTypeConfig($this, $schema->getType('CarbonDate'), 'Y-m-d'),
                     'CustomEnum' => new CustomEnumTypeConfig($this, $schema->getType('CustomEnum')),
                     'CustomDate' => new CustomDateTypeConfig($this, $schema->getType('CustomDate')),
                     'CustomInput' => new CustomObjectTypeConfig($this, $schema->getType('CustomInput')),

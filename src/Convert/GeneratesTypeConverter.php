@@ -11,14 +11,10 @@ use Spawnia\Sailor\EndpointConfig;
 
 trait GeneratesTypeConverter
 {
-    /**
-     * @param Type&NamedType $type
-     */
+    /** @param Type&NamedType $type */
     abstract protected function decorateTypeConverterClass(Type $type, ClassType $class, Method $fromGraphQL, Method $toGraphQL): ClassType;
 
-    /**
-     * @param Type&NamedType $type
-     */
+    /** @param Type&NamedType $type */
     protected function makeTypeConverter(Type $type, EndpointConfig $endpointConfig): ClassType
     {
         $class = new ClassType(
@@ -44,13 +40,13 @@ trait GeneratesTypeConverter
      */
     public function typeConverterClassName(Type $type, EndpointConfig $endpointConfig): string
     {
-        // @phpstan-ignore-next-line PHPStan does not recognize the dynamically built class name
-        return $endpointConfig->typeConvertersNamespace() . '\\' . $this->typeConverterBaseName($type);
+        $namespace = $endpointConfig->typeConvertersNamespace();
+        $className = $this->typeConverterBaseName($type);
+
+        return "{$namespace}\\{$className}"; // @phpstan-ignore return.type (class-string not inferred)
     }
 
-    /**
-     * @param Type&NamedType $type
-     */
+    /** @param Type&NamedType $type */
     protected function typeConverterBaseName(Type $type): string
     {
         return "{$type->name}Converter";

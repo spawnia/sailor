@@ -5,9 +5,7 @@ namespace Spawnia\Sailor;
 use Spawnia\Sailor\Error\Error;
 use Spawnia\Sailor\Error\ResultErrorsException;
 
-/**
- * @property \Spawnia\Sailor\ObjectLike|null $data The result of executing the requested operation.
- */
+/** @property ObjectLike|null $data The result of executing the requested operation. */
 abstract class Result implements BelongsToEndpoint
 {
     /**
@@ -20,24 +18,16 @@ abstract class Result implements BelongsToEndpoint
      */
     public ?array $errors = null;
 
-    /**
-     * Optional, can be an arbitrary map if present.
-     */
+    /** Optional, can be an arbitrary map if present. */
     public ?\stdClass $extensions = null;
 
-    /**
-     * Decode the raw data into proper types and set it.
-     */
+    /** Decode the raw data into proper types and set it. */
     abstract protected function setData(\stdClass $data): void;
 
-    /**
-     * Throws if errors are present in the result or returns an error free result.
-     */
+    /** Throws if errors are present in the result or returns an error free result. */
     abstract public function errorFree(): ErrorFreeResult;
 
-    /**
-     * @return static
-     */
+    /** @return static */
     public static function fromResponse(Response $response): self
     {
         $instance = new static();
@@ -56,9 +46,7 @@ abstract class Result implements BelongsToEndpoint
         return $instance;
     }
 
-    /**
-     * @return static
-     */
+    /** @return static */
     public static function fromStdClass(\stdClass $stdClass): self
     {
         return static::fromResponse(
@@ -105,16 +93,12 @@ abstract class Result implements BelongsToEndpoint
     /**
      * Throw an exception if errors are present in the result.
      *
-     * @throws \Spawnia\Sailor\Error\ResultErrorsException
-     *
-     * @return $this
+     * @throws ResultErrorsException
      */
-    public function assertErrorFree(): self
+    public function assertErrorFree(): void
     {
         if (isset($this->errors)) {
             throw new ResultErrorsException($this->errors, static::config(), static::endpoint());
         }
-
-        return $this;
     }
 }

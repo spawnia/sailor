@@ -4,11 +4,11 @@ namespace Spawnia\Sailor\Codegen;
 
 use GraphQL\Error\Error;
 use GraphQL\Error\SyntaxError;
-use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
 use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\PhpNamespace;
 use Nette\PhpGenerator\EnumType;
 use Nette\PhpGenerator\PsrPrinter;
 use Spawnia\Sailor\EndpointConfig;
@@ -36,7 +36,7 @@ class Generator
     public function generate(): iterable
     {
         $parsedDocuments = $this->parsedDocuments();
-        if ([] === $parsedDocuments) {
+        if ($parsedDocuments === []) {
             return [];
         }
 
@@ -45,13 +45,13 @@ class Generator
 
         // Validate the document as defined by the user to give them an error
         // message that is more closely related to their source code
-        Validator::validate($schema, $document);
+        Validator::validateDocumentWithSchema($schema, $document);
 
         $document = (new FoldFragments($document))->modify();
         AddTypename::modify($document);
 
         // Validate again to ensure the modifications we made were safe
-        Validator::validate($schema, $document);
+        Validator::validateDocumentWithSchema($schema, $document);
 
         foreach ((new OperationGenerator($schema, $document, $this->endpointConfig))->generate() as $class) {
             yield $this->makeFile($class);
@@ -77,13 +77,13 @@ class Generator
         $endpoint->setStatic();
         $endpoint->setReturnType('string');
         $endpoint->setBody(<<<PHP
-            return '{$this->endpointName}';
+        return '{$this->endpointName}';
         PHP);
 
         $file = new File();
 
         $phpNamespace = $classType->getNamespace();
-        if (null === $phpNamespace) {
+        if ($phpNamespace === null) {
             throw new \Exception('Generated classes must have a namespace.');
         }
         $namespace = $phpNamespace->getName();
@@ -95,11 +95,11 @@ class Generator
         $config->setStatic();
         $config->setReturnType('string');
         $config->setBody(<<<PHP
-            return {$this->configPath($targetDirectory)};
+        return {$this->configPath($targetDirectory)};
         PHP);
 
         $file->name = $classType->getName() . '.php';
-        $file->content = self::asPhpFile($classType);
+        $file->content = self::asPhpFile($classType, $phpNamespace);
 
         return $file;
     }
@@ -112,9 +112,7 @@ class Generator
         return $this->endpointConfig->targetPath() . $pathInTarget;
     }
 
-    /**
-     * @see https://stackoverflow.com/a/2638272
-     */
+    /** @see https://stackoverflow.com/a/2638272 */
     protected function configPath(string $directory): string
     {
         $from = explode('/', $directory);
@@ -139,7 +137,7 @@ class Generator
 
     public static function after(string $subject, string $search): string
     {
-        if ('' === $search) {
+        if ($search === '') {
             return $subject;
         }
 
@@ -151,27 +149,23 @@ class Generator
     /**
      * @param ClassType|EnumType $classType
      */
-    protected static function asPhpFile(object $classType): string
+    protected static function asPhpFile(object $classType, PhpNamespace $namespace): string
     {
         $printer = new PsrPrinter();
-        $phpNamespace = $classType->getNamespace();
-        $class = $printer->printClass($classType, $phpNamespace);
 
         return <<<PHP
-            <?php
+        <?php declare(strict_types=1);
 
-            declare(strict_types=1);
+        namespace {$namespace->getName()};
 
-            {$phpNamespace}{$class}
-            PHP;
+        {$printer->printClass($classType, $namespace)}
+        PHP;
     }
 
     /**
      * Parse the raw document contents.
      *
      * @param  array<string, string>  $documents
-     *
-     * @throws \GraphQL\Error\SyntaxError
      *
      * @return array<string, \GraphQL\Language\AST\DocumentNode>
      */
@@ -182,31 +176,12 @@ class Generator
             try {
                 $parsed[$path] = Parser::parse($content);
             } catch (SyntaxError $error) {
-                throw new Error(
-                    // Inform the user which file the error occurred in.
-                    "Failed to parse {$path}: {$error->getMessage()}.",
-                    null,
-                    $error->getSource(),
-                    $error->getPositions()
-                );
+                // Inform the user which file the error occurred in.
+                throw new Error("Failed to parse {$path}: {$error->getMessage()}.", null, $error->getSource(), $error->getPositions());
             }
         }
 
         return $parsed;
-    }
-
-    /**
-     * @param  array<string, \GraphQL\Language\AST\DocumentNode>  $parsed
-     */
-    public static function validateDocuments(array $parsed): void
-    {
-        foreach ($parsed as $path => $documentNode) {
-            foreach ($documentNode->definitions as $definition) {
-                if ($definition instanceof OperationDefinitionNode && null === $definition->name) {
-                    throw new Error("Found unnamed operation definition in {$path}.", $definition);
-                }
-            }
-        }
     }
 
     protected function schema(): Schema
@@ -218,9 +193,7 @@ class Generator
         return BuildSchema::build($schemaString);
     }
 
-    /**
-     * @return array<string, \GraphQL\Language\AST\DocumentNode>
-     */
+    /** @return array<string, \GraphQL\Language\AST\DocumentNode> */
     protected function parsedDocuments(): array
     {
         $documents = $this->endpointConfig
@@ -232,7 +205,7 @@ class Generator
 
         $parsed = static::parseDocuments($documents);
 
-        static::validateDocuments($parsed);
+        Validator::validateDocuments($parsed);
 
         return $parsed;
     }

@@ -15,7 +15,7 @@ use function Safe\json_encode;
 final class Json
 {
     /**
-     * Convert an JSON-encodable value so that maps are stdClass instances.
+     * Convert a JSON-encodable value so that maps are stdClass instances.
      *
      * @param JsonValue $value any value that can be encoded as JSON
      *
@@ -28,7 +28,7 @@ final class Json
     }
 
     /**
-     * Convert an JSON encodable value so that maps are associative arrays.
+     * Convert a JSON-encodable value so that maps are associative arrays.
      *
      * @param JsonValue $value any value that can be encoded as JSON
      *

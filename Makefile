@@ -3,7 +3,7 @@ it: fix stan approve test test-examples ## Run the commonly used targets
 
 .PHONY: help
 help: ## Displays this list of targets with descriptions
-	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(firstword $(MAKEFILE_LIST)) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[32m%-30s\033[0m %s\n", $$1, $$2}'
+	@grep --extended-regexp '^[a-zA-Z0-9_-]+:.*?## .*$$' $(firstword $(MAKEFILE_LIST)) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[32m%-30s\033[0m %s\n", $$1, $$2}'
 
 .PHONY: fix
 fix: vendor
@@ -11,15 +11,19 @@ fix: vendor
 
 .PHONY: stan
 stan: ## Runs static analysis with phpstan
-	vendor/bin/phpstan analyse
+	mkdir --parents .build/phpstan
+	vendor/bin/phpstan analyse --configuration=phpstan.neon
 
 .PHONY: test
 test: ## Runs tests with phpunit
+	mkdir --parents .build/phpunit
 	vendor/bin/phpunit
 
 .PHONY: coverage
 coverage: ## Collects coverage from running unit tests with phpunit
-	vendor/bin/phpunit --coverage-text
+	mkdir --parents .build/phpunit
+	vendor/bin/phpunit --dump-xdebug-filter=.build/phpunit/xdebug-filter.php
+	vendor/bin/phpunit --coverage-text --prepend=.build/phpunit/xdebug-filter.php
 
 .PHONY: approve
 approve: ## Generate code and approve it as expected

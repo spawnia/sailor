@@ -13,7 +13,9 @@ class ScalarTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeConfig
 
     protected function typeReference(): string
     {
-        return 'string';
+        // While typically serialized as a string, custom scalars may use other data types.
+        // See https://spec.graphql.org/draft/#sec-Scalars.Custom-Scalars.
+        return 'mixed';
     }
 
     public function inputTypeReference(): string

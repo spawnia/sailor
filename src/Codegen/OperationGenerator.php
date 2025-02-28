@@ -31,9 +31,7 @@ use Spawnia\Sailor\Type\OutputTypeConfig;
 use Spawnia\Sailor\Type\TypeConfig;
 use Symfony\Component\VarExporter\VarExporter;
 
-/**
- * @phpstan-import-type PolymorphicMapping from PolymorphicConverter
- */
+/** @phpstan-import-type PolymorphicMapping from PolymorphicConverter */
 class OperationGenerator implements ClassGenerator
 {
     protected Schema $schema;
@@ -51,19 +49,13 @@ class OperationGenerator implements ClassGenerator
 
     protected OperationStack $operationStack;
 
-    /**
-     * @var array<string, TypeConfig>
-     */
+    /** @var array<string, TypeConfig> */
     protected array $types;
 
-    /**
-     * @var array<int, OperationStack>
-     */
+    /** @var array<int, OperationStack> */
     protected array $operationStorage = [];
 
-    /**
-     * @var array<int, string>
-     */
+    /** @var array<int, string> */
     protected array $namespaceStack;
 
     public function generate(): iterable
@@ -105,11 +97,9 @@ class OperationGenerator implements ClassGenerator
                     $dataParam = $setData->addParameter('data');
                     $dataParam->setType('\\stdClass');
                     $setData->setReturnType('void');
-                    $setData->setBody(
-                        <<<PHP
-                                \$this->data = {$operationName}::fromStdClass(\$data);
-                                PHP
-                    );
+                    $setData->setBody(<<<PHP
+                    \$this->data = {$operationName}::fromStdClass(\$data);
+                    PHP);
 
                     $dataType = $this->withCurrentNamespace($operationName);
 
@@ -118,21 +108,17 @@ class OperationGenerator implements ClassGenerator
                     $dataParam = $fromData->addParameter('data');
                     $dataParam->setType($dataType);
                     $fromData->setReturnType('self');
-                    $fromData->addComment(
-                        <<<'PHPDOC'
-                            Useful for instantiation of successful mocked results.
+                    $fromData->addComment(<<<'PHPDOC'
+                    Useful for instantiation of successful mocked results.
 
-                            @return static
-                            PHPDOC
-                    );
-                    $fromData->setBody(
-                        <<<'PHP'
-                            $instance = new static;
-                            $instance->data = $data;
+                    @return static
+                    PHPDOC);
+                    $fromData->setBody(<<<'PHP'
+                    $instance = new static;
+                    $instance->data = $data;
 
-                            return $instance;
-                            PHP
-                    );
+                    return $instance;
+                    PHP);
 
                     $dataProp = $result->addProperty('data', null);
                     $dataProp->setType($dataType);
@@ -145,11 +131,9 @@ class OperationGenerator implements ClassGenerator
                     $errorFree->setReturnType(
                         $this->withCurrentNamespace($errorFreeResultName)
                     );
-                    $errorFree->setBody(
-                        <<<PHP
-                                return {$errorFreeResultName}::fromResult(\$this);
-                                PHP
-                    );
+                    $errorFree->setBody(<<<PHP
+                    return {$errorFreeResultName}::fromResult(\$this);
+                    PHP);
 
                     $errorFreeResult = new ClassType($errorFreeResultName, $this->makeNamespace());
                     $errorFreeResult->setExtends(ErrorFreeResult::class);
@@ -185,10 +169,10 @@ class OperationGenerator implements ClassGenerator
                     $name = $variableDefinition->variable->name->value;
 
                     $type = $typeInfo->getInputType();
-                    assert(null !== $type, 'schema is validated');
+                    assert($type !== null, 'schema is validated');
 
                     $namedType = Type::getNamedType($type);
-                    assert(null !== $namedType, 'schema is validated');
+                    assert($namedType !== null, 'schema is validated');
 
                     $typeConfig = $this->types[$namedType->name];
                     assert($typeConfig instanceof InputTypeConfig);
@@ -210,10 +194,10 @@ class OperationGenerator implements ClassGenerator
                     $selectionClasses = $this->operationStack->selection($this->currentNamespace());
 
                     $type = $typeInfo->getType();
-                    assert(null !== $type, 'schema is validated');
+                    assert($type !== null, 'schema is validated');
 
                     $namedType = Type::getNamedType($type);
-                    assert(null !== $namedType, 'schema is validated');
+                    assert($namedType !== null, 'schema is validated');
 
                     if ($namedType instanceof CompositeType) {
                         // We go one level deeper into the selection set
@@ -223,12 +207,12 @@ class OperationGenerator implements ClassGenerator
 
                     $stopFurtherTraversal = false;
                     $typeConfig = $this->types[$namedType->name] ?? null;
-                    if (null !== $typeConfig) {
+                    if ($typeConfig !== null) {
                         assert($typeConfig instanceof OutputTypeConfig);
                         $phpDocType = $typeConfig->outputTypeReference();
                         $typeConverter = <<<PHP
-                                    {$typeConfig->typeConverter()}
-                                    PHP;
+                        {$typeConfig->typeConverter()}
+                        PHP;
 
                         $stopFurtherTraversal = true;
                     } elseif ($namedType instanceof ObjectType) {
@@ -244,8 +228,8 @@ class OperationGenerator implements ClassGenerator
                             ]
                         );
                         $typeConverter = <<<PHP
-                                {$phpType}
-                                PHP;
+                        {$phpType}
+                        PHP;
                     } elseif ($namedType instanceof InterfaceType || $namedType instanceof UnionType) {
                         /** @var PolymorphicMapping $mapping */
                         $mapping = [];
@@ -270,24 +254,24 @@ class OperationGenerator implements ClassGenerator
 
                         $mappingCode = VarExporter::export($mapping);
                         $typeConverter = <<<PHP
-                                Spawnia\Sailor\Convert\PolymorphicConverter({$mappingCode})
-                                PHP;
+                        Spawnia\Sailor\Convert\PolymorphicConverter({$mappingCode})
+                        PHP;
                     } else {
                         throw new \Exception("Unexpected namedType {$namedType->name}.");
                     }
 
                     $parentType = $typeInfo->getParentType();
-                    assert(null !== $parentType);
+                    assert($parentType !== null);
 
                     foreach ($selectionClasses as $name => $selection) {
                         $selectionType = $this->schema->getType($name);
-                        if (null === $selectionType) {
+                        if ($selectionType === null) {
                             throw new \Exception("Unable to determine type of selection {$name}");
                         }
 
                         if (TypeComparators::isTypeSubTypeOf($this->schema, $selectionType, $parentType)) {
                             // Eases instantiation of mocked results
-                            $defaultValue = Introspection::TYPE_NAME_FIELD_NAME === $fieldName
+                            $defaultValue = $fieldName === Introspection::TYPE_NAME_FIELD_NAME
                                 ? $selectionType->name
                                 : null;
 
@@ -307,10 +291,10 @@ class OperationGenerator implements ClassGenerator
                 },
                 'leave' => function (FieldNode $_) use ($typeInfo): void {
                     $type = $typeInfo->getType();
-                    assert(null !== $type, 'schema is validated');
+                    assert($type !== null, 'schema is validated');
 
                     $namedType = Type::getNamedType($type);
-                    assert(null !== $namedType, 'schema is validated');
+                    assert($namedType !== null, 'schema is validated');
 
                     if ($namedType instanceof CompositeType) {
                         $this->moveUpNamespace();

@@ -10,7 +10,7 @@ require __DIR__ . '/../vendor/autoload.php';
 $myCustomEnumQueryResult = MyCustomEnumQuery::execute(
     new CustomEnum(CustomEnum::A)
 );
-assert(CustomEnum::B === $myCustomEnumQueryResult->data->withCustomEnum->value);
+assert($myCustomEnumQueryResult->data->withCustomEnum->value === CustomEnum::B);
 
 $foo = 'foo';
 $myCustomObjectQueryResult = MyCustomObjectQuery::execute(

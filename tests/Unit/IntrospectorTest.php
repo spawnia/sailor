@@ -5,6 +5,8 @@ namespace Spawnia\Sailor\Tests\Unit;
 use GraphQL\Type\Introspection;
 use GraphQL\Utils\BuildSchema;
 use Spawnia\Sailor\Client;
+use Spawnia\Sailor\Codegen\DirectoryFinder;
+use Spawnia\Sailor\Codegen\Finder;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Error\InvalidDataException;
 use Spawnia\Sailor\Error\ResultErrorsException;
@@ -17,17 +19,15 @@ use Spawnia\Sailor\Tests\TestCase;
 use function Safe\file_get_contents;
 use function Safe\unlink;
 
-/**
- * @phpstan-import-type Request from MockClient
- */
+/** @phpstan-import-type Request from MockClient */
 final class IntrospectorTest extends TestCase
 {
     public const SCHEMA = /* @lang GraphQL */ <<<'GRAPHQL'
-        type Query {
-          simple: ID
-        }
+    type Query {
+      simple: ID
+    }
 
-        GRAPHQL;
+    GRAPHQL;
 
     public const PATH = __DIR__ . '/schema.graphql';
 
@@ -55,10 +55,8 @@ final class IntrospectorTest extends TestCase
             ->introspect();
     }
 
-    /**
-     * @return iterable<array{Request}>
-     */
-    public function validRequests(): iterable
+    /** @return iterable<array{Request}> */
+    public static function validRequests(): iterable
     {
         yield [
             static fn (): Response => self::successfulIntrospectionMock(),
@@ -89,9 +87,7 @@ final class IntrospectorTest extends TestCase
         ];
     }
 
-    /**
-     * @param Request $request
-     */
+    /** @param Request $request */
     private function makeIntrospector(callable $request): Introspector
     {
         $endpointConfig = new class($request) extends EndpointConfig {
@@ -123,9 +119,9 @@ final class IntrospectorTest extends TestCase
                 return 'simple';
             }
 
-            public function searchPath(): string
+            public function finder(): Finder
             {
-                return 'bar';
+                return new DirectoryFinder('bar');
             }
         };
 

@@ -4,21 +4,15 @@ namespace Spawnia\Sailor\Error;
 
 use GraphQL\Error\ClientAware;
 
-/**
- * TODO implement \GraphQL\Error\ProvidesExtensions once upgrading to graphql-php:15.
- */
+/** TODO implement \GraphQL\Error\ProvidesExtensions once upgrading to graphql-php:15. */
 class ResultErrorsException extends \Exception implements ClientAware
 {
     use OriginatesFromEndpoint;
 
-    /**
-     * @var array<int, Error>
-     */
+    /** @var array<int, Error> */
     public array $errors;
 
-    /**
-     * @param array<int, Error> $errors
-     */
+    /** @param array<int, Error> $errors */
     public function __construct(array $errors, string $configFile, string $endpointName)
     {
         $this->errors = $errors;
@@ -28,7 +22,7 @@ class ResultErrorsException extends \Exception implements ClientAware
         $messages = implode(
             ' | ',
             array_map(
-                static fn (Error $error): string => $error->message,
+                static fn (Error $error): string => $error->messageWithOptionalDebugMessage(),
                 $errors
             )
         );

@@ -4,9 +4,7 @@ namespace Spawnia\Sailor\Error;
 
 use GraphQL\Error\ClientAware;
 
-/**
- * Representation of an error according to https://spec.graphql.org/October2021/#sec-Errors.
- */
+/** Representation of an error according to https://spec.graphql.org/October2021/#sec-Errors. */
 class Error extends \Exception implements ClientAware
 {
     use OriginatesFromEndpoint;
@@ -33,9 +31,7 @@ class Error extends \Exception implements ClientAware
      */
     public ?array $path;
 
-    /**
-     * Arbitrary additional information.
-     */
+    /** Arbitrary additional information. */
     public ?\stdClass $extensions;
 
     public function __construct(string $message)
@@ -54,5 +50,19 @@ class Error extends \Exception implements ClientAware
         $instance->extensions = $error->extensions ?? null;
 
         return $instance;
+    }
+
+    /**
+     * If present, append the `debugMessage` returned by GraphQL servers implemented with `webonyx/graphql-php`.
+     *
+     * @see \GraphQL\Error\FormattedError::addDebugEntries
+     */
+    public function messageWithOptionalDebugMessage(): string
+    {
+        $maybeDebugMessage = $this->extensions->debugMessage ?? null;
+
+        return is_string($maybeDebugMessage) && $maybeDebugMessage !== ''
+            ? "{$this->message} ({$maybeDebugMessage})"
+            : $this->message;
     }
 }

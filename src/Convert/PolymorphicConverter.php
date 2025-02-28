@@ -4,19 +4,13 @@ namespace Spawnia\Sailor\Convert;
 
 use Spawnia\Sailor\ObjectLike;
 
-/**
- * @phpstan-type PolymorphicMapping array<string, class-string<ObjectLike>>
- */
+/** @phpstan-type PolymorphicMapping array<string, class-string<ObjectLike>> */
 class PolymorphicConverter implements TypeConverter
 {
-    /**
-     * @var PolymorphicMapping
-     */
+    /** @var PolymorphicMapping */
     protected array $mapping;
 
-    /**
-     * @param  PolymorphicMapping  $mapping
-     */
+    /** @param  PolymorphicMapping  $mapping */
     public function __construct(array $mapping)
     {
         $this->mapping = $mapping;

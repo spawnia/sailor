@@ -25,8 +25,8 @@ class Psr18 implements Client
     public function __construct(
         ClientInterface $client,
         string $url = '',
-        RequestFactoryInterface $requestFactory = null,
-        StreamFactoryInterface $streamFactory = null
+        ?RequestFactoryInterface $requestFactory = null,
+        ?StreamFactoryInterface $streamFactory = null
     ) {
         $this->client = $client;
         $this->url = $url;
@@ -34,7 +34,7 @@ class Psr18 implements Client
         $this->streamFactory = $streamFactory ?? new Psr17Factory();
     }
 
-    public function request(string $query, \stdClass $variables = null): Response
+    public function request(string $query, ?\stdClass $variables = null): Response
     {
         $response = $this->client->sendRequest(
             $this->composeRequest($query, $variables)
@@ -43,7 +43,7 @@ class Psr18 implements Client
         return Response::fromResponseInterface($response);
     }
 
-    protected function composeRequest(string $query, \stdClass $variables = null): RequestInterface
+    protected function composeRequest(string $query, ?\stdClass $variables = null): RequestInterface
     {
         $request = $this->requestFactory->createRequest('POST', $this->url);
 

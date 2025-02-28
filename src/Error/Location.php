@@ -2,9 +2,7 @@
 
 namespace Spawnia\Sailor\Error;
 
-/**
- * Beginning point of the syntax element in the GraphQL document associated with the error.
- */
+/** Beginning point of the syntax element in the GraphQL document associated with the error. */
 class Location
 {
     public static function fromStdClass(\stdClass $location): self
@@ -17,13 +15,9 @@ class Location
         return $instance;
     }
 
-    /**
-     * Line number starting from 1.
-     */
+    /** Line number starting from 1. */
     public int $line;
 
-    /**
-     * Column number starting from 1.
-     */
+    /** Column number starting from 1. */
     public int $column;
 }

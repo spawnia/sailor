@@ -19,9 +19,7 @@ class EnumGenerator implements ClassGenerator
         $this->enumType = $enumType;
     }
 
-    /**
-     * @return iterable<ClassType>
-     */
+    /** @return iterable<ClassType> */
     public function generate(): iterable
     {
         $class = $this->makeClass();

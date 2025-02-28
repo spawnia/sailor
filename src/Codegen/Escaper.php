@@ -14,9 +14,7 @@ class Escaper
             : $name;
     }
 
-    /**
-     * TODO remove with PHP 8.
-     */
+    /** TODO remove with PHP 8. */
     public static function escapeNamespaceName(string $name): string
     {
         return static::escapeClassName($name);
@@ -24,7 +22,7 @@ class Escaper
 
     public static function escapeMemberConstantName(string $name): string
     {
-        return 'class' === \strtolower($name)
+        return \strtolower($name) === 'class'
             ? "_{$name}"
             : $name;
     }

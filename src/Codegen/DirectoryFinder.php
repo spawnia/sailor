@@ -27,7 +27,7 @@ class DirectoryFinder implements Finder
 
             // When installing from source, the examples might end up in the critical path,
             // so we exclude them from the search.
-            if (false !== mb_strpos($path, 'vendor/spawnia/sailor/')) {
+            if (mb_strpos($path, 'vendor/spawnia/sailor/') !== false) {
                 continue;
             }
 

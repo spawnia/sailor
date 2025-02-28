@@ -18,14 +18,10 @@ class FoldFragments
 {
     protected DocumentNode $document;
 
-    /**
-     * @var array<string, OperationDefinitionNode>
-     */
+    /** @var array<string, OperationDefinitionNode> */
     protected array $operations = [];
 
-    /**
-     * @var array<string, FragmentDefinitionNode>
-     */
+    /** @var array<string, FragmentDefinitionNode> */
     protected array $fragments = [];
 
     public function __construct(DocumentNode $document)
@@ -61,9 +57,7 @@ class FoldFragments
         ]);
     }
 
-    /**
-     * @return NodeList<Node&SelectionNode>
-     */
+    /** @return NodeList<Node&SelectionNode> */
     protected function extractFields(SelectionSetNode $selectionSet): NodeList
     {
         /** @var array<int, Node&SelectionNode> $selections */

@@ -31,7 +31,10 @@ final class ErrorTest extends TestCase
             'bar',
         ];
 
+        $debugMessage = 'debug message';
+
         $extensions = (object) [
+            'debugMessage' => $debugMessage,
             'foo' => 123,
         ];
 
@@ -67,28 +70,32 @@ final class ErrorTest extends TestCase
         self::assertEquals($extensions, $error->extensions);
 
         self::assertJsonStringEqualsJsonString(/** @lang JSON */ <<<'JSON'
-{
-    "message": "some message",
-    "locations": [
-        {
-            "line": 1,
-            "column": 2
-        },
-        {
-            "line": 3,
-            "column": 4
-        }
-    ],
-    "path": [
-        "foo",
-        1,
-        "bar"
-    ],
-    "extensions": {
-        "foo": 123
-    }
-}
-JSON
-            , \Safe\json_encode($error));
+            {
+                "message": "some message",
+                "locations": [
+                    {
+                        "line": 1,
+                        "column": 2
+                    },
+                    {
+                        "line": 3,
+                        "column": 4
+                    }
+                ],
+                "path": [
+                    "foo",
+                    1,
+                    "bar"
+                ],
+                "extensions": {
+                    "debugMessage": "debug message",
+                    "foo": 123
+                }
+            }
+            JSON,
+            \Safe\json_encode($error)
+        );
+
+        self::assertSame('some message (debug message)', $error->messageWithOptionalDebugMessage());
     }
 }

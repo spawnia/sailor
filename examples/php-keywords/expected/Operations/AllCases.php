@@ -1,15 +1,13 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\PhpKeywords\Operations;
 
 /**
- * @extends \Spawnia\Sailor\Operation<\Spawnia\Sailor\PhpKeywords\Operations\_catch\_catchResult>
+ * @extends \Spawnia\Sailor\Operation<\Spawnia\Sailor\PhpKeywords\Operations\AllCases\AllCasesResult>
  */
-class _catch extends \Spawnia\Sailor\Operation
+class AllCases extends \Spawnia\Sailor\Operation
 {
-    public static function execute(): _catch\_catchResult
+    public static function execute(): AllCases\AllCasesResult
     {
         return self::executeOperation(
         );
@@ -25,17 +23,11 @@ class _catch extends \Spawnia\Sailor\Operation
 
     public static function document(): string
     {
-        return /* @lang GraphQL */ 'query catch {
+        return /* @lang GraphQL */ 'query AllCases {
           __typename
-          print {
+          cases {
             __typename
-            int
-            ... on Switch {
-              for
-            }
-            ... on Abstract {
-              as: int
-            }
+            id
           }
         }';
     }

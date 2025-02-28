@@ -10,9 +10,7 @@ use Spawnia\Sailor\Events\ReceiveResponse;
 use Spawnia\Sailor\Events\StartRequest;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery;
-use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery\MyObjectNestedQueryResult;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery;
-use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQueryResult;
 use Spawnia\Sailor\Tests\TestCase;
 
 final class SimpleTest extends TestCase
@@ -118,7 +116,7 @@ final class SimpleTest extends TestCase
 
         MyScalarQuery::mock()
             ->expects('execute')
-            ->andReturn(MyScalarQueryResult::fromData(
+            ->andReturn(MyScalarQuery\MyScalarQueryResult::fromData(
                 MyScalarQuery\MyScalarQuery::make(
                     /* scalarWithArg: */
                     $bar
@@ -133,11 +131,11 @@ final class SimpleTest extends TestCase
         $message = 'some error';
 
         $endpoint = \Mockery::mock(EndpointConfig::class)->makePartial();
-        Configuration::setEndpointFor(MyScalarQueryResult::class, $endpoint);
+        Configuration::setEndpointFor(MyScalarQuery\MyScalarQueryResult::class, $endpoint);
 
         MyScalarQuery::mock()
             ->expects('execute')
-            ->andReturn(MyScalarQueryResult::fromStdClass((object) [
+            ->andReturn(MyScalarQuery\MyScalarQueryResult::fromStdClass((object) [
                 'data' => null,
                 'errors' => [
                     (object) [
@@ -163,7 +161,7 @@ final class SimpleTest extends TestCase
             ->expects('execute')
             ->once()
             ->with()
-            ->andReturn(MyObjectNestedQueryResult::fromData(
+            ->andReturn(MyObjectNestedQuery\MyObjectNestedQueryResult::fromData(
                 MyObjectNestedQuery\MyObjectNestedQuery::make(
                     /* singleObject: */
                     MyObjectNestedQuery\SingleObject\SomeObject::make(
@@ -191,7 +189,7 @@ final class SimpleTest extends TestCase
             ->expects('execute')
             ->once()
             ->with()
-            ->andReturn(MyObjectNestedQueryResult::fromData(
+            ->andReturn(MyObjectNestedQuery\MyObjectNestedQueryResult::fromData(
                 MyObjectNestedQuery\MyObjectNestedQuery::make(
                     /* singleObject: */
                     MyObjectNestedQuery\SingleObject\SomeObject::make(

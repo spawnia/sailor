@@ -4,18 +4,14 @@ namespace Spawnia\Sailor;
 
 use Spawnia\Sailor\Error\ResultErrorsException;
 
-/**
- * @property \Spawnia\Sailor\ObjectLike|null $data The result of executing the requested operation.
- */
+/** @property ObjectLike|null $data The result of executing the requested operation. */
 abstract class ErrorFreeResult
 {
-    /**
-     * Optional, can be an arbitrary map if present.
-     */
+    /** Optional, can be an arbitrary map if present. */
     public ?\stdClass $extensions;
 
     /**
-     * @throws \Spawnia\Sailor\Error\ResultErrorsException
+     * @throws ResultErrorsException
      *
      * @return static
      */

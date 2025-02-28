@@ -35,23 +35,20 @@ class BenSampoEnumTypeConfig extends EnumTypeConfig
         $customEnumClass = $this->enumClassName();
 
         $fromGraphQL->setReturnType($customEnumClass);
-        $fromGraphQL->setBody(
-            <<<PHP
-                return new \\{$customEnumClass}(\$value);
-                PHP
-        );
+        $fromGraphQL->setBody(<<<PHP
+        return new \\{$customEnumClass}(\$value);
+        PHP);
 
         $toGraphQL->setReturnType('string');
-        $toGraphQL->setBody(
-            <<<PHP
-                if (! \$value instanceof \\{$customEnumClass}) {
-                    throw new \InvalidArgumentException('Expected instanceof {$customEnumClass}, got: '.gettype(\$value));
-                }
+        $toGraphQL->setBody(<<<PHP
+        if (! \$value instanceof \\{$customEnumClass}) {
+            \$actualType = gettype(\$value);
+            throw new \InvalidArgumentException("Expected instanceof {$customEnumClass}, got {\$actualType}.");
+        }
 
-                // @phpstan-ignore-next-line generated enum values are always strings
-                return \$value->value;
-                PHP
-        );
+        // @phpstan-ignore-next-line generated enum values are always strings
+        return \$value->value;
+        PHP);
 
         return $class;
     }

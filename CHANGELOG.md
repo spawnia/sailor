@@ -12,6 +12,98 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add `NativeEnumTypeConfig` to generate native PHP enums https://github.com/spawnia/sailor/pull/92
+- Allow `thecodingmachine/safe` v3 as dependency
+- Add `CarbonTypeConfig`
+
+## v0.35.0
+
+### Changed
+
+- Throw `Spawnia\Sailor\Error\UnexpectedResponse` on non-200 status codes
+
+## v0.34.0
+
+### Changed
+
+- Make `Result::assertErrorFree()` return void
+
+## v0.33.1
+
+### Fixed
+
+- Escape class names of result types named after PHP reserved keywords
+
+## v0.33.0
+
+### Changed
+
+- Validate operation names start with upper case characters
+
+## v0.32.2
+
+### Changed
+
+- Improve configuration documentation
+
+## v0.32.1
+
+### Added
+
+- Include `extensions.debugMessage` in errors, if present
+
+## v0.32.0
+
+### Changed
+
+- Remove `EndpointConfig::searchPath()`, require `finder()` instead
+
+## v0.31.2
+
+### Added
+
+- Add `DirectoriesFinder`
+
+## v0.31.1
+
+### Added
+
+- Use PHPUnit 11 attributes for testing helpers
+
+## v0.31.0
+
+### Fixed
+
+- Allow `symfony/var-exporter:^7`
+
+## v0.30.1
+
+### Fixed
+
+- Fix registering commands with symfony/console v7
+
+## v0.30.0
+
+### Added
+
+- Allow `symfony/console:^7`
+
+## v0.29.3
+
+### Fixed
+
+- Fix namespace printing with `nette/php-generator:^4.1.1`
+
+## v0.29.2
+
+### Fixed
+
+- Do not assume scalar values are `string`, use `mixed`
+
+## v0.29.1
+
+### Fixed
+
+- Default to `null` when explicitly accessing undefined optional input properties
 
 ## v0.29.0
 
