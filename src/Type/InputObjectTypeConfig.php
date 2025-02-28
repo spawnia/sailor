@@ -30,8 +30,11 @@ class InputObjectTypeConfig implements TypeConfig, InputTypeConfig
     /** @return class-string<ObjectLike> */
     public function className(): string
     {
-        // @phpstan-ignore-next-line Method Spawnia\Sailor\Codegen\InputGenerator::className() should return class-string<Spawnia\Sailor\Type\Input> but returns string.
-        return $this->endpointConfig->typesNamespace() . '\\' . Escaper::escapeClassName($this->inputObjectType->name);
+        $namespace = $this->endpointConfig->typesNamespace();
+        $className = Escaper::escapeClassName($this->inputObjectType->name);
+
+        // @phpstan-ignore return.type (class-string not inferred)
+        return "{$namespace}\\{$className}";
     }
 
     public function typeConverter(): string

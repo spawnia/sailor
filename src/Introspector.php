@@ -56,20 +56,15 @@ class Introspector
         );
 
         if (isset($response->errors)) {
-            throw new ResultErrorsException(
-                array_map(
-                    function (\stdClass $raw): Error {
-                        $parsed = $this->endpointConfig->parseError($raw);
-                        $parsed->configFile = $this->configFile;
-                        $parsed->endpointName = $this->endpointName;
+            $parsedErrors = array_map(function (\stdClass $raw): Error {
+                $parsed = $this->endpointConfig->parseError($raw);
+                $parsed->configFile = $this->configFile;
+                $parsed->endpointName = $this->endpointName;
 
-                        return $parsed;
-                    },
-                    $response->errors
-                ),
-                $this->configFile,
-                $this->endpointName
-            );
+                return $parsed;
+            }, $response->errors);
+
+            throw new ResultErrorsException($parsedErrors, $this->configFile, $this->endpointName);
         }
 
         return $response;

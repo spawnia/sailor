@@ -169,13 +169,8 @@ class Generator
             try {
                 $parsed[$path] = Parser::parse($content);
             } catch (SyntaxError $error) {
-                throw new Error(
-                    // Inform the user which file the error occurred in.
-                    "Failed to parse {$path}: {$error->getMessage()}.",
-                    null,
-                    $error->getSource(),
-                    $error->getPositions()
-                );
+                // Inform the user which file the error occurred in.
+                throw new Error("Failed to parse {$path}: {$error->getMessage()}.", null, $error->getSource(), $error->getPositions());
             }
         }
 
