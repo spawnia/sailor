@@ -1,0 +1,3 @@
+query MyCarbonDateQuery($value: CarbonDate!) {
+    withCarbonDate(value: $value)
+}

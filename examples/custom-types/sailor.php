@@ -12,6 +12,7 @@ use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
 use Spawnia\Sailor\Type\BenSampoEnumTypeConfig;
+use Spawnia\Sailor\Type\CarbonTypeConfig;
 
 return [
     'custom-types' => new class() extends EndpointConfig {
@@ -69,6 +70,7 @@ return [
                 parent::configureTypes($schema),
                 [
                     'BenSampoEnum' => new BenSampoEnumTypeConfig($this, $schema->getType('BenSampoEnum')),
+                    'CarbonDate' => new CarbonTypeConfig($this, $schema->getType('CarbonDate'), 'Y-m-d'),
                     'CustomEnum' => new CustomEnumTypeConfig($this, $schema->getType('CustomEnum')),
                     'CustomDate' => new CustomDateTypeConfig($this, $schema->getType('CustomDate')),
                     'CustomInput' => new CustomObjectTypeConfig($this, $schema->getType('CustomInput')),

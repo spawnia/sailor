@@ -33,6 +33,7 @@
     "jangregor/phpstan-prophecy": "^1 || ^2",
     "mll-lab/php-cs-fixer-config": "^5",
     "mockery/mockery": "^1.4",
+    "nesbot/carbon": "^2.73 || ^3",
     "nyholm/psr7": "^1.4",
     "php-http/httplug": "^2",
     "php-http/mock-client": "^1.4",
@@ -49,7 +50,8 @@
   "suggest": {
     "bensampo/laravel-enum": "Use with BenSampoEnumTypeConfig",
     "guzzlehttp/guzzle": "Enables using the built-in default Client",
-    "mockery/mockery": "Used in Operation::mock()"
+    "mockery/mockery": "Used in Operation::mock()",
+    "nesbot/carbon": "Use with CarbonTypeConfig"
   },
   "autoload": {
     "psr-4": {
@@ -65,10 +67,7 @@
       "Spawnia\\Sailor\\Polymorphic\\": "examples/polymorphic/expected/",
       "Spawnia\\Sailor\\Simple\\": "examples/simple/expected/",
       "Spawnia\\Sailor\\Tests\\": "tests/"
-    },
-    "files": [
-      "vendor/symfony/var-dumper/Resources/functions/dump.php"
-    ]
+    }
   },
   "bin": [
     "sailor"

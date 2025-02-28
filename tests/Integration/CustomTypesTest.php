@@ -2,9 +2,11 @@
 
 namespace Spawnia\Sailor\Tests\Integration;
 
+use Carbon\Carbon;
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\CustomTypes\Operations\MyBenSampoEnumQuery;
+use Spawnia\Sailor\CustomTypes\Operations\MyCarbonDateQuery;
 use Spawnia\Sailor\CustomTypes\Operations\MyCustomEnumQuery;
 use Spawnia\Sailor\CustomTypes\Operations\MyDefaultDateQuery;
 use Spawnia\Sailor\CustomTypes\Operations\MyDefaultEnumQuery;
@@ -48,6 +50,27 @@ final class CustomTypesTest extends TestCase
         yield ['1'];
         yield [['1', 1]];
         yield [(object) ['a' => 1]];
+    }
+
+    public function testCarbonDate(): void
+    {
+        $value = Carbon::now();
+
+        MyCarbonDateQuery::mock()
+            ->expects('execute')
+            ->once()
+            ->with($value)
+            ->andReturn(MyCarbonDateQuery\MyCarbonDateQueryResult::fromData(
+                MyCarbonDateQuery\MyCarbonDateQuery::make(
+                    /* withCarbonDate: */
+                    $value,
+                )
+            ));
+
+        $result = MyCarbonDateQuery::execute($value)->errorFree();
+
+        $carbonDate = $result->data->withCarbonDate;
+        self::assertSame($value->toDateString(), $carbonDate->toDateString());
     }
 
     public function testDefaultEnum(): void

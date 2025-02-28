@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Spawnia\Sailor\CustomTypesSrc;
+namespace Spawnia\Sailor\Type;
 
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
@@ -8,24 +8,22 @@ use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Method;
 use Spawnia\Sailor\Convert\GeneratesTypeConverter;
 use Spawnia\Sailor\EndpointConfig;
-use Spawnia\Sailor\Type\InputTypeConfig;
-use Spawnia\Sailor\Type\OutputTypeConfig;
-use Spawnia\Sailor\Type\TypeConfig;
 
-class CustomDateTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeConfig
+class CarbonTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeConfig
 {
     use GeneratesTypeConverter;
-
-    public const FORMAT = 'Y-m-d H:i:s';
 
     private EndpointConfig $endpointConfig;
 
     private ScalarType $scalarType;
 
-    public function __construct(EndpointConfig $endpointConfig, ScalarType $scalarType)
+    private string $format;
+
+    public function __construct(EndpointConfig $endpointConfig, ScalarType $scalarType, string $format)
     {
         $this->endpointConfig = $endpointConfig;
         $this->scalarType = $scalarType;
+        $this->format = $format;
     }
 
     public function typeConverter(): string
@@ -45,7 +43,7 @@ class CustomDateTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeCon
 
     protected function typeReference(): string
     {
-        return '\\' . \DateTime::class;
+        return '\\' . \Carbon\Carbon::class;
     }
 
     public function generateClasses(): iterable
@@ -55,29 +53,29 @@ class CustomDateTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeCon
 
     protected function decorateTypeConverterClass(Type $type, ClassType $class, Method $fromGraphQL, Method $toGraphQL): ClassType
     {
-        $dateTimeClass = \DateTime::class;
-        $format = self::FORMAT;
+        $carbonClass = \Carbon\Carbon::class;
 
-        $fromGraphQL->setReturnType($dateTimeClass);
+        $fromGraphQL->setReturnType($carbonClass);
         $fromGraphQL->setBody(<<<PHP
         if (! is_string(\$value)) {
             throw new \InvalidArgumentException('Expected string, got: '.gettype(\$value));
         }
 
-        \$date = \\{$dateTimeClass}::createFromFormat('{$format}', \$value);
-        if (\$date === false) {
-            throw new \InvalidArgumentException("Expected date with format {$format}, got {\$value}");
+        \$date = \\{$carbonClass}::createFromFormat('{$this->format}', \$value);
+        if (! \$date) { // @phpstan-ignore-line avoiding strict comparison, as different Carbon versions may return null or false
+            throw new \InvalidArgumentException("Expected date with format {$this->format}, got {\$value}.");
         }
 
         return \$date;
         PHP);
 
         $toGraphQL->setBody(<<<PHP
-        if (! \$value instanceof \\{$dateTimeClass}) {
-            throw new \InvalidArgumentException('Expected instanceof DateTime, got: '.gettype(\$value));
+        if (! \$value instanceof \\{$carbonClass}) {
+            \$actualType = gettype(\$value);
+            throw new \InvalidArgumentException("Expected instanceof {$carbonClass}, got {\$actualType}.");
         }
 
-        return \$value->format('{$format}');
+        return \$value->format('{$this->format}');
         PHP);
 
         return $class;
