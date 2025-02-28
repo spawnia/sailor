@@ -51,6 +51,9 @@ jobs:
         with:
           dependency-versions: "${{ matrix.dependencies }}"
 
+      # We require a newer version of nette/php-generator on later PHP versions to generate native enums.
+      # The generated output fails on PHP 7.4, so we regenerate the code there.
+      # This is not ideal as it makes CodegenTest less useful, but allows us to move forward with native enums.
       - if: ${{ matrix.php-version == '7.4' }}
         run: make approve
 
@@ -86,6 +89,9 @@ jobs:
         with:
           dependency-versions: "${{ matrix.dependencies }}"
 
+      # We require a newer version of nette/php-generator on later PHP versions to generate native enums.
+      # The generated output fails on PHP 7.4, so we regenerate the code there.
+      # This is not ideal as it makes CodegenTest less useful, but allows us to move forward with native enums.
       - if: ${{ matrix.php-version == '7.4' }}
         run: make approve
 
