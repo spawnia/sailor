@@ -35,7 +35,7 @@ class Introspector
         }
 
         $schema = BuildClientSchema::build(
-            // @phpstan-ignore-next-line we know a stdClass converts to an associative array
+            // @phpstan-ignore argument.type (we know a stdClass converts to an associative array)
             Json::stdClassToAssoc($introspectionResult->data)
         );
 

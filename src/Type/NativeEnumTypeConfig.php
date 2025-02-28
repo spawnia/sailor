@@ -84,8 +84,10 @@ class NativeEnumTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeCon
     /** @return class-string<\BackedEnum> */
     protected function enumClassName(): string
     {
-        // @phpstan-ignore-next-line PHPStan does not recognize the dynamically built class name
-        return $this->endpointConfig->typesNamespace() . '\\' . $this->enumClassBaseName();
+        $namespace = $this->endpointConfig->typesNamespace();
+        $className = $this->enumClassBaseName();
+
+        return "{$namespace}\\{$className}"; // @phpstan-ignore return.type (class-string not inferred)
     }
 
     protected function makeEnumClass(): PhpGeneratorEnumType

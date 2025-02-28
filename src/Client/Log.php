@@ -50,8 +50,7 @@ class Log implements Client
         $file = \Safe\fopen($this->filename, 'r');
 
         while ($line = fgets($file)) {
-            // @phpstan-ignore-next-line we know the data in the log matches the defined array shape
-            yield \Safe\json_decode($line, true);
+            yield \Safe\json_decode($line, true); // @phpstan-ignore return.type (we know the data in the log matches the defined array shape)
         }
 
         \Safe\fclose($file);

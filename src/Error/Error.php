@@ -14,8 +14,7 @@ class Error extends \Exception implements ClientAware
      *
      * @var string
      */
-    // @phpstan-ignore-next-line overridden type does not match, but actually will always be string
-    public $message;
+    public $message; // @phpstan-ignore property.phpDocType (will always be string)
 
     /**
      * Beginning points of syntax elements in the GraphQL document associated with the error.

@@ -13,10 +13,10 @@ class Merger
         $root = array_pop($documents);
         assert($root instanceof DocumentNode);
 
-        // @phpstan-ignore-next-line Contravariance
+        // @phpstan-ignore assign.propertyType (contravariance)
         $root->definitions = array_reduce(
             $documents,
-            // @phpstan-ignore-next-line Contravariance
+            // @phpstan-ignore assign.propertyType (contravariance)
             static fn (NodeList $definitions, DocumentNode $document): NodeList => $definitions->merge($document->definitions),
             $root->definitions
         );

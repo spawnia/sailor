@@ -23,7 +23,6 @@ final class Json
      */
     public static function assocToStdClass($value)
     {
-        // @phpstan-ignore-next-line built-in types are inaccurate
         return json_decode(json_encode($value));
     }
 
@@ -36,7 +35,6 @@ final class Json
      */
     public static function stdClassToAssoc($value)
     {
-        // @phpstan-ignore-next-line built-in types are inaccurate
         return json_decode(json_encode($value), true);
     }
 }

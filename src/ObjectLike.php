@@ -104,7 +104,7 @@ abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
             }
         }
 
-        // @phpstan-ignore-next-line iteration over object
+        // @phpstan-ignore foreach.nonIterable (iteration over stdClass works fine)
         foreach ($value as $name => $property) {
             throw static::unknownProperty($name, $converters);
         }
