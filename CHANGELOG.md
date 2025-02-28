@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Allow `thecodingmachine/safe` v3 as dependency
+
 ## v0.35.0
 
 ### Changed

@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - uses: shivammathur/setup-php@v2
         with:
@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - uses: shivammathur/setup-php@v2
         with:
@@ -33,7 +33,7 @@ jobs:
           extensions: mbstring
           php-version: 8.3
 
-      - run: composer install --no-interaction --no-progress
+      - uses: ramsey/composer-install@v3
 
       - run: vendor/bin/phpstan analyse --configuration=phpstan.neon
 
@@ -49,13 +49,14 @@ jobs:
           - 8.1
           - 8.2
           - 8.3
+          - 8.4
         dependencies:
           - lowest
           - locked
           - highest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - uses: shivammathur/setup-php@v2
         with:
@@ -63,14 +64,9 @@ jobs:
           extensions: mbstring
           php-version: ${{ matrix.php-version }}
 
-      - if: matrix.dependencies == 'lowest'
-        run: composer update --prefer-lowest --no-interaction --no-progress
-
-      - if: matrix.dependencies == 'locked'
-        run: composer install --no-interaction --no-progress
-
-      - if: matrix.dependencies == 'highest'
-        run: composer update --no-interaction --no-progress
+      - uses: ramsey/composer-install@v3
+        with:
+          dependency-versions: "${{ matrix.dependencies }}"
 
       - run: vendor/bin/phpunit
 
@@ -89,7 +85,7 @@ jobs:
           - polymorphic
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - uses: shivammathur/setup-php@v2
         with:
@@ -105,7 +101,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - uses: shivammathur/setup-php@v2
         with:
@@ -113,8 +109,9 @@ jobs:
           extensions: mbstring
           php-version: 8.3
 
-      - run: composer install --no-interaction --no-progress
+      - uses: ramsey/composer-install@v3
 
       - run: vendor/bin/phpunit --coverage-clover=build/logs/clover.xml
 
-      - uses: codecov/codecov-action@v2
+      # Not using v4 due to the breaking changes described in https://github.com/codecov/codecov-action/releases/tag/v4.0.0
+      - uses: codecov/codecov-action@v3
