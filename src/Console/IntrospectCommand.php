@@ -33,7 +33,7 @@ class IntrospectCommand extends Command
             (new Introspector($endpoint, $configFile, $endpointName))->introspect();
         }
 
-        echo "Successfully introspected. Rerun codegen with: vendor/bin/sailor\n";
+        echo "Successfully introspected. Rerun codegen with: vendor/bin/sailor codegen\n";
 
         return 0;
     }
