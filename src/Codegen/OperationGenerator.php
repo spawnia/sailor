@@ -257,7 +257,7 @@ class OperationGenerator implements ClassGenerator
                         Spawnia\Sailor\Convert\PolymorphicConverter({$mappingCode})
                         PHP;
                     } else {
-                        throw new \Exception("Unexpected namedType {$namedType->name}.");
+                        throw new \Exception("Unexpected namedType {$namedType->name}."); // @phpstan-ignore encapsedStringPart.nonString (property name on interface)
                     }
 
                     $parentType = $typeInfo->getParentType();

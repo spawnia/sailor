@@ -9,8 +9,19 @@ class Location
     {
         $instance = new static();
 
-        $instance->line = $location->line;
-        $instance->column = $location->column;
+        $line = $location->line;
+        if (! is_int($line)) {
+            $lineType = gettype($line);
+            throw new InvalidErrorException("Expected location.line to be an int, got: {$lineType}.");
+        }
+        $instance->line = $line;
+
+        $column = $location->column;
+        if (! is_int($column)) {
+            $columnType = gettype($column);
+            throw new InvalidErrorException("Expected location.column to be an int, got: {$columnType}.");
+        }
+        $instance->column = $column;
 
         return $instance;
     }

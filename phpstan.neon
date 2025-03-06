@@ -1,7 +1,7 @@
 includes:
 - vendor/phpstan/phpstan/conf/bleedingEdge.neon
 parameters:
-  level: 9
+  level: max
   paths:
   - examples/custom-types/expected
   - examples/input/expected

@@ -62,7 +62,13 @@ final class CustomObjectTypeConfig implements TypeConfig, InputTypeConfig, Outpu
             throw new \InvalidArgumentException('Did not find expected property foo.');
         }
 
-        return new \\{$customObjectClass}(\$value->foo);
+        \$foo = \$value->foo;
+        if (! is_string(\$foo)) {
+            \$fooType = gettype(\$foo);
+            throw new \InvalidArgumentException("Expected foo to be string, got: {\$fooType}.");
+        }
+
+        return new \\{$customObjectClass}(\$foo);
         PHP);
 
         $toGraphQL->setBody(<<<PHP

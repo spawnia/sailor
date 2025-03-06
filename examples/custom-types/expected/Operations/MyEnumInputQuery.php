@@ -20,6 +20,7 @@ class MyEnumInputQuery extends \Spawnia\Sailor\Operation
 
     protected static function converters(): array
     {
+        /** @var array<int, array{string, \Spawnia\Sailor\Convert\TypeConverter}>|null $converters */
         static $converters;
 
         return $converters ??= [
