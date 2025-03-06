@@ -5,6 +5,7 @@ namespace Spawnia\Sailor\Tests;
 use Spawnia\PHPUnitAssertFiles\AssertDirectory;
 use Spawnia\Sailor\Codegen\Generator;
 use Spawnia\Sailor\Codegen\Writer;
+use Spawnia\Sailor\EndpointConfig;
 
 final class Examples
 {
@@ -32,7 +33,10 @@ final class Examples
         $configFile = \Safe\realpath("{$examplePath}/sailor.php");
 
         $config = require $configFile;
+        assert(is_array($config));
+
         $endpoint = $config[$example];
+        assert($endpoint instanceof EndpointConfig);
 
         $generator = new Generator($endpoint, $configFile, $example);
         $files = $generator->generate();

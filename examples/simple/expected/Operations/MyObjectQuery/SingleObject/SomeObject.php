@@ -26,6 +26,7 @@ class SomeObject extends \Spawnia\Sailor\ObjectLike
 
     protected function converters(): array
     {
+        /** @var array<string, \Spawnia\Sailor\Convert\TypeConverter>|null $converters */
         static $converters;
 
         return $converters ??= [

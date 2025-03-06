@@ -38,7 +38,7 @@ class UnexpectedResponse extends \Exception
             "Unexpected HTTP status code received: {$statusCode}.\nReason:\n{$responseBody}\nHeaders:\n{$jsonEncodedHeaders}",
             $statusCode,
             $responseBody,
-            $responseHeaders,
+            $responseHeaders, // @phpstan-ignore argument.type (PSR 7 uses imprecise array type)
         );
     }
 }

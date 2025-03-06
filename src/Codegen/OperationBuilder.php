@@ -43,6 +43,7 @@ class OperationBuilder
         $converters->setProtected();
         $converters->setReturnType('array');
         $converters->addBody(<<<'PHP'
+        /** @var array<int, array{string, \Spawnia\Sailor\Convert\TypeConverter}>|null $converters */
         static $converters;
 
         return $converters ??= [

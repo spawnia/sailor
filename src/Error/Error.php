@@ -42,11 +42,28 @@ class Error extends \Exception implements ClientAware
     {
         $instance = new static($error->message);
 
-        $instance->locations = isset($error->locations)
-            ? array_map([Location::class, 'fromStdClass'], $error->locations)
+        $locations = $error->locations ?? null;
+
+        $instance->locations = is_array($locations) // @phpstan-ignore assign.propertyType (not validating array keys)
+            ? array_map(
+                [Location::class, 'fromStdClass'], // @phpstan-ignore argument.type (will throw if not \stdClass)
+                $locations
+            )
             : null;
-        $instance->path = $error->path ?? null;
-        $instance->extensions = $error->extensions ?? null;
+
+        $path = $error->path ?? null;
+        if (! is_array($path) && $path !== null) {
+            $pathType = gettype($path);
+            throw new InvalidErrorException("Expected path to be array or null, got {$pathType}.");
+        }
+        $instance->path = $path; // @phpstan-ignore assign.propertyType (not validating array elements)
+
+        $extensions = $error->extensions ?? null;
+        if (! $extensions instanceof \stdClass && $extensions !== null) {
+            $extensionsType = gettype($extensions);
+            throw new InvalidErrorException("Expected extensions to be \stdClass or null, got {$extensionsType}.");
+        }
+        $instance->extensions = $extensions;
 
         return $instance;
     }

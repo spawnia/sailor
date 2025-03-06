@@ -96,7 +96,9 @@ abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
             }
 
             try {
-                $instance->properties[$name] = $converter->fromGraphQL($value->{$name});
+                $instance->properties[$name] = $converter->fromGraphQL(
+                    $value->{$name} // @phpstan-ignore argument.type (value comes is decoded JSON)
+                );
                 unset($value->{$name});
             } catch (\Throwable $e) {
                 $endpoint = static::endpoint();
@@ -106,6 +108,8 @@ abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
 
         // @phpstan-ignore foreach.nonIterable (iteration over stdClass works fine)
         foreach ($value as $name => $property) {
+            assert(is_string($name));
+
             throw static::unknownProperty($name, $converters);
         }
 

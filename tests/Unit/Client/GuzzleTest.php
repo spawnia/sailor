@@ -32,7 +32,10 @@ final class GuzzleTest extends TestCase
             $response->data
         );
 
-        $request = $container[0]['request'];
+        $firstHistoryEntry = $container[0];
+        assert(is_array($firstHistoryEntry));
+
+        $request = $firstHistoryEntry['request'];
         assert($request instanceof Request);
 
         self::assertSame('POST', $request->getMethod());

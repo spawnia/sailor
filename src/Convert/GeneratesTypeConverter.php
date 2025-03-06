@@ -49,6 +49,9 @@ trait GeneratesTypeConverter
     /** @param Type&NamedType $type */
     protected function typeConverterBaseName(Type $type): string
     {
-        return "{$type->name}Converter";
+        $namedTypeName = $type->name;
+        assert(is_string($namedTypeName));
+
+        return "{$namedTypeName}Converter";
     }
 }

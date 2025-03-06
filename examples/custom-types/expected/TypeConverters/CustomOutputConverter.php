@@ -14,7 +14,13 @@ class CustomOutputConverter implements \Spawnia\Sailor\Convert\TypeConverter
             throw new \InvalidArgumentException('Did not find expected property foo.');
         }
 
-        return new \Spawnia\Sailor\CustomTypesSrc\CustomObject($value->foo);
+        $foo = $value->foo;
+        if (! is_string($foo)) {
+            $fooType = gettype($foo);
+            throw new \InvalidArgumentException("Expected foo to be string, got: {$fooType}.");
+        }
+
+        return new \Spawnia\Sailor\CustomTypesSrc\CustomObject($foo);
     }
 
     public function toGraphQL($value)

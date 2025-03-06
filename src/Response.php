@@ -23,7 +23,7 @@ class Response
     /**
      * Non‐empty list of errors, where each error is a map.
      *
-     * @var array<int, \stdClass>|null
+     * @var non-empty-list<\stdClass>|null
      */
     public ?array $errors;
 
@@ -104,6 +104,8 @@ class Response
      *
      * @param  mixed  $errors  whatever came from the API under the key "errors"
      *
+     * @phpstan-assert non-empty-list<\stdClass>|null $errors
+     *
      * @throws \Exception
      */
     protected static function validateErrors($errors): void
@@ -136,6 +138,8 @@ class Response
      *
      * @param  mixed  $data  whatever came from the API under the key "data"
      *
+     * @phpstan-assert \stdClass|null $data
+     *
      * @throws \Exception
      */
     protected static function validateData($data): void
@@ -154,6 +158,8 @@ class Response
      * Ensure that the "extensions" are in a spec-compliant format.
      *
      * @param  mixed  $extensions  whatever came from the API under the key "extensions"
+     *
+     * @phpstan-assert \stdClass $extensions
      *
      * @throws \Exception
      */
