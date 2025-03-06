@@ -49,9 +49,6 @@ trait GeneratesTypeConverter
     /** @param Type&NamedType $type */
     protected function typeConverterBaseName(Type $type): string
     {
-        $namedTypeName = $type->name;
-        assert(is_string($namedTypeName));
-
-        return "{$namedTypeName}Converter";
+        return "{$type->name}Converter"; // @phpstan-ignore encapsedStringPart.nonString (property name on interface)
     }
 }
