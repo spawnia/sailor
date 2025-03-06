@@ -23,7 +23,7 @@ final class Json
      */
     public static function assocToStdClass($value)
     {
-        return json_decode(json_encode($value));
+        return json_decode(json_encode($value)); // @phpstan-ignore return.type (functions from safe-php return mixed)
     }
 
     /**
@@ -35,6 +35,6 @@ final class Json
      */
     public static function stdClassToAssoc($value)
     {
-        return json_decode(json_encode($value), true);
+        return json_decode(json_encode($value), true); // @phpstan-ignore return.type (functions from safe-php return mixed)
     }
 }

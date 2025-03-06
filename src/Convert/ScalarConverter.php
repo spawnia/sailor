@@ -12,6 +12,6 @@ class ScalarConverter implements TypeConverter
 
     public function toGraphQL($value)
     {
-        return $value;
+        return $value; // @phpstan-ignore return.type (Assume the developer is passing a valid value, json_encode() will crash otherwise)
     }
 }
