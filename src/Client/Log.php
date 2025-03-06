@@ -2,7 +2,6 @@
 
 namespace Spawnia\Sailor\Client;
 
-use Generator;
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\Response;
 
@@ -40,17 +39,17 @@ class Log implements Client
     }
 
     /**
-     * @return Generator<int, array{
+     * @return iterable<array{
      *   query: string,
      *   variables: array<string, mixed>|null,
      * }>
      */
-    public function requests(): \Generator
+    public function requests(): iterable
     {
         $file = \Safe\fopen($this->filename, 'r');
 
         while ($line = fgets($file)) {
-            yield \Safe\json_decode($line, true); // @phpstan-ignore return.type (we know the data in the log matches the defined array shape)
+            yield \Safe\json_decode($line, true); // @phpstan-ignore generator.valueType (we know the data in the log matches the defined array shape)
         }
 
         \Safe\fclose($file);

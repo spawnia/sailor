@@ -19,7 +19,10 @@ class ListConverter implements TypeConverter
             throw new \InvalidArgumentException("Expected array, got {$notArray}");
         }
 
-        return array_map([$this->ofType, 'fromGraphQL'], $value);
+        return array_map(
+            [$this->ofType, 'fromGraphQL'], // @phpstan-ignore argument.type (callable not inferred)
+            $value
+        );
     }
 
     /** @return array<int, mixed> */
