@@ -10,14 +10,14 @@ trait RequiresSailorMocks
 {
     /** @before */
     #[Before]
-    protected function setUpSailorMocks(): void
+    protected function setUpRequiresSailorMocks(): void
     {
         Operation::requireMocks(true);
     }
 
     /** @after */
     #[After]
-    protected function tearDownSailorMocks(): void
+    protected function tearDownRequiresSailorMocks(): void
     {
         Operation::requireMocks(false);
         Operation::clearMocks();

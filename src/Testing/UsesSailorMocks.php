@@ -9,7 +9,7 @@ trait UsesSailorMocks
 {
     /** @after */
     #[After]
-    protected function tearDownSailorMocks(): void
+    protected function tearDownUsesSailorMocks(): void
     {
         Operation::clearMocks();
     }
