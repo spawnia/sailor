@@ -48,7 +48,7 @@ class Log implements Client
     {
         $file = \Safe\fopen($this->filename, 'r');
 
-        while ($line = fgets($file)) {
+        while ($line = fgets($file)) { // @phpstan-ignore while.condNotBoolean
             yield \Safe\json_decode($line, true); // @phpstan-ignore generator.valueType (we know the data in the log matches the defined array shape)
         }
 
