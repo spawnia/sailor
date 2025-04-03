@@ -20,5 +20,6 @@ trait RequiresSailorMocks
     protected function tearDownSailorMocks(): void
     {
         Operation::requireMocks(false);
+        Operation::clearMocks();
     }
 }

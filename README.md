@@ -416,15 +416,16 @@ Make sure your test class - or one of its parents - uses the following traits:
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 use Spawnia\Sailor\Testing\RequiresSailorMocks;
-use Spawnia\Sailor\Testing\UsesSailorMocks;
 
 abstract class TestCase extends PHPUnitTestCase
 {
     use MockeryPHPUnitIntegration; // Makes Mockery assertions work
-    use RequiresSailorMocks; // Prevents stray requests without mocks
-    use UsesSailorMocks; // Resets mocks between tests
+    use RequiresSailorMocks; // Prevents stray requests and resets mocks between tests
 }
 ```
+
+If you want to perform some kind of integration test where mocks are not required,
+you may replace `RequiresSailorMocks` with `UsesSailorMocks`.
 
 ### Mock results
 
