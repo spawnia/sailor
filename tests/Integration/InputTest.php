@@ -38,7 +38,8 @@ final class InputTest extends TestCase
                 )
             ));
 
-        $result = TakeSomeInput::execute($someInput)->errorFree();
+        $result = TakeSomeInput::execute($someInput)
+            ->errorFree();
         self::assertSame($answer, $result->data->takeSomeInput);
     }
 
@@ -67,7 +68,8 @@ final class InputTest extends TestCase
 
         Configuration::setEndpointFor(TakeList::class, $endpoint);
 
-        self::assertNull(TakeList::execute($values)->data);
+        $result = TakeList::execute($values);
+        self::assertNull($result->data);
     }
 
     public function testMake(): void

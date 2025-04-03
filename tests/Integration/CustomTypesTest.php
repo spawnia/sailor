@@ -39,7 +39,8 @@ final class CustomTypesTest extends TestCase
                 )
             ));
 
-        $result = MyDefaultDateQuery::execute($value)->errorFree();
+        $result = MyDefaultDateQuery::execute($value)
+            ->errorFree();
         self::assertSame($value, $result->data->withDefaultDate);
     }
 
@@ -67,8 +68,8 @@ final class CustomTypesTest extends TestCase
                 )
             ));
 
-        $result = MyCarbonDateQuery::execute($value)->errorFree();
-
+        $result = MyCarbonDateQuery::execute($value)
+            ->errorFree();
         $carbonDate = $result->data->withCarbonDate;
         self::assertSame($value->toDateString(), $carbonDate->toDateString());
     }
@@ -88,7 +89,8 @@ final class CustomTypesTest extends TestCase
                 )
             ));
 
-        $result = MyDefaultEnumQuery::execute($value)->errorFree();
+        $result = MyDefaultEnumQuery::execute($value)
+            ->errorFree();
         self::assertSame($value, $result->data->withDefaultEnum);
     }
 
@@ -107,8 +109,8 @@ final class CustomTypesTest extends TestCase
                 )
             ));
 
-        $result = MyCustomEnumQuery::execute($value)->errorFree();
-
+        $result = MyCustomEnumQuery::execute($value)
+            ->errorFree();
         $customEnum = $result->data->withCustomEnum;
         self::assertInstanceOf(CustomEnum::class, $customEnum);
         self::assertSame($value->value, $customEnum->value);
@@ -157,8 +159,8 @@ final class CustomTypesTest extends TestCase
                 ),
             ));
 
-        $result = MyBenSampoEnumQuery::execute($value)->errorFree();
-
+        $result = MyBenSampoEnumQuery::execute($value)
+            ->errorFree();
         $benSampoEnum = $result->data->withBenSampoEnum;
         self::assertInstanceOf(BenSampoEnum::class, $benSampoEnum);
         self::assertSame($value->value, $benSampoEnum->value);

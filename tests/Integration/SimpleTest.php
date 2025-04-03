@@ -81,7 +81,8 @@ final class SimpleTest extends TestCase
 
         Configuration::setEndpointFor(MyScalarQuery::class, $endpoint);
 
-        self::assertNull(MyScalarQuery::execute($value)->data);
+        $result = MyScalarQuery::execute($value);
+        self::assertNull($result->data);
     }
 
     public function testRequestWithClient(): void
