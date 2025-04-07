@@ -30,7 +30,7 @@ parameters:
   # Due to different versions of bensampo/laravel-enum
   - '#extends generic class BenSampo\\Enum\\Enum but does not specify its types: TValue#'
   # Due to different versions of PHPUnit, attributes are backwards-compatible though
-  - '#Attribute class PHPUnit\\Framework\\Attributes\\After does not exist\.#'
+  - '#Attribute class PHPUnit\\Framework\\Attributes\\(Before|After) does not exist\.#'
    # Alternative unclear
   - '#Call to deprecated method getNamespace\(\) of class Nette\\PhpGenerator\\Class.+#'
    # TODO remove when we require nette/php-generator:^4

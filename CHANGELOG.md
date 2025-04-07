@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v1.1.0
+
+### Added
+
+- Add trait `Spawnia\Sailor\Testing\RequiresSailorMocks`
+- Add method `Spawnia\Sailor\Operation::requireMocks()`
+
 ## v1.0.0
 
 ### Added

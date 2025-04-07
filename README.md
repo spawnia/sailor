@@ -29,16 +29,22 @@ using the server schema to generate typesafe operations and results.
 
 Install Sailor through composer by running:
 
-    composer require spawnia/sailor
+```shell
+composer require spawnia/sailor
+```
 
 If you want to use the built-in default Client (see [Client implementations](#client-implementations)):
 
-    composer require guzzlehttp/guzzle
+```shell
+composer require guzzlehttp/guzzle
+```
 
 If you want to use the PSR-18 Client and don't have
 PSR-17 Request and Stream factory implementations (see [Client implementations](#client-implementations)):
 
-    composer require nyholm/psr7
+```shell
+composer require nyholm/psr7
+```
 
 ## Configuration
 
@@ -265,9 +271,9 @@ Consider the following input:
 
 ```graphql
 input SomeInput {
-  requiredID: Int!,
-  firstOptional: Int,
-  secondOptional: Int,
+  requiredID: Int!
+  firstOptional: Int
+  secondOptional: Int
 }
 ```
 
@@ -400,23 +406,26 @@ Sailor provides first class support for testing by allowing you to mock operatio
 
 It is assumed you are using [PHPUnit](https://phpunit.de) and [Mockery](https://docs.mockery.io/en/latest).
 
-    composer require --dev phpunit/phpunit mockery/mockery
+```shell
+composer require --dev phpunit/phpunit mockery/mockery
+```
 
 Make sure your test class - or one of its parents - uses the following traits:
 
 ```php
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
-use Spawnia\Sailor\Testing\UsesSailorMocks;
+use Spawnia\Sailor\Testing\RequiresSailorMocks;
 
 abstract class TestCase extends PHPUnitTestCase
 {
-    use MockeryPHPUnitIntegration;
-    use UsesSailorMocks;
+    use MockeryPHPUnitIntegration; // Makes Mockery assertions work
+    use RequiresSailorMocks; // Prevents stray requests and resets mocks between tests
 }
 ```
 
-Otherwise, mocks are not reset between test methods, you might run into very confusing bugs.
+If you want to perform some kind of integration test where mocks are not required,
+you may replace `RequiresSailorMocks` with `UsesSailorMocks`.
 
 ### Mock results
 
@@ -433,17 +442,21 @@ When registered, the mock captures all calls to `HelloSailor::execute()`.
 Use it to build up expectations for what calls it should receive and mock returned results:
 
 ```php
-$hello = 'Hello, Sailor!';
+$name = 'Sailor';
+$hello = "Hello, {$name}!";
 
 $mock
     ->expects('execute')
     ->once()
-    ->with('Sailor')
+    ->with($name)
     ->andReturn(HelloSailor\HelloSailorResult::fromData(
-        HelloSailor\HelloSailor::make($hello),
+        data: HelloSailor\HelloSailor::make(
+            hello: $hello,
+        ),
     ));
 
-$result = HelloSailor::execute('Sailor')->errorFree();
+$result = HelloSailor::execute(name: $name)
+    ->errorFree();
 
 self::assertSame($hello, $result->data->hello);
 ```
@@ -470,7 +483,7 @@ For PHP 8 users, it is recommended to use named arguments to build complex mocke
 
 ```php
 HelloSailor\HelloSailorResult::fromData(
-    HelloSailor\HelloSailor::make(
+    data: HelloSailor\HelloSailor::make(
         hello: 'Hello, Sailor!',
         nested: HelloSailor\HelloSailor\Nested::make(
             hello: 'Hello again!',

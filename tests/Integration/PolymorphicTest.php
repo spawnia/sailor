@@ -32,7 +32,6 @@ final class PolymorphicTest extends TestCase
 
         $result = UserOrPost::execute($id)->errorFree();
         $user = $result->data->node;
-
         self::assertInstanceOf(UserOrPost\Node\User::class, $user);
         self::assertSame($id, $user->id);
         self::assertSame($name, $user->name);
