@@ -15,7 +15,7 @@ class Writer
     }
 
     /**
-     * Persist the given files onto disk.
+     * Persist the given files to disk.
      *
      * @param iterable<File> $files
      */

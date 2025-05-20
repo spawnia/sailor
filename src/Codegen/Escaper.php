@@ -9,7 +9,7 @@ class Escaper
     public static function escapeClassName(string $name): string
     {
         // Inspiration from https://github.com/nette/php-generator/blob/f19b7975c7c4d729be5b64fce7eb72f0d4aac6fc/src/PhpGenerator/ClassLike.php#L87
-        return isset(Helpers::Keywords[strtolower($name)])
+        return isset(Helpers::Keywords[strtolower($name)]) // @phpstan-ignore classConstant.internalClass
             ? "_{$name}"
             : $name;
     }
