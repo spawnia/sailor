@@ -18,7 +18,7 @@ class SomeObject extends \Spawnia\Sailor\ObjectLike
 
         $instance->__typename = 'SomeObject';
         if ($nested !== self::UNDEFINED) {
-            $instance->nested = $nested;
+            $instance->__set('nested', $nested);
         }
 
         return $instance;

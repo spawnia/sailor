@@ -16,7 +16,7 @@ class Organization extends \Spawnia\Sailor\ObjectLike
         $instance = new self;
 
         if ($code !== self::UNDEFINED) {
-            $instance->code = $code;
+            $instance->__set('code', $code);
         }
         $instance->__typename = 'Organization';
 

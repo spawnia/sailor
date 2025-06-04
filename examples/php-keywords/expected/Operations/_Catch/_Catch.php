@@ -18,7 +18,7 @@ class _Catch extends \Spawnia\Sailor\ObjectLike
 
         $instance->__typename = 'Query';
         if ($print !== self::UNDEFINED) {
-            $instance->print = $print;
+            $instance->__set('print', $print);
         }
 
         return $instance;

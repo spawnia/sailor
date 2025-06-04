@@ -18,7 +18,7 @@ class MyCustomEnumQuery extends \Spawnia\Sailor\ObjectLike
 
         $instance->__typename = 'Query';
         if ($withCustomEnum !== self::UNDEFINED) {
-            $instance->withCustomEnum = $withCustomEnum;
+            $instance->__set('withCustomEnum', $withCustomEnum);
         }
 
         return $instance;

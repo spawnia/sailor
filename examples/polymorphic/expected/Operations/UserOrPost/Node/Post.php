@@ -20,11 +20,11 @@ class Post extends \Spawnia\Sailor\ObjectLike
         $instance = new self;
 
         if ($id !== self::UNDEFINED) {
-            $instance->id = $id;
+            $instance->__set('id', $id);
         }
         $instance->__typename = 'Post';
         if ($title !== self::UNDEFINED) {
-            $instance->title = $title;
+            $instance->__set('title', $title);
         }
 
         return $instance;

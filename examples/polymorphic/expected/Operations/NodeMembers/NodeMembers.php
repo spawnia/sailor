@@ -16,7 +16,7 @@ class NodeMembers extends \Spawnia\Sailor\ObjectLike
         $instance = new self;
 
         if ($members !== self::UNDEFINED) {
-            $instance->members = $members;
+            $instance->__set('members', $members);
         }
         $instance->__typename = 'Query';
 
