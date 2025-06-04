@@ -21,10 +21,10 @@ class ClientDirectiveQuery extends \Spawnia\Sailor\ObjectLike
 
         $instance->__typename = 'Query';
         if ($scalarWithArg !== self::UNDEFINED) {
-            $instance->scalarWithArg = $scalarWithArg;
+            $instance->__set('scalarWithArg', $scalarWithArg);
         }
         if ($twoArgs !== self::UNDEFINED) {
-            $instance->twoArgs = $twoArgs;
+            $instance->__set('twoArgs', $twoArgs);
         }
 
         return $instance;

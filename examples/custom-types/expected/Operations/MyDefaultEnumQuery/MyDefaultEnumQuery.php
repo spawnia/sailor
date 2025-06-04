@@ -16,7 +16,7 @@ class MyDefaultEnumQuery extends \Spawnia\Sailor\ObjectLike
         $instance = new self;
 
         if ($withDefaultEnum !== self::UNDEFINED) {
-            $instance->withDefaultEnum = $withDefaultEnum;
+            $instance->__set('withDefaultEnum', $withDefaultEnum);
         }
         $instance->__typename = 'Query';
 

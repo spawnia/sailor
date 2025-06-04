@@ -18,7 +18,7 @@ class NestedWithFragments extends \Spawnia\Sailor\ObjectLike
 
         $instance->__typename = 'Query';
         if ($singleObject !== self::UNDEFINED) {
-            $instance->singleObject = $singleObject;
+            $instance->__set('singleObject', $singleObject);
         }
 
         return $instance;

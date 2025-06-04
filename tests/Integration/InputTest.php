@@ -82,6 +82,8 @@ final class InputTest extends TestCase
             [[]],
             /* optional: */
             null,
+            /* properties: */
+            [],
             /* nested: */
             SomeInput::make(
                 /* required: */
@@ -98,6 +100,7 @@ final class InputTest extends TestCase
                 'required' => 'foo',
                 'matrix' => [[]],
                 'optional' => null,
+                'properties' => [],
                 'nested' => (object) [
                     'required' => 'bar',
                     'matrix' => [[1, null]],
@@ -140,7 +143,7 @@ final class InputTest extends TestCase
             [[]],
         );
 
-        $this->expectExceptionObject(new InvalidDataException('input: Unknown property nonExistent, available properties: required, matrix, optional, nested.'));
+        $this->expectExceptionObject(new InvalidDataException('input: Unknown property nonExistent, available properties: required, matrix, optional, properties, nested.'));
         $input->nonExistent; // @phpstan-ignore-line intentionally wrong
     }
 }

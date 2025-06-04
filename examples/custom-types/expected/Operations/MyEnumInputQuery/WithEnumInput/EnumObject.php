@@ -21,10 +21,10 @@ class EnumObject extends \Spawnia\Sailor\ObjectLike
 
         $instance->__typename = 'EnumObject';
         if ($custom !== self::UNDEFINED) {
-            $instance->custom = $custom;
+            $instance->__set('custom', $custom);
         }
         if ($default !== self::UNDEFINED) {
-            $instance->default = $default;
+            $instance->__set('default', $default);
         }
 
         return $instance;

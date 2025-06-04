@@ -18,7 +18,7 @@ class MyNestedCustomObjectQuery extends \Spawnia\Sailor\ObjectLike
 
         $instance->__typename = 'Query';
         if ($withNestedCustomObject !== self::UNDEFINED) {
-            $instance->withNestedCustomObject = $withNestedCustomObject;
+            $instance->__set('withNestedCustomObject', $withNestedCustomObject);
         }
 
         return $instance;

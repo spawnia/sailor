@@ -18,7 +18,7 @@ class Sub extends \Spawnia\Sailor\ObjectLike
 
         $instance->__typename = 'Sub';
         if ($nodes !== self::UNDEFINED) {
-            $instance->nodes = $nodes;
+            $instance->__set('nodes', $nodes);
         }
 
         return $instance;

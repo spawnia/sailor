@@ -115,9 +115,12 @@ class ObjectLikeBuilder
                 $parameter->setDefaultValue(ObjectLike::UNDEFINED);
             }
 
+            // Call __set instead of just setting the property to avoid a naming conflict between
+            // GraphQL fields named `properties` and the protected property `$properties` in ObjectLike.
+            // See https://github.com/spawnia/sailor/issues/121.
             $this->make->addBody(<<<PHP
             if (\${$name} !== self::UNDEFINED) {
-                \$instance->{$name} = \${$name};
+                \$instance->__set('{$name}', \${$name});
             }
             PHP);
         }

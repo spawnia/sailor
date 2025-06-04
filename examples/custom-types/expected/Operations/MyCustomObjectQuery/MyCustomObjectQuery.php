@@ -18,7 +18,7 @@ class MyCustomObjectQuery extends \Spawnia\Sailor\ObjectLike
 
         $instance->__typename = 'Query';
         if ($withCustomObject !== self::UNDEFINED) {
-            $instance->withCustomObject = $withCustomObject;
+            $instance->__set('withCustomObject', $withCustomObject);
         }
 
         return $instance;

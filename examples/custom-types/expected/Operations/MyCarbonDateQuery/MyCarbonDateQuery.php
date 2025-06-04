@@ -16,7 +16,7 @@ class MyCarbonDateQuery extends \Spawnia\Sailor\ObjectLike
         $instance = new self;
 
         if ($withCarbonDate !== self::UNDEFINED) {
-            $instance->withCarbonDate = $withCarbonDate;
+            $instance->__set('withCarbonDate', $withCarbonDate);
         }
         $instance->__typename = 'Query';
 

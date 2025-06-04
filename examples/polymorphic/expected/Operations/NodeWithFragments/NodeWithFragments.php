@@ -16,7 +16,7 @@ class NodeWithFragments extends \Spawnia\Sailor\ObjectLike
         $instance = new self;
 
         if ($node !== self::UNDEFINED) {
-            $instance->node = $node;
+            $instance->__set('node', $node);
         }
         $instance->__typename = 'Query';
 

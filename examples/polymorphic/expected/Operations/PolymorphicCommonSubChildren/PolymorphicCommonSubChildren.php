@@ -16,7 +16,7 @@ class PolymorphicCommonSubChildren extends \Spawnia\Sailor\ObjectLike
         $instance = new self;
 
         if ($sub !== self::UNDEFINED) {
-            $instance->sub = $sub;
+            $instance->__set('sub', $sub);
         }
         $instance->__typename = 'Query';
 

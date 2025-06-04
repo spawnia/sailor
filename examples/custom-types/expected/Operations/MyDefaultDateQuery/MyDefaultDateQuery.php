@@ -16,7 +16,7 @@ class MyDefaultDateQuery extends \Spawnia\Sailor\ObjectLike
         $instance = new self;
 
         if ($withDefaultDate !== self::UNDEFINED) {
-            $instance->withDefaultDate = $withDefaultDate;
+            $instance->__set('withDefaultDate', $withDefaultDate);
         }
         $instance->__typename = 'Query';
 

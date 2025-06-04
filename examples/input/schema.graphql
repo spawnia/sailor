@@ -6,6 +6,7 @@ type Mutation {
 input SomeInput {
     required: ID!
     optional: String
+    properties: [String!]
     matrix: [[Int]!]!
     nested: SomeInput
 }

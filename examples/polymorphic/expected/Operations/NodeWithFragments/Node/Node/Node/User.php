@@ -20,11 +20,11 @@ class User extends \Spawnia\Sailor\ObjectLike
         $instance = new self;
 
         if ($id !== self::UNDEFINED) {
-            $instance->id = $id;
+            $instance->__set('id', $id);
         }
         $instance->__typename = 'User';
         if ($name !== self::UNDEFINED) {
-            $instance->name = $name;
+            $instance->__set('name', $name);
         }
 
         return $instance;
