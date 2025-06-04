@@ -18,7 +18,7 @@ class TakeSomeInput extends \Spawnia\Sailor\ObjectLike
 
         $instance->__typename = 'Mutation';
         if ($takeSomeInput !== self::UNDEFINED) {
-            $instance->takeSomeInput = $takeSomeInput;
+            $instance->__set('takeSomeInput', $takeSomeInput);
         }
 
         return $instance;

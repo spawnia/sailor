@@ -19,10 +19,10 @@ class EnumInput extends \Spawnia\Sailor\ObjectLike
         $instance = new self;
 
         if ($default !== self::UNDEFINED) {
-            $instance->default = $default;
+            $instance->__set('default', $default);
         }
         if ($custom !== self::UNDEFINED) {
-            $instance->custom = $custom;
+            $instance->__set('custom', $custom);
         }
 
         return $instance;

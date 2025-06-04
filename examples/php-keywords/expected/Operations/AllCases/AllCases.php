@@ -16,7 +16,7 @@ class AllCases extends \Spawnia\Sailor\ObjectLike
         $instance = new self;
 
         if ($cases !== self::UNDEFINED) {
-            $instance->cases = $cases;
+            $instance->__set('cases', $cases);
         }
         $instance->__typename = 'Query';
 

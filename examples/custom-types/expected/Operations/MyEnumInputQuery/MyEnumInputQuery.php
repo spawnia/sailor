@@ -18,7 +18,7 @@ class MyEnumInputQuery extends \Spawnia\Sailor\ObjectLike
 
         $instance->__typename = 'Query';
         if ($withEnumInput !== self::UNDEFINED) {
-            $instance->withEnumInput = $withEnumInput;
+            $instance->__set('withEnumInput', $withEnumInput);
         }
 
         return $instance;

@@ -18,7 +18,7 @@ class MyNativeEnumQuery extends \Spawnia\Sailor\ObjectLike
 
         $instance->__typename = 'Query';
         if ($withNativeEnum !== self::UNDEFINED) {
-            $instance->withNativeEnum = $withNativeEnum;
+            $instance->__set('withNativeEnum', $withNativeEnum);
         }
 
         return $instance;

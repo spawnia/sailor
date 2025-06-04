@@ -21,10 +21,10 @@ class NestedCustomObject extends \Spawnia\Sailor\ObjectLike
 
         $instance->__typename = 'NestedCustomObject';
         if ($bar !== self::UNDEFINED) {
-            $instance->bar = $bar;
+            $instance->__set('bar', $bar);
         }
         if ($baz !== self::UNDEFINED) {
-            $instance->baz = $baz;
+            $instance->__set('baz', $baz);
         }
 
         return $instance;

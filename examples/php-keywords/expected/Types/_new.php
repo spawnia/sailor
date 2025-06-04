@@ -16,7 +16,7 @@ class _new extends \Spawnia\Sailor\ObjectLike
         $instance = new self;
 
         if ($unset !== self::UNDEFINED) {
-            $instance->unset = $unset;
+            $instance->__set('unset', $unset);
         }
 
         return $instance;

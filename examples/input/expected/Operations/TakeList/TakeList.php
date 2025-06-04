@@ -18,7 +18,7 @@ class TakeList extends \Spawnia\Sailor\ObjectLike
 
         $instance->__typename = 'Mutation';
         if ($takeList !== self::UNDEFINED) {
-            $instance->takeList = $takeList;
+            $instance->__set('takeList', $takeList);
         }
 
         return $instance;

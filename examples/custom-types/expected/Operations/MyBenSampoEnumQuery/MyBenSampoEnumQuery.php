@@ -18,7 +18,7 @@ class MyBenSampoEnumQuery extends \Spawnia\Sailor\ObjectLike
 
         $instance->__typename = 'Query';
         if ($withBenSampoEnum !== self::UNDEFINED) {
-            $instance->withBenSampoEnum = $withBenSampoEnum;
+            $instance->__set('withBenSampoEnum', $withBenSampoEnum);
         }
 
         return $instance;

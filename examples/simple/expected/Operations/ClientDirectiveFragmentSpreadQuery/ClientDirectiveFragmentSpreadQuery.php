@@ -18,7 +18,7 @@ class ClientDirectiveFragmentSpreadQuery extends \Spawnia\Sailor\ObjectLike
 
         $instance->__typename = 'Query';
         if ($twoArgs !== self::UNDEFINED) {
-            $instance->twoArgs = $twoArgs;
+            $instance->__set('twoArgs', $twoArgs);
         }
 
         return $instance;

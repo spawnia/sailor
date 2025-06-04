@@ -18,7 +18,7 @@ class MyScalarQuery extends \Spawnia\Sailor\ObjectLike
 
         $instance->__typename = 'Query';
         if ($scalarWithArg !== self::UNDEFINED) {
-            $instance->scalarWithArg = $scalarWithArg;
+            $instance->__set('scalarWithArg', $scalarWithArg);
         }
 
         return $instance;

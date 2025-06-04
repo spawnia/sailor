@@ -24,13 +24,13 @@ class _Switch extends \Spawnia\Sailor\ObjectLike
 
         $instance->__typename = 'Switch';
         if ($int !== self::UNDEFINED) {
-            $instance->int = $int;
+            $instance->__set('int', $int);
         }
         if ($for !== self::UNDEFINED) {
-            $instance->for = $for;
+            $instance->__set('for', $for);
         }
         if ($as !== self::UNDEFINED) {
-            $instance->as = $as;
+            $instance->__set('as', $as);
         }
 
         return $instance;

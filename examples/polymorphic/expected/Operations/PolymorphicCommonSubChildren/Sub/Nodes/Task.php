@@ -23,14 +23,14 @@ class Task extends \Spawnia\Sailor\ObjectLike
         $instance = new self;
 
         if ($id !== self::UNDEFINED) {
-            $instance->id = $id;
+            $instance->__set('id', $id);
         }
         if ($done !== self::UNDEFINED) {
-            $instance->done = $done;
+            $instance->__set('done', $done);
         }
         $instance->__typename = 'Task';
         if ($node !== self::UNDEFINED) {
-            $instance->node = $node;
+            $instance->__set('node', $node);
         }
 
         return $instance;

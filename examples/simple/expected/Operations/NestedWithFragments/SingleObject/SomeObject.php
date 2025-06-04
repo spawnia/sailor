@@ -21,10 +21,10 @@ class SomeObject extends \Spawnia\Sailor\ObjectLike
 
         $instance->__typename = 'SomeObject';
         if ($nested !== self::UNDEFINED) {
-            $instance->nested = $nested;
+            $instance->__set('nested', $nested);
         }
         if ($value !== self::UNDEFINED) {
-            $instance->value = $value;
+            $instance->__set('value', $value);
         }
 
         return $instance;
