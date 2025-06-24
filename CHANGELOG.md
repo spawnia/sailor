@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v1.1.1
+
+### Fixed
+
+- Fix name conflict with protected property `$properties` in generated `input` classes https://github.com/spawnia/sailor/pull/122
+
 ## v1.1.0
 
 ### Added
