@@ -23,8 +23,19 @@ class OperationStack
     /** @param  array<string, ObjectLikeBuilder>  $selection */
     public function setSelection(string $namespace, array $selection): void
     {
-        // Ignore if already set, we already were in that subtree
-        $this->selections[$namespace] ??= $selection;
+        // Merge with existing selection to handle multiple inline fragments
+        // with the same field name but different types
+        if (!isset($this->selections[$namespace])) {
+            $this->selections[$namespace] = $selection;
+        } else {
+            // Only add new types, don't overwrite existing ones
+            // (we already processed that type's subtree)
+            foreach ($selection as $typeName => $builder) {
+                if (!isset($this->selections[$namespace][$typeName])) {
+                    $this->selections[$namespace][$typeName] = $builder;
+                }
+            }
+        }
     }
 
     /** @return iterable<ClassType> */
