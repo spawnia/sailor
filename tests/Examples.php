@@ -13,6 +13,7 @@ final class Examples
 
     public const EXAMPLES = [
         'custom-types',
+        'inline-fragments',
         'input',
         'php-keywords',
         'polymorphic',
