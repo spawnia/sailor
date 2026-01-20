@@ -61,9 +61,9 @@ class InputObjectTypeConfig implements TypeConfig, InputTypeConfig
             $fieldType = $field->getType();
 
             $namedType = Type::getNamedType($fieldType);
-            assert($namedType !== null, 'guaranteed since we pass in a non-null type');
+            assert($namedType !== null, 'guaranteed since we pass in a non-null type'); // @phpstan-ignore function.alreadyNarrowedType, notIdentical.alwaysTrue (keep for safety across graphql-php versions)
 
-            $typeConfig = $typeConfigs[$namedType->name];
+            $typeConfig = $typeConfigs[$namedType->name]; // @phpstan-ignore offsetAccess.invalidOffset (name is string, but typed as mixed in older graphql-php)
             assert($typeConfig instanceof InputTypeConfig);
 
             $builder->addProperty(
