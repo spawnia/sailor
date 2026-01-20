@@ -172,9 +172,9 @@ class OperationGenerator implements ClassGenerator
                     assert($type !== null, 'schema is validated');
 
                     $namedType = Type::getNamedType($type);
-                    assert($namedType !== null, 'schema is validated');
+                    assert($namedType !== null, 'schema is validated'); // @phpstan-ignore function.alreadyNarrowedType, notIdentical.alwaysTrue (keep for safety across graphql-php versions)
 
-                    $typeConfig = $this->types[$namedType->name];
+                    $typeConfig = $this->types[$namedType->name]; // @phpstan-ignore offsetAccess.invalidOffset (name is string, but typed as mixed in older graphql-php)
                     assert($typeConfig instanceof InputTypeConfig);
 
                     $this->operationStack->operation->addVariable(
@@ -197,7 +197,7 @@ class OperationGenerator implements ClassGenerator
                     assert($type !== null, 'schema is validated');
 
                     $namedType = Type::getNamedType($type);
-                    assert($namedType !== null, 'schema is validated');
+                    assert($namedType !== null, 'schema is validated'); // @phpstan-ignore function.alreadyNarrowedType, notIdentical.alwaysTrue (keep for safety across graphql-php versions)
 
                     if ($namedType instanceof CompositeType) {
                         // We go one level deeper into the selection set
@@ -206,7 +206,7 @@ class OperationGenerator implements ClassGenerator
                     }
 
                     $stopFurtherTraversal = false;
-                    $typeConfig = $this->types[$namedType->name] ?? null;
+                    $typeConfig = $this->types[$namedType->name] ?? null; // @phpstan-ignore offsetAccess.invalidOffset (name is string, but typed as mixed in older graphql-php)
                     if ($typeConfig !== null) {
                         assert($typeConfig instanceof OutputTypeConfig);
                         $phpDocType = $typeConfig->outputTypeReference();
@@ -294,7 +294,7 @@ class OperationGenerator implements ClassGenerator
                     assert($type !== null, 'schema is validated');
 
                     $namedType = Type::getNamedType($type);
-                    assert($namedType !== null, 'schema is validated');
+                    assert($namedType !== null, 'schema is validated'); // @phpstan-ignore function.alreadyNarrowedType, notIdentical.alwaysTrue (keep for safety across graphql-php versions)
 
                     if ($namedType instanceof CompositeType) {
                         $this->moveUpNamespace();

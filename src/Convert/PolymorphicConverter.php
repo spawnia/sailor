@@ -22,7 +22,7 @@ class PolymorphicConverter implements TypeConverter
             throw new \InvalidArgumentException('Expected stdClass, got: ' . gettype($value));
         }
 
-        return $this->mapping[$value->__typename]::fromStdClass($value);
+        return $this->mapping[$value->__typename]::fromStdClass($value); // @phpstan-ignore offsetAccess.invalidOffset (__typename is string)
     }
 
     public function toGraphQL($value)
