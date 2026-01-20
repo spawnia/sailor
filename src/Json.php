@@ -10,7 +10,7 @@ use function Safe\json_encode;
 /**
  * @phpstan-type JsonValue array<int, mixed>|array<string, mixed>|stdClass|string|float|int|bool|null
  * @phpstan-type StdClassJsonValue array<int, mixed>|stdClass|string|float|int|bool|null
- * @phpstan-type AssocJsonValue array<int, mixed>|stdClass|string|float|int|bool|null
+ * @phpstan-type AssocJsonValue array<int, mixed>|array<string, mixed>|string|float|int|bool|null
  */
 final class Json
 {
