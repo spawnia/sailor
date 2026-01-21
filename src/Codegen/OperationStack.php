@@ -25,13 +25,13 @@ class OperationStack
     {
         // Merge with existing selection to handle multiple inline fragments
         // with the same field name but different types
-        if (!isset($this->selections[$namespace])) {
+        if (! isset($this->selections[$namespace])) {
             $this->selections[$namespace] = $selection;
         } else {
             // Only add new types, don't overwrite existing ones
             // (we already processed that type's subtree)
             foreach ($selection as $typeName => $builder) {
-                if (!isset($this->selections[$namespace][$typeName])) {
+                if (! isset($this->selections[$namespace][$typeName])) {
                     $this->selections[$namespace][$typeName] = $builder;
                 }
             }
