@@ -1,0 +1,18 @@
+query SearchQuery($query: String!) {
+    search(query: $query) {
+        id
+        ... on Article {
+            title
+            content {
+                text
+            }
+        }
+        ... on Video {
+            title
+            content {
+                url
+                duration
+            }
+        }
+    }
+}

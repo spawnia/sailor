@@ -1,0 +1,28 @@
+type Query {
+    search(query: String!): [SearchResult!]!
+}
+
+interface SearchResult {
+    id: ID!
+}
+
+type Article implements SearchResult {
+    id: ID!
+    title: String!
+    content: ArticleContent!
+}
+
+type Video implements SearchResult {
+    id: ID!
+    title: String!
+    content: VideoContent!
+}
+
+type ArticleContent {
+    text: String!
+}
+
+type VideoContent {
+    url: String!
+    duration: Int!
+}
