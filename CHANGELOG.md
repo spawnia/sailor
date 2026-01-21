@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v1.1.2
+
+### Fixed
+
+- Merge type selections for inline fragments with shared field names https://github.com/spawnia/sailor/pull/126
+
 ## v1.1.1
 
 ### Fixed
