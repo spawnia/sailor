@@ -49,10 +49,11 @@ class Introspector
 
     protected function fetchIntrospectionResult(Client $client, bool $directiveIsRepeatable): Response
     {
+        $options = $this->endpointConfig->introspectionConfig();
+        $options['directiveIsRepeatable'] = $directiveIsRepeatable;
+
         $response = $client->request(
-            Introspection::getIntrospectionQuery([
-                'directiveIsRepeatable' => $directiveIsRepeatable,
-            ])
+            Introspection::getIntrospectionQuery($options)
         );
 
         if (isset($response->errors)) {
