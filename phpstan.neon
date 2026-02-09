@@ -20,9 +20,11 @@ parameters:
   tmpDir: .build/phpstan
   reportUnmatchedIgnoredErrors: false # As long as we support multiple PHP versions at once, there will be some dead spots
   ignoreErrors:
-  # Required in different versions
-  - '#Call to deprecated method getNamespace\(\) of class Nette\\PhpGenerator\\ClassType#'
-  - '#Unsafe usage of new static.*#' # Necessary when calling into generated client code, we know how it looks like
+  # See https://github.com/nette/php-generator/issues/134
+  - '#Call to deprecated method getNamespace\(\) of class Nette\\PhpGenerator\\ClassType\.#'
+  - '#Call to internal method Nette\\PhpGenerator\\ClassLike::getNamespace\(\) from outside its root namespace Nette\.#'
+  # Necessary when calling into generated client code, we know how it looks like
+  - '#Unsafe usage of new static.*#'
   # @property on interfaces or abstract classes
   - '#Access to an undefined property GraphQL\\Type\\Definition\\NamedType&GraphQL\\Type\\Definition\\Type::\$name\.#'
   - '#Access to an undefined property Spawnia\\Sailor\\Result::\$data\.#'
