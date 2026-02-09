@@ -60,6 +60,18 @@ abstract class EndpointConfig
     }
 
     /**
+     * Options passed to GraphQL\Type\Introspection::getIntrospectionQuery.
+     *
+     * @return array<string, mixed>
+     */
+    public function introspectionConfig(): array
+    {
+        return [
+            'includeDeprecated' => true,
+        ];
+    }
+
+    /**
      * Return a map from type names to a TypeConfig describing how to deal with them.
      *
      * @return array<string, TypeConfig>

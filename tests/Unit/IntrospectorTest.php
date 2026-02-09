@@ -29,6 +29,14 @@ final class IntrospectorTest extends TestCase
 
     GRAPHQL;
 
+    public const SCHEMA_WITH_DEPRECATED = /* @lang GraphQL */ <<<'GRAPHQL'
+    type Query {
+      oldField: String @deprecated(reason: "Use newField")
+      newField: String
+    }
+
+    GRAPHQL;
+
     public const PATH = __DIR__ . '/schema.graphql';
 
     /**
@@ -53,6 +61,42 @@ final class IntrospectorTest extends TestCase
         $this
             ->makeIntrospector(static fn (): Response => self::responseWithErrorsMock())
             ->introspect();
+    }
+
+    public function testIncludesDeprecationsByDefault(): void
+    {
+        $introspector = $this->makeIntrospector(static function (): Response {
+            return self::introspectionWithDeprecatedMock(true);
+        });
+
+        $introspector->introspect();
+
+        self::assertFileExists(self::PATH);
+        $schema = file_get_contents(self::PATH);
+        self::assertStringContainsString('@deprecated', $schema);
+        self::assertStringContainsString('Use newField', $schema);
+
+        unlink(self::PATH);
+    }
+
+    public function testCanDisableDeprecations(): void
+    {
+        $introspector = $this->makeIntrospector(
+            static function (): Response {
+                return self::introspectionWithDeprecatedMock(false);
+            },
+            ['includeDeprecated' => false]
+        );
+
+        $introspector->introspect();
+
+        self::assertFileExists(self::PATH);
+        $schema = file_get_contents(self::PATH);
+        self::assertStringNotContainsString('@deprecated', $schema);
+        self::assertStringNotContainsString('oldField', $schema);
+        self::assertStringContainsString('newField', $schema);
+
+        unlink(self::PATH);
     }
 
     /** @return iterable<array{Request}> */
@@ -88,15 +132,19 @@ final class IntrospectorTest extends TestCase
     }
 
     /** @param Request $request */
-    private function makeIntrospector(callable $request): Introspector
+    private function makeIntrospector(callable $request, ?array $introspectionConfig = null): Introspector
     {
-        $endpointConfig = new class($request) extends EndpointConfig {
+        $endpointConfig = new class($request, $introspectionConfig) extends EndpointConfig {
             /** @var callable */
             private $request;
 
-            public function __construct(callable $request)
+            /** @var array<string, mixed>|null */
+            private ?array $introspectionConfig;
+
+            public function __construct(callable $request, ?array $introspectionConfig)
             {
                 $this->request = $request;
+                $this->introspectionConfig = $introspectionConfig;
             }
 
             public function makeClient(): Client
@@ -123,6 +171,11 @@ final class IntrospectorTest extends TestCase
             {
                 return new DirectoryFinder('bar');
             }
+
+            public function introspectionConfig(): array
+            {
+                return $this->introspectionConfig ?? parent::introspectionConfig();
+            }
         };
 
         return new Introspector($endpointConfig, 'foo', 'bar');
@@ -138,6 +191,59 @@ final class IntrospectorTest extends TestCase
         $response->data = Json::assocToStdClass($introspection);
 
         return $response;
+    }
+
+    public static function introspectionWithDeprecatedMock(bool $includeDeprecated): Response
+    {
+        $schema = BuildSchema::build(self::SCHEMA_WITH_DEPRECATED);
+        $introspection = Introspection::fromSchema($schema);
+        if (! $includeDeprecated) {
+            $introspection = self::stripDeprecations($introspection);
+        }
+
+        $response = new Response();
+        // @phpstan-ignore-next-line We know an associative array converts to a stdClass
+        $response->data = Json::assocToStdClass($introspection);
+
+        return $response;
+    }
+
+    /**
+     * @param  array<string, mixed>  $introspection
+     *
+     * @return array<string, mixed>
+     */
+    private static function stripDeprecations(array $introspection): array
+    {
+        if (! isset($introspection['__schema']['types']) || ! is_array($introspection['__schema']['types'])) {
+            return $introspection;
+        }
+
+        foreach ($introspection['__schema']['types'] as &$type) {
+            if (isset($type['fields']) && is_array($type['fields'])) {
+                $type['fields'] = array_values(array_filter($type['fields'], static function (array $field): bool {
+                    return empty($field['isDeprecated']);
+                }));
+
+                foreach ($type['fields'] as &$field) {
+                    if (isset($field['args']) && is_array($field['args'])) {
+                        $field['args'] = array_values(array_filter($field['args'], static function (array $arg): bool {
+                            return empty($arg['isDeprecated']);
+                        }));
+                    }
+                }
+                unset($field);
+            }
+
+            if (isset($type['enumValues']) && is_array($type['enumValues'])) {
+                $type['enumValues'] = array_values(array_filter($type['enumValues'], static function (array $enumValue): bool {
+                    return empty($enumValue['isDeprecated']);
+                }));
+            }
+        }
+        unset($type);
+
+        return $introspection;
     }
 
     private static function responseWithErrorsMock(): Response
