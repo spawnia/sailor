@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Allow `symfony/console:^8`
+- Allow `symfony/var-dumper:^8`
+- Allow `symfony/var-exporter:^8`
+
 ## v1.1.2
 
 ### Fixed
