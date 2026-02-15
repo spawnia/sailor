@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+
+- Fix compatibility with `symfony/console:^8` by using `addCommand()` instead of removed `add()` https://github.com/spawnia/sailor/pull/132
+
 ## v1.2.0
 
 ### Added
