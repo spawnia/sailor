@@ -15,7 +15,9 @@ if (file_exists(__DIR__.'/../../autoload.php')) {
 
 $console = new Application();
 
-$addCommand = method_exists($console, 'addCommand') ? 'addCommand' : 'add';
+$addCommand = method_exists($console, 'addCommand')
+    ? 'addCommand' // symfony/console 8
+    : 'add'; // symfony/console 5-7
 
 $codegenCommand = new CodegenCommand();
 $console->$addCommand($codegenCommand);
