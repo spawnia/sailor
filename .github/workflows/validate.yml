@@ -126,22 +126,19 @@ jobs:
           - polymorphic
           - inline-fragments
         php-version:
-          - 8.3
+          - 8.4
         dependencies:
           - highest
         include:
           - example: simple
             php-version: 7.4
             dependencies: lowest
-          - example: install
-            php-version: 7.4
+          - example: simple
+            php-version: 8.1
             dependencies: lowest
           - example: simple
-            php-version: 8.4
-            dependencies: highest
-          - example: install
-            php-version: 8.4
-            dependencies: highest
+            php-version: 8.2
+            dependencies: lowest
 
     steps:
       - uses: actions/checkout@v4
