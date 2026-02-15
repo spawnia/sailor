@@ -15,9 +15,11 @@ if (file_exists(__DIR__.'/../../autoload.php')) {
 
 $console = new Application();
 
+$addCommand = method_exists($console, 'addCommand') ? 'addCommand' : 'add';
+
 $codegenCommand = new CodegenCommand();
-$console->add($codegenCommand);
+$console->$addCommand($codegenCommand);
 $console->setDefaultCommand($codegenCommand->getName());
-$console->add(new IntrospectCommand());
+$console->$addCommand(new IntrospectCommand());
 
 $console->run();
