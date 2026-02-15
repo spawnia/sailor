@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v1.2.1
+
 ### Fixed
 
 - Fix compatibility with `symfony/console:^8` by using `addCommand()` instead of removed `add()` https://github.com/spawnia/sailor/pull/132
@@ -17,9 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Allow `symfony/console:^8`
-- Allow `symfony/var-dumper:^8`
-- Allow `symfony/var-exporter:^8`
+- Allow `symfony/console:^8` https://github.com/spawnia/sailor/pull/131
+- Allow `symfony/var-dumper:^8` https://github.com/spawnia/sailor/pull/131
+- Allow `symfony/var-exporter:^8` https://github.com/spawnia/sailor/pull/131
 
 ## v1.1.2
 
