@@ -29,7 +29,7 @@ if second_output="$(vendor/bin/sailor 2>&1)"; then
   exit 1
 fi
 
-if [[ "$second_output" != *"/src): Failed to open directory: No such file or directory"* ]]; then
+if [[ "$second_output" != *"Directory does not exist"* ]]; then
   echo "Expected second run to fail because src directory is missing" >&2
   echo "$second_output" >&2
   exit 1
