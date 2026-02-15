@@ -5,7 +5,7 @@ use Spawnia\Sailor\CustomTypes\Operations\MyCustomObjectQuery;
 use Spawnia\Sailor\CustomTypes\Types\CustomEnum;
 use Spawnia\Sailor\CustomTypesSrc\CustomObject;
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 $myCustomEnumQueryResult = MyCustomEnumQuery::execute(
     new CustomEnum(CustomEnum::A)

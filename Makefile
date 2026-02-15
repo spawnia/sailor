@@ -1,5 +1,5 @@
 .PHONY: it
-it: fix stan approve test test-examples ## Run the commonly used targets
+it: fix stan approve test validate-examples ## Run the commonly used targets
 
 .PHONY: help
 help: ## Displays this list of targets with descriptions
@@ -29,15 +29,15 @@ coverage: ## Collects coverage from running unit tests with phpunit
 approve: ## Generate code and approve it as expected
 	tests/generate-and-approve-examples.php
 
-.PHONY: test-examples
-test-examples: ## Test examples
-	cd examples/custom-types && ./test.sh
-	cd examples/inline-fragments && ./test.sh
-	cd examples/input && ./test.sh
-	cd examples/install && ./test.sh
-	cd examples/php-keywords && ./test.sh
-	cd examples/polymorphic && ./test.sh
-	cd examples/simple && ./test.sh
+.PHONY: validate-examples
+validate-examples: ## Run integration tests on examples
+	examples/validate.sh custom-types --dependencies=highest
+	examples/validate.sh inline-fragments --dependencies=highest
+	examples/validate.sh input --dependencies=highest
+	examples/validate.sh install --dependencies=highest
+	examples/validate.sh php-keywords --dependencies=highest
+	examples/validate.sh polymorphic --dependencies=highest
+	examples/validate.sh simple --dependencies=highest
 
 vendor: composer.json composer.lock
 	composer install

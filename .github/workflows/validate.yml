@@ -153,11 +153,7 @@ jobs:
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - if: ${{ matrix.dependencies == 'lowest' }}
-        run: cd examples/${{ matrix.example }} && ./test.sh --prefer-lowest --prefer-stable
-
-      - if: ${{ matrix.dependencies == 'highest' }}
-        run: cd examples/${{ matrix.example }} && ./test.sh
+      - run: examples/validate.sh "${{ matrix.example }}" --dependencies="${{ matrix.dependencies }}"
 
   code-coverage:
     runs-on: ubuntu-latest
