@@ -27,4 +27,15 @@ final class DirectoryFinderTest extends TestCase
 
         self::assertCount(1, $finder->documents());
     }
+
+    public function testMissingDirectory(): void
+    {
+        $path = __DIR__ . '/finder/does-not-exist';
+        $finder = new DirectoryFinder($path);
+
+        self::expectException(\RuntimeException::class);
+        self::expectExceptionMessage("Directory does not exist: {$path}");
+
+        $finder->documents();
+    }
 }

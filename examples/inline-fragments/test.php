@@ -2,7 +2,7 @@
 
 use Spawnia\Sailor\InlineFragments\Operations\SearchQuery;
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 $result = SearchQuery::execute('test query')->errorFree();
 

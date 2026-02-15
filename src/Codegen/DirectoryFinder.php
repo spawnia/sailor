@@ -39,6 +39,10 @@ class DirectoryFinder implements Finder
 
     protected function fileIterator(): \RegexIterator // @phpstan-ignore missingType.generics
     {
+        if (! is_dir($this->rootPath)) {
+            throw new \RuntimeException("Directory does not exist: {$this->rootPath}");
+        }
+
         $directory = new \RecursiveDirectoryIterator($this->rootPath);
         $iterator = new \RecursiveIteratorIterator($directory);
 

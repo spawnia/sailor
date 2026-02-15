@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 use Spawnia\Sailor\PhpKeywords\Operations\_Catch;
 use Spawnia\Sailor\PhpKeywords\Operations\AllCases;
