@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Input\Operations;
 
@@ -12,8 +10,9 @@ class TakeList extends \Spawnia\Sailor\Operation
     /**
      * @param array<int|null>|null $values
      */
-    public static function execute($values = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): TakeList\TakeListResult
-    {
+    public static function execute(
+        $values = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+    ): TakeList\TakeListResult {
         return self::executeOperation(
             $values,
         );
@@ -21,6 +20,7 @@ class TakeList extends \Spawnia\Sailor\Operation
 
     protected static function converters(): array
     {
+        /** @var array<int, array{string, \Spawnia\Sailor\Convert\TypeConverter}>|null $converters */
         static $converters;
 
         return $converters ??= [

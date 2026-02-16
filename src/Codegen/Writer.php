@@ -15,7 +15,7 @@ class Writer
     }
 
     /**
-     * Persist the given files onto disk.
+     * Persist the given files to disk.
      *
      * @param iterable<File> $files
      */
@@ -35,7 +35,7 @@ class Writer
         }
 
         \Safe\file_put_contents(
-            $file->directory . '/' . $file->name,
+            "{$file->directory}/{$file->name}",
             $file->content
         );
     }

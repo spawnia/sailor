@@ -10,9 +10,7 @@ use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpNamespace;
 use Spawnia\Sailor\ObjectLike;
 
-/**
- * @phpstan-type PropertyArgs array{string, Type, string, string, mixed}
- */
+/** @phpstan-type PropertyArgs array{string, Type, string, string, mixed} */
 class ObjectLikeBuilder
 {
     private bool $isInputType;
@@ -23,24 +21,20 @@ class ObjectLikeBuilder
 
     private Method $converters;
 
-    /**
-     * @var array<PropertyArgs>
-     */
+    /** @var array<PropertyArgs> */
     private array $requiredProperties = [];
 
-    /**
-     * @var array<PropertyArgs>
-     */
+    /** @var array<PropertyArgs> */
     private array $optionalProperties = [];
 
     public function __construct(string $name, string $namespace, bool $isInputType)
     {
         $class = new ClassType(
-            $name,
+            Escaper::escapeClassName($name),
             new PhpNamespace($namespace) // TODO drop escape when min PHP version is 8.0+
         );
 
-        $class->addExtend(ObjectLike::class);
+        $class->setExtends(ObjectLike::class);
 
         $make = $class->addMethod('make');
         $make->setStatic(true);
@@ -51,22 +45,19 @@ class ObjectLikeBuilder
         $converters = $class->addMethod('converters');
         $converters->setProtected();
         $converters->setReturnType('array');
-        $converters->addBody(
-            <<<'PHP'
-static $converters;
+        $converters->addBody(<<<'PHP'
+        /** @var array<string, \Spawnia\Sailor\Convert\TypeConverter>|null $converters */
+        static $converters;
 
-return $converters ??= [
-PHP
-        );
+        return $converters ??= [
+        PHP);
         $this->converters = $converters;
 
         $this->class = $class;
         $this->isInputType = $isInputType;
     }
 
-    /**
-     * @param mixed $defaultValue any value
-     */
+    /** @param mixed $defaultValue any value */
     public function addProperty(string $name, Type $type, string $phpDocType, string $typeConverter, $defaultValue): void
     {
         // Fields may be referenced multiple times in a query through fragments, but they
@@ -79,7 +70,7 @@ PHP
 
         $args = [$name, $type, $phpDocType, $typeConverter, $defaultValue];
 
-        if ($type instanceof NonNull && null === $defaultValue) {
+        if ($type instanceof NonNull && $defaultValue === null) {
             $this->requiredProperties[] = $args;
         } else {
             $this->optionalProperties[] = $args;
@@ -102,9 +93,7 @@ PHP
         return $this->class;
     }
 
-    /**
-     * @param mixed $defaultValue any value
-     */
+    /** @param mixed $defaultValue any value */
     protected function buildProperty(string $name, Type $type, string $phpDocType, string $typeConverter, $defaultValue): void
     {
         $wrappedPhpDocType = TypeWrapper::phpDoc($type, $phpDocType, $this->isInputType);
@@ -114,25 +103,26 @@ PHP
         $wrappedTypeConverter = TypeWrapper::converter($type, "new \\{$typeConverter}");
         $this->converters->addBody(/** @lang PHP */ "    '{$name}' => {$wrappedTypeConverter},");
 
-        if (Introspection::TYPE_NAME_FIELD_NAME === $name) {
+        if ($name === Introspection::TYPE_NAME_FIELD_NAME) {
             assert(is_string($defaultValue), 'set to parent type name in OperationGenerator');
             $this->make->addBody("\$instance->{$name} = '{$defaultValue}';");
         } else {
             $this->make->addComment("@param {$wrappedPhpDocType} \${$name}");
 
             $parameter = $this->make->addParameter($name);
-            if (! $type instanceof NonNull || null !== $defaultValue) {
+            if (! $type instanceof NonNull || $defaultValue !== null) {
                 $parameter->setNullable(true);
                 $parameter->setDefaultValue(ObjectLike::UNDEFINED);
             }
 
-            $this->make->addBody(
-                <<<PHP
-if (\${$name} !== self::UNDEFINED) {
-    \$instance->{$name} = \${$name};
-}
-PHP
-            );
+            // Call __set instead of just setting the property to avoid a naming conflict between
+            // GraphQL fields named `properties` and the protected property `$properties` in ObjectLike.
+            // See https://github.com/spawnia/sailor/issues/121.
+            $this->make->addBody(<<<PHP
+            if (\${$name} !== self::UNDEFINED) {
+                \$instance->__set('{$name}', \${$name});
+            }
+            PHP);
         }
     }
 }

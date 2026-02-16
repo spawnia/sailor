@@ -11,7 +11,10 @@ class IntrospectCommand extends Command
 {
     use InteractsWithEndpoints;
 
-    protected static $defaultName = 'introspect';
+    public function __construct(string $name = 'introspect')
+    {
+        parent::__construct($name);
+    }
 
     protected function configure(): void
     {
@@ -30,7 +33,7 @@ class IntrospectCommand extends Command
             (new Introspector($endpoint, $configFile, $endpointName))->introspect();
         }
 
-        echo "Successfully introspected. Rerun codegen with: vendor/bin/sailor\n";
+        echo "Successfully introspected. Rerun codegen with: vendor/bin/sailor codegen\n";
 
         return 0;
     }

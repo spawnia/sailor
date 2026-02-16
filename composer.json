@@ -17,40 +17,43 @@
   "require": {
     "php": "^7.4 || ^8",
     "ext-json": "*",
-    "nette/php-generator": "^3.6.7",
+    "nette/php-generator": "^3.6.9 || ^4.1.7",
     "psr/http-client": "^1",
-    "symfony/console": "^5 || ^6",
-    "symfony/var-exporter": "^5.3 || ^6",
-    "thecodingmachine/safe": "^1 || ^2",
-    "webonyx/graphql-php": "^14.11.3"
+    "symfony/console": "^5 || ^6 || ^7 || ^8",
+    "symfony/var-exporter": "^5.3 || ^6 || ^7 || ^8",
+    "thecodingmachine/safe": "^1 || ^2 || ^3",
+    "webonyx/graphql-php": "^14.11.3 || ^15"
   },
   "require-dev": {
-    "bensampo/laravel-enum": "^3 || ^4.1",
-    "composer/composer": "^2",
+    "bensampo/laravel-enum": "^3 || ^4.1 || ^5 || ^6",
+    "composer/composer": "^2.1",
     "ergebnis/composer-normalize": "^2.13",
+    "friendsofphp/php-cs-fixer": "~3.63.0",
     "guzzlehttp/guzzle": "^7",
-    "infection/infection": "~0.21",
-    "jangregor/phpstan-prophecy": "^1",
-    "mll-lab/php-cs-fixer-config": "^4.3",
+    "jangregor/phpstan-prophecy": "^1 || ^2",
+    "mll-lab/php-cs-fixer-config": "^5",
     "mockery/mockery": "^1.4",
+    "nesbot/carbon": "^2.73 || ^3",
     "nyholm/psr7": "^1.4",
+    "ocramius/package-versions": "^1 || ^2",
     "php-http/httplug": "^2",
     "php-http/mock-client": "^1.4",
     "phpstan/extension-installer": "^1",
-    "phpstan/phpstan": "^1",
-    "phpstan/phpstan-deprecation-rules": "^1",
-    "phpstan/phpstan-mockery": "^1",
-    "phpstan/phpstan-phpunit": "^1",
-    "phpstan/phpstan-strict-rules": "^1",
-    "phpunit/phpunit": "^9.5.2",
-    "spawnia/phpunit-assert-directory": "^2",
-    "symfony/var-dumper": "^5.2.3",
+    "phpstan/phpstan": "^1.12.19 || ^2",
+    "phpstan/phpstan-deprecation-rules": "^1 || ^2",
+    "phpstan/phpstan-mockery": "^1 || ^2",
+    "phpstan/phpstan-phpunit": "^1 || ^2",
+    "phpstan/phpstan-strict-rules": "^1 || ^2",
+    "phpunit/phpunit": "^9.6.22 || ^10.5.45 || ^11.5.10 || ^12.0.5",
+    "spawnia/phpunit-assert-directory": "^2.1",
+    "symfony/var-dumper": "^5.2.3 || ^6 || ^7 || ^8",
     "thecodingmachine/phpstan-safe-rule": "^1.1"
   },
   "suggest": {
     "bensampo/laravel-enum": "Use with BenSampoEnumTypeConfig",
     "guzzlehttp/guzzle": "Enables using the built-in default Client",
-    "mockery/mockery": "Used in Operation::mock()"
+    "mockery/mockery": "Used in Operation::mock()",
+    "nesbot/carbon": "Use with CarbonTypeConfig"
   },
   "autoload": {
     "psr-4": {
@@ -59,17 +62,14 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Spawnia\\Sailor\\Tests\\": "tests/",
-      "Spawnia\\Sailor\\CustomTypes\\": "examples/custom-types/expected/",
       "Spawnia\\Sailor\\CustomTypesSrc\\": "examples/custom-types/src/",
+      "Spawnia\\Sailor\\CustomTypes\\": "examples/custom-types/expected/",
       "Spawnia\\Sailor\\Input\\": "examples/input/expected/",
-      "Spawnia\\Sailor\\Simple\\": "examples/simple/expected/",
       "Spawnia\\Sailor\\PhpKeywords\\": "examples/php-keywords/expected/",
-      "Spawnia\\Sailor\\Polymorphic\\": "examples/polymorphic/expected/"
-    },
-    "files": [
-      "vendor/symfony/var-dumper/Resources/functions/dump.php"
-    ]
+      "Spawnia\\Sailor\\Polymorphic\\": "examples/polymorphic/expected/",
+      "Spawnia\\Sailor\\Simple\\": "examples/simple/expected/",
+      "Spawnia\\Sailor\\Tests\\": "tests/"
+    }
   },
   "bin": [
     "sailor"
@@ -77,12 +77,10 @@
   "config": {
     "allow-plugins": {
       "ergebnis/composer-normalize": true,
+      "infection/extension-installer": true,
       "ocramius/package-versions": true,
-      "phpstan/extension-installer": true,
-      "infection/extension-installer": true
-    },
-    "platform": {
-      "php": "7.4.15"
+      "php-http/discovery": false,
+      "phpstan/extension-installer": true
     },
     "preferred-install": "dist",
     "sort-packages": true

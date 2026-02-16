@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\CustomTypes\Operations\MyDefaultEnumQuery;
 
@@ -18,7 +16,7 @@ class MyDefaultEnumQuery extends \Spawnia\Sailor\ObjectLike
         $instance = new self;
 
         if ($withDefaultEnum !== self::UNDEFINED) {
-            $instance->withDefaultEnum = $withDefaultEnum;
+            $instance->__set('withDefaultEnum', $withDefaultEnum);
         }
         $instance->__typename = 'Query';
 
@@ -27,6 +25,7 @@ class MyDefaultEnumQuery extends \Spawnia\Sailor\ObjectLike
 
     protected function converters(): array
     {
+        /** @var array<string, \Spawnia\Sailor\Convert\TypeConverter>|null $converters */
         static $converters;
 
         return $converters ??= [

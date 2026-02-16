@@ -4,11 +4,9 @@ namespace Spawnia\Sailor\Tests\Unit;
 
 use GraphQL\Type\Introspection;
 use GraphQL\Utils\BuildSchema;
-
-use function Safe\file_get_contents;
-use function Safe\unlink;
-
 use Spawnia\Sailor\Client;
+use Spawnia\Sailor\Codegen\DirectoryFinder;
+use Spawnia\Sailor\Codegen\Finder;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Error\InvalidDataException;
 use Spawnia\Sailor\Error\ResultErrorsException;
@@ -17,30 +15,30 @@ use Spawnia\Sailor\Json;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
 use Spawnia\Sailor\Tests\TestCase;
-use stdClass;
 
-/**
- * @phpstan-import-type ResponseMock from MockClient
- */
+use function Safe\file_get_contents;
+use function Safe\unlink;
+
+/** @phpstan-import-type Request from MockClient */
 final class IntrospectorTest extends TestCase
 {
     public const SCHEMA = /* @lang GraphQL */ <<<'GRAPHQL'
-        type Query {
-          simple: ID
-        }
+    type Query {
+      simple: ID
+    }
 
-        GRAPHQL;
+    GRAPHQL;
 
     public const PATH = __DIR__ . '/schema.graphql';
 
     /**
-     * @dataProvider validResponseMocks
+     * @dataProvider validRequests
      *
-     * @param  array<int, ResponseMock>  $responseMocks
+     * @param  Request  $request
      */
-    public function testPrintsIntrospection(array $responseMocks): void
+    public function testPrintsIntrospection(callable $request): void
     {
-        $this->makeIntrospector($responseMocks)
+        $this->makeIntrospector($request)
             ->introspect();
 
         self::assertFileExists(self::PATH);
@@ -53,62 +51,57 @@ final class IntrospectorTest extends TestCase
     {
         self::expectException(ResultErrorsException::class);
         $this
-            ->makeIntrospector([
-                self::responseWithErrorsMock(),
-                self::responseWithErrorsMock(),
-            ])
+            ->makeIntrospector(static fn (): Response => self::responseWithErrorsMock())
             ->introspect();
     }
 
-    /**
-     * @return iterable<array{array<int, ResponseMock>}>
-     */
-    public function validResponseMocks(): iterable
+    /** @return iterable<array{Request}> */
+    public static function validRequests(): iterable
     {
         yield [
-            [
-                self::successfulIntrospectionMock(),
-            ],
+            static fn (): Response => self::successfulIntrospectionMock(),
         ];
 
         yield [
-            [
-                self::responseWithErrorsMock(),
-                self::successfulIntrospectionMock(),
-            ],
+            static function (): Response {
+                static $called = false;
+                $response = $called
+                    ? self::responseWithErrorsMock()
+                    : self::successfulIntrospectionMock();
+                $called = true;
+
+                return $response;
+            },
         ];
 
         yield [
-            [
-                self::misbehavedServerMock(),
-                self::successfulIntrospectionMock(),
-            ],
+            static function (): Response {
+                static $called = false;
+                $response = $called
+                    ? self::misbehavedServerMock()
+                    : self::successfulIntrospectionMock();
+                $called = true;
+
+                return $response;
+            },
         ];
     }
 
-    /**
-     * @param array<int, ResponseMock> $responseMocks
-     */
-    private function makeIntrospector(array $responseMocks): Introspector
+    /** @param Request $request */
+    private function makeIntrospector(callable $request): Introspector
     {
-        $endpointConfig = new class($responseMocks) extends EndpointConfig {
-            /** @var array<int, callable> */
-            private array $responseMocks;
+        $endpointConfig = new class($request) extends EndpointConfig {
+            /** @var callable */
+            private $request;
 
-            /**
-             * @param array<int, callable> $responseMocks
-             */
-            public function __construct(array $responseMocks)
+            public function __construct(callable $request)
             {
-                $this->responseMocks = $responseMocks;
+                $this->request = $request;
             }
 
             public function makeClient(): Client
             {
-                $mockClient = new MockClient();
-                $mockClient->responseMocks = $this->responseMocks;
-
-                return $mockClient;
+                return new MockClient($this->request);
             }
 
             public function schemaPath(): string
@@ -126,52 +119,37 @@ final class IntrospectorTest extends TestCase
                 return 'simple';
             }
 
-            public function searchPath(): string
+            public function finder(): Finder
             {
-                return 'bar';
+                return new DirectoryFinder('bar');
             }
         };
 
         return new Introspector($endpointConfig, 'foo', 'bar');
     }
 
-    /**
-     * @return ResponseMock
-     */
-    public static function successfulIntrospectionMock(): callable
+    public static function successfulIntrospectionMock(): Response
     {
-        return static function (): Response {
-            $schema = BuildSchema::build(self::SCHEMA);
-            $introspection = Introspection::fromSchema($schema);
+        $schema = BuildSchema::build(self::SCHEMA);
+        $introspection = Introspection::fromSchema($schema);
 
-            $response = new Response();
-            // @phpstan-ignore-next-line We know an associative array converts to a stdClass
-            $response->data = Json::assocToStdClass($introspection);
+        $response = new Response();
+        // @phpstan-ignore-next-line We know an associative array converts to a stdClass
+        $response->data = Json::assocToStdClass($introspection);
 
-            return $response;
-        };
+        return $response;
     }
 
-    /**
-     * @return ResponseMock
-     */
-    private function responseWithErrorsMock(): callable
+    private static function responseWithErrorsMock(): Response
     {
-        return static function (): Response {
-            $response = new Response();
-            $response->errors = [(object) ['message' => 'foo']];
+        $response = new Response();
+        $response->errors = [(object) ['message' => 'foo']];
 
-            return $response;
-        };
+        return $response;
     }
 
-    /**
-     * @return ResponseMock
-     */
-    private static function misbehavedServerMock(): callable
+    private static function misbehavedServerMock(): Response
     {
-        return static function (): Response {
-            throw new InvalidDataException('misbehaved server');
-        };
+        throw new InvalidDataException('misbehaved server');
     }
 }

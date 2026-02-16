@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Simple\Operations\ClientDirectiveQuery;
 
@@ -17,16 +15,16 @@ class ClientDirectiveQuery extends \Spawnia\Sailor\ObjectLike
      */
     public static function make(
         $scalarWithArg = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
-        $twoArgs = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'
+        $twoArgs = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
     ): self {
         $instance = new self;
 
         $instance->__typename = 'Query';
         if ($scalarWithArg !== self::UNDEFINED) {
-            $instance->scalarWithArg = $scalarWithArg;
+            $instance->__set('scalarWithArg', $scalarWithArg);
         }
         if ($twoArgs !== self::UNDEFINED) {
-            $instance->twoArgs = $twoArgs;
+            $instance->__set('twoArgs', $twoArgs);
         }
 
         return $instance;
@@ -34,6 +32,7 @@ class ClientDirectiveQuery extends \Spawnia\Sailor\ObjectLike
 
     protected function converters(): array
     {
+        /** @var array<string, \Spawnia\Sailor\Convert\TypeConverter>|null $converters */
         static $converters;
 
         return $converters ??= [

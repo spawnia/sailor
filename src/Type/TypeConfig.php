@@ -3,11 +3,10 @@
 namespace Spawnia\Sailor\Type;
 
 use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\EnumType;
 use Spawnia\Sailor\Convert\TypeConverter;
 
-/**
- * Specifies how Sailor should deal with a GraphQL type.
- */
+/** Specifies how Sailor should deal with a GraphQL type. */
 interface TypeConfig
 {
     /**
@@ -22,7 +21,7 @@ interface TypeConfig
     /**
      * Return any number of generated class definitions to write to files.
      *
-     * @return iterable<ClassType>
+     * @return iterable<ClassType|EnumType>
      */
     public function generateClasses(): iterable;
 }

@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\Node;
 
@@ -13,13 +11,14 @@ class User extends \Spawnia\Sailor\ObjectLike
     /**
      * @param \Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\Node\Node\User|\Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\Node\Node\Post|\Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments\Node\Node\Node\Task|null $node
      */
-    public static function make($node = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): self
-    {
+    public static function make(
+        $node = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+    ): self {
         $instance = new self;
 
         $instance->__typename = 'User';
         if ($node !== self::UNDEFINED) {
-            $instance->node = $node;
+            $instance->__set('node', $node);
         }
 
         return $instance;
@@ -27,6 +26,7 @@ class User extends \Spawnia\Sailor\ObjectLike
 
     protected function converters(): array
     {
+        /** @var array<string, \Spawnia\Sailor\Convert\TypeConverter>|null $converters */
         static $converters;
 
         return $converters ??= [

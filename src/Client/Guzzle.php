@@ -12,16 +12,14 @@ class Guzzle implements Client
 
     protected GuzzleClient $guzzle;
 
-    /**
-     * @param  array<string, mixed>  $config
-     */
+    /** @param  array<string, mixed>  $config */
     public function __construct(string $uri, array $config = [])
     {
         $this->uri = $uri;
         $this->guzzle = new GuzzleClient($config);
     }
 
-    public function request(string $query, \stdClass $variables = null): Response
+    public function request(string $query, ?\stdClass $variables = null): Response
     {
         $json = ['query' => $query];
         if (! is_null($variables)) {

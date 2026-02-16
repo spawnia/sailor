@@ -3,7 +3,6 @@
 namespace Spawnia\Sailor\Tests\Integration;
 
 use Spawnia\Sailor\Polymorphic\Operations\PolymorphicCommonSubChildren;
-use Spawnia\Sailor\Polymorphic\Operations\PolymorphicCommonSubChildren\PolymorphicCommonSubChildrenResult;
 use Spawnia\Sailor\Tests\TestCase;
 
 final class PolymorphicChildrenTest extends TestCase
@@ -46,7 +45,7 @@ final class PolymorphicChildrenTest extends TestCase
         PolymorphicCommonSubChildren::mock()
             ->expects('execute')
             ->once()
-            ->andReturn(PolymorphicCommonSubChildrenResult::fromData(
+            ->andReturn(PolymorphicCommonSubChildren\PolymorphicCommonSubChildrenResult::fromData(
                 PolymorphicCommonSubChildren\PolymorphicCommonSubChildren::make(
                     /* sub: */
                     PolymorphicCommonSubChildren\Sub\Sub::make([

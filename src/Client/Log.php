@@ -2,7 +2,6 @@
 
 namespace Spawnia\Sailor\Client;
 
-use Generator;
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\Response;
 
@@ -14,12 +13,12 @@ class Log implements Client
 
     public function __construct(string $filename)
     {
-        \Safe\touch($filename);
+        \Safe\file_put_contents($filename, '');
 
         $this->filename = $filename;
     }
 
-    public function request(string $query, \stdClass $variables = null): Response
+    public function request(string $query, ?\stdClass $variables = null): Response
     {
         $log = \Safe\json_encode([
             'query' => $query,
@@ -40,18 +39,17 @@ class Log implements Client
     }
 
     /**
-     * @return Generator<int, array{
-     *      query: string,
-     *      variables: array<string, mixed>|null,
+     * @return iterable<array{
+     *   query: string,
+     *   variables: array<string, mixed>|null,
      * }>
      */
-    public function requests(): \Generator
+    public function requests(): iterable
     {
         $file = \Safe\fopen($this->filename, 'r');
 
-        while ($line = fgets($file)) {
-            // @phpstan-ignore-next-line we know the data in the log matches the defined array shape
-            yield \Safe\json_decode($line, true);
+        while ($line = fgets($file)) { // @phpstan-ignore while.condNotBoolean
+            yield \Safe\json_decode($line, true); // @phpstan-ignore generator.valueType (we know the data in the log matches the defined array shape)
         }
 
         \Safe\fclose($file);

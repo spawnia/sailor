@@ -2,9 +2,7 @@
 
 namespace Spawnia\Sailor\Codegen;
 
-/**
- * A generated file that should be written to a target.
- */
+/** A generated file that should be written to a target. */
 class File
 {
     public string $content;

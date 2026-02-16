@@ -18,14 +18,10 @@ class FoldFragments
 {
     protected DocumentNode $document;
 
-    /**
-     * @var array<string, OperationDefinitionNode>
-     */
+    /** @var array<string, OperationDefinitionNode> */
     protected array $operations = [];
 
-    /**
-     * @var array<string, FragmentDefinitionNode>
-     */
+    /** @var array<string, FragmentDefinitionNode> */
     protected array $fragments = [];
 
     public function __construct(DocumentNode $document)
@@ -61,9 +57,7 @@ class FoldFragments
         ]);
     }
 
-    /**
-     * @return NodeList<Node&SelectionNode>
-     */
+    /** @return NodeList<Node&SelectionNode> */
     protected function extractFields(SelectionSetNode $selectionSet): NodeList
     {
         /** @var array<int, Node&SelectionNode> $selections */
@@ -93,7 +87,7 @@ class FoldFragments
                     throw new \Exception("Found directives on fragment {$fragment->name->value}, but can not use it because they will be inlined.");
                 }
 
-                // @phpstan-ignore-next-line TODO remove with graphql-php 15
+                // @phpstan-ignore-next-line old graphql-php versions have inaccurate types
                 $selections[] = new InlineFragmentNode([
                     'typeCondition' => $fragment->typeCondition,
                     'directives' => $selection->directives,

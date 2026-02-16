@@ -1,0 +1,18 @@
+query MyCustomObjectQuery($value: CustomInput) {
+    withCustomObject(value: $value) {
+        foo
+    }
+}
+
+query MyNestedCustomObjectQuery {
+    withNestedCustomObject {
+        __typename
+        bar {
+            foo
+        }
+        baz {
+            foo
+            __typename
+        }
+    }
+}

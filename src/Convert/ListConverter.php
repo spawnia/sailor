@@ -11,9 +11,7 @@ class ListConverter implements TypeConverter
         $this->ofType = $ofType;
     }
 
-    /**
-     * @return array<int, mixed>
-     */
+    /** @return array<int, mixed> */
     public function fromGraphQL($value): array
     {
         if (! is_array($value)) {
@@ -21,13 +19,13 @@ class ListConverter implements TypeConverter
             throw new \InvalidArgumentException("Expected array, got {$notArray}");
         }
 
-        // @phpstan-ignore-next-line Parameter #1 $callback of function array_map expects (callable(mixed): mixed)|null, array{Spawnia\Sailor\TypeConverter, 'fromGraphQL'} given.
-        return array_map([$this->ofType, 'fromGraphQL'], $value);
+        return array_map(
+            [$this->ofType, 'fromGraphQL'], // @phpstan-ignore argument.type (callable not inferred)
+            $value
+        );
     }
 
-    /**
-     * @return array<int, mixed>
-     */
+    /** @return array<int, mixed> */
     public function toGraphQL($value): array
     {
         if (! is_array($value)) {

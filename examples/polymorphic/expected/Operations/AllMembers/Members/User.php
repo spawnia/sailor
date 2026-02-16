@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Polymorphic\Operations\AllMembers\Members;
 
@@ -13,13 +11,14 @@ class User extends \Spawnia\Sailor\ObjectLike
     /**
      * @param string|null $name
      */
-    public static function make($name = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): self
-    {
+    public static function make(
+        $name = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+    ): self {
         $instance = new self;
 
         $instance->__typename = 'User';
         if ($name !== self::UNDEFINED) {
-            $instance->name = $name;
+            $instance->__set('name', $name);
         }
 
         return $instance;
@@ -27,6 +26,7 @@ class User extends \Spawnia\Sailor\ObjectLike
 
     protected function converters(): array
     {
+        /** @var array<string, \Spawnia\Sailor\Convert\TypeConverter>|null $converters */
         static $converters;
 
         return $converters ??= [

@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Polymorphic\Operations\AllMembers\Members;
 
@@ -18,7 +16,7 @@ class Organization extends \Spawnia\Sailor\ObjectLike
         $instance = new self;
 
         if ($code !== self::UNDEFINED) {
-            $instance->code = $code;
+            $instance->__set('code', $code);
         }
         $instance->__typename = 'Organization';
 
@@ -27,6 +25,7 @@ class Organization extends \Spawnia\Sailor\ObjectLike
 
     protected function converters(): array
     {
+        /** @var array<string, \Spawnia\Sailor\Convert\TypeConverter>|null $converters */
         static $converters;
 
         return $converters ??= [

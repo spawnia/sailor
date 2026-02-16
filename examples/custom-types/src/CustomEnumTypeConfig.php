@@ -34,33 +34,29 @@ class CustomEnumTypeConfig extends EnumTypeConfig
         $customEnumClass = $this->enumClassName();
 
         $fromGraphQL->setReturnType($customEnumClass);
-        $fromGraphQL->setBody(
-            <<<PHP
-                if (! is_string(\$value)) {
-                    throw new \InvalidArgumentException('Expected string, got: '.gettype(\$value));
-                }
+        $fromGraphQL->setBody(<<<PHP
+        if (! is_string(\$value)) {
+            throw new \InvalidArgumentException('Expected string, got: '.gettype(\$value));
+        }
 
-                return new \\{$customEnumClass}(\$value);
-                PHP
-        );
+        return new \\{$customEnumClass}(\$value);
+        PHP);
 
         $toGraphQL->setReturnType('string');
-        $toGraphQL->setBody(
-            <<<PHP
-                if (! \$value instanceof \\{$customEnumClass}) {
-                    throw new \InvalidArgumentException('Expected instanceof Enum, got: '.gettype(\$value));
-                }
+        $toGraphQL->setBody(<<<PHP
+        if (! \$value instanceof \\{$customEnumClass}) {
+            throw new \InvalidArgumentException('Expected instanceof Enum, got: '.gettype(\$value));
+        }
 
-                return \$value->value;
-                PHP
-        );
+        return \$value->value;
+        PHP);
 
         return $class;
     }
 
     protected function decorateEnumClass(ClassType $class): ClassType
     {
-        $class->addExtend(Enum::class);
+        $class->setExtends(Enum::class);
 
         return parent::decorateEnumClass($class);
     }

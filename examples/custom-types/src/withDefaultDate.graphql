@@ -1,0 +1,3 @@
+query MyDefaultDateQuery($value: DefaultDate!) {
+    withDefaultDate(value: $value)
+}

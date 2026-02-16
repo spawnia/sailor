@@ -1,0 +1,173 @@
+# https://help.github.com/en/categories/automating-your-workflow-with-github-actions
+
+on:
+  pull_request:
+  push:
+    branches:
+      - "master"
+
+jobs:
+  composer-validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          coverage: none
+          extensions: mbstring
+          php-version: 8.3
+
+      - run: composer validate
+
+  static-code-analysis:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version:
+          - 7.4
+          - 8.0
+          - 8.1
+          - 8.2
+          - 8.3
+          - 8.4
+          - 8.5
+        dependencies:
+          - lowest
+          - highest
+        exclude:
+          # Problematic because those PHP versions allow nette/php-generator 3 which can not generate native enums
+          - php-version: 8.1
+            dependencies: lowest
+          - php-version: 8.2
+            dependencies: lowest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          coverage: none
+          extensions: mbstring
+          php-version: 8.3
+
+      - uses: ramsey/composer-install@v3
+        with:
+          dependency-versions: "${{ matrix.dependencies }}"
+
+      # We require PHP 8.1 to generate native enums.
+      # Thus, the generated output differs in other versions, so we regenerate the code there.
+      # This is not ideal as it makes CodegenTest less useful, but allows us to move forward with native enums.
+      - if: ${{ matrix.php-version <= '8.1' }}
+        run: make approve
+
+      - run: vendor/bin/phpstan analyse --configuration=phpstan.neon
+
+  tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version:
+          - 7.4
+          - 8.0
+          - 8.1
+          - 8.2
+          - 8.3
+          - 8.4
+          - 8.5
+        dependencies:
+          - lowest
+          - highest
+        exclude:
+          # Problematic because those PHP versions allow nette/php-generator 3 which can not generate native enums
+          - php-version: 8.1
+            dependencies: lowest
+          - php-version: 8.2
+            dependencies: lowest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          coverage: none
+          extensions: mbstring
+          php-version: ${{ matrix.php-version }}
+
+      - uses: ramsey/composer-install@v3
+        with:
+          dependency-versions: "${{ matrix.dependencies }}"
+
+      # We require PHP 8.1 to generate native enums.
+      # Thus, the generated output differs in other versions, so we regenerate the code there.
+      # This is not ideal as it makes CodegenTest less useful, but allows us to move forward with native enums.
+      - if: ${{ matrix.php-version <= '8.1' }}
+        run: make approve
+
+      - run: vendor/bin/phpunit
+
+  examples:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        example:
+          - custom-types
+          - input
+          - install
+          - php-keywords
+          - simple
+          - polymorphic
+          - inline-fragments
+        php-version:
+          - 8.4
+        dependencies:
+          - highest
+        include:
+          - example: simple
+            php-version: 7.4
+            dependencies: lowest
+          - example: simple
+            php-version: 8.1
+            dependencies: lowest
+          - example: simple
+            php-version: 8.2
+            dependencies: lowest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          coverage: none
+          extensions: mbstring
+          php-version: ${{ matrix.php-version }}
+        env:
+          COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: examples/validate.sh "${{ matrix.example }}" --dependencies="${{ matrix.dependencies }}"
+
+  code-coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          coverage: pcov
+          extensions: mbstring
+          php-version: 8.3
+
+      - uses: ramsey/composer-install@v3
+
+      - run: vendor/bin/phpunit --coverage-clover=build/logs/clover.xml
+
+      # Not using v4 due to the breaking changes described in https://github.com/codecov/codecov-action/releases/tag/v4.0.0
+      - uses: codecov/codecov-action@v3

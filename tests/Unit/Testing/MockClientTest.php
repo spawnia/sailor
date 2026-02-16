@@ -2,7 +2,6 @@
 
 namespace Spawnia\Sailor\Tests\Unit\Testing;
 
-use PHPUnit\Framework\MockObject\MockObject;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Testing\MockClient;
 use Spawnia\Sailor\Tests\TestCase;
@@ -16,15 +15,13 @@ final class MockClientTest extends TestCase
 
         $response = new Response();
 
-        /** @var MockObject&callable $responseMock */
         $responseMock = self::createPartialMock(Invokable::class, ['__invoke']);
         $responseMock->expects(self::once())
             ->method('__invoke')
             ->with($query, $variables)
             ->willReturn($response);
 
-        $mockClient = new MockClient();
-        $mockClient->responseMocks[] = $responseMock;
+        $mockClient = new MockClient($responseMock);
 
         self::assertSame($response, $mockClient->request($query, $variables));
 

@@ -27,7 +27,7 @@ class DirectoryFinder implements Finder
 
             // When installing from source, the examples might end up in the critical path,
             // so we exclude them from the search.
-            if (false !== mb_strpos($path, 'vendor/spawnia/sailor/')) {
+            if (mb_strpos($path, 'vendor/spawnia/sailor/') !== false) {
                 continue;
             }
 
@@ -37,8 +37,12 @@ class DirectoryFinder implements Finder
         return $contents;
     }
 
-    protected function fileIterator(): \RegexIterator
+    protected function fileIterator(): \RegexIterator // @phpstan-ignore missingType.generics
     {
+        if (! is_dir($this->rootPath)) {
+            throw new \RuntimeException("Directory does not exist: {$this->rootPath}");
+        }
+
         $directory = new \RecursiveDirectoryIterator($this->rootPath);
         $iterator = new \RecursiveIteratorIterator($directory);
 

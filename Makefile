@@ -1,9 +1,9 @@
 .PHONY: it
-it: fix stan approve test test-examples ## Run the commonly used targets
+it: fix stan approve test validate-examples ## Run the commonly used targets
 
 .PHONY: help
 help: ## Displays this list of targets with descriptions
-	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(firstword $(MAKEFILE_LIST)) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[32m%-30s\033[0m %s\n", $$1, $$2}'
+	@grep --extended-regexp '^[a-zA-Z0-9_-]+:.*?## .*$$' $(firstword $(MAKEFILE_LIST)) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[32m%-30s\033[0m %s\n", $$1, $$2}'
 
 .PHONY: fix
 fix: vendor
@@ -11,37 +11,33 @@ fix: vendor
 
 .PHONY: stan
 stan: ## Runs static analysis with phpstan
-	mkdir -p .build/phpstan
+	mkdir --parents .build/phpstan
 	vendor/bin/phpstan analyse --configuration=phpstan.neon
 
 .PHONY: test
 test: ## Runs tests with phpunit
-	mkdir -p .build/phpunit
+	mkdir --parents .build/phpunit
 	vendor/bin/phpunit
 
 .PHONY: coverage
 coverage: ## Collects coverage from running unit tests with phpunit
-	mkdir -p .build/phpunit
+	mkdir --parents .build/phpunit
 	vendor/bin/phpunit --dump-xdebug-filter=.build/phpunit/xdebug-filter.php
 	vendor/bin/phpunit --coverage-text --prepend=.build/phpunit/xdebug-filter.php
-
-.PHONY: infection
-infection: ## Runs mutation tests with infection
-	mkdir -p .build/infection
-	vendor/bin/infection --ignore-msi-with-no-mutations --min-covered-msi=100 --min-msi=100
 
 .PHONY: approve
 approve: ## Generate code and approve it as expected
 	tests/generate-and-approve-examples.php
 
-.PHONY: test-examples
-test-examples: ## Test examples
-	cd examples/custom-types && ./test.sh
-	cd examples/input && ./test.sh
-	cd examples/install && ./test.sh
-	cd examples/php-keywords && ./test.sh
-	cd examples/polymorphic && ./test.sh
-	cd examples/simple && ./test.sh
+.PHONY: validate-examples
+validate-examples: ## Run integration tests on examples
+	examples/validate.sh custom-types --dependencies=highest
+	examples/validate.sh inline-fragments --dependencies=highest
+	examples/validate.sh input --dependencies=highest
+	examples/validate.sh install --dependencies=highest
+	examples/validate.sh php-keywords --dependencies=highest
+	examples/validate.sh polymorphic --dependencies=highest
+	examples/validate.sh simple --dependencies=highest
 
 vendor: composer.json composer.lock
 	composer install

@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Polymorphic\Operations\PolymorphicCommonSubChildren\Sub\Nodes;
 
@@ -20,19 +18,19 @@ class Task extends \Spawnia\Sailor\ObjectLike
     public static function make(
         $id,
         $done,
-        $node = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'
+        $node = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
     ): self {
         $instance = new self;
 
         if ($id !== self::UNDEFINED) {
-            $instance->id = $id;
+            $instance->__set('id', $id);
         }
         if ($done !== self::UNDEFINED) {
-            $instance->done = $done;
+            $instance->__set('done', $done);
         }
         $instance->__typename = 'Task';
         if ($node !== self::UNDEFINED) {
-            $instance->node = $node;
+            $instance->__set('node', $node);
         }
 
         return $instance;
@@ -40,6 +38,7 @@ class Task extends \Spawnia\Sailor\ObjectLike
 
     protected function converters(): array
     {
+        /** @var array<string, \Spawnia\Sailor\Convert\TypeConverter>|null $converters */
         static $converters;
 
         return $converters ??= [

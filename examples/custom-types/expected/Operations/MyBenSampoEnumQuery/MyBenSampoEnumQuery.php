@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\CustomTypes\Operations\MyBenSampoEnumQuery;
 
@@ -13,13 +11,14 @@ class MyBenSampoEnumQuery extends \Spawnia\Sailor\ObjectLike
     /**
      * @param \Spawnia\Sailor\CustomTypes\Types\BenSampoEnum|null $withBenSampoEnum
      */
-    public static function make($withBenSampoEnum = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): self
-    {
+    public static function make(
+        $withBenSampoEnum = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+    ): self {
         $instance = new self;
 
         $instance->__typename = 'Query';
         if ($withBenSampoEnum !== self::UNDEFINED) {
-            $instance->withBenSampoEnum = $withBenSampoEnum;
+            $instance->__set('withBenSampoEnum', $withBenSampoEnum);
         }
 
         return $instance;
@@ -27,6 +26,7 @@ class MyBenSampoEnumQuery extends \Spawnia\Sailor\ObjectLike
 
     protected function converters(): array
     {
+        /** @var array<string, \Spawnia\Sailor\Convert\TypeConverter>|null $converters */
         static $converters;
 
         return $converters ??= [

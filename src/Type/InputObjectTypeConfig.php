@@ -11,9 +11,7 @@ use Spawnia\Sailor\Codegen\ObjectLikeBuilder;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\ObjectLike;
 
-/**
- * https://spec.graphql.org/draft/#sec-Input-Objects.
- */
+/** @see https://spec.graphql.org/draft/#sec-Input-Objects */
 class InputObjectTypeConfig implements TypeConfig, InputTypeConfig
 {
     private EndpointConfig $endpointConfig;
@@ -29,13 +27,13 @@ class InputObjectTypeConfig implements TypeConfig, InputTypeConfig
         $this->inputObjectType = $inputObjectType;
     }
 
-    /**
-     * @return class-string<ObjectLike>
-     */
+    /** @return class-string<ObjectLike> */
     public function className(): string
     {
-        // @phpstan-ignore-next-line Method Spawnia\Sailor\Codegen\InputGenerator::className() should return class-string<Spawnia\Sailor\Type\Input> but returns string.
-        return $this->endpointConfig->typesNamespace() . '\\' . Escaper::escapeClassName($this->inputObjectType->name);
+        $namespace = $this->endpointConfig->typesNamespace();
+        $className = Escaper::escapeClassName($this->inputObjectType->name);
+
+        return "{$namespace}\\{$className}"; // @phpstan-ignore return.type (class-string not inferred)
     }
 
     public function typeConverter(): string
@@ -48,15 +46,13 @@ class InputObjectTypeConfig implements TypeConfig, InputTypeConfig
         return "\\{$this->className()}";
     }
 
-    /**
-     * @return iterable<ClassType>
-     */
+    /** @return iterable<ClassType> */
     public function generateClasses(): iterable
     {
         $typeConfigs = $this->endpointConfig->configureTypes($this->schema);
 
         $builder = new ObjectLikeBuilder(
-            Escaper::escapeClassName($this->inputObjectType->name),
+            $this->inputObjectType->name,
             $this->endpointConfig->typesNamespace(),
             true,
         );
@@ -65,9 +61,9 @@ class InputObjectTypeConfig implements TypeConfig, InputTypeConfig
             $fieldType = $field->getType();
 
             $namedType = Type::getNamedType($fieldType);
-            assert(null !== $namedType, 'guaranteed since we pass in a non-null type');
+            assert($namedType !== null, 'guaranteed since we pass in a non-null type'); // @phpstan-ignore function.alreadyNarrowedType, notIdentical.alwaysTrue (keep for safety across graphql-php versions)
 
-            $typeConfig = $typeConfigs[$namedType->name];
+            $typeConfig = $typeConfigs[$namedType->name]; // @phpstan-ignore offsetAccess.invalidOffset (name is string, but typed as mixed in older graphql-php)
             assert($typeConfig instanceof InputTypeConfig);
 
             $builder->addProperty(

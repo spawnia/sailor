@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Polymorphic\Operations\NodeWithFragments;
 
@@ -18,7 +16,7 @@ class NodeWithFragments extends \Spawnia\Sailor\ObjectLike
         $instance = new self;
 
         if ($node !== self::UNDEFINED) {
-            $instance->node = $node;
+            $instance->__set('node', $node);
         }
         $instance->__typename = 'Query';
 
@@ -27,6 +25,7 @@ class NodeWithFragments extends \Spawnia\Sailor\ObjectLike
 
     protected function converters(): array
     {
+        /** @var array<string, \Spawnia\Sailor\Convert\TypeConverter>|null $converters */
         static $converters;
 
         return $converters ??= [

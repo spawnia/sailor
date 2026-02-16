@@ -10,9 +10,7 @@ use Nette\PhpGenerator\PhpNamespace;
 use Spawnia\Sailor\ObjectLike;
 use Spawnia\Sailor\Operation;
 
-/**
- * @phpstan-type PropertyArgs array{string, Type, string, string, mixed}
- */
+/** @phpstan-type PropertyArgs array{string, Type, string, string, mixed} */
 class OperationBuilder
 {
     private ClassType $class;
@@ -21,14 +19,10 @@ class OperationBuilder
 
     private Method $converters;
 
-    /**
-     * @var array<PropertyArgs>
-     */
+    /** @var array<PropertyArgs> */
     private array $requiredVariables = [];
 
-    /**
-     * @var array<PropertyArgs>
-     */
+    /** @var array<PropertyArgs> */
     private array $optionalVariables = [];
 
     public function __construct(string $name, string $namespace)
@@ -48,13 +42,12 @@ class OperationBuilder
         $converters->setStatic(true);
         $converters->setProtected();
         $converters->setReturnType('array');
-        $converters->addBody(
-            <<<'PHP'
-static $converters;
+        $converters->addBody(<<<'PHP'
+        /** @var array<int, array{string, \Spawnia\Sailor\Convert\TypeConverter}>|null $converters */
+        static $converters;
 
-return $converters ??= [
-PHP
-        );
+        return $converters ??= [
+        PHP);
         $this->converters = $converters;
 
         $this->class = $class;
@@ -74,21 +67,17 @@ PHP
         $document = $this->class->addMethod('document');
         $document->setStatic();
         $document->setReturnType('string');
-        $document->setBody(
-            <<<PHP
-                                    return /* @lang GraphQL */ '{$operationString}';
-                                    PHP
-        );
+        $document->setBody(<<<PHP
+        return /* @lang GraphQL */ '{$operationString}';
+        PHP);
     }
 
-    /**
-     * @param mixed $defaultValue any value
-     */
+    /** @param mixed $defaultValue any value */
     public function addVariable(string $name, Type $type, string $typeReference, string $typeConverter, $defaultValue): void
     {
         $args = [$name, $type, $typeReference, $typeConverter, $defaultValue];
 
-        if ($type instanceof NonNull && null === $defaultValue) {
+        if ($type instanceof NonNull && $defaultValue === null) {
             $this->requiredVariables[] = $args;
         } else {
             $this->optionalVariables[] = $args;
@@ -111,9 +100,7 @@ PHP
         return $this->class;
     }
 
-    /**
-     * @param mixed $defaultValue any value
-     */
+    /** @param mixed $defaultValue any value */
     protected function buildVariable(string $name, Type $type, string $typeReference, string $typeConverter, $defaultValue): void
     {
         $wrappedPhpDocType = TypeWrapper::phpDoc($type, $typeReference, true);
@@ -131,7 +118,7 @@ PHP
 
         // TODO support default values properly
         $parameter = $this->execute->addParameter($name);
-        if (! $type instanceof NonNull || null !== $defaultValue) {
+        if (! $type instanceof NonNull || $defaultValue !== null) {
             $parameter->setNullable(true);
             $parameter->setDefaultValue(ObjectLike::UNDEFINED);
         }

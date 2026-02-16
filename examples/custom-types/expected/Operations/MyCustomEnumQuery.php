@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\CustomTypes\Operations;
 
@@ -12,8 +10,9 @@ class MyCustomEnumQuery extends \Spawnia\Sailor\Operation
     /**
      * @param \Spawnia\Sailor\CustomTypes\Types\CustomEnum|null $value
      */
-    public static function execute($value = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): MyCustomEnumQuery\MyCustomEnumQueryResult
-    {
+    public static function execute(
+        $value = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+    ): MyCustomEnumQuery\MyCustomEnumQueryResult {
         return self::executeOperation(
             $value,
         );
@@ -21,6 +20,7 @@ class MyCustomEnumQuery extends \Spawnia\Sailor\Operation
 
     protected static function converters(): array
     {
+        /** @var array<int, array{string, \Spawnia\Sailor\Convert\TypeConverter}>|null $converters */
         static $converters;
 
         return $converters ??= [

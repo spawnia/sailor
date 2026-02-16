@@ -5,6 +5,7 @@ namespace Spawnia\Sailor\Tests\Integration;
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\EndpointConfig;
+use Spawnia\Sailor\Error\InvalidDataException;
 use Spawnia\Sailor\Input\Operations\TakeList;
 use Spawnia\Sailor\Input\Operations\TakeSomeInput;
 use Spawnia\Sailor\Input\Types\SomeInput;
@@ -37,7 +38,8 @@ final class InputTest extends TestCase
                 )
             ));
 
-        $result = TakeSomeInput::execute($someInput)->errorFree();
+        $result = TakeSomeInput::execute($someInput)
+            ->errorFree();
         self::assertSame($answer, $result->data->takeSomeInput);
     }
 
@@ -66,7 +68,8 @@ final class InputTest extends TestCase
 
         Configuration::setEndpointFor(TakeList::class, $endpoint);
 
-        self::assertNull(TakeList::execute($values)->data);
+        $result = TakeList::execute($values);
+        self::assertNull($result->data);
     }
 
     public function testMake(): void
@@ -79,6 +82,8 @@ final class InputTest extends TestCase
             [[]],
             /* optional: */
             null,
+            /* properties: */
+            [],
             /* nested: */
             SomeInput::make(
                 /* required: */
@@ -95,6 +100,7 @@ final class InputTest extends TestCase
                 'required' => 'foo',
                 'matrix' => [[]],
                 'optional' => null,
+                'properties' => [],
                 'nested' => (object) [
                     'required' => 'bar',
                     'matrix' => [[1, null]],
@@ -103,5 +109,41 @@ final class InputTest extends TestCase
             ],
             (new SomeInput())->toGraphQL($input)
         );
+    }
+
+    public function testOptional(): void
+    {
+        // TODO use named arguments in PHP 8
+        $input = SomeInput::make(
+            /* required: */
+            'foo',
+            /* matrix: */
+            [[]],
+            // Omitting the optional properties `optional` and `nested`
+        );
+
+        self::assertEquals(
+            (object) [
+                'required' => 'foo',
+                'matrix' => [[]],
+            ],
+            (new SomeInput())->toGraphQL($input)
+        );
+        self::assertNull($input->optional);
+        self::assertNull($input->nested);
+    }
+
+    public function testAccessUnknownProperty(): void
+    {
+        // TODO use named arguments in PHP 8
+        $input = SomeInput::make(
+            /* required: */
+            'foo',
+            /* matrix: */
+            [[]],
+        );
+
+        $this->expectExceptionObject(new InvalidDataException('input: Unknown property nonExistent, available properties: required, matrix, optional, properties, nested.'));
+        $input->nonExistent; // @phpstan-ignore-line intentionally wrong
     }
 }

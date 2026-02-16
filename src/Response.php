@@ -6,6 +6,7 @@ use GraphQL\Executor\ExecutionResult;
 use Psr\Http\Message\ResponseInterface;
 use Safe\Exceptions\JsonException;
 use Spawnia\Sailor\Error\InvalidDataException;
+use Spawnia\Sailor\Error\UnexpectedResponse;
 
 /**
  * Represents a response sent by a GraphQL server.
@@ -16,27 +17,24 @@ use Spawnia\Sailor\Error\InvalidDataException;
  */
 class Response
 {
-    /**
-     * The result of the execution of the requested operation.
-     */
+    /** The result of the execution of the requested operation. */
     public ?\stdClass $data;
 
     /**
      * Non‐empty list of errors, where each error is a map.
      *
-     * @var array<int, \stdClass>|null
+     * @var non-empty-list<\stdClass>|null
      */
     public ?array $errors;
 
-    /**
-     * This entry, if set, must have a map as its value.
-     */
+    /** This entry, if set, must have a map as its value. */
     public ?\stdClass $extensions;
 
+    /** @throws UnexpectedResponse */
     public static function fromResponseInterface(ResponseInterface $response): self
     {
-        if (200 !== $response->getStatusCode()) {
-            throw new InvalidDataException("Response must have status code 200, got: {$response->getStatusCode()}");
+        if ($response->getStatusCode() !== 200) {
+            throw UnexpectedResponse::statusCode($response);
         }
 
         return self::fromJson(
@@ -106,6 +104,8 @@ class Response
      *
      * @param  mixed  $errors  whatever came from the API under the key "errors"
      *
+     * @phpstan-assert non-empty-list<\stdClass>|null $errors
+     *
      * @throws \Exception
      */
     protected static function validateErrors($errors): void
@@ -114,7 +114,7 @@ class Response
             throw new InvalidDataException('The response entry "errors" must be a list if present, got: ' . \Safe\json_encode($errors));
         }
 
-        if (0 === count($errors)) {
+        if (count($errors) === 0) {
             throw new InvalidDataException('The response entry "errors" must not be empty if present, got: ' . \Safe\json_encode($errors));
         }
 
@@ -138,13 +138,15 @@ class Response
      *
      * @param  mixed  $data  whatever came from the API under the key "data"
      *
+     * @phpstan-assert \stdClass|null $data
+     *
      * @throws \Exception
      */
     protected static function validateData($data): void
     {
         if (
             $data instanceof \stdClass
-            || null === $data
+            || $data === null
         ) {
             return;
         }
@@ -156,6 +158,8 @@ class Response
      * Ensure that the "extensions" are in a spec-compliant format.
      *
      * @param  mixed  $extensions  whatever came from the API under the key "extensions"
+     *
+     * @phpstan-assert \stdClass $extensions
      *
      * @throws \Exception
      */

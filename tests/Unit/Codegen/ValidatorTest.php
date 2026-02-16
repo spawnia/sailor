@@ -24,7 +24,7 @@ final class ValidatorTest extends TestCase
             simple
         }
         ');
-        Validator::validate($schema, $document);
+        Validator::validateDocumentWithSchema($schema, $document);
     }
 
     public function testValidateFailure(): void
@@ -42,6 +42,50 @@ final class ValidatorTest extends TestCase
         ');
 
         $this->expectException(\Exception::class);
-        Validator::validate($schema, $document);
+        Validator::validateDocumentWithSchema($schema, $document);
+    }
+
+    public function testValidateDocumentsPasses(): void
+    {
+        self::expectNotToPerformAssertions();
+
+        Validator::validateDocuments([
+            'simple' => Parser::parse(/* @lang GraphQL */ <<<'GRAPHQL'
+            query Name {
+                simple
+            }
+            GRAPHQL),
+        ]);
+    }
+
+    public function testValidateDocumentsUnnamedOperation(): void
+    {
+        $path = 'thisShouldBeInTheMessage';
+        $document = Parser::parse(/* @lang GraphQL */ <<<'GRAPHQL'
+        {
+            unnamedQuery
+        }
+        GRAPHQL);
+
+        self::expectExceptionMessage("Found unnamed operation definition in {$path}.");
+        Validator::validateDocuments([
+            $path => $document,
+        ]);
+    }
+
+    public function testValidateDocumentsLowercaseOperation(): void
+    {
+        $path = 'thisShouldBeInTheMessage';
+        $name = 'camelCase';
+        $document = Parser::parse(/* @lang GraphQL */ <<<GRAPHQL
+        query {$name} {
+            field
+        }
+        GRAPHQL);
+
+        self::expectExceptionMessage("Operation names must be PascalCase, found {$name} in {$path}.");
+        Validator::validateDocuments([
+            $path => $document,
+        ]);
     }
 }

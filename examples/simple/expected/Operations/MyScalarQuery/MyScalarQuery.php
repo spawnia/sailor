@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Simple\Operations\MyScalarQuery;
 
@@ -13,13 +11,14 @@ class MyScalarQuery extends \Spawnia\Sailor\ObjectLike
     /**
      * @param string|null $scalarWithArg
      */
-    public static function make($scalarWithArg = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.'): self
-    {
+    public static function make(
+        $scalarWithArg = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+    ): self {
         $instance = new self;
 
         $instance->__typename = 'Query';
         if ($scalarWithArg !== self::UNDEFINED) {
-            $instance->scalarWithArg = $scalarWithArg;
+            $instance->__set('scalarWithArg', $scalarWithArg);
         }
 
         return $instance;
@@ -27,6 +26,7 @@ class MyScalarQuery extends \Spawnia\Sailor\ObjectLike
 
     protected function converters(): array
     {
+        /** @var array<string, \Spawnia\Sailor\Convert\TypeConverter>|null $converters */
         static $converters;
 
         return $converters ??= [

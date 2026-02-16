@@ -26,6 +26,9 @@ abstract class Operation implements BelongsToEndpoint
      */
     protected static array $mocks = [];
 
+    /** If true, no operations can execute without being mocked. */
+    protected static bool $requireMocks = false;
+
     /**
      * A client to use over the client from the endpoint config.
      *
@@ -33,14 +36,10 @@ abstract class Operation implements BelongsToEndpoint
      */
     protected static array $clients = [];
 
-    /**
-     * The GraphQL query string.
-     */
+    /** The GraphQL query string. */
     abstract public static function document(): string;
 
-    /**
-     * @return array<int, array{string, TypeConverter}>
-     */
+    /** @return array<int, array{string, TypeConverter}> */
     abstract protected static function converters(): array;
 
     /**
@@ -50,20 +49,26 @@ abstract class Operation implements BelongsToEndpoint
      */
     protected static function executeOperation(...$args): Result
     {
-        $mock = self::$mocks[static::class] ?? null;
-        if (null !== $mock) {
-            // @phpstan-ignore-next-line This function is only present on child classes
+        $childClass = static::class;
+
+        $mock = self::$mocks[$childClass] ?? null;
+        if ($mock !== null) {
+            // @phpstan-ignore staticMethod.notFound,return.type (only present on child classes)
             return $mock::execute(...$args);
+        }
+
+        if (self::$requireMocks) {
+            $endpoint = static::endpoint();
+            throw new \Exception("Tried to execute a Sailor operation on endpoint {$endpoint}, but no mock for was registered for {$childClass}.");
         }
 
         $response = static::fetchResponse($args);
 
-        $child = static::class;
-        $parts = explode('\\', $child);
-        $basename = end($parts);
+        $childClassParts = explode('\\', $childClass);
+        $childClassBasename = end($childClassParts);
 
         /** @var class-string<TResult> $resultClass */
-        $resultClass = $child . '\\' . $basename . 'Result';
+        $resultClass = "{$childClass}\\{$childClassBasename}Result";
         assert(class_exists($resultClass));
 
         return $resultClass::fromResponse($response);
@@ -72,7 +77,7 @@ abstract class Operation implements BelongsToEndpoint
     /**
      * Send an operation through the client and return the response.
      *
-     * @param  array<int, mixed>  $args
+     * @param  array<mixed>  $args
      */
     protected static function fetchResponse(array $args): Response
     {
@@ -83,7 +88,7 @@ abstract class Operation implements BelongsToEndpoint
 
         $endpointConfig->handleEvent(new StartRequest($document, $variables));
 
-        $client = self::$clients[static::class] ?? $endpointConfig->makeClient();
+        $client = self::$clients[static::class] ??= $endpointConfig->makeClient();
         $response = $client->request($document, $variables);
 
         $endpointConfig->handleEvent(new ReceiveResponse($response));
@@ -91,15 +96,13 @@ abstract class Operation implements BelongsToEndpoint
         return $response;
     }
 
-    /**
-     * @param array<int, mixed> $args
-     */
+    /** @param array<mixed> $args */
     protected static function variables(array $args): \stdClass
     {
         $variables = new \stdClass();
         $arguments = static::converters();
         foreach ($args as $index => $arg) {
-            if (ObjectLike::UNDEFINED === $arg) {
+            if ($arg === ObjectLike::UNDEFINED) {
                 continue;
             }
 
@@ -110,12 +113,10 @@ abstract class Operation implements BelongsToEndpoint
         return $variables;
     }
 
-    /**
-     * @return static&MockInterface
-     */
+    /** @return static&MockInterface */
     public static function mock(): MockInterface
     {
-        // @phpstan-ignore-next-line I solemnly swear the type of MockInterface matches
+        // @phpstan-ignore return.type,assign.propertyType (I solemnly swear the type of MockInterface matches)
         return self::$mocks[static::class] ??= \Mockery::mock(static::class);
     }
 
@@ -124,8 +125,18 @@ abstract class Operation implements BelongsToEndpoint
         self::$mocks = [];
     }
 
+    public static function requireMocks(bool $value): void
+    {
+        self::$requireMocks = $value;
+    }
+
     public static function setClient(?Client $client): void
     {
         self::$clients[static::class] = $client;
+    }
+
+    public static function clearClients(): void
+    {
+        self::$clients = [];
     }
 }

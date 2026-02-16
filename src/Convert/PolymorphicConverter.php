@@ -4,19 +4,13 @@ namespace Spawnia\Sailor\Convert;
 
 use Spawnia\Sailor\ObjectLike;
 
-/**
- * @phpstan-type PolymorphicMapping array<string, class-string<ObjectLike>>
- */
+/** @phpstan-type PolymorphicMapping array<string, class-string<ObjectLike>> */
 class PolymorphicConverter implements TypeConverter
 {
-    /**
-     * @var PolymorphicMapping
-     */
+    /** @var PolymorphicMapping */
     protected array $mapping;
 
-    /**
-     * @param  PolymorphicMapping  $mapping
-     */
+    /** @param  PolymorphicMapping  $mapping */
     public function __construct(array $mapping)
     {
         $this->mapping = $mapping;
@@ -28,7 +22,7 @@ class PolymorphicConverter implements TypeConverter
             throw new \InvalidArgumentException('Expected stdClass, got: ' . gettype($value));
         }
 
-        return $this->mapping[$value->__typename]::fromStdClass($value);
+        return $this->mapping[$value->__typename]::fromStdClass($value); // @phpstan-ignore offsetAccess.invalidOffset (__typename is string)
     }
 
     public function toGraphQL($value)

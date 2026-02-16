@@ -2,14 +2,14 @@
 
 namespace Spawnia\Sailor\Testing;
 
+use PHPUnit\Framework\Attributes\After;
 use Spawnia\Sailor\Operation;
 
 trait UsesSailorMocks
 {
-    /**
-     * @after
-     */
-    protected function tearDownSailorMocks(): void
+    /** @after */
+    #[After]
+    protected function tearDownUsesSailorMocks(): void
     {
         Operation::clearMocks();
     }

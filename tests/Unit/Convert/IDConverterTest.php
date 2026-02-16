@@ -5,7 +5,7 @@ namespace Spawnia\Sailor\Tests\Unit\Convert;
 use Spawnia\Sailor\Convert\IDConverter;
 use Spawnia\Sailor\Convert\TypeConverter;
 
-final class IDConverterTest extends TypeConverterTest
+final class IDConverterTest extends TypeConverterTestCase
 {
     public function testFromInt(): void
     {

@@ -1,5 +1,6 @@
 type Query {
     print: Abstract
+    cases: [Case!]!
 }
 
 interface Abstract {
@@ -17,4 +18,8 @@ enum abstract {
 
 input new {
     unset: Float
+}
+
+type Case {
+    id: ID!
 }

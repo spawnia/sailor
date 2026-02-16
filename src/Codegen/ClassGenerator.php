@@ -6,8 +6,6 @@ use Nette\PhpGenerator\ClassType;
 
 interface ClassGenerator
 {
-    /**
-     * @return iterable<ClassType>
-     */
+    /** @return iterable<ClassType> */
     public function generate(): iterable;
 }

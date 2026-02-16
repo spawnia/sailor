@@ -8,9 +8,11 @@ use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Method;
 use Spawnia\Sailor\Convert\GeneratesTypeConverter;
 use Spawnia\Sailor\EndpointConfig;
+use Spawnia\Sailor\Type\InputTypeConfig;
+use Spawnia\Sailor\Type\OutputTypeConfig;
 use Spawnia\Sailor\Type\TypeConfig;
 
-class CustomDateTypeConfig implements TypeConfig
+class CustomDateTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeConfig
 {
     use GeneratesTypeConverter;
 
@@ -31,7 +33,17 @@ class CustomDateTypeConfig implements TypeConfig
         return $this->typeConverterClassName($this->scalarType, $this->endpointConfig);
     }
 
-    public function typeReference(): string
+    public function inputTypeReference(): string
+    {
+        return $this->typeReference();
+    }
+
+    public function outputTypeReference(): string
+    {
+        return $this->typeReference();
+    }
+
+    protected function typeReference(): string
     {
         return '\\' . \DateTime::class;
     }
@@ -47,30 +59,26 @@ class CustomDateTypeConfig implements TypeConfig
         $format = self::FORMAT;
 
         $fromGraphQL->setReturnType($dateTimeClass);
-        $fromGraphQL->setBody(
-            <<<PHP
-                if (! is_string(\$value)) {
-                    throw new \InvalidArgumentException('Expected string, got: '.gettype(\$value));
-                }
+        $fromGraphQL->setBody(<<<PHP
+        if (! is_string(\$value)) {
+            throw new \InvalidArgumentException('Expected string, got: '.gettype(\$value));
+        }
 
-                \$date = \\{$dateTimeClass}::createFromFormat('{$format}', \$value);
-                if (\$date === false) {
-                    throw new \InvalidArgumentException("Expected date with format {$format}, got {\$value}");
-                }
+        \$date = \\{$dateTimeClass}::createFromFormat('{$format}', \$value);
+        if (\$date === false) {
+            throw new \InvalidArgumentException("Expected date with format {$format}, got {\$value}");
+        }
 
-                return \$date;
-                PHP
-        );
+        return \$date;
+        PHP);
 
-        $toGraphQL->setBody(
-            <<<PHP
-                if (! \$value instanceof \\{$dateTimeClass}) {
-                    throw new \InvalidArgumentException('Expected instanceof DateTime, got: '.gettype(\$value));
-                }
+        $toGraphQL->setBody(<<<PHP
+        if (! \$value instanceof \\{$dateTimeClass}) {
+            throw new \InvalidArgumentException('Expected instanceof DateTime, got: '.gettype(\$value));
+        }
 
-                return \$value->format('{$format}');
-                PHP
-        );
+        return \$value->format('{$format}');
+        PHP);
 
         return $class;
     }

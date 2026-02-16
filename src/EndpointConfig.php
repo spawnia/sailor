@@ -9,7 +9,6 @@ use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use Nette\PhpGenerator\ClassType;
-use Spawnia\Sailor\Codegen\DirectoryFinder;
 use Spawnia\Sailor\Codegen\Finder;
 use Spawnia\Sailor\Error\Error;
 use Spawnia\Sailor\Events\ReceiveResponse;
@@ -26,51 +25,35 @@ use Spawnia\Sailor\Type\TypeConfig;
 
 abstract class EndpointConfig
 {
-    /**
-     * Instantiate a client that will resolve the GraphQL operations.
-     */
+    /** The client that will resolve the GraphQL operations. */
     abstract public function makeClient(): Client;
 
-    /**
-     * The namespace the generated classes will be created in.
-     */
+    /** The namespace the generated classes will be created in. */
     abstract public function namespace(): string;
 
-    /**
-     * Path to the directory where the generated classes will be put.
-     */
+    /** Path to the directory where the generated classes will be put. */
     abstract public function targetPath(): string;
 
-    /**
-     * Where to look for .graphql files containing operations.
-     */
-    abstract public function searchPath(): string;
-
-    /**
-     * The location of the schema file that describes the endpoint.
-     */
+    /** The location of the schema file that describes the endpoint. */
     abstract public function schemaPath(): string;
+
+    /** How to locate documents that contain GraphQL operations. */
+    abstract public function finder(): Finder;
 
     /**
      * Will be called with events that happen during the execution lifecycle.
      *
      * @param StartRequest|ReceiveResponse $event
      */
-    public function handleEvent(object $event): void
-    {
-    }
+    public function handleEvent(object $event): void {}
 
-    /**
-     * Instantiate an Error class from a plain GraphQL error.
-     */
+    /** Instantiate an Error class from a plain GraphQL error. */
     public function parseError(\stdClass $error): Error
     {
         return Error::fromStdClass($error);
     }
 
-    /**
-     * Is it safe to display the errors from the endpoint to clients?
-     */
+    /** Is it safe to display the errors from the endpoint to clients? */
     public function errorsAreClientSafe(): bool
     {
         return false;
@@ -93,7 +76,7 @@ abstract class EndpointConfig
 
         foreach ($schema->getTypeMap() as $name => $type) {
             if ($type instanceof EnumType) {
-                $typeConfigs[$name] = new EnumTypeConfig($this, $type);
+                $typeConfigs[$name] = $this->enumTypeConfig($schema, $name, $type);
             } elseif ($type instanceof InputObjectType) {
                 $typeConfigs[$name] = new InputObjectTypeConfig($this, $schema, $type);
             } elseif ($type instanceof ScalarType) {
@@ -102,6 +85,11 @@ abstract class EndpointConfig
         }
 
         return $typeConfigs;
+    }
+
+    protected function enumTypeConfig(Schema $schema, string $name, EnumType $type): TypeConfig
+    {
+        return new EnumTypeConfig($this, $type);
     }
 
     /**
@@ -114,14 +102,6 @@ abstract class EndpointConfig
     public function generateClasses(Schema $schema, DocumentNode $document): iterable
     {
         return [];
-    }
-
-    /**
-     * Instantiate a class to find GraphQL documents.
-     */
-    public function finder(): Finder
-    {
-        return new DirectoryFinder($this->searchPath());
     }
 
     public function typesNamespace(): string

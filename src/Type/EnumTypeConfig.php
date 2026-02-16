@@ -41,9 +41,7 @@ class EnumTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeConfig
         return $this->typeReference();
     }
 
-    /**
-     * @return iterable<ClassType>
-     */
+    /** @return iterable<ClassType> */
     public function generateClasses(): iterable
     {
         yield $this->makeEnumClass();
@@ -51,7 +49,10 @@ class EnumTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeConfig
 
     public function enumClassName(): string
     {
-        return $this->endpointConfig->typesNamespace() . '\\' . Escaper::escapeClassName($this->enumType->name);
+        $namespace = $this->endpointConfig->typesNamespace();
+        $className = Escaper::escapeClassName($this->enumType->name);
+
+        return "{$namespace}\\{$className}"; // @phpstan-ignore return.type (class-string not inferred)
     }
 
     protected function makeEnumClass(): ClassType
@@ -68,10 +69,8 @@ class EnumTypeConfig implements TypeConfig, InputTypeConfig, OutputTypeConfig
     {
         foreach ($this->enumType->getValues() as $value) {
             $name = $value->name;
-            $class->addConstant(
-                Escaper::escapeMemberConstantName($name),
-                $name
-            );
+            $escapedName = Escaper::escapeMemberConstantName($name);
+            $class->addConstant($escapedName, $name);
         }
 
         return $class;

@@ -5,6 +5,7 @@ namespace Spawnia\Sailor\Tests;
 use Spawnia\PHPUnitAssertFiles\AssertDirectory;
 use Spawnia\Sailor\Codegen\Generator;
 use Spawnia\Sailor\Codegen\Writer;
+use Spawnia\Sailor\EndpointConfig;
 
 final class Examples
 {
@@ -12,6 +13,7 @@ final class Examples
 
     public const EXAMPLES = [
         'custom-types',
+        'inline-fragments',
         'input',
         'php-keywords',
         'polymorphic',
@@ -32,7 +34,10 @@ final class Examples
         $configFile = \Safe\realpath("{$examplePath}/sailor.php");
 
         $config = require $configFile;
+        assert(is_array($config));
+
         $endpoint = $config[$example];
+        assert($endpoint instanceof EndpointConfig);
 
         $generator = new Generator($endpoint, $configFile, $example);
         $files = $generator->generate();
@@ -43,16 +48,22 @@ final class Examples
 
     public static function examplePath(string $example): string
     {
-        return Examples::EXAMPLES_PATH . '/' . $example;
+        $basePath = Examples::EXAMPLES_PATH;
+
+        return "{$basePath}/{$example}";
     }
 
     public static function expectedPath(string $example): string
     {
-        return self::examplePath($example) . '/expected';
+        $examplePath = self::examplePath($example);
+
+        return "{$examplePath}/expected";
     }
 
     public static function generatedPath(string $example): string
     {
-        return self::examplePath($example) . '/generated';
+        $examplePath = self::examplePath($example);
+
+        return "{$examplePath}/generated";
     }
 }

@@ -7,21 +7,17 @@ use GraphQL\Language\AST\NodeList;
 
 class Merger
 {
-    /**
-     * @param array<string, DocumentNode> $documents
-     */
+    /** @param array<string, DocumentNode> $documents */
     public static function combine(array $documents): DocumentNode
     {
         $root = array_pop($documents);
         assert($root instanceof DocumentNode);
 
-        // @phpstan-ignore-next-line Contravariance
+        // @phpstan-ignore assign.propertyType (contravariance)
         $root->definitions = array_reduce(
             $documents,
-            static function (NodeList $definitions, DocumentNode $document): NodeList {
-                // @phpstan-ignore-next-line Contravariance
-                return $definitions->merge($document->definitions);
-            },
+            // @phpstan-ignore assign.propertyType (contravariance)
+            static fn (NodeList $definitions, DocumentNode $document): NodeList => $definitions->merge($document->definitions),
             $root->definitions
         );
 

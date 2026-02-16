@@ -14,9 +14,7 @@ class IntConverter implements TypeConverter
         return $this->toInt($value);
     }
 
-    /**
-     * @param mixed $value Should be int
-     */
+    /** @param mixed $value Should be int */
     protected function toInt($value): int
     {
         if (! is_int($value)) {

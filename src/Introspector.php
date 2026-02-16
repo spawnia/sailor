@@ -35,7 +35,7 @@ class Introspector
         }
 
         $schema = BuildClientSchema::build(
-            // @phpstan-ignore-next-line we know a stdClass converts to an associative array
+            // @phpstan-ignore argument.type (we know a stdClass converts to an associative array)
             Json::stdClassToAssoc($introspectionResult->data)
         );
 
@@ -56,20 +56,15 @@ class Introspector
         );
 
         if (isset($response->errors)) {
-            throw new ResultErrorsException(
-                array_map(
-                    function (\stdClass $raw): Error {
-                        $parsed = $this->endpointConfig->parseError($raw);
-                        $parsed->configFile = $this->configFile;
-                        $parsed->endpointName = $this->endpointName;
+            $parsedErrors = array_map(function (\stdClass $raw): Error {
+                $parsed = $this->endpointConfig->parseError($raw);
+                $parsed->configFile = $this->configFile;
+                $parsed->endpointName = $this->endpointName;
 
-                        return $parsed;
-                    },
-                    $response->errors
-                ),
-                $this->configFile,
-                $this->endpointName
-            );
+                return $parsed;
+            }, $response->errors);
+
+            throw new ResultErrorsException($parsedErrors, $this->configFile, $this->endpointName);
         }
 
         return $response;

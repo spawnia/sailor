@@ -2,9 +2,7 @@
 
 namespace Spawnia\Sailor\Events;
 
-/**
- * Fired after calling `execute()` on an `Operation`, before invoking the client.
- */
+/** Fired after calling `execute()` on an `Operation`, before invoking the client. */
 class StartRequest
 {
     public string $document;

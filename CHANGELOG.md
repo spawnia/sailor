@@ -5,9 +5,176 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-[See releases on GitHub.](https://github.com/spawnia/sailor/releases).
+[See releases on GitHub](https://github.com/spawnia/sailor/releases).
 
 ## Unreleased
+
+## v1.2.1
+
+### Fixed
+
+- Fix compatibility with `symfony/console:^8` by using `addCommand()` instead of removed `add()` https://github.com/spawnia/sailor/pull/132
+
+## v1.2.0
+
+### Added
+
+- Allow `symfony/console:^8` https://github.com/spawnia/sailor/pull/131
+- Allow `symfony/var-dumper:^8` https://github.com/spawnia/sailor/pull/131
+- Allow `symfony/var-exporter:^8` https://github.com/spawnia/sailor/pull/131
+
+## v1.1.2
+
+### Fixed
+
+- Merge type selections for inline fragments with shared field names https://github.com/spawnia/sailor/pull/126
+
+## v1.1.1
+
+### Fixed
+
+- Fix name conflict with protected property `$properties` in generated `input` classes https://github.com/spawnia/sailor/pull/122
+
+## v1.1.0
+
+### Added
+
+- Add trait `Spawnia\Sailor\Testing\RequiresSailorMocks`
+- Add method `Spawnia\Sailor\Operation::requireMocks()`
+
+## v1.0.0
+
+### Added
+
+- Add `NativeEnumTypeConfig` to generate native PHP enums https://github.com/spawnia/sailor/pull/92
+- Allow `thecodingmachine/safe` v3 as dependency
+- Add `CarbonTypeConfig`
+
+## v0.35.0
+
+### Changed
+
+- Throw `Spawnia\Sailor\Error\UnexpectedResponse` on non-200 status codes
+
+## v0.34.0
+
+### Changed
+
+- Make `Result::assertErrorFree()` return void
+
+## v0.33.1
+
+### Fixed
+
+- Escape class names of result types named after PHP reserved keywords
+
+## v0.33.0
+
+### Changed
+
+- Validate operation names start with upper case characters
+
+## v0.32.2
+
+### Changed
+
+- Improve configuration documentation
+
+## v0.32.1
+
+### Added
+
+- Include `extensions.debugMessage` in errors, if present
+
+## v0.32.0
+
+### Changed
+
+- Remove `EndpointConfig::searchPath()`, require `finder()` instead
+
+## v0.31.2
+
+### Added
+
+- Add `DirectoriesFinder`
+
+## v0.31.1
+
+### Added
+
+- Use PHPUnit 11 attributes for testing helpers
+
+## v0.31.0
+
+### Fixed
+
+- Allow `symfony/var-exporter:^7`
+
+## v0.30.1
+
+### Fixed
+
+- Fix registering commands with symfony/console v7
+
+## v0.30.0
+
+### Added
+
+- Allow `symfony/console:^7`
+
+## v0.29.3
+
+### Fixed
+
+- Fix namespace printing with `nette/php-generator:^4.1.1`
+
+## v0.29.2
+
+### Fixed
+
+- Do not assume scalar values are `string`, use `mixed`
+
+## v0.29.1
+
+### Fixed
+
+- Default to `null` when explicitly accessing undefined optional input properties
+
+## v0.29.0
+
+### Added
+
+- Allow `EndpointConfig::configureTypes()` to customize object, interface and union type code generation
+- Add `Operation::clearClients()` and `ClearsSailorClients`
+
+### Changed
+
+- Only instantiate client once per operation
+- Expect `callable $request` in `MockClient` constructor over pushing to `$responseMocks`
+
+## v0.28.2
+
+### Fixed
+
+- Clear log file when instantiating `Log`
+
+## v0.28.1
+
+### Fixed
+
+- Handle queries with explicit `__typename` in fragments
+
+## v0.28.0
+
+### Added
+
+- Support `nette/php-generator:^4`
+
+## v0.27.0
+
+### Added
+
+- Support `webonyx/graphql-php:^15`
 
 ## v0.26.1
 

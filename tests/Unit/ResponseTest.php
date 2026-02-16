@@ -6,6 +6,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Spawnia\Sailor\Error\InvalidDataException;
+use Spawnia\Sailor\Error\UnexpectedResponse;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Tests\TestCase;
 
@@ -33,10 +34,14 @@ final class ResponseTest extends TestCase
     {
         /** @var MockObject&ResponseInterface $httpResponse */
         $httpResponse = self::createMock(ResponseInterface::class);
+        $httpResponse->method('getHeaders')
+            ->willReturn([]);
+        $httpResponse->method('getBody')
+            ->willReturn(self::createMock(StreamInterface::class));
         $httpResponse->method('getStatusCode')
             ->willReturn(500);
 
-        self::expectException(InvalidDataException::class);
+        self::expectException(UnexpectedResponse::class);
         Response::fromResponseInterface($httpResponse);
     }
 
