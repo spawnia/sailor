@@ -124,6 +124,21 @@ jobs:
           - php-keywords
           - simple
           - polymorphic
+          - inline-fragments
+        php-version:
+          - 8.4
+        dependencies:
+          - highest
+        include:
+          - example: simple
+            php-version: 7.4
+            dependencies: lowest
+          - example: simple
+            php-version: 8.1
+            dependencies: lowest
+          - example: simple
+            php-version: 8.2
+            dependencies: lowest
 
     steps:
       - uses: actions/checkout@v4
@@ -132,11 +147,11 @@ jobs:
         with:
           coverage: none
           extensions: mbstring
-          php-version: 8.3
+          php-version: ${{ matrix.php-version }}
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: cd examples/${{ matrix.example }} && ./test.sh
+      - run: examples/validate.sh "${{ matrix.example }}" --dependencies="${{ matrix.dependencies }}"
 
   code-coverage:
     runs-on: ubuntu-latest

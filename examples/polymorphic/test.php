@@ -2,7 +2,7 @@
 
 use Spawnia\Sailor\Polymorphic\Operations\UserOrPost;
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 $id = '1';
 
