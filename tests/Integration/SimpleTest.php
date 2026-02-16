@@ -11,7 +11,6 @@ use Spawnia\Sailor\Events\StartRequest;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery;
-use Spawnia\Sailor\Simple\Operations\MyScalarQuery\MyScalarQueryResult;
 use Spawnia\Sailor\Simple\Operations\SkipNonNullable\SkipNonNullable;
 use Spawnia\Sailor\Tests\TestCase;
 
