@@ -9,12 +9,12 @@ use Spawnia\Sailor\Error\ResultErrorsException;
 use Spawnia\Sailor\Events\ReceiveResponse;
 use Spawnia\Sailor\Events\StartRequest;
 use Spawnia\Sailor\Response;
-use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery;
-use Spawnia\Sailor\Simple\Operations\MyScalarQuery;
 use Spawnia\Sailor\Simple\Operations\ClientDirectiveFragmentSpreadQuery;
 use Spawnia\Sailor\Simple\Operations\ClientDirectiveInlineFragmentQuery;
 use Spawnia\Sailor\Simple\Operations\ClientDirectiveQuery;
 use Spawnia\Sailor\Simple\Operations\IncludeNonNullable;
+use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery;
+use Spawnia\Sailor\Simple\Operations\MyScalarQuery;
 use Spawnia\Sailor\Simple\Operations\SkipNonNullable;
 use Spawnia\Sailor\Tests\TestCase;
 
