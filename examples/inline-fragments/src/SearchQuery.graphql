@@ -16,3 +16,21 @@ query SearchQuery($query: String!) {
         }
     }
 }
+
+query InlineFragmentWithDirectNonNullableField($skip: Boolean!) {
+    search(query: "test") {
+        ... on Article @skip(if: $skip) {
+            title
+        }
+    }
+}
+
+query InlineFragmentWithNestedNonNullableField($skip: Boolean!) {
+    search(query: "test") {
+        ... on Article @skip(if: $skip) {
+            content {
+                text
+            }
+        }
+    }
+}
