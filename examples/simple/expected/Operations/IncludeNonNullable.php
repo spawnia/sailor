@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Spawnia\Sailor\Simple\Operations;
 
@@ -21,6 +19,7 @@ class IncludeNonNullable extends \Spawnia\Sailor\Operation
 
     protected static function converters(): array
     {
+        /** @var array<int, array{string, \Spawnia\Sailor\Convert\TypeConverter}>|null $converters */
         static $converters;
 
         return $converters ??= [
