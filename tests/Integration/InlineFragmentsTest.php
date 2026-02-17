@@ -62,6 +62,7 @@ final class InlineFragmentsTest extends TestCase
         ]);
 
         self::assertNotNull($result->data);
+        self::assertNotNull($result->data->search);
         $article = $result->data->search[0];
         self::assertInstanceOf(InlineFragmentWithNestedNonNullableField\Search\Article::class, $article);
         self::assertNull($article->content);
@@ -85,6 +86,7 @@ final class InlineFragmentsTest extends TestCase
         ]);
 
         self::assertNotNull($result->data);
+        self::assertNotNull($result->data->search);
         $article = $result->data->search[0];
         self::assertInstanceOf(InlineFragmentWithNestedNonNullableField\Search\Article::class, $article);
         self::assertNotNull($article->content);
