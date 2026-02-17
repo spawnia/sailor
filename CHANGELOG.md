@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v1.3.0
+
+### Fixed
+
+- Handle fields omitted through `@skip` or `@include` https://github.com/spawnia/sailor/pull/79
+
 ## v1.2.1
 
 ### Fixed
