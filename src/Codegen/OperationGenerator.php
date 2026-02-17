@@ -12,7 +12,9 @@ use GraphQL\Language\Printer;
 use GraphQL\Language\Visitor;
 use GraphQL\Language\VisitorOperation;
 use GraphQL\Type\Definition\CompositeType;
+use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\InterfaceType;
+use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
@@ -196,6 +198,12 @@ class OperationGenerator implements ClassGenerator
                     $type = $typeInfo->getType();
                     assert($type !== null, 'schema is validated');
 
+                    // @skip and @include directives mean the server may omit the field,
+                    // even if the schema type is non-null
+                    if ($type instanceof NonNull && self::fieldHasSkipOrInclude($field)) {
+                        $type = $type->getWrappedType();
+                    }
+
                     $namedType = Type::getNamedType($type);
                     assert($namedType !== null, 'schema is validated'); // @phpstan-ignore function.alreadyNarrowedType, notIdentical.alwaysTrue (keep for safety across graphql-php versions)
 
@@ -341,5 +349,17 @@ class OperationGenerator implements ClassGenerator
     protected function currentNamespace(): string
     {
         return implode('\\', $this->namespaceStack);
+    }
+
+    protected static function fieldHasSkipOrInclude(FieldNode $field): bool
+    {
+        foreach ($field->directives as $directive) {
+            $name = $directive->name->value;
+            if ($name === Directive::SKIP_NAME || $name === Directive::INCLUDE_NAME) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

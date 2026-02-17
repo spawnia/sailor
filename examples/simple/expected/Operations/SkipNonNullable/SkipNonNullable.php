@@ -3,22 +3,23 @@
 namespace Spawnia\Sailor\Simple\Operations\SkipNonNullable;
 
 /**
- * @property string $nonNullable
  * @property string $__typename
+ * @property string|null $nonNullable
  */
 class SkipNonNullable extends \Spawnia\Sailor\ObjectLike
 {
     /**
-     * @param string $nonNullable
+     * @param string|null $nonNullable
      */
-    public static function make($nonNullable): self
-    {
+    public static function make(
+        $nonNullable = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+    ): self {
         $instance = new self;
 
+        $instance->__typename = 'Query';
         if ($nonNullable !== self::UNDEFINED) {
             $instance->__set('nonNullable', $nonNullable);
         }
-        $instance->__typename = 'Query';
 
         return $instance;
     }
@@ -29,8 +30,8 @@ class SkipNonNullable extends \Spawnia\Sailor\ObjectLike
         static $converters;
 
         return $converters ??= [
-            'nonNullable' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
             '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
+            'nonNullable' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\StringConverter),
         ];
     }
 
