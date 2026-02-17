@@ -64,6 +64,7 @@
     "psr-4": {
       "Spawnia\\Sailor\\CustomTypesSrc\\": "examples/custom-types/src/",
       "Spawnia\\Sailor\\CustomTypes\\": "examples/custom-types/expected/",
+      "Spawnia\\Sailor\\InlineFragments\\": "examples/inline-fragments/expected/",
       "Spawnia\\Sailor\\Input\\": "examples/input/expected/",
       "Spawnia\\Sailor\\PhpKeywords\\": "examples/php-keywords/expected/",
       "Spawnia\\Sailor\\Polymorphic\\": "examples/polymorphic/expected/",
