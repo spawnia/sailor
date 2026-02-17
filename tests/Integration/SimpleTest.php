@@ -11,7 +11,11 @@ use Spawnia\Sailor\Events\StartRequest;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery;
-use Spawnia\Sailor\Simple\Operations\SkipNonNullable\SkipNonNullable;
+use Spawnia\Sailor\Simple\Operations\ClientDirectiveFragmentSpreadQuery;
+use Spawnia\Sailor\Simple\Operations\ClientDirectiveInlineFragmentQuery;
+use Spawnia\Sailor\Simple\Operations\ClientDirectiveQuery;
+use Spawnia\Sailor\Simple\Operations\IncludeNonNullable;
+use Spawnia\Sailor\Simple\Operations\SkipNonNullable;
 use Spawnia\Sailor\Tests\TestCase;
 
 final class SimpleTest extends TestCase
@@ -207,12 +211,162 @@ final class SimpleTest extends TestCase
         self::assertNull($object->nested);
     }
 
-    public function testSkipNonNullable(): void
+    /** Server omits non-nullable field due to @skip directive. */
+    public function testSkipNonNullableFieldOmitted(): void
     {
-        SkipNonNullable::fromStdClass((object) [
+        $result = SkipNonNullable\SkipNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->nonNullable);
+    }
+
+    /** Server returns non-nullable field despite @skip directive (skip condition was false). */
+    public function testSkipNonNullableFieldPresent(): void
+    {
+        $result = SkipNonNullable\SkipNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+            'nonNullable' => 'value',
+        ]);
+
+        self::assertSame('value', $result->nonNullable);
+    }
+
+    /** Server omits non-nullable field due to @include directive. */
+    public function testIncludeNonNullableFieldOmitted(): void
+    {
+        $result = IncludeNonNullable\IncludeNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->nonNullable);
+    }
+
+    /** Server returns non-nullable field because @include condition was true. */
+    public function testIncludeNonNullableFieldPresent(): void
+    {
+        $result = IncludeNonNullable\IncludeNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+            'nonNullable' => 'value',
+        ]);
+
+        self::assertSame('value', $result->nonNullable);
+    }
+
+    /** @skip on nullable field — field omitted from response. */
+    public function testSkipNullableFieldOmitted(): void
+    {
+        $result = ClientDirectiveQuery\ClientDirectiveQuery::fromStdClass((object) [
+            '__typename' => 'Query',
+            'twoArgs' => 'present',
+        ]);
+
+        self::assertNull($result->scalarWithArg);
+        self::assertSame('present', $result->twoArgs);
+    }
+
+    /** @include on nullable field — field omitted from response. */
+    public function testIncludeNullableFieldOmitted(): void
+    {
+        $result = ClientDirectiveQuery\ClientDirectiveQuery::fromStdClass((object) [
+            '__typename' => 'Query',
+            'scalarWithArg' => 'present',
+        ]);
+
+        self::assertNull($result->twoArgs);
+        self::assertSame('present', $result->scalarWithArg);
+    }
+
+    /** All directive-affected fields omitted simultaneously. */
+    public function testClientDirectiveAllFieldsOmitted(): void
+    {
+        $result = ClientDirectiveQuery\ClientDirectiveQuery::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->scalarWithArg);
+        self::assertNull($result->twoArgs);
+    }
+
+    /** All fields present despite directives (conditions evaluated to keep fields). */
+    public function testClientDirectiveAllFieldsPresent(): void
+    {
+        $result = ClientDirectiveQuery\ClientDirectiveQuery::fromStdClass((object) [
+            '__typename' => 'Query',
+            'scalarWithArg' => 'foo',
+            'twoArgs' => 'bar',
+        ]);
+
+        self::assertSame('foo', $result->scalarWithArg);
+        self::assertSame('bar', $result->twoArgs);
+    }
+
+    /** Fragment spread with @skip — fields from the fragment are omitted. */
+    public function testFragmentSpreadSkipOmitsField(): void
+    {
+        $result = ClientDirectiveFragmentSpreadQuery\ClientDirectiveFragmentSpreadQuery::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->twoArgs);
+    }
+
+    /** Fragment spread with @skip — field present when skip condition is false. */
+    public function testFragmentSpreadSkipFieldPresent(): void
+    {
+        $result = ClientDirectiveFragmentSpreadQuery\ClientDirectiveFragmentSpreadQuery::fromStdClass((object) [
+            '__typename' => 'Query',
+            'twoArgs' => 'value',
+        ]);
+
+        self::assertSame('value', $result->twoArgs);
+    }
+
+    /** Inline fragment with @skip — fields from the fragment are omitted. */
+    public function testInlineFragmentSkipOmitsField(): void
+    {
+        $result = ClientDirectiveInlineFragmentQuery\ClientDirectiveInlineFragmentQuery::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->twoArgs);
+    }
+
+    /** Inline fragment with @skip — field present when skip condition is false. */
+    public function testInlineFragmentSkipFieldPresent(): void
+    {
+        $result = ClientDirectiveInlineFragmentQuery\ClientDirectiveInlineFragmentQuery::fromStdClass((object) [
+            '__typename' => 'Query',
+            'twoArgs' => 'value',
+        ]);
+
+        self::assertSame('value', $result->twoArgs);
+    }
+
+    /** Via Result::fromStdClass with the full response envelope — field omitted. */
+    public function testSkipNonNullableViaResult(): void
+    {
+        $result = SkipNonNullable\SkipNonNullableResult::fromStdClass((object) [
             'data' => (object) [
                 '__typename' => 'Query',
             ],
         ]);
+
+        self::assertNotNull($result->data);
+        self::assertNull($result->data->nonNullable);
+    }
+
+    /** Via Result::fromStdClass with the full response envelope — field present. */
+    public function testSkipNonNullableViaResultFieldPresent(): void
+    {
+        $result = SkipNonNullable\SkipNonNullableResult::fromStdClass((object) [
+            'data' => (object) [
+                '__typename' => 'Query',
+                'nonNullable' => 'hello',
+            ],
+        ]);
+
+        self::assertNotNull($result->data);
+        self::assertSame('hello', $result->data->nonNullable);
     }
 }

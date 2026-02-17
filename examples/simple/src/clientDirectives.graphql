@@ -20,3 +20,7 @@ query ClientDirectiveInlineFragmentQuery($value: Boolean!) {
 query SkipNonNullable($value: Boolean!) {
     nonNullable @skip(if: $value)
 }
+
+query IncludeNonNullable($value: Boolean!) {
+    nonNullable @include(if: $value)
+}
