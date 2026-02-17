@@ -211,8 +211,7 @@ final class SimpleTest extends TestCase
         self::assertNull($object->nested);
     }
 
-    /** Server omits non-nullable field due to @skip directive. */
-    public function testSkipNonNullableFieldOmitted(): void
+    public function testSkipNonNullableFieldOmittedByServer(): void
     {
         $result = SkipNonNullable\SkipNonNullable::fromStdClass((object) [
             '__typename' => 'Query',
@@ -221,8 +220,7 @@ final class SimpleTest extends TestCase
         self::assertNull($result->nonNullable);
     }
 
-    /** Server returns non-nullable field despite @skip directive (skip condition was false). */
-    public function testSkipNonNullableFieldPresent(): void
+    public function testSkipNonNullableFieldPresentWhenSkipConditionFalse(): void
     {
         $result = SkipNonNullable\SkipNonNullable::fromStdClass((object) [
             '__typename' => 'Query',
@@ -232,8 +230,7 @@ final class SimpleTest extends TestCase
         self::assertSame('value', $result->nonNullable);
     }
 
-    /** Server omits non-nullable field due to @include directive. */
-    public function testIncludeNonNullableFieldOmitted(): void
+    public function testIncludeNonNullableFieldOmittedByServer(): void
     {
         $result = IncludeNonNullable\IncludeNonNullable::fromStdClass((object) [
             '__typename' => 'Query',
@@ -242,8 +239,7 @@ final class SimpleTest extends TestCase
         self::assertNull($result->nonNullable);
     }
 
-    /** Server returns non-nullable field because @include condition was true. */
-    public function testIncludeNonNullableFieldPresent(): void
+    public function testIncludeNonNullableFieldPresentWhenIncludeConditionTrue(): void
     {
         $result = IncludeNonNullable\IncludeNonNullable::fromStdClass((object) [
             '__typename' => 'Query',
@@ -253,7 +249,6 @@ final class SimpleTest extends TestCase
         self::assertSame('value', $result->nonNullable);
     }
 
-    /** @skip on nullable field — field omitted from response. */
     public function testSkipNullableFieldOmitted(): void
     {
         $result = ClientDirectiveQuery\ClientDirectiveQuery::fromStdClass((object) [
@@ -265,7 +260,6 @@ final class SimpleTest extends TestCase
         self::assertSame('present', $result->twoArgs);
     }
 
-    /** @include on nullable field — field omitted from response. */
     public function testIncludeNullableFieldOmitted(): void
     {
         $result = ClientDirectiveQuery\ClientDirectiveQuery::fromStdClass((object) [
@@ -277,7 +271,6 @@ final class SimpleTest extends TestCase
         self::assertSame('present', $result->scalarWithArg);
     }
 
-    /** All directive-affected fields omitted simultaneously. */
     public function testClientDirectiveAllFieldsOmitted(): void
     {
         $result = ClientDirectiveQuery\ClientDirectiveQuery::fromStdClass((object) [
@@ -288,7 +281,6 @@ final class SimpleTest extends TestCase
         self::assertNull($result->twoArgs);
     }
 
-    /** All fields present despite directives (conditions evaluated to keep fields). */
     public function testClientDirectiveAllFieldsPresent(): void
     {
         $result = ClientDirectiveQuery\ClientDirectiveQuery::fromStdClass((object) [
@@ -301,7 +293,6 @@ final class SimpleTest extends TestCase
         self::assertSame('bar', $result->twoArgs);
     }
 
-    /** Fragment spread with @skip — fields from the fragment are omitted. */
     public function testFragmentSpreadSkipOmitsField(): void
     {
         $result = ClientDirectiveFragmentSpreadQuery\ClientDirectiveFragmentSpreadQuery::fromStdClass((object) [
@@ -311,8 +302,7 @@ final class SimpleTest extends TestCase
         self::assertNull($result->twoArgs);
     }
 
-    /** Fragment spread with @skip — field present when skip condition is false. */
-    public function testFragmentSpreadSkipFieldPresent(): void
+    public function testFragmentSpreadSkipFieldPresentWhenConditionFalse(): void
     {
         $result = ClientDirectiveFragmentSpreadQuery\ClientDirectiveFragmentSpreadQuery::fromStdClass((object) [
             '__typename' => 'Query',
@@ -322,7 +312,6 @@ final class SimpleTest extends TestCase
         self::assertSame('value', $result->twoArgs);
     }
 
-    /** Inline fragment with @skip — fields from the fragment are omitted. */
     public function testInlineFragmentSkipOmitsField(): void
     {
         $result = ClientDirectiveInlineFragmentQuery\ClientDirectiveInlineFragmentQuery::fromStdClass((object) [
@@ -332,8 +321,7 @@ final class SimpleTest extends TestCase
         self::assertNull($result->twoArgs);
     }
 
-    /** Inline fragment with @skip — field present when skip condition is false. */
-    public function testInlineFragmentSkipFieldPresent(): void
+    public function testInlineFragmentSkipFieldPresentWhenConditionFalse(): void
     {
         $result = ClientDirectiveInlineFragmentQuery\ClientDirectiveInlineFragmentQuery::fromStdClass((object) [
             '__typename' => 'Query',
@@ -343,8 +331,7 @@ final class SimpleTest extends TestCase
         self::assertSame('value', $result->twoArgs);
     }
 
-    /** Via Result::fromStdClass with the full response envelope — field omitted. */
-    public function testSkipNonNullableViaResult(): void
+    public function testSkipNonNullableViaResultFieldOmitted(): void
     {
         $result = SkipNonNullable\SkipNonNullableResult::fromStdClass((object) [
             'data' => (object) [
@@ -356,7 +343,6 @@ final class SimpleTest extends TestCase
         self::assertNull($result->data->nonNullable);
     }
 
-    /** Via Result::fromStdClass with the full response envelope — field present. */
     public function testSkipNonNullableViaResultFieldPresent(): void
     {
         $result = SkipNonNullable\SkipNonNullableResult::fromStdClass((object) [
