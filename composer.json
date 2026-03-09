@@ -55,6 +55,7 @@
     "mockery/mockery": "Used in Operation::mock()",
     "nesbot/carbon": "Use with CarbonTypeConfig"
   },
+  "minimum-stability": "dev",
   "autoload": {
     "psr-4": {
       "Spawnia\\Sailor\\": "src/"
