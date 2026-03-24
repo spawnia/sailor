@@ -90,6 +90,7 @@ environment variables (run `composer require vlucas/phpdotenv` if you do not hav
 Sailor provides a few built-in clients:
 - `Spawnia\Sailor\Client\Guzzle`: Default HTTP client
 - `Spawnia\Sailor\Client\Psr18`: PSR-18 HTTP client
+- `Spawnia\Sailor\Client\ReactPhp`: Non-blocking client for ReactPHP event loops
 - `Spawnia\Sailor\Client\Log`: Used for testing
 
 You can bring your own by implementing the interface `Spawnia\Sailor\Client`.
