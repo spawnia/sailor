@@ -46,6 +46,12 @@ PSR-17 Request and Stream factory implementations (see [Client implementations](
 composer require nyholm/psr7
 ```
 
+If you want to use the ReactPHP Client for non-blocking requests (see [Client implementations](#client-implementations)):
+
+```shell
+composer require react/http react/async
+```
+
 ## Configuration
 
 Run `vendor/bin/sailor` to set up the configuration.

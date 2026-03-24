@@ -8,6 +8,7 @@ use Spawnia\Sailor\Client\ReactPhp;
 use Spawnia\Sailor\Error\UnexpectedResponse;
 use Spawnia\Sailor\Tests\TestCase;
 
+/** @requires function React\Async\await */
 final class ReactPhpTest extends TestCase
 {
     public function testRequest(): void
