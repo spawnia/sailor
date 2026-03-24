@@ -20,7 +20,7 @@ final class ReactPhpTest extends TestCase
         $uri = 'https://simple.bar/graphql';
         $expectedBody = /* @lang JSON */ '{"query":"{simple}"}';
 
-        $browser = Mockery::mock(Browser::class);
+        $browser = \Mockery::mock(Browser::class);
         $browser->shouldReceive('post')
             ->once()
             ->withArgs(function (string $url, array $headers, string $body) use ($uri, $expectedBody): bool {
@@ -45,7 +45,7 @@ final class ReactPhpTest extends TestCase
         $variables = (object) ['foo' => 'bar'];
         $expectedBody = /* @lang JSON */ '{"query":"{simple}","variables":{"foo":"bar"}}';
 
-        $browser = Mockery::mock(Browser::class);
+        $browser = \Mockery::mock(Browser::class);
         $browser->shouldReceive('post')
             ->once()
             ->withArgs(function (string $url, array $headers, string $body) use ($uri, $expectedBody): bool {
@@ -68,7 +68,7 @@ final class ReactPhpTest extends TestCase
     {
         $uri = 'https://simple.bar/graphql';
 
-        $browser = Mockery::mock(Browser::class);
+        $browser = \Mockery::mock(Browser::class);
         $browser->shouldReceive('post')
             ->once()
             ->andReturn(resolve($this->mockResponse(500, 'Internal Server Error')));
@@ -82,11 +82,11 @@ final class ReactPhpTest extends TestCase
     /** @return ResponseInterface&Mockery\MockInterface */
     private function mockResponse(int $statusCode, string $body): ResponseInterface
     {
-        $stream = Mockery::mock(StreamInterface::class);
+        $stream = \Mockery::mock(StreamInterface::class);
         $stream->shouldReceive('getContents')->andReturn($body);
         $stream->shouldReceive('__toString')->andReturn($body);
 
-        $response = Mockery::mock(ResponseInterface::class);
+        $response = \Mockery::mock(ResponseInterface::class);
         $response->shouldReceive('getStatusCode')->andReturn($statusCode);
         $response->shouldReceive('getBody')->andReturn($stream);
         $response->shouldReceive('getHeaders')->andReturn([]);
