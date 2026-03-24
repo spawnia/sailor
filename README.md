@@ -46,6 +46,12 @@ PSR-17 Request and Stream factory implementations (see [Client implementations](
 composer require nyholm/psr7
 ```
 
+If you want to use the ReactPHP Client for non-blocking requests (see [Client implementations](#client-implementations)):
+
+```shell
+composer require react/http react/async
+```
+
 ## Configuration
 
 Run `vendor/bin/sailor` to set up the configuration.
@@ -90,6 +96,7 @@ environment variables (run `composer require vlucas/phpdotenv` if you do not hav
 Sailor provides a few built-in clients:
 - `Spawnia\Sailor\Client\Guzzle`: Default HTTP client
 - `Spawnia\Sailor\Client\Psr18`: PSR-18 HTTP client
+- `Spawnia\Sailor\Client\ReactPhp`: Non-blocking client for ReactPHP event loops
 - `Spawnia\Sailor\Client\Log`: Used for testing
 
 You can bring your own by implementing the interface `Spawnia\Sailor\Client`.

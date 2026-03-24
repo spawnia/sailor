@@ -44,6 +44,8 @@ parameters:
   # Magic property on an abstract class
   - '#Access to an undefined property Spawnia\\Sailor\\ErrorFreeResult::\$data.*#'
   - '#Access to an undefined property Spawnia\\Sailor\\Result::\$data.*#'
+  # Due to different versions of react/async, await() return type is mixed in the lowest version
+  - '#Parameter .+ of static method Spawnia\\Sailor\\Response::fromResponseInterface\(\) expects .+, mixed given\.#'
   # Due to the workaround with ObjectLike::UNDEFINED
   - '#Default value of the parameter .+ \(string\) of method .+::make\(\) is incompatible with type .+#'
   - '#Default value of the parameter .+ \(string\) of method .+::execute\(\) is incompatible with type .+#'
