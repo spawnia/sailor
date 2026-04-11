@@ -1,12 +1,8 @@
-<div align="center">
-  <img src="sailor.png" alt=sailor-logo">
-</div>
+<img src="sailor.png" alt="Sailor">
 
-<div align="center">
+# Sailor
 
-A typesafe GraphQL client for PHP
-
-</div>
+A typesafe GraphQL client for PHP.
 
 ## Motivation
 
