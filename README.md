@@ -4,6 +4,10 @@
 
 A typesafe GraphQL client for PHP.
 
+## Sponsors
+
+If you make money using this project, please consider sponsoring [its maintainer on GitHub Sponsors](https://github.com/sponsors/spawnia).
+
 ## Motivation
 
 GraphQL provides typesafe API access through the schema definition each
@@ -542,6 +546,3 @@ You can find examples of how a project would use Sailor within [examples](exampl
 
 See [`CHANGELOG.md`](CHANGELOG.md).
 
-## Sponsors
-
-If Sailor saves you time, consider [sponsoring its development](https://github.com/sponsors/spawnia).
