@@ -552,14 +552,6 @@ You can find examples of how a project would use Sailor within [examples](exampl
 
 See [`CHANGELOG.md`](CHANGELOG.md).
 
-## Contributing
-
-See [`CONTRIBUTING.md`](CONTRIBUTING.md).
-
 ## Sponsors
 
 If Sailor saves you time, consider [sponsoring its development](https://github.com/sponsors/spawnia).
-
-## License
-
-This package is licensed using the MIT License.
