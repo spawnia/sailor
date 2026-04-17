@@ -9,8 +9,13 @@ use Spawnia\Sailor\Error\ResultErrorsException;
 use Spawnia\Sailor\Events\ReceiveResponse;
 use Spawnia\Sailor\Events\StartRequest;
 use Spawnia\Sailor\Response;
+use Spawnia\Sailor\Simple\Operations\ClientDirectiveFragmentSpreadQuery;
+use Spawnia\Sailor\Simple\Operations\ClientDirectiveInlineFragmentQuery;
+use Spawnia\Sailor\Simple\Operations\ClientDirectiveQuery;
+use Spawnia\Sailor\Simple\Operations\IncludeNonNullable;
 use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery;
+use Spawnia\Sailor\Simple\Operations\SkipNonNullable;
 use Spawnia\Sailor\Tests\TestCase;
 
 final class SimpleTest extends TestCase
@@ -204,5 +209,150 @@ final class SimpleTest extends TestCase
         $object = $result->data->singleObject;
         self::assertNotNull($object);
         self::assertNull($object->nested);
+    }
+
+    public function testSkipNonNullableFieldOmittedByServer(): void
+    {
+        $result = SkipNonNullable\SkipNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->nonNullable);
+    }
+
+    public function testSkipNonNullableFieldPresentWhenSkipConditionFalse(): void
+    {
+        $result = SkipNonNullable\SkipNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+            'nonNullable' => 'value',
+        ]);
+
+        self::assertSame('value', $result->nonNullable);
+    }
+
+    public function testIncludeNonNullableFieldOmittedByServer(): void
+    {
+        $result = IncludeNonNullable\IncludeNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->nonNullable);
+    }
+
+    public function testIncludeNonNullableFieldPresentWhenIncludeConditionTrue(): void
+    {
+        $result = IncludeNonNullable\IncludeNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+            'nonNullable' => 'value',
+        ]);
+
+        self::assertSame('value', $result->nonNullable);
+    }
+
+    public function testSkipNullableFieldOmitted(): void
+    {
+        $result = ClientDirectiveQuery\ClientDirectiveQuery::fromStdClass((object) [
+            '__typename' => 'Query',
+            'twoArgs' => 'present',
+        ]);
+
+        self::assertNull($result->scalarWithArg);
+        self::assertSame('present', $result->twoArgs);
+    }
+
+    public function testIncludeNullableFieldOmitted(): void
+    {
+        $result = ClientDirectiveQuery\ClientDirectiveQuery::fromStdClass((object) [
+            '__typename' => 'Query',
+            'scalarWithArg' => 'present',
+        ]);
+
+        self::assertNull($result->twoArgs);
+        self::assertSame('present', $result->scalarWithArg);
+    }
+
+    public function testClientDirectiveAllFieldsOmitted(): void
+    {
+        $result = ClientDirectiveQuery\ClientDirectiveQuery::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->scalarWithArg);
+        self::assertNull($result->twoArgs);
+    }
+
+    public function testClientDirectiveAllFieldsPresent(): void
+    {
+        $result = ClientDirectiveQuery\ClientDirectiveQuery::fromStdClass((object) [
+            '__typename' => 'Query',
+            'scalarWithArg' => 'foo',
+            'twoArgs' => 'bar',
+        ]);
+
+        self::assertSame('foo', $result->scalarWithArg);
+        self::assertSame('bar', $result->twoArgs);
+    }
+
+    public function testFragmentSpreadSkipOmitsField(): void
+    {
+        $result = ClientDirectiveFragmentSpreadQuery\ClientDirectiveFragmentSpreadQuery::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->twoArgs);
+    }
+
+    public function testFragmentSpreadSkipFieldPresentWhenConditionFalse(): void
+    {
+        $result = ClientDirectiveFragmentSpreadQuery\ClientDirectiveFragmentSpreadQuery::fromStdClass((object) [
+            '__typename' => 'Query',
+            'twoArgs' => 'value',
+        ]);
+
+        self::assertSame('value', $result->twoArgs);
+    }
+
+    public function testInlineFragmentSkipOmitsField(): void
+    {
+        $result = ClientDirectiveInlineFragmentQuery\ClientDirectiveInlineFragmentQuery::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->twoArgs);
+    }
+
+    public function testInlineFragmentSkipFieldPresentWhenConditionFalse(): void
+    {
+        $result = ClientDirectiveInlineFragmentQuery\ClientDirectiveInlineFragmentQuery::fromStdClass((object) [
+            '__typename' => 'Query',
+            'twoArgs' => 'value',
+        ]);
+
+        self::assertSame('value', $result->twoArgs);
+    }
+
+    public function testSkipNonNullableViaResultFieldOmitted(): void
+    {
+        $result = SkipNonNullable\SkipNonNullableResult::fromStdClass((object) [
+            'data' => (object) [
+                '__typename' => 'Query',
+            ],
+        ]);
+
+        self::assertNotNull($result->data);
+        self::assertNull($result->data->nonNullable);
+    }
+
+    public function testSkipNonNullableViaResultFieldPresent(): void
+    {
+        $result = SkipNonNullable\SkipNonNullableResult::fromStdClass((object) [
+            'data' => (object) [
+                '__typename' => 'Query',
+                'nonNullable' => 'hello',
+            ],
+        ]);
+
+        self::assertNotNull($result->data);
+        self::assertSame('hello', $result->data->nonNullable);
     }
 }

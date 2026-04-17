@@ -2,6 +2,7 @@
 
 namespace Spawnia\Sailor;
 
+use Spawnia\Sailor\Convert\NullConverter;
 use Spawnia\Sailor\Convert\TypeConverter;
 use Spawnia\Sailor\Error\InvalidDataException;
 
@@ -91,6 +92,10 @@ abstract class ObjectLike implements TypeConverter, BelongsToEndpoint
         $converters = $this->converters();
         foreach ($converters as $name => $converter) {
             if (! property_exists($value, $name)) {
+                if ($converter instanceof NullConverter) {
+                    continue; // Field omitted due to @skip/@include directive
+                }
+
                 $endpoint = static::endpoint();
                 throw new InvalidDataException("{$endpoint}: Missing field {$name}.");
             }

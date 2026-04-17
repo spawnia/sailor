@@ -2,8 +2,10 @@
 
 namespace Spawnia\Sailor\Codegen;
 
+use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\AST\FieldNode;
+use GraphQL\Language\AST\InlineFragmentNode;
 use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\AST\OperationDefinitionNode;
@@ -12,7 +14,9 @@ use GraphQL\Language\Printer;
 use GraphQL\Language\Visitor;
 use GraphQL\Language\VisitorOperation;
 use GraphQL\Type\Definition\CompositeType;
+use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\InterfaceType;
+use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
@@ -51,6 +55,12 @@ class OperationGenerator implements ClassGenerator
 
     /** @var array<string, TypeConfig> */
     protected array $types;
+
+    /** Track nesting depth within selection sets */
+    protected int $selectionNestingDepth = 0;
+
+    /** @var array<int, InlineFragmentNode> Inline fragments keyed by their nesting depth */
+    protected array $inlineFragmentsByDepth = [];
 
     /** @var array<int, OperationStack> */
     protected array $operationStorage = [];
@@ -186,6 +196,16 @@ class OperationGenerator implements ClassGenerator
                     );
                 },
             ],
+            NodeKind::INLINE_FRAGMENT => [
+                'enter' => function (InlineFragmentNode $inlineFragment): void {
+                    $this->inlineFragmentsByDepth[$this->selectionNestingDepth] = $inlineFragment;
+                    ++$this->selectionNestingDepth;
+                },
+                'leave' => function (InlineFragmentNode $_): void {
+                    --$this->selectionNestingDepth;
+                    unset($this->inlineFragmentsByDepth[$this->selectionNestingDepth]);
+                },
+            ],
             NodeKind::FIELD => [
                 'enter' => function (FieldNode $field) use ($typeInfo): ?VisitorOperation {
                     // We are only interested in the name that will come from the server
@@ -195,6 +215,21 @@ class OperationGenerator implements ClassGenerator
 
                     $type = $typeInfo->getType();
                     assert($type !== null, 'schema is validated');
+
+                    // @skip and @include directives mean the server may omit the field,
+                    // even if the schema type is non-null. Only unwrap for direct children of fragments with directives.
+                    // Exception: __typename is always available and non-nullable
+                    if ($type instanceof NonNull
+                        && (
+                            self::fieldHasSkipOrInclude($field)
+                            || $this->parentInlineFragmentHasSkipOrInclude()
+                        )
+                        && $fieldName !== Introspection::TYPE_NAME_FIELD_NAME
+                    ) {
+                        $type = $type->getWrappedType();
+                    }
+
+                    ++$this->selectionNestingDepth;
 
                     $namedType = Type::getNamedType($type);
                     assert($namedType !== null, 'schema is validated'); // @phpstan-ignore function.alreadyNarrowedType, notIdentical.alwaysTrue (keep for safety across graphql-php versions)
@@ -290,6 +325,8 @@ class OperationGenerator implements ClassGenerator
                     return null;
                 },
                 'leave' => function (FieldNode $_) use ($typeInfo): void {
+                    --$this->selectionNestingDepth;
+
                     $type = $typeInfo->getType();
                     assert($type !== null, 'schema is validated');
 
@@ -341,5 +378,34 @@ class OperationGenerator implements ClassGenerator
     protected function currentNamespace(): string
     {
         return implode('\\', $this->namespaceStack);
+    }
+
+    /** @param iterable<DirectiveNode> $directives */
+    protected static function hasSkipOrIncludeDirective(iterable $directives): bool
+    {
+        foreach ($directives as $directive) {
+            $name = $directive->name->value;
+            if ($name === Directive::SKIP_NAME || $name === Directive::INCLUDE_NAME) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected static function fieldHasSkipOrInclude(FieldNode $field): bool
+    {
+        return self::hasSkipOrIncludeDirective($field->directives);
+    }
+
+    protected function parentInlineFragmentHasSkipOrInclude(): bool
+    {
+        // Check if the direct parent inline fragment (at current depth) has @skip or @include
+        $parentFragment = $this->inlineFragmentsByDepth[$this->selectionNestingDepth - 1] ?? null;
+        if ($parentFragment === null) {
+            return false;
+        }
+
+        return self::hasSkipOrIncludeDirective($parentFragment->directives);
     }
 }
