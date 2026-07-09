@@ -29,6 +29,20 @@ final class IntrospectorTest extends TestCase
 
     GRAPHQL;
 
+    public const SCHEMA_WITH_DEPRECATED_INPUT_VALUES = /* @lang GraphQL */ <<<'GRAPHQL'
+    directive @example(old: String @deprecated(reason: "Use new"), new: String) on FIELD
+
+    input Filter {
+      old: String @deprecated(reason: "Use new")
+      new: String
+    }
+
+    type Query {
+      simple(old: String @deprecated(reason: "Use new"), input: Filter): ID
+    }
+
+    GRAPHQL;
+
     public const PATH = __DIR__ . '/schema.graphql';
 
     /**
@@ -43,6 +57,18 @@ final class IntrospectorTest extends TestCase
 
         self::assertFileExists(self::PATH);
         self::assertSame(self::SCHEMA, file_get_contents(self::PATH));
+
+        unlink(self::PATH);
+    }
+
+    public function testPrintsDeprecatedInputValues(): void
+    {
+        $this->makeIntrospector(
+            static fn (): Response => self::successfulIntrospectionMock(self::SCHEMA_WITH_DEPRECATED_INPUT_VALUES)
+        )->introspect();
+
+        self::assertFileExists(self::PATH);
+        self::assertSame(self::SCHEMA_WITH_DEPRECATED_INPUT_VALUES, file_get_contents(self::PATH));
 
         unlink(self::PATH);
     }
@@ -128,9 +154,9 @@ final class IntrospectorTest extends TestCase
         return new Introspector($endpointConfig, 'foo', 'bar');
     }
 
-    public static function successfulIntrospectionMock(): Response
+    public static function successfulIntrospectionMock(string $schemaString = self::SCHEMA): Response
     {
-        $schema = BuildSchema::build(self::SCHEMA);
+        $schema = BuildSchema::build($schemaString);
         $introspection = Introspection::fromSchema($schema);
 
         $response = new Response();
