@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v1.2.2
+
+### Fixed
+
+- Drop redundant null-coalesce in `ErrorFreeResult` https://github.com/spawnia/sailor/pull/140
+
 ## v1.2.1
 
 ### Fixed
