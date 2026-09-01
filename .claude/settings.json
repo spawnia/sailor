@@ -1,10 +1,15 @@
 {
   "permissions": {
     "allow": [
-      "Bash(make:*)"
-    ],
-    "ask": [
-      "Bash(make approve:*)"
+      "Bash(make approve:*)",
+      "Bash(make coverage:*)",
+      "Bash(make fix:*)",
+      "Bash(make help:*)",
+      "Bash(make it:*)",
+      "Bash(make setup:*)",
+      "Bash(make stan:*)",
+      "Bash(make test:*)",
+      "Bash(make validate-examples:*)"
     ]
   }
 }
