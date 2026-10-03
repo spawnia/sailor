@@ -62,10 +62,14 @@ class OperationGenerator implements ClassGenerator
     /** @var array<int, string> */
     protected array $namespaceStack;
 
+    /** @var array<string, int> */
+    protected array $selectionCountByResponsePath;
+
     public function generate(): iterable
     {
         $this->types = $this->endpointConfig->configureTypes($this->schema);
         $this->namespaceStack = [$this->endpointConfig->operationsNamespace()];
+        $this->selectionCountByResponsePath = $this->countSelectionsByResponsePath();
 
         $typeInfo = new TypeInfo($this->schema);
         $visitorWithTypeInfo = Visitor::visitWithTypeInfo($typeInfo, [ // @phpstan-ignore-line specific node types in callables are not typed well yet
@@ -200,7 +204,7 @@ class OperationGenerator implements ClassGenerator
                     $type = $typeInfo->getType();
                     assert($type !== null, 'schema is validated');
 
-                    $isOmittable = self::isOmittable($fieldName, $field, $ancestors);
+                    $isOmittable = $this->isOmittable($fieldName, $field, $ancestors);
 
                     $namedType = Type::getNamedType($type);
                     assert($namedType !== null, 'schema is validated'); // @phpstan-ignore function.alreadyNarrowedType, notIdentical.alwaysTrue (keep for safety across graphql-php versions)
@@ -378,28 +382,66 @@ class OperationGenerator implements ClassGenerator
         return false;
     }
 
+    /** @return array<string, int> */
+    protected function countSelectionsByResponsePath(): array
+    {
+        $selectionCountByResponsePath = [];
+        Visitor::visit($this->document, [ // @phpstan-ignore argument.type (specific node types in callables are not typed well yet)
+            NodeKind::FIELD => function (FieldNode $field, $key, $parent, array $path, array $ancestors) use (&$selectionCountByResponsePath): void {
+                $responsePath = self::responsePath([...$ancestors, $field]);
+                $selectionCountByResponsePath[$responsePath] = ($selectionCountByResponsePath[$responsePath] ?? 0) + 1;
+            },
+        ]);
+
+        return $selectionCountByResponsePath;
+    }
+
     /** @param array<mixed> $ancestors */
-    protected static function isOmittable(string $fieldName, FieldNode $field, array $ancestors): bool
+    protected function isOmittable(string $fieldName, FieldNode $field, array $ancestors): bool
     {
         // __typename is always available and non-nullable
         if ($fieldName === Introspection::TYPE_NAME_FIELD_NAME) {
             return false;
         }
 
-        if (self::hasConditionalDirective($field->directives)) {
-            return true;
-        }
+        $isConditional = self::hasConditionalDirective($field->directives);
+        foreach (array_reverse($ancestors, true) as $index => $ancestor) {
+            if ($ancestor instanceof InlineFragmentNode) {
+                $isConditional = $isConditional || self::hasConditionalDirective($ancestor->directives);
+            }
 
-        foreach (array_reverse($ancestors) as $ancestor) {
             if ($ancestor instanceof FieldNode) {
-                return false;
-            }
+                if ($isConditional) {
+                    return true;
+                }
 
-            if ($ancestor instanceof InlineFragmentNode && self::hasConditionalDirective($ancestor->directives)) {
-                return true;
+                // Conditions further up only omit this field when another selection still provides its parent
+                $ancestorResponsePath = self::responsePath(array_slice($ancestors, 0, $index + 1));
+                if ($this->selectionCountByResponsePath[$ancestorResponsePath] < 2) {
+                    return false;
+                }
+
+                $isConditional = self::hasConditionalDirective($ancestor->directives);
             }
         }
 
-        return false;
+        return $isConditional;
+    }
+
+    /** @param array<mixed> $nodes */
+    protected static function responsePath(array $nodes): string
+    {
+        $responseNames = [];
+        foreach ($nodes as $node) {
+            if ($node instanceof OperationDefinitionNode) {
+                $responseNames[] = $node->name->value ?? '';
+            }
+
+            if ($node instanceof FieldNode) {
+                $responseNames[] = $node->alias->value ?? $node->name->value;
+            }
+        }
+
+        return implode('.', $responseNames);
     }
 }

@@ -14,16 +14,19 @@ use Spawnia\Sailor\Simple\Operations\ClientDirectiveFragmentSpreadQuery;
 use Spawnia\Sailor\Simple\Operations\ClientDirectiveInlineFragmentQuery;
 use Spawnia\Sailor\Simple\Operations\ClientDirectiveQuery;
 use Spawnia\Sailor\Simple\Operations\IncludeNonNullable;
+use Spawnia\Sailor\Simple\Operations\IncludeObject;
 use Spawnia\Sailor\Simple\Operations\IncludeTrueInlineFragmentNonNullable;
 use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery;
 use Spawnia\Sailor\Simple\Operations\SkipFalseIncludeVariableNonNullable;
 use Spawnia\Sailor\Simple\Operations\SkipFalseNonNullable;
+use Spawnia\Sailor\Simple\Operations\SkipGrandparentThenSelect;
 use Spawnia\Sailor\Simple\Operations\SkipMultipleNonNullableFragmentSpread;
 use Spawnia\Sailor\Simple\Operations\SkipMultipleNonNullableInlineFragment;
 use Spawnia\Sailor\Simple\Operations\SkipNonNullable;
 use Spawnia\Sailor\Simple\Operations\SkipNonNullableFragmentSpread;
 use Spawnia\Sailor\Simple\Operations\SkipNonNullableNestedInlineFragment;
+use Spawnia\Sailor\Simple\Operations\SkipObjectThenSelect;
 use Spawnia\Sailor\Simple\Operations\SkipThenSelectNonNullable;
 use Spawnia\Sailor\Tests\TestCase;
 
@@ -308,6 +311,50 @@ final class SimpleTest extends TestCase
         ]);
 
         self::assertNull($result->nonNullable);
+    }
+
+    public function testSubfieldOfSkippedObjectSelectionOmittedWhenSelectedAgain(): void
+    {
+        $result = SkipObjectThenSelect\SkipObjectThenSelect::fromStdClass((object) [
+            '__typename' => 'Query',
+            'singleObject' => (object) [
+                '__typename' => 'SomeObject',
+                'nested' => null,
+            ],
+        ]);
+
+        $singleObject = $result->singleObject;
+        self::assertNotNull($singleObject);
+        self::assertNull($singleObject->value);
+    }
+
+    public function testSubfieldBelowSkippedGrandparentSelectionOmittedWhenSelectedAgain(): void
+    {
+        $result = SkipGrandparentThenSelect\SkipGrandparentThenSelect::fromStdClass((object) [
+            '__typename' => 'Query',
+            'singleObject' => (object) [
+                '__typename' => 'SomeObject',
+                'nested' => (object) [
+                    '__typename' => 'SomeObject',
+                    'nested' => null,
+                ],
+            ],
+        ]);
+
+        $nested = $result->singleObject->nested ?? null;
+        self::assertNotNull($nested);
+        self::assertNull($nested->value);
+    }
+
+    public function testRequiresSubfieldOfSingleConditionalObjectSelection(): void
+    {
+        $this->expectExceptionObject(new InvalidDataException('simple: Invalid value for field singleObject. simple: Missing field value.'));
+        IncludeObject\IncludeObject::fromStdClass((object) [
+            '__typename' => 'Query',
+            'singleObject' => (object) [
+                '__typename' => 'SomeObject',
+            ],
+        ]);
     }
 
     public function testIncludeNonNullableFieldOmittedByServer(): void

@@ -77,3 +77,35 @@ query IncludeTrueInlineFragmentNonNullable {
 query SkipFalseIncludeVariableNonNullable($value: Boolean!) {
     nonNullable @skip(if: false) @include(if: $value)
 }
+
+query SkipObjectThenSelect($value: Boolean!) {
+    singleObject @skip(if: $value) {
+        value
+    }
+    singleObject {
+        nested {
+            value
+        }
+    }
+}
+
+query SkipGrandparentThenSelect($value: Boolean!) {
+    singleObject @skip(if: $value) {
+        nested {
+            value
+        }
+    }
+    singleObject {
+        nested {
+            nested {
+                value
+            }
+        }
+    }
+}
+
+query IncludeObject($value: Boolean!) {
+    singleObject @include(if: $value) {
+        value
+    }
+}
