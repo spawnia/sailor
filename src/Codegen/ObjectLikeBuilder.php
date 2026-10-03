@@ -60,14 +60,6 @@ class ObjectLikeBuilder
     /** @param mixed $defaultValue any value */
     public function addProperty(string $name, Type $type, string $phpDocType, string $typeConverter, $defaultValue): void
     {
-        // Fields may be referenced multiple times in a query through fragments, but they
-        // are only included once in the result sent from the server, thus we eliminate duplicates here.
-        foreach (array_merge($this->requiredProperties, $this->optionalProperties) as [$existingName]) {
-            if ($existingName === $name) {
-                return;
-            }
-        }
-
         $args = [$name, $type, $phpDocType, $typeConverter, $defaultValue];
 
         if ($type instanceof NonNull && $defaultValue === null) {

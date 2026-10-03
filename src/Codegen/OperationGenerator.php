@@ -3,23 +3,19 @@
 namespace Spawnia\Sailor\Codegen;
 
 use GraphQL\Language\AST\DocumentNode;
-use GraphQL\Language\AST\FieldNode;
+use GraphQL\Language\AST\ListTypeNode;
+use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NameNode;
-use GraphQL\Language\AST\NodeKind;
+use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\OperationDefinitionNode;
-use GraphQL\Language\AST\VariableDefinitionNode;
+use GraphQL\Language\AST\TypeNode;
 use GraphQL\Language\Printer;
-use GraphQL\Language\Visitor;
-use GraphQL\Language\VisitorOperation;
-use GraphQL\Type\Definition\CompositeType;
-use GraphQL\Type\Definition\InterfaceType;
+use GraphQL\Type\Definition\AbstractType;
+use GraphQL\Type\Definition\NullableType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
-use GraphQL\Utils\TypeComparators;
-use GraphQL\Utils\TypeInfo;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpNamespace;
 use Spawnia\Sailor\Convert\PolymorphicConverter;
@@ -38,308 +34,218 @@ class OperationGenerator implements ClassGenerator
 
     protected DocumentNode $document;
 
+    /** @var array<string, OperationDefinitionNode> keyed by operation name */
+    protected array $wireOperations = [];
+
     protected EndpointConfig $endpointConfig;
-
-    public function __construct(Schema $schema, DocumentNode $document, EndpointConfig $endpointNameConfig)
-    {
-        $this->schema = $schema;
-        $this->document = $document;
-        $this->endpointConfig = $endpointNameConfig;
-    }
-
-    protected OperationStack $operationStack;
 
     /** @var array<string, TypeConfig> */
     protected array $types;
 
-    /** @var array<int, OperationStack> */
-    protected array $operationStorage = [];
+    public function __construct(Schema $schema, DocumentNode $document, DocumentNode $wireDocument, EndpointConfig $endpointConfig)
+    {
+        $this->schema = $schema;
+        $this->document = $document;
+        $this->endpointConfig = $endpointConfig;
 
-    /** @var array<int, string> */
-    protected array $namespaceStack;
+        foreach ($wireDocument->definitions as $definition) {
+            if ($definition instanceof OperationDefinitionNode) {
+                $this->wireOperations[self::operationName($definition)] = $definition;
+            }
+        }
+    }
 
     public function generate(): iterable
     {
         $this->types = $this->endpointConfig->configureTypes($this->schema);
-        $this->namespaceStack = [$this->endpointConfig->operationsNamespace()];
+        $collector = new FieldCollector($this->schema, $this->document, $this->types);
 
-        $typeInfo = new TypeInfo($this->schema);
-        $visitorWithTypeInfo = Visitor::visitWithTypeInfo($typeInfo, [ // @phpstan-ignore-line specific node types in callables are not typed well yet
-            // A named operation, e.g. "mutation FooMutation", maps to a class
-            NodeKind::OPERATION_DEFINITION => [
-                'enter' => function (OperationDefinitionNode $operationDefinition) use ($typeInfo): void {
-                    $nameNode = $operationDefinition->name;
-                    assert($nameNode instanceof NameNode, 'we validated every operation node is named in Generator::ensureOperationsAreNamed()');
-
-                    $operationName = Escaper::escapeClassName($nameNode->value);
-
-                    // Generate a class to represent the query/mutation itself
-                    $operation = new OperationBuilder($operationName, $this->currentNamespace());
-
-                    // It returns a typed result which is a new selection set class
-                    $resultName = "{$operationName}Result";
-
-                    // Related classes are put into a nested namespace
-                    $this->namespaceStack[] = $operationName;
-                    $resultClass = $this->withCurrentNamespace($resultName);
-
-                    // The base class contains most of the logic
-                    $operation->extendOperation($resultClass);
-
-                    // TODO minify the query string https://github.com/webonyx/graphql-php/issues/1028
-                    $operation->storeDocument(Printer::doPrint($operationDefinition));
-
-                    $result = new ClassType($resultName, $this->makeNamespace());
-                    $result->setExtends(Result::class);
-
-                    $setData = $result->addMethod('setData');
-                    $setData->setVisibility('protected');
-                    $dataParam = $setData->addParameter('data');
-                    $dataParam->setType('\\stdClass');
-                    $setData->setReturnType('void');
-                    $setData->setBody(<<<PHP
-                    \$this->data = {$operationName}::fromStdClass(\$data);
-                    PHP);
-
-                    $dataType = $this->withCurrentNamespace($operationName);
-
-                    $fromData = $result->addMethod('fromData');
-                    $fromData->setStatic(true);
-                    $dataParam = $fromData->addParameter('data');
-                    $dataParam->setType($dataType);
-                    $fromData->setReturnType('self');
-                    $fromData->addComment(<<<'PHPDOC'
-                    Useful for instantiation of successful mocked results.
-
-                    @return static
-                    PHPDOC);
-                    $fromData->setBody(<<<'PHP'
-                    $instance = new static;
-                    $instance->data = $data;
-
-                    return $instance;
-                    PHP);
-
-                    $dataProp = $result->addProperty('data', null);
-                    $dataProp->setType($dataType);
-                    $dataProp->setNullable(true);
-
-                    $errorFreeResultName = "{$operationName}ErrorFreeResult";
-
-                    $errorFree = $result->addMethod('errorFree');
-                    $errorFree->setVisibility('public');
-                    $errorFree->setReturnType(
-                        $this->withCurrentNamespace($errorFreeResultName)
-                    );
-                    $errorFree->setBody(<<<PHP
-                    return {$errorFreeResultName}::fromResult(\$this);
-                    PHP);
-
-                    $errorFreeResult = new ClassType($errorFreeResultName, $this->makeNamespace());
-                    $errorFreeResult->setExtends(ErrorFreeResult::class);
-
-                    $errorFreeDataProp = $errorFreeResult->addProperty('data');
-                    $errorFreeDataProp->setType(
-                        $this->withCurrentNamespace($operationName)
-                    );
-                    $errorFreeDataProp->setNullable(false);
-
-                    $this->operationStack = new OperationStack($operation);
-                    $this->operationStack->result = $result;
-                    $this->operationStack->errorFreeResult = $errorFreeResult;
-
-                    $operationType = $typeInfo->getType();
-                    assert($operationType instanceof ObjectType, 'always present in validated schemas');
-                    $this->operationStack->setSelection(
-                        $this->currentNamespace(),
-                        [
-                            $operationType->name => $this->makeObjectLikeBuilder($operationName),
-                        ]
-                    );
-                },
-                'leave' => function (OperationDefinitionNode $_): void {
-                    $this->moveUpNamespace();
-
-                    // Store the current operation as we continue with the next one
-                    $this->operationStorage[] = $this->operationStack;
-                },
-            ],
-            NodeKind::VARIABLE_DEFINITION => [
-                'enter' => function (VariableDefinitionNode $variableDefinition) use ($typeInfo): void {
-                    $name = $variableDefinition->variable->name->value;
-
-                    $type = $typeInfo->getInputType();
-                    assert($type !== null, 'schema is validated');
-
-                    $namedType = Type::getNamedType($type);
-                    assert($namedType !== null, 'schema is validated'); // @phpstan-ignore function.alreadyNarrowedType, notIdentical.alwaysTrue (keep for safety across graphql-php versions)
-
-                    $typeConfig = $this->types[$namedType->name]; // @phpstan-ignore offsetAccess.invalidOffset (name is string, but typed as mixed in older graphql-php)
-                    assert($typeConfig instanceof InputTypeConfig);
-
-                    $this->operationStack->operation->addVariable(
-                        $name,
-                        $type,
-                        $typeConfig->inputTypeReference(),
-                        $typeConfig->typeConverter(),
-                        $variableDefinition->defaultValue,
-                    );
-                },
-            ],
-            NodeKind::FIELD => [
-                'enter' => function (FieldNode $field) use ($typeInfo): ?VisitorOperation {
-                    // We are only interested in the name that will come from the server
-                    $fieldName = $field->alias->value ?? $field->name->value;
-
-                    $selectionClasses = $this->operationStack->selection($this->currentNamespace());
-
-                    $type = $typeInfo->getType();
-                    assert($type !== null, 'schema is validated');
-
-                    $namedType = Type::getNamedType($type);
-                    assert($namedType !== null, 'schema is validated'); // @phpstan-ignore function.alreadyNarrowedType, notIdentical.alwaysTrue (keep for safety across graphql-php versions)
-
-                    if ($namedType instanceof CompositeType) {
-                        // We go one level deeper into the selection set
-                        // To avoid naming conflicts, we add on another namespace
-                        $this->namespaceStack[] = Escaper::escapeNamespaceName(ucfirst($fieldName));
-                    }
-
-                    $stopFurtherTraversal = false;
-                    $typeConfig = $this->types[$namedType->name] ?? null; // @phpstan-ignore offsetAccess.invalidOffset (name is string, but typed as mixed in older graphql-php)
-                    if ($typeConfig !== null) {
-                        assert($typeConfig instanceof OutputTypeConfig);
-                        $phpDocType = $typeConfig->outputTypeReference();
-                        $typeConverter = <<<PHP
-                        {$typeConfig->typeConverter()}
-                        PHP;
-
-                        $stopFurtherTraversal = true;
-                    } elseif ($namedType instanceof ObjectType) {
-                        $name = $namedType->name;
-
-                        $phpType = $this->withCurrentNamespace(Escaper::escapeNamespaceName($name));
-                        $phpDocType = "\\{$phpType}";
-
-                        $this->operationStack->setSelection(
-                            $this->currentNamespace(),
-                            [
-                                $name => $this->makeObjectLikeBuilder($name),
-                            ]
-                        );
-                        $typeConverter = <<<PHP
-                        {$phpType}
-                        PHP;
-                    } elseif ($namedType instanceof InterfaceType || $namedType instanceof UnionType) {
-                        /** @var PolymorphicMapping $mapping */
-                        $mapping = [];
-
-                        /** @var array<string, ObjectLikeBuilder> $mappingSelection */
-                        $mappingSelection = [];
-
-                        foreach ($this->schema->getPossibleTypes($namedType) as $objectType) {
-                            $name = $objectType->name;
-                            $escapedName = Escaper::escapeClassName($name);
-
-                            $mapping[$name] = "\\{$this->withCurrentNamespace($escapedName)}";
-                            $mappingSelection[$name] = $this->makeObjectLikeBuilder($escapedName);
-                        }
-
-                        $phpDocType = implode('|', $mapping);
-
-                        $this->operationStack->setSelection(
-                            $this->currentNamespace(),
-                            $mappingSelection
-                        );
-
-                        $mappingCode = VarExporter::export($mapping);
-                        $typeConverter = <<<PHP
-                        Spawnia\Sailor\Convert\PolymorphicConverter({$mappingCode})
-                        PHP;
-                    } else {
-                        throw new \Exception("Unexpected namedType {$namedType->name}."); // @phpstan-ignore encapsedStringPart.nonString (property name on interface)
-                    }
-
-                    $parentType = $typeInfo->getParentType();
-                    assert($parentType !== null);
-
-                    foreach ($selectionClasses as $name => $selection) {
-                        $selectionType = $this->schema->getType($name);
-                        if ($selectionType === null) {
-                            throw new \Exception("Unable to determine type of selection {$name}");
-                        }
-
-                        if (TypeComparators::isTypeSubTypeOf($this->schema, $selectionType, $parentType)) {
-                            // Eases instantiation of mocked results
-                            $defaultValue = $fieldName === Introspection::TYPE_NAME_FIELD_NAME
-                                ? $selectionType->name
-                                : null;
-
-                            $selection->addProperty($fieldName, $type, $phpDocType, $typeConverter, $defaultValue);
-                        }
-                    }
-
-                    if ($stopFurtherTraversal) {
-                        if ($namedType instanceof CompositeType) {
-                            $this->moveUpNamespace();
-                        }
-
-                        return Visitor::skipNode();
-                    }
-
-                    return null;
-                },
-                'leave' => function (FieldNode $_) use ($typeInfo): void {
-                    $type = $typeInfo->getType();
-                    assert($type !== null, 'schema is validated');
-
-                    $namedType = Type::getNamedType($type);
-                    assert($namedType !== null, 'schema is validated'); // @phpstan-ignore function.alreadyNarrowedType, notIdentical.alwaysTrue (keep for safety across graphql-php versions)
-
-                    if ($namedType instanceof CompositeType) {
-                        $this->moveUpNamespace();
-                    }
-                },
-            ],
-        ]);
-        Visitor::visit($this->document, $visitorWithTypeInfo);
-
-        foreach ($this->operationStorage as $stack) {
-            yield $stack->operation->build();
-            yield $stack->result;
-            yield $stack->errorFreeResult;
-            yield from $stack->buildSelections();
+        foreach ($this->document->definitions as $definition) {
+            if ($definition instanceof OperationDefinitionNode) {
+                yield from $this->operationClasses($definition, $collector->collect($definition));
+            }
         }
     }
 
-    protected function moveUpNamespace(): void
+    /** @return iterable<ClassType> */
+    protected function operationClasses(OperationDefinitionNode $operation, Selection $selection): iterable
     {
-        array_pop($this->namespaceStack);
+        $operationName = Escaper::escapeClassName(self::operationName($operation));
+        $namespace = "{$this->endpointConfig->operationsNamespace()}\\{$operationName}";
+
+        $builder = new OperationBuilder($operationName, $this->endpointConfig->operationsNamespace());
+        $builder->extendOperation("{$namespace}\\{$operationName}Result");
+        // TODO minify the query string https://github.com/webonyx/graphql-php/issues/1028
+        $builder->storeDocument(Printer::doPrint($this->wireOperations[self::operationName($operation)]));
+
+        foreach ($operation->variableDefinitions as $variableDefinition) {
+            $type = $this->inputType($variableDefinition->type);
+
+            $typeConfig = $this->types[Type::getNamedType($type)->name]; // @phpstan-ignore offsetAccess.invalidOffset, method.nonObject (name is string, but typed as mixed in older graphql-php)
+            assert($typeConfig instanceof InputTypeConfig);
+
+            $builder->addVariable(
+                $variableDefinition->variable->name->value,
+                $type,
+                $typeConfig->inputTypeReference(),
+                $typeConfig->typeConverter(),
+                $variableDefinition->defaultValue,
+            );
+        }
+
+        yield $builder->build();
+        yield $this->resultClass($operationName, $namespace);
+        yield $this->errorFreeResultClass($operationName, $namespace);
+        yield from $this->selectionClasses($selection, $namespace, $operationName);
     }
 
-    protected function makeObjectLikeBuilder(string $name): ObjectLikeBuilder
+    protected function resultClass(string $operationName, string $namespace): ClassType
     {
-        return new ObjectLikeBuilder(
-            $name,
-            $this->currentNamespace(),
-            false,
-        );
+        $result = new ClassType("{$operationName}Result", new PhpNamespace($namespace));
+        $result->setExtends(Result::class);
+
+        $setData = $result->addMethod('setData');
+        $setData->setVisibility('protected');
+        $dataParam = $setData->addParameter('data');
+        $dataParam->setType('\\stdClass');
+        $setData->setReturnType('void');
+        $setData->setBody(<<<PHP
+        \$this->data = {$operationName}::fromStdClass(\$data);
+        PHP);
+
+        $dataType = "{$namespace}\\{$operationName}";
+
+        $fromData = $result->addMethod('fromData');
+        $fromData->setStatic(true);
+        $dataParam = $fromData->addParameter('data');
+        $dataParam->setType($dataType);
+        $fromData->setReturnType('self');
+        $fromData->addComment(<<<'PHPDOC'
+        Useful for instantiation of successful mocked results.
+
+        @return static
+        PHPDOC);
+        $fromData->setBody(<<<'PHP'
+        $instance = new static;
+        $instance->data = $data;
+
+        return $instance;
+        PHP);
+
+        $dataProp = $result->addProperty('data', null);
+        $dataProp->setType($dataType);
+        $dataProp->setNullable(true);
+
+        $errorFreeResultName = "{$operationName}ErrorFreeResult";
+
+        $errorFree = $result->addMethod('errorFree');
+        $errorFree->setVisibility('public');
+        $errorFree->setReturnType("{$namespace}\\{$errorFreeResultName}");
+        $errorFree->setBody(<<<PHP
+        return {$errorFreeResultName}::fromResult(\$this);
+        PHP);
+
+        return $result;
     }
 
-    protected function makeNamespace(): PhpNamespace
+    protected function errorFreeResultClass(string $operationName, string $namespace): ClassType
     {
-        return new PhpNamespace(
-            $this->currentNamespace()
-        );
+        $errorFreeResult = new ClassType("{$operationName}ErrorFreeResult", new PhpNamespace($namespace));
+        $errorFreeResult->setExtends(ErrorFreeResult::class);
+
+        $errorFreeDataProp = $errorFreeResult->addProperty('data');
+        $errorFreeDataProp->setType("{$namespace}\\{$operationName}");
+        $errorFreeDataProp->setNullable(false);
+
+        return $errorFreeResult;
     }
 
-    protected function withCurrentNamespace(string $type): string
+    /** @return iterable<ClassType> */
+    protected function selectionClasses(Selection $selection, string $namespace, ?string $rootClassName = null): iterable
     {
-        return "{$this->currentNamespace()}\\{$type}";
+        $typename = new CollectedField(Introspection::TYPE_NAME_FIELD_NAME, Introspection::typeNameMetaFieldDef()->getType());
+
+        foreach ($selection->fields as $typeName => $fields) {
+            $builder = new ObjectLikeBuilder($rootClassName ?? $typeName, $namespace, false);
+
+            foreach ([$typename, ...array_values($fields)] as $field) {
+                $this->addProperty($builder, $namespace, $typeName, $field);
+            }
+
+            yield $builder->build();
+        }
+
+        foreach ($selection->subSelections as $responseName => $subSelection) {
+            yield from $this->selectionClasses($subSelection, self::subNamespace($namespace, $responseName));
+        }
     }
 
-    protected function currentNamespace(): string
+    protected function addProperty(ObjectLikeBuilder $builder, string $namespace, string $typeName, CollectedField $field): void
     {
-        return implode('\\', $this->namespaceStack);
+        $namedType = Type::getNamedType($field->type);
+        assert($namedType !== null, 'schema is validated'); // @phpstan-ignore function.alreadyNarrowedType, notIdentical.alwaysTrue (keep for safety across graphql-php versions)
+
+        $typeConfig = $this->types[$namedType->name] ?? null; // @phpstan-ignore offsetAccess.invalidOffset (name is string, but typed as mixed in older graphql-php)
+        if ($typeConfig !== null) {
+            assert($typeConfig instanceof OutputTypeConfig);
+            $phpDocType = $typeConfig->outputTypeReference();
+            $typeConverter = $typeConfig->typeConverter();
+        } elseif ($namedType instanceof ObjectType) {
+            $phpType = self::subNamespace($namespace, $field->responseName) . '\\' . Escaper::escapeNamespaceName($namedType->name);
+            $phpDocType = "\\{$phpType}";
+            $typeConverter = $phpType;
+        } elseif ($namedType instanceof AbstractType) {
+            /** @var PolymorphicMapping $mapping */
+            $mapping = [];
+            foreach ($this->schema->getPossibleTypes($namedType) as $objectType) {
+                $mapping[$objectType->name] = '\\' . self::subNamespace($namespace, $field->responseName) . '\\' . Escaper::escapeClassName($objectType->name);
+            }
+
+            $phpDocType = implode('|', $mapping);
+            $mappingCode = VarExporter::export($mapping);
+            $typeConverter = "Spawnia\\Sailor\\Convert\\PolymorphicConverter({$mappingCode})";
+        } else {
+            throw new \Exception("Unexpected namedType {$namedType->name}."); // @phpstan-ignore encapsedStringPart.nonString (property name on interface)
+        }
+
+        // Eases instantiation of mocked results
+        $defaultValue = $field->responseName === Introspection::TYPE_NAME_FIELD_NAME
+            ? $typeName
+            : null;
+
+        $builder->addProperty($field->responseName, $field->type, $phpDocType, $typeConverter, $defaultValue);
+    }
+
+    protected function inputType(TypeNode $typeNode): Type
+    {
+        if ($typeNode instanceof NonNullTypeNode) {
+            $nullableType = $this->inputType($typeNode->type);
+            assert($nullableType instanceof NullableType, 'the grammar forbids nested non-null');
+
+            return Type::nonNull($nullableType);
+        }
+
+        if ($typeNode instanceof ListTypeNode) {
+            return Type::listOf($this->inputType($typeNode->type));
+        }
+
+        assert($typeNode instanceof NamedTypeNode, 'only named types remain');
+        $type = $this->schema->getType($typeNode->name->value);
+        assert($type !== null, 'validated against the schema');
+
+        return $type;
+    }
+
+    protected static function subNamespace(string $namespace, string $responseName): string
+    {
+        return "{$namespace}\\" . Escaper::escapeNamespaceName(ucfirst($responseName));
+    }
+
+    protected static function operationName(OperationDefinitionNode $operation): string
+    {
+        $nameNode = $operation->name;
+        assert($nameNode instanceof NameNode, 'we validated every operation node is named in Generator::ensureOperationsAreNamed()');
+
+        return $nameNode->value;
     }
 }
