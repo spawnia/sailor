@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v1.4.0
+
 ### Added
 
 - Include scalar `specifiedByURL` in introspection with `webonyx/graphql-php:^15.33` https://github.com/spawnia/sailor/pull/138
