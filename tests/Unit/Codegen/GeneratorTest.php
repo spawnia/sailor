@@ -5,7 +5,6 @@ namespace Spawnia\Sailor\Tests\Unit\Codegen;
 use GraphQL\Language\AST\FragmentDefinitionNode;
 use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\OperationDefinitionNode;
-use PHPUnit\Framework\Attributes\DataProvider;
 use Spawnia\Sailor\Codegen\Generator;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Tests\TestCase;
@@ -104,7 +103,6 @@ final class GeneratorTest extends TestCase
     }
 
     /** @dataProvider configPaths */
-    #[DataProvider('configPaths')]
     public function testConfigPath(string $configFile, string $directory, string $expected): void
     {
         $endpointConfig = \Mockery::mock(EndpointConfig::class);
