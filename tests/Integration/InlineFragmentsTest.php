@@ -93,8 +93,7 @@ final class InlineFragmentsTest extends TestCase
 
     public function testInlineFragmentWithNestedNonNullableFieldMissing(): void
     {
-        $this->expectException(InvalidDataException::class);
-        $this->expectExceptionMessage('Missing field text');
+        $this->expectExceptionObject(new InvalidDataException('inline-fragments: Invalid value for field search. inline-fragments: Invalid value for field content. inline-fragments: Missing field text.'));
 
         InlineFragmentWithNestedNonNullableField\InlineFragmentWithNestedNonNullableFieldResult::fromStdClass((object) [
             'data' => (object) [

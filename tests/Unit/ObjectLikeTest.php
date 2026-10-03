@@ -50,7 +50,7 @@ final class ObjectLikeTest extends TestCase
         MyScalarQuery::fromStdClass((object) []);
     }
 
-    public function testMissingNullableField(): void
+    public function testRejectsMissingNullableFieldWithoutSkipOrInclude(): void
     {
         $this->expectExceptionObject(new InvalidDataException(
             'simple: Missing field scalarWithArg.'
