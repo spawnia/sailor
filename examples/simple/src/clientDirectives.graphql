@@ -109,3 +109,26 @@ query IncludeObject($value: Boolean!) {
         value
     }
 }
+
+query SkipBeforeRequiredNonNullable($value: Boolean!) {
+    nonNullable @skip(if: $value)
+    required: nonNullable
+}
+
+query SelectThenSkipNonNullable($value: Boolean!) {
+    nonNullable
+    ... on Query @skip(if: $value) {
+        nonNullable
+    }
+}
+
+query SkipAndIncludeNonNullable($skip: Boolean!, $include: Boolean!) {
+    nonNullable @skip(if: $skip)
+    ... on Query @include(if: $include) {
+        nonNullable
+    }
+}
+
+query IncludeFalseNonNullable {
+    nonNullable @include(if: false)
+}

@@ -5,6 +5,8 @@ namespace Spawnia\Sailor\Tests\Integration;
 use Spawnia\Sailor\Error\InvalidDataException;
 use Spawnia\Sailor\InlineFragments\Operations\InlineFragmentWithDirectNonNullableField;
 use Spawnia\Sailor\InlineFragments\Operations\InlineFragmentWithNestedNonNullableField;
+use Spawnia\Sailor\InlineFragments\Operations\SkipInterfaceField;
+use Spawnia\Sailor\InlineFragments\Operations\SkipList;
 use Spawnia\Sailor\Tests\TestCase;
 
 final class InlineFragmentsTest extends TestCase
@@ -108,5 +110,48 @@ final class InlineFragmentsTest extends TestCase
                 ],
             ],
         ]);
+    }
+
+    public function testSkippedListOmittedByServer(): void
+    {
+        $result = SkipList\SkipListResult::fromStdClass((object) [
+            'data' => (object) [
+                '__typename' => 'Query',
+            ],
+        ]);
+
+        self::assertNotNull($result->data);
+        self::assertNull($result->data->search);
+    }
+
+    public function testSkippedListRejectsNullItems(): void
+    {
+        $this->expectExceptionObject(new InvalidDataException('inline-fragments: Invalid value for field search. Expected non-null value, got null'));
+        SkipList\SkipListResult::fromStdClass((object) [
+            'data' => (object) [
+                '__typename' => 'Query',
+                'search' => [null],
+            ],
+        ]);
+    }
+
+    public function testSkippedInterfaceFieldOmittedByServerForAllTypes(): void
+    {
+        $result = SkipInterfaceField\SkipInterfaceFieldResult::fromStdClass((object) [
+            'data' => (object) [
+                '__typename' => 'Query',
+                'search' => [
+                    (object) ['__typename' => 'Article'],
+                    (object) ['__typename' => 'Video'],
+                ],
+            ],
+        ]);
+
+        self::assertNotNull($result->data);
+        [$article, $video] = $result->data->search;
+        self::assertInstanceOf(SkipInterfaceField\Search\Article::class, $article);
+        self::assertNull($article->id);
+        self::assertInstanceOf(SkipInterfaceField\Search\Video::class, $video);
+        self::assertNull($video->id);
     }
 }

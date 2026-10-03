@@ -13,11 +13,15 @@ use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Simple\Operations\ClientDirectiveFragmentSpreadQuery;
 use Spawnia\Sailor\Simple\Operations\ClientDirectiveInlineFragmentQuery;
 use Spawnia\Sailor\Simple\Operations\ClientDirectiveQuery;
+use Spawnia\Sailor\Simple\Operations\IncludeFalseNonNullable;
 use Spawnia\Sailor\Simple\Operations\IncludeNonNullable;
 use Spawnia\Sailor\Simple\Operations\IncludeObject;
 use Spawnia\Sailor\Simple\Operations\IncludeTrueInlineFragmentNonNullable;
 use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery;
+use Spawnia\Sailor\Simple\Operations\SelectThenSkipNonNullable;
+use Spawnia\Sailor\Simple\Operations\SkipAndIncludeNonNullable;
+use Spawnia\Sailor\Simple\Operations\SkipBeforeRequiredNonNullable;
 use Spawnia\Sailor\Simple\Operations\SkipFalseIncludeVariableNonNullable;
 use Spawnia\Sailor\Simple\Operations\SkipFalseNonNullable;
 use Spawnia\Sailor\Simple\Operations\SkipGrandparentThenSelect;
@@ -364,6 +368,48 @@ final class SimpleTest extends TestCase
             '__typename' => 'Query',
             'nonNullable' => null,
         ]);
+    }
+
+    public function testMakePutsOmittableParameterBehindRequired(): void
+    {
+        $result = SkipBeforeRequiredNonNullable\SkipBeforeRequiredNonNullable::make('required');
+
+        self::assertSame('required', $result->required);
+        self::assertNull($result->nonNullable);
+    }
+
+    public function testMakeLeavesOutOmittedField(): void
+    {
+        $data = SkipNonNullable\SkipNonNullable::make()->toStdClass();
+
+        self::assertEquals((object) ['__typename' => 'Query'], $data);
+        self::assertNull(SkipNonNullable\SkipNonNullable::fromStdClass($data)->nonNullable);
+    }
+
+    public function testRequiresNonNullableFieldSelectedUnconditionallyFirst(): void
+    {
+        $this->expectExceptionObject(new InvalidDataException('simple: Missing field nonNullable.'));
+        SelectThenSkipNonNullable\SelectThenSkipNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+    }
+
+    public function testNonNullableFieldWithOnlyConditionalSelectionsOmittedByServer(): void
+    {
+        $result = SkipAndIncludeNonNullable\SkipAndIncludeNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->nonNullable);
+    }
+
+    public function testNonNullableFieldWithLiteralIncludeFalseOmittedByServer(): void
+    {
+        $result = IncludeFalseNonNullable\IncludeFalseNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->nonNullable);
     }
 
     public function testIncludeNonNullableFieldOmittedByServer(): void

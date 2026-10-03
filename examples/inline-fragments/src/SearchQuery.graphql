@@ -34,3 +34,17 @@ query InlineFragmentWithNestedNonNullableField($skip: Boolean!) {
         }
     }
 }
+
+query SkipList($skip: Boolean!) {
+    search(query: "test") @skip(if: $skip) {
+        ... on Article {
+            title
+        }
+    }
+}
+
+query SkipInterfaceField($skip: Boolean!) {
+    search(query: "test") {
+        id @skip(if: $skip)
+    }
+}
