@@ -56,3 +56,10 @@ query SkipMultipleNonNullableInlineFragment($value: Boolean!) {
         secondNonNullable: nonNullable
     }
 }
+
+query SkipThenSelectNonNullable($value: Boolean!) {
+    ... on Query @skip(if: $value) {
+        nonNullable
+    }
+    nonNullable
+}

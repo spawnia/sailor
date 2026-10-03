@@ -22,11 +22,8 @@ class ObjectLikeBuilder
 
     private Method $converters;
 
-    /** @var array<PropertyArgs> */
-    private array $requiredProperties = [];
-
-    /** @var array<PropertyArgs> */
-    private array $optionalProperties = [];
+    /** @var array<string, PropertyArgs> */
+    private array $properties = [];
 
     public function __construct(string $name, string $namespace, bool $isInputType)
     {
@@ -63,28 +60,33 @@ class ObjectLikeBuilder
     {
         // Fields may be referenced multiple times in a query through fragments, but they
         // are only included once in the result sent from the server, thus we eliminate duplicates here.
-        foreach (array_merge($this->requiredProperties, $this->optionalProperties) as [$existingName]) {
-            if ($existingName === $name) {
-                return;
-            }
+        if (isset($this->properties[$name])) {
+            $this->properties[$name][5] = $this->properties[$name][5] && $isOmittable;
+
+            return;
         }
 
-        $args = [$name, $type, $phpDocType, $typeConverter, $defaultValue, $isOmittable];
-
-        if ($type instanceof NonNull && $defaultValue === null) {
-            $this->requiredProperties[] = $args;
-        } else {
-            $this->optionalProperties[] = $args;
-        }
+        $this->properties[$name] = [$name, $type, $phpDocType, $typeConverter, $defaultValue, $isOmittable];
     }
 
     public function build(): ClassType
     {
-        foreach ($this->requiredProperties as $args) {
-            $this->buildProperty(...$args);
+        $requiredProperties = [];
+        $optionalProperties = [];
+        foreach ($this->properties as [$name, $schemaType, $phpDocType, $typeConverter, $defaultValue, $isOmittable]) {
+            $type = $isOmittable && $schemaType instanceof NonNull
+                ? $schemaType->getWrappedType()
+                : $schemaType;
+            $args = [$name, $type, $phpDocType, $typeConverter, $defaultValue, $isOmittable];
+
+            if ($type instanceof NonNull && $defaultValue === null) {
+                $requiredProperties[] = $args;
+            } else {
+                $optionalProperties[] = $args;
+            }
         }
 
-        foreach ($this->optionalProperties as $args) {
+        foreach (array_merge($requiredProperties, $optionalProperties) as $args) {
             $this->buildProperty(...$args);
         }
 

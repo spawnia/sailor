@@ -16,7 +16,6 @@ use GraphQL\Language\VisitorOperation;
 use GraphQL\Type\Definition\CompositeType;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\InterfaceType;
-use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
@@ -201,10 +200,6 @@ class OperationGenerator implements ClassGenerator
                     assert($type !== null, 'schema is validated');
 
                     $isOmittable = self::isOmittable($fieldName, $field, $ancestors);
-
-                    if ($isOmittable && $type instanceof NonNull) {
-                        $type = $type->getWrappedType();
-                    }
 
                     $namedType = Type::getNamedType($type);
                     assert($namedType !== null, 'schema is validated'); // @phpstan-ignore function.alreadyNarrowedType, notIdentical.alwaysTrue (keep for safety across graphql-php versions)

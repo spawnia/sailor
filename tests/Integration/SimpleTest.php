@@ -5,6 +5,7 @@ namespace Spawnia\Sailor\Tests\Integration;
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\EndpointConfig;
+use Spawnia\Sailor\Error\InvalidDataException;
 use Spawnia\Sailor\Error\ResultErrorsException;
 use Spawnia\Sailor\Events\ReceiveResponse;
 use Spawnia\Sailor\Events\StartRequest;
@@ -20,6 +21,7 @@ use Spawnia\Sailor\Simple\Operations\SkipMultipleNonNullableInlineFragment;
 use Spawnia\Sailor\Simple\Operations\SkipNonNullable;
 use Spawnia\Sailor\Simple\Operations\SkipNonNullableFragmentSpread;
 use Spawnia\Sailor\Simple\Operations\SkipNonNullableNestedInlineFragment;
+use Spawnia\Sailor\Simple\Operations\SkipThenSelectNonNullable;
 use Spawnia\Sailor\Tests\TestCase;
 
 final class SimpleTest extends TestCase
@@ -270,6 +272,14 @@ final class SimpleTest extends TestCase
 
         self::assertNull($result->nonNullable);
         self::assertNull($result->secondNonNullable);
+    }
+
+    public function testRequiresNonNullableFieldAlsoSelectedUnconditionally(): void
+    {
+        $this->expectExceptionObject(new InvalidDataException('simple: Missing field nonNullable.'));
+        SkipThenSelectNonNullable\SkipThenSelectNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
     }
 
     public function testIncludeNonNullableFieldOmittedByServer(): void
