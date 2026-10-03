@@ -67,8 +67,9 @@ class OperationBuilder
         $document = $this->class->addMethod('document');
         $document->setStatic();
         $document->setReturnType('string');
+        $operationLiteral = var_export($operationString, true);
         $document->setBody(<<<PHP
-        return /* @lang GraphQL */ '{$operationString}';
+        return /* @lang GraphQL */ {$operationLiteral};
         PHP);
     }
 

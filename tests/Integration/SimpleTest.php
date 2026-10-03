@@ -11,6 +11,7 @@ use Spawnia\Sailor\Events\StartRequest;
 use Spawnia\Sailor\Response;
 use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery;
+use Spawnia\Sailor\Simple\Operations\MyStringLiteralsQuery;
 use Spawnia\Sailor\Tests\TestCase;
 
 final class SimpleTest extends TestCase
@@ -204,5 +205,13 @@ final class SimpleTest extends TestCase
         $object = $result->data->singleObject;
         self::assertNotNull($object);
         self::assertNull($object->nested);
+    }
+
+    public function testDocumentPreservesStringLiterals(): void
+    {
+        $document = MyStringLiteralsQuery::document();
+
+        self::assertStringContainsString('"it\'s"', $document);
+        self::assertStringContainsString('"back\\\\slash"', $document);
     }
 }
