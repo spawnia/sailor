@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- Generate non-null fields under `@skip` or `@include`, directly or through an enclosing fragment, as nullable, with optional `make()` parameters that move behind the required ones https://github.com/spawnia/sailor/pull/79
+
 ### Fixed
 
 - Handle fields omitted through `@skip` or `@include` https://github.com/spawnia/sailor/pull/79
