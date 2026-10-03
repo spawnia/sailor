@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Compute relative config path with Windows separators https://github.com/spawnia/sailor/pull/141
 
+## v1.4.0
+
+### Added
+
+- Include scalar `specifiedByURL` in introspection with `webonyx/graphql-php:^15.33` https://github.com/spawnia/sailor/pull/138
+
 ## v1.3.0
 
 ### Added
