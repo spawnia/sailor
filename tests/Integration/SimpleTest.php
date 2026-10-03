@@ -16,6 +16,8 @@ use Spawnia\Sailor\Simple\Operations\IncludeNonNullable;
 use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery;
 use Spawnia\Sailor\Simple\Operations\SkipNonNullable;
+use Spawnia\Sailor\Simple\Operations\SkipNonNullableFragmentSpread;
+use Spawnia\Sailor\Simple\Operations\SkipNonNullableNestedInlineFragment;
 use Spawnia\Sailor\Tests\TestCase;
 
 final class SimpleTest extends TestCase
@@ -228,6 +230,24 @@ final class SimpleTest extends TestCase
         ]);
 
         self::assertSame('value', $result->nonNullable);
+    }
+
+    public function testSkipNonNullableFieldInFragmentSpreadOmittedByServer(): void
+    {
+        $result = SkipNonNullableFragmentSpread\SkipNonNullableFragmentSpread::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->nonNullable);
+    }
+
+    public function testSkipNonNullableFieldInNestedInlineFragmentOmittedByServer(): void
+    {
+        $result = SkipNonNullableNestedInlineFragment\SkipNonNullableNestedInlineFragment::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->nonNullable);
     }
 
     public function testIncludeNonNullableFieldOmittedByServer(): void

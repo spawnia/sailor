@@ -220,7 +220,7 @@ class OperationGenerator implements ClassGenerator
                     $isOmittable = $fieldName !== Introspection::TYPE_NAME_FIELD_NAME
                         && (
                             self::fieldHasSkipOrInclude($field)
-                            || $this->parentInlineFragmentHasSkipOrInclude()
+                            || $this->enclosingInlineFragmentHasSkipOrInclude()
                         );
 
                     if ($isOmittable && $type instanceof NonNull) {
@@ -396,14 +396,15 @@ class OperationGenerator implements ClassGenerator
         return self::hasSkipOrIncludeDirective($field->directives);
     }
 
-    protected function parentInlineFragmentHasSkipOrInclude(): bool
+    protected function enclosingInlineFragmentHasSkipOrInclude(): bool
     {
-        // Check if the direct parent inline fragment (at current depth) has @skip or @include
-        $parentFragment = $this->inlineFragmentsByDepth[$this->selectionNestingDepth - 1] ?? null;
-        if ($parentFragment === null) {
-            return false;
+        // Fields do not register in inlineFragmentsByDepth, so a gap marks the enclosing field
+        for ($depth = $this->selectionNestingDepth - 1; isset($this->inlineFragmentsByDepth[$depth]); --$depth) {
+            if (self::hasSkipOrIncludeDirective($this->inlineFragmentsByDepth[$depth]->directives)) {
+                return true;
+            }
         }
 
-        return self::hasSkipOrIncludeDirective($parentFragment->directives);
+        return false;
     }
 }

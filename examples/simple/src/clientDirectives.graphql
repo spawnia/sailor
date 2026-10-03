@@ -24,3 +24,19 @@ query SkipNonNullable($value: Boolean!) {
 query IncludeNonNullable($value: Boolean!) {
     nonNullable @include(if: $value)
 }
+
+fragment NonNullableFragment on Query {
+    nonNullable
+}
+
+query SkipNonNullableFragmentSpread($value: Boolean!) {
+    ...NonNullableFragment @skip(if: $value)
+}
+
+query SkipNonNullableNestedInlineFragment($value: Boolean!) {
+    ... @skip(if: $value) {
+        ... on Query {
+            nonNullable
+        }
+    }
+}
