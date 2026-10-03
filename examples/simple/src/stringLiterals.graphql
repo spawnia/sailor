@@ -1,0 +1,4 @@
+query MyStringLiteralsQuery {
+    singleQuote: scalarWithArg(arg: "it's")
+    backslash: scalarWithArg(arg: "back\\slash")
+}

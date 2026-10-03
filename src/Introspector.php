@@ -29,9 +29,15 @@ class Introspector
         $client = $this->endpointConfig->makeClient();
 
         try {
-            $introspectionResult = $this->fetchIntrospectionResult($client, true);
+            $introspectionResult = $this->fetchIntrospectionResult($client, [
+                'directiveIsRepeatable' => true,
+                'specifiedByURL' => true,
+            ]);
         } catch (\Throwable $_) {
-            $introspectionResult = $this->fetchIntrospectionResult($client, false);
+            $introspectionResult = $this->fetchIntrospectionResult($client, [
+                'directiveIsRepeatable' => false,
+                'specifiedByURL' => false,
+            ]);
         }
 
         $schema = BuildClientSchema::build(
@@ -47,12 +53,12 @@ class Introspector
         );
     }
 
-    protected function fetchIntrospectionResult(Client $client, bool $directiveIsRepeatable): Response
+    // TODO use @phpstan-import-type IntrospectionOptions from Introspection after requiring webonyx/graphql-php ^15.33
+    /** @param array{directiveIsRepeatable: bool, specifiedByURL: bool} $introspectionQueryOptions */
+    protected function fetchIntrospectionResult(Client $client, array $introspectionQueryOptions): Response
     {
         $response = $client->request(
-            Introspection::getIntrospectionQuery([
-                'directiveIsRepeatable' => $directiveIsRepeatable,
-            ])
+            Introspection::getIntrospectionQuery($introspectionQueryOptions)
         );
 
         if (isset($response->errors)) {

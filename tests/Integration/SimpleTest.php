@@ -19,6 +19,7 @@ use Spawnia\Sailor\Simple\Operations\IncludeObject;
 use Spawnia\Sailor\Simple\Operations\IncludeTrueInlineFragmentNonNullable;
 use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery;
+use Spawnia\Sailor\Simple\Operations\MyStringLiteralsQuery;
 use Spawnia\Sailor\Simple\Operations\SelectThenSkipNonNullable;
 use Spawnia\Sailor\Simple\Operations\SkipAndIncludeNonNullable;
 use Spawnia\Sailor\Simple\Operations\SkipBeforeRequiredNonNullable;
@@ -536,5 +537,13 @@ final class SimpleTest extends TestCase
 
         self::assertNotNull($result->data);
         self::assertSame('hello', $result->data->nonNullable);
+    }
+
+    public function testDocumentPreservesStringLiterals(): void
+    {
+        $document = MyStringLiteralsQuery::document();
+
+        self::assertStringContainsString('"it\'s"', $document);
+        self::assertStringContainsString('"back\\\\slash"', $document);
     }
 }
