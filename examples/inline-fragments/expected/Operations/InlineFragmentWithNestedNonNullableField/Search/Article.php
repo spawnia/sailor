@@ -31,7 +31,7 @@ class Article extends \Spawnia\Sailor\ObjectLike
 
         return $converters ??= [
             '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
-            'content' => new \Spawnia\Sailor\Convert\OmittableConverter(new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\InlineFragments\Operations\InlineFragmentWithNestedNonNullableField\Search\Content\ArticleContent)),
+            'content' => new \Spawnia\Sailor\Convert\OmittableConverter(new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\InlineFragments\Operations\InlineFragmentWithNestedNonNullableField\Search\Content\ArticleContent)),
         ];
     }
 

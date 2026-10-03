@@ -78,13 +78,9 @@ class ObjectLikeBuilder
     {
         $requiredProperties = [];
         $optionalProperties = [];
-        foreach ($this->properties as [$name, $schemaType, $phpDocType, $typeConverter, $defaultValue, $isOmittable]) {
-            $type = $isOmittable && $schemaType instanceof NonNull
-                ? $schemaType->getWrappedType()
-                : $schemaType;
-            $args = [$name, $type, $phpDocType, $typeConverter, $defaultValue, $isOmittable];
-
-            if ($type instanceof NonNull && $defaultValue === null) {
+        foreach ($this->properties as $args) {
+            [, $type, , , $defaultValue, $isOmittable] = $args;
+            if (self::resultType($type, $isOmittable) instanceof NonNull && $defaultValue === null) {
                 $requiredProperties[] = $args;
             } else {
                 $optionalProperties[] = $args;
@@ -104,7 +100,8 @@ class ObjectLikeBuilder
     /** @param mixed $defaultValue any value */
     protected function buildProperty(string $name, Type $type, string $phpDocType, string $typeConverter, $defaultValue, bool $isOmittable): void
     {
-        $wrappedPhpDocType = TypeWrapper::phpDoc($type, $phpDocType, $this->isInputType);
+        $resultType = self::resultType($type, $isOmittable);
+        $wrappedPhpDocType = TypeWrapper::phpDoc($resultType, $phpDocType, $this->isInputType);
 
         $this->class->addComment("@property {$wrappedPhpDocType} \${$name}");
 
@@ -122,7 +119,7 @@ class ObjectLikeBuilder
             $this->make->addComment("@param {$wrappedPhpDocType} \${$name}");
 
             $parameter = $this->make->addParameter($name);
-            if (! $type instanceof NonNull || $defaultValue !== null) {
+            if (! $resultType instanceof NonNull || $defaultValue !== null) {
                 $parameter->setNullable(true);
                 $parameter->setDefaultValue(ObjectLike::UNDEFINED);
             }
@@ -136,5 +133,13 @@ class ObjectLikeBuilder
             }
             PHP);
         }
+    }
+
+    /** Omitted fields are null in the result, but present ones keep the non-null check of their converter. */
+    protected static function resultType(Type $type, bool $isOmittable): Type
+    {
+        return $isOmittable && $type instanceof NonNull
+            ? $type->getWrappedType()
+            : $type;
     }
 }

@@ -357,6 +357,15 @@ final class SimpleTest extends TestCase
         ]);
     }
 
+    public function testRejectsExplicitNullForSkippableNonNullableField(): void
+    {
+        $this->expectExceptionObject(new InvalidDataException('simple: Invalid value for field nonNullable. Expected non-null value, got null'));
+        SkipNonNullable\SkipNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+            'nonNullable' => null,
+        ]);
+    }
+
     public function testIncludeNonNullableFieldOmittedByServer(): void
     {
         $result = IncludeNonNullable\IncludeNonNullable::fromStdClass((object) [
