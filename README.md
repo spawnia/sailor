@@ -1,18 +1,12 @@
-<div align="center">
-  <img src="sailor.png" alt=sailor-logo">
-</div>
+<img src="sailor.png" alt="Sailor">
 
-<div align="center">
+# Sailor
 
-[![CI Status](https://github.com/spawnia/sailor/workflows/Validate/badge.svg)](https://github.com/spawnia/sailor/actions)
-[![codecov](https://codecov.io/gh/spawnia/sailor/branch/master/graph/badge.svg)](https://codecov.io/gh/spawnia/sailor)
+A typesafe GraphQL client for PHP.
 
-[![Latest Stable Version](https://poser.pugx.org/spawnia/sailor/v/stable)](https://packagist.org/packages/spawnia/sailor)
-[![Total Downloads](https://poser.pugx.org/spawnia/sailor/downloads)](https://packagist.org/packages/spawnia/sailor)
+## Sponsors
 
-A typesafe GraphQL client for PHP
-
-</div>
+If you make money using this project, please consider sponsoring [its maintainer on GitHub Sponsors](https://github.com/sponsors/spawnia).
 
 ## Motivation
 
@@ -44,6 +38,12 @@ PSR-17 Request and Stream factory implementations (see [Client implementations](
 
 ```shell
 composer require nyholm/psr7
+```
+
+If you want to use the ReactPHP Client for non-blocking requests (see [Client implementations](#client-implementations)):
+
+```shell
+composer require react/http react/async
 ```
 
 ## Configuration
@@ -90,6 +90,7 @@ environment variables (run `composer require vlucas/phpdotenv` if you do not hav
 Sailor provides a few built-in clients:
 - `Spawnia\Sailor\Client\Guzzle`: Default HTTP client
 - `Spawnia\Sailor\Client\Psr18`: PSR-18 HTTP client
+- `Spawnia\Sailor\Client\ReactPhp`: Non-blocking client for ReactPHP event loops
 - `Spawnia\Sailor\Client\Log`: Used for testing
 
 You can bring your own by implementing the interface `Spawnia\Sailor\Client`.
@@ -577,10 +578,3 @@ You can find examples of how a project would use Sailor within [examples](exampl
 
 See [`CHANGELOG.md`](CHANGELOG.md).
 
-## Contributing
-
-See [`CONTRIBUTING.md`](CONTRIBUTING.md).
-
-## License
-
-This package is licensed using the MIT License.
