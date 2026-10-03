@@ -55,6 +55,32 @@ final class IntrospectorTest extends TestCase
             ->introspect();
     }
 
+    public function testRequestsSpecifiedByURLAndFallsBackWithout(): void
+    {
+        $queries = [];
+        $this
+            ->makeIntrospector(static function (string $query) use (&$queries): Response {
+                $queries[] = $query;
+
+                return count($queries) === 1
+                    ? self::responseWithErrorsMock()
+                    : self::successfulIntrospectionMock();
+            })
+            ->introspect();
+        unlink(self::PATH);
+
+        self::assertSame([
+            Introspection::getIntrospectionQuery([
+                'directiveIsRepeatable' => true,
+                'specifiedByURL' => true,
+            ]),
+            Introspection::getIntrospectionQuery([
+                'directiveIsRepeatable' => false,
+                'specifiedByURL' => false,
+            ]),
+        ], $queries);
+    }
+
     /** @return iterable<array{Request}> */
     public static function validRequests(): iterable
     {
