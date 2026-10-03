@@ -243,7 +243,7 @@ the following is more efficient as it does not instantiate a new object:
 ### Client directives
 
 When using GraphQL's `@skip` or `@include` directives in your operations, fields can be omitted from the server response.
-Sailor marks such fields as nullable in the generated result classes, allowing you to safely handle cases where they are absent:
+Sailor marks such fields as nullable in the generated result classes, including fields in fragments that carry the directives:
 
 ```graphql
 query UserProfile($skipEmail: Boolean!) {
@@ -254,8 +254,7 @@ query UserProfile($skipEmail: Boolean!) {
 }
 ```
 
-The generated `email` field will be nullable, even if it was non-nullable in the schema.
-When skipped (or not included), the property will always be `null`, but can be accessed without error.
+When skipped (or not included), the property is `null`.
 Literal arguments that always include the field, such as `@skip(if: false)` or `@include(if: true)`, keep it non-nullable.
 
 ```php
