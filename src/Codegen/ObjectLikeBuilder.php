@@ -57,7 +57,7 @@ class ObjectLikeBuilder
      * @param mixed $defaultValue any value
      * @param bool $isOmittable whether this selection may be omitted, the field is only omittable if all its selections are
      */
-    public function addProperty(string $name, Type $type, string $phpDocType, string $typeConverter, $defaultValue, bool $isOmittable = false): void
+    public function addProperty(string $name, Type $type, string $phpDocType, string $typeConverter, $defaultValue, bool $isOmittable): void
     {
         // Fields may be referenced multiple times in a query through fragments, but they
         // are only included once in the result sent from the server, thus we eliminate duplicates here.
