@@ -9,12 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+
+- Escape single quotes and backslashes in generated operation documents https://github.com/spawnia/sailor/pull/142
+
 ## v1.4.1
 
 ### Fixed
 
 - Compute relative config path with Windows separators https://github.com/spawnia/sailor/pull/141
-- Escape single quotes and backslashes in generated operation documents https://github.com/spawnia/sailor/pull/142
 
 ## v1.4.0
 
