@@ -3,18 +3,17 @@
 namespace Spawnia\Sailor\Simple\Operations;
 
 /**
- * @extends \Spawnia\Sailor\Operation<\Spawnia\Sailor\Simple\Operations\ClientDirectiveFragmentSpreadQuery\ClientDirectiveFragmentSpreadQueryResult>
+ * @extends \Spawnia\Sailor\Operation<\Spawnia\Sailor\Simple\Operations\SkipAliasedNonNullable\SkipAliasedNonNullableResult>
  */
-class ClientDirectiveFragmentSpreadQuery extends \Spawnia\Sailor\Operation
+class SkipAliasedNonNullable extends \Spawnia\Sailor\Operation
 {
     /**
-     * @param bool $value
+     * @param bool $skip
      */
-    public static function execute(
-        $value,
-    ): ClientDirectiveFragmentSpreadQuery\ClientDirectiveFragmentSpreadQueryResult {
+    public static function execute($skip): SkipAliasedNonNullable\SkipAliasedNonNullableResult
+    {
         return self::executeOperation(
-            $value,
+            $skip,
         );
     }
 
@@ -24,17 +23,16 @@ class ClientDirectiveFragmentSpreadQuery extends \Spawnia\Sailor\Operation
         static $converters;
 
         return $converters ??= [
-            ['value', new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\BooleanConverter)],
+            ['skip', new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\BooleanConverter)],
         ];
     }
 
     public static function document(): string
     {
-        return /* @lang GraphQL */ 'query ClientDirectiveFragmentSpreadQuery($value: Boolean!) {
+        return /* @lang GraphQL */ 'query SkipAliasedNonNullable($skip: Boolean!) {
           __typename
-          ... on Query @skip(if: $value) {
-            twoArgs
-          }
+          skipped: nonNullable @skip(if: $skip)
+          nonNullable
         }';
     }
 

@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace Spawnia\Sailor\Simple\Operations\ClientDirectiveInlineFragmentQuery;
+namespace Spawnia\Sailor\Simple\Operations\SkipNonNullable;
 
-class ClientDirectiveInlineFragmentQueryErrorFreeResult extends \Spawnia\Sailor\ErrorFreeResult
+class SkipNonNullableErrorFreeResult extends \Spawnia\Sailor\ErrorFreeResult
 {
-    public ClientDirectiveInlineFragmentQuery $data;
+    public SkipNonNullable $data;
 
     public static function endpoint(): string
     {

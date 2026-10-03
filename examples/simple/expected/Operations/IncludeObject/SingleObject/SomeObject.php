@@ -1,24 +1,24 @@
 <?php declare(strict_types=1);
 
-namespace Spawnia\Sailor\Simple\Operations\ClientDirectiveFragmentSpreadQuery;
+namespace Spawnia\Sailor\Simple\Operations\IncludeObject\SingleObject;
 
 /**
  * @property string $__typename
- * @property string|null $twoArgs
+ * @property int|null $value
  */
-class ClientDirectiveFragmentSpreadQuery extends \Spawnia\Sailor\ObjectLike
+class SomeObject extends \Spawnia\Sailor\ObjectLike
 {
     /**
-     * @param string|null $twoArgs
+     * @param int|null $value
      */
     public static function make(
-        $twoArgs = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+        $value = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
     ): self {
         $instance = new self;
 
-        $instance->__typename = 'Query';
-        if ($twoArgs !== self::UNDEFINED) {
-            $instance->__set('twoArgs', $twoArgs);
+        $instance->__typename = 'SomeObject';
+        if ($value !== self::UNDEFINED) {
+            $instance->__set('value', $value);
         }
 
         return $instance;
@@ -31,7 +31,7 @@ class ClientDirectiveFragmentSpreadQuery extends \Spawnia\Sailor\ObjectLike
 
         return $converters ??= [
             '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
-            'twoArgs' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\IDConverter),
+            'value' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\IntConverter),
         ];
     }
 
@@ -42,6 +42,6 @@ class ClientDirectiveFragmentSpreadQuery extends \Spawnia\Sailor\ObjectLike
 
     public static function config(): string
     {
-        return \Safe\realpath(__DIR__ . '/../../../sailor.php');
+        return \Safe\realpath(__DIR__ . '/../../../../sailor.php');
     }
 }

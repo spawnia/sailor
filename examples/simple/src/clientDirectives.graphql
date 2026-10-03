@@ -3,16 +3,17 @@ query ClientDirectiveQuery($value: Boolean!) {
     twoArgs @include(if: $value)
 }
 
-fragment ClientDirectiveFragment on Query {
-    twoArgs
+query SkipNonNullable($skip: Boolean!) {
+    nonNullable @skip(if: $skip)
 }
 
-query ClientDirectiveFragmentSpreadQuery($value: Boolean!) {
-    ...ClientDirectiveFragment @skip(if: $value)
-}
-
-query ClientDirectiveInlineFragmentQuery($value: Boolean!) {
-    ... on Query @skip(if: $value) {
-        twoArgs
+query IncludeObject($include: Boolean!) {
+    singleObject @include(if: $include) {
+        value
     }
+}
+
+query SkipAliasedNonNullable($skip: Boolean!) {
+    skipped: nonNullable @skip(if: $skip)
+    nonNullable
 }

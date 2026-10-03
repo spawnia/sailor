@@ -1,24 +1,24 @@
 <?php declare(strict_types=1);
 
-namespace Spawnia\Sailor\Simple\Operations\ClientDirectiveInlineFragmentQuery;
+namespace Spawnia\Sailor\Simple\Operations\SkipNonNullable;
 
 /**
  * @property string $__typename
- * @property string|null $twoArgs
+ * @property string|null $nonNullable
  */
-class ClientDirectiveInlineFragmentQuery extends \Spawnia\Sailor\ObjectLike
+class SkipNonNullable extends \Spawnia\Sailor\ObjectLike
 {
     /**
-     * @param string|null $twoArgs
+     * @param string|null $nonNullable
      */
     public static function make(
-        $twoArgs = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
+        $nonNullable = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
     ): self {
         $instance = new self;
 
         $instance->__typename = 'Query';
-        if ($twoArgs !== self::UNDEFINED) {
-            $instance->__set('twoArgs', $twoArgs);
+        if ($nonNullable !== self::UNDEFINED) {
+            $instance->__set('nonNullable', $nonNullable);
         }
 
         return $instance;
@@ -31,7 +31,7 @@ class ClientDirectiveInlineFragmentQuery extends \Spawnia\Sailor\ObjectLike
 
         return $converters ??= [
             '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
-            'twoArgs' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\IDConverter),
+            'nonNullable' => new \Spawnia\Sailor\Convert\OmittableConverter(new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter)),
         ];
     }
 

@@ -58,10 +58,14 @@ class OperationGenerator implements ClassGenerator
     /** @var array<int, string> */
     protected array $namespaceStack;
 
+    /** @var array<string, int> */
+    protected array $selectionCountByResponsePath;
+
     public function generate(): iterable
     {
         $this->types = $this->endpointConfig->configureTypes($this->schema);
         $this->namespaceStack = [$this->endpointConfig->operationsNamespace()];
+        $this->selectionCountByResponsePath = $this->countSelectionsByResponsePath();
 
         $typeInfo = new TypeInfo($this->schema);
         $visitorWithTypeInfo = Visitor::visitWithTypeInfo($typeInfo, [ // @phpstan-ignore-line specific node types in callables are not typed well yet
@@ -187,9 +191,11 @@ class OperationGenerator implements ClassGenerator
                 },
             ],
             NodeKind::FIELD => [
-                'enter' => function (FieldNode $field) use ($typeInfo): ?VisitorOperation {
+                'enter' => function (FieldNode $field, $key, $parent, array $path, array $ancestors) use ($typeInfo): ?VisitorOperation {
                     // We are only interested in the name that will come from the server
                     $fieldName = $field->alias->value ?? $field->name->value;
+
+                    $isOmittable = $this->isOmittable($field, $ancestors);
 
                     $selectionClasses = $this->operationStack->selection($this->currentNamespace());
 
@@ -275,7 +281,7 @@ class OperationGenerator implements ClassGenerator
                                 ? $selectionType->name
                                 : null;
 
-                            $selection->addProperty($fieldName, $type, $phpDocType, $typeConverter, $defaultValue);
+                            $selection->addProperty($fieldName, $type, $phpDocType, $typeConverter, $defaultValue, $isOmittable);
                         }
                     }
 
@@ -310,6 +316,55 @@ class OperationGenerator implements ClassGenerator
             yield $stack->errorFreeResult;
             yield from $stack->buildSelections();
         }
+    }
+
+    /** @return array<string, int> */
+    protected function countSelectionsByResponsePath(): array
+    {
+        $selectionCountByResponsePath = [];
+        Visitor::visit($this->document, [ // @phpstan-ignore argument.type (specific node types in callables are not typed well yet)
+            NodeKind::FIELD => function (FieldNode $field, $key, $parent, array $path, array $ancestors) use (&$selectionCountByResponsePath): void {
+                $responsePath = self::responsePath([...$ancestors, $field]);
+                $selectionCountByResponsePath[$responsePath] = ($selectionCountByResponsePath[$responsePath] ?? 0) + 1;
+            },
+        ]);
+
+        return $selectionCountByResponsePath;
+    }
+
+    /** @param array<mixed> $ancestors */
+    protected function isOmittable(FieldNode $field, array $ancestors): bool
+    {
+        $directive = ConditionalDirective::find($field->directives);
+        if ($directive === null) {
+            return false;
+        }
+
+        // A conditional field merged with another selection may be present with only some of its subfields
+        $responsePath = self::responsePath([...$ancestors, $field]);
+        $selectionCount = $this->selectionCountByResponsePath[$responsePath];
+        if ($selectionCount > 1) {
+            throw new \Exception("Sailor only supports @skip and @include on fields selected once, found @{$directive} on {$responsePath} which is selected {$selectionCount} times. Give the selections distinct aliases.");
+        }
+
+        return true;
+    }
+
+    /** @param array<mixed> $nodes */
+    protected static function responsePath(array $nodes): string
+    {
+        $responseNames = [];
+        foreach ($nodes as $node) {
+            if ($node instanceof OperationDefinitionNode) {
+                $responseNames[] = $node->name->value ?? '';
+            }
+
+            if ($node instanceof FieldNode) {
+                $responseNames[] = $node->alias->value ?? $node->name->value;
+            }
+        }
+
+        return implode('.', $responseNames);
     }
 
     protected function moveUpNamespace(): void

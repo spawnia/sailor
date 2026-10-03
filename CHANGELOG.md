@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- Generate fields under `@skip` or `@include` as nullable PR_URL
+- Fail code generation for `@skip` and `@include` on fragments or on fields selected more than once PR_URL
+
+### Fixed
+
+- Accept responses that omit fields under `@skip` or `@include` PR_URL
+
 ## v1.4.2
 
 ### Fixed

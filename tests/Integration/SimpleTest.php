@@ -5,13 +5,17 @@ namespace Spawnia\Sailor\Tests\Integration;
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\EndpointConfig;
+use Spawnia\Sailor\Error\InvalidDataException;
 use Spawnia\Sailor\Error\ResultErrorsException;
 use Spawnia\Sailor\Events\ReceiveResponse;
 use Spawnia\Sailor\Events\StartRequest;
 use Spawnia\Sailor\Response;
+use Spawnia\Sailor\Simple\Operations\IncludeObject;
 use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery;
 use Spawnia\Sailor\Simple\Operations\MyStringLiteralsQuery;
+use Spawnia\Sailor\Simple\Operations\SkipAliasedNonNullable;
+use Spawnia\Sailor\Simple\Operations\SkipNonNullable;
 use Spawnia\Sailor\Tests\TestCase;
 
 final class SimpleTest extends TestCase
@@ -205,6 +209,56 @@ final class SimpleTest extends TestCase
         $object = $result->data->singleObject;
         self::assertNotNull($object);
         self::assertNull($object->nested);
+    }
+
+    public function testSkippedNonNullableFieldMayBeOmitted(): void
+    {
+        $result = SkipNonNullable\SkipNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->nonNullable);
+    }
+
+    public function testSkippedNonNullableFieldMayBePresent(): void
+    {
+        $result = SkipNonNullable\SkipNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+            'nonNullable' => 'foo',
+        ]);
+
+        self::assertSame('foo', $result->nonNullable);
+    }
+
+    public function testSkippedNonNullableFieldRejectsExplicitNull(): void
+    {
+        $this->expectException(InvalidDataException::class);
+        SkipNonNullable\SkipNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+            'nonNullable' => null,
+        ]);
+    }
+
+    public function testMakeWithoutSkippedNonNullableField(): void
+    {
+        self::assertNull(SkipNonNullable\SkipNonNullable::make()->nonNullable);
+    }
+
+    public function testIncludedObjectMayBeOmitted(): void
+    {
+        $result = IncludeObject\IncludeObject::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->singleObject);
+    }
+
+    public function testAliasedSkippedFieldDoesNotAffectUnconditionalSelection(): void
+    {
+        $this->expectExceptionObject(new InvalidDataException('simple: Missing field nonNullable.'));
+        SkipAliasedNonNullable\SkipAliasedNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
     }
 
     public function testDocumentPreservesStringLiterals(): void

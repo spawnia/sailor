@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace Spawnia\Sailor\Simple\Operations\ClientDirectiveFragmentSpreadQuery;
+namespace Spawnia\Sailor\Simple\Operations\SkipAliasedNonNullable;
 
-class ClientDirectiveFragmentSpreadQueryErrorFreeResult extends \Spawnia\Sailor\ErrorFreeResult
+class SkipAliasedNonNullableErrorFreeResult extends \Spawnia\Sailor\ErrorFreeResult
 {
-    public ClientDirectiveFragmentSpreadQuery $data;
+    public SkipAliasedNonNullable $data;
 
     public static function endpoint(): string
     {

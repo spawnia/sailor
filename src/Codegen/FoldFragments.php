@@ -2,6 +2,7 @@
 
 namespace Spawnia\Sailor\Codegen;
 
+use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\AST\FieldNode;
 use GraphQL\Language\AST\FragmentDefinitionNode;
@@ -75,6 +76,8 @@ class FoldFragments
 
             if ($selection instanceof FragmentSpreadNode) {
                 $selectionName = $selection->name->value;
+                self::rejectConditionalDirective($selection->directives, "fragment spread ...{$selectionName}");
+
                 $fragment = $this->fragments[$selectionName] ?? null;
                 if (! $fragment instanceof FragmentDefinitionNode) {
                     throw new \Exception("Found fragment spread referencing undefined fragment {$selectionName}.");
@@ -96,12 +99,24 @@ class FoldFragments
             }
 
             if ($selection instanceof InlineFragmentNode) {
+                $typeCondition = $selection->typeCondition;
+                self::rejectConditionalDirective($selection->directives, $typeCondition === null ? 'inline fragment' : "inline fragment on {$typeCondition->name->value}");
+
                 $this->modifySelectionSet($selection->selectionSet);
                 $selections[] = $selection;
             }
         }
 
         return new NodeList($selections);
+    }
+
+    /** @param iterable<DirectiveNode> $directives */
+    protected static function rejectConditionalDirective(iterable $directives, string $location): void
+    {
+        $directive = ConditionalDirective::find($directives);
+        if ($directive !== null) {
+            throw new \Exception("Sailor only supports @skip and @include on fields, found @{$directive} on {$location}.");
+        }
     }
 
     protected function modifySelectionSet(SelectionSetNode $selectionSet): void
