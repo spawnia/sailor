@@ -40,3 +40,19 @@ query SkipNonNullableNestedInlineFragment($value: Boolean!) {
         }
     }
 }
+
+fragment MultipleNonNullableFragment on Query {
+    nonNullable
+    secondNonNullable: nonNullable
+}
+
+query SkipMultipleNonNullableFragmentSpread($value: Boolean!) {
+    ...MultipleNonNullableFragment @skip(if: $value)
+}
+
+query SkipMultipleNonNullableInlineFragment($value: Boolean!) {
+    ... on Query @skip(if: $value) {
+        nonNullable
+        secondNonNullable: nonNullable
+    }
+}

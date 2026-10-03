@@ -3,23 +3,22 @@
 namespace Spawnia\Sailor\InlineFragments\Operations\InlineFragmentWithNestedNonNullableField;
 
 /**
+ * @property array<int, \Spawnia\Sailor\InlineFragments\Operations\InlineFragmentWithNestedNonNullableField\Search\Article|\Spawnia\Sailor\InlineFragments\Operations\InlineFragmentWithNestedNonNullableField\Search\Video> $search
  * @property string $__typename
- * @property array<int, \Spawnia\Sailor\InlineFragments\Operations\InlineFragmentWithNestedNonNullableField\Search\Article|\Spawnia\Sailor\InlineFragments\Operations\InlineFragmentWithNestedNonNullableField\Search\Video>|null $search
  */
 class InlineFragmentWithNestedNonNullableField extends \Spawnia\Sailor\ObjectLike
 {
     /**
-     * @param array<int, \Spawnia\Sailor\InlineFragments\Operations\InlineFragmentWithNestedNonNullableField\Search\Article|\Spawnia\Sailor\InlineFragments\Operations\InlineFragmentWithNestedNonNullableField\Search\Video>|null $search
+     * @param array<int, \Spawnia\Sailor\InlineFragments\Operations\InlineFragmentWithNestedNonNullableField\Search\Article|\Spawnia\Sailor\InlineFragments\Operations\InlineFragmentWithNestedNonNullableField\Search\Video> $search
      */
-    public static function make(
-        $search = 'Special default value that allows Sailor to differentiate between explicitly passing null and not passing a value at all.',
-    ): self {
+    public static function make($search): self
+    {
         $instance = new self;
 
-        $instance->__typename = 'Query';
         if ($search !== self::UNDEFINED) {
             $instance->__set('search', $search);
         }
+        $instance->__typename = 'Query';
 
         return $instance;
     }
@@ -30,11 +29,11 @@ class InlineFragmentWithNestedNonNullableField extends \Spawnia\Sailor\ObjectLik
         static $converters;
 
         return $converters ??= [
-            '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
-            'search' => new \Spawnia\Sailor\Convert\OmittableConverter(new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\ListConverter(new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\PolymorphicConverter([
+            'search' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\ListConverter(new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\PolymorphicConverter([
             'Article' => '\\Spawnia\\Sailor\\InlineFragments\\Operations\\InlineFragmentWithNestedNonNullableField\\Search\\Article',
             'Video' => '\\Spawnia\\Sailor\\InlineFragments\\Operations\\InlineFragmentWithNestedNonNullableField\\Search\\Video',
-        ]))))),
+        ])))),
+            '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
         ];
     }
 

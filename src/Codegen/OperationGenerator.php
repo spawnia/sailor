@@ -56,12 +56,6 @@ class OperationGenerator implements ClassGenerator
     /** @var array<string, TypeConfig> */
     protected array $types;
 
-    /** Track nesting depth within selection sets */
-    protected int $selectionNestingDepth = 0;
-
-    /** @var array<int, InlineFragmentNode> Inline fragments keyed by their nesting depth */
-    protected array $inlineFragmentsByDepth = [];
-
     /** @var array<int, OperationStack> */
     protected array $operationStorage = [];
 
@@ -196,18 +190,8 @@ class OperationGenerator implements ClassGenerator
                     );
                 },
             ],
-            NodeKind::INLINE_FRAGMENT => [
-                'enter' => function (InlineFragmentNode $inlineFragment): void {
-                    $this->inlineFragmentsByDepth[$this->selectionNestingDepth] = $inlineFragment;
-                    ++$this->selectionNestingDepth;
-                },
-                'leave' => function (InlineFragmentNode $_): void {
-                    --$this->selectionNestingDepth;
-                    unset($this->inlineFragmentsByDepth[$this->selectionNestingDepth]);
-                },
-            ],
             NodeKind::FIELD => [
-                'enter' => function (FieldNode $field) use ($typeInfo): ?VisitorOperation {
+                'enter' => function (FieldNode $field, $key, $parent, array $path, array $ancestors) use ($typeInfo): ?VisitorOperation {
                     // We are only interested in the name that will come from the server
                     $fieldName = $field->alias->value ?? $field->name->value;
 
@@ -216,18 +200,11 @@ class OperationGenerator implements ClassGenerator
                     $type = $typeInfo->getType();
                     assert($type !== null, 'schema is validated');
 
-                    // __typename is always available and non-nullable
-                    $isOmittable = $fieldName !== Introspection::TYPE_NAME_FIELD_NAME
-                        && (
-                            self::fieldHasSkipOrInclude($field)
-                            || $this->enclosingInlineFragmentHasSkipOrInclude()
-                        );
+                    $isOmittable = self::isOmittable($fieldName, $field, $ancestors);
 
                     if ($isOmittable && $type instanceof NonNull) {
                         $type = $type->getWrappedType();
                     }
-
-                    ++$this->selectionNestingDepth;
 
                     $namedType = Type::getNamedType($type);
                     assert($namedType !== null, 'schema is validated'); // @phpstan-ignore function.alreadyNarrowedType, notIdentical.alwaysTrue (keep for safety across graphql-php versions)
@@ -323,8 +300,6 @@ class OperationGenerator implements ClassGenerator
                     return null;
                 },
                 'leave' => function (FieldNode $_) use ($typeInfo): void {
-                    --$this->selectionNestingDepth;
-
                     $type = $typeInfo->getType();
                     assert($type !== null, 'schema is validated');
 
@@ -391,16 +366,24 @@ class OperationGenerator implements ClassGenerator
         return false;
     }
 
-    protected static function fieldHasSkipOrInclude(FieldNode $field): bool
+    /** @param array<mixed> $ancestors */
+    protected static function isOmittable(string $fieldName, FieldNode $field, array $ancestors): bool
     {
-        return self::hasSkipOrIncludeDirective($field->directives);
-    }
+        // __typename is always available and non-nullable
+        if ($fieldName === Introspection::TYPE_NAME_FIELD_NAME) {
+            return false;
+        }
 
-    protected function enclosingInlineFragmentHasSkipOrInclude(): bool
-    {
-        // Fields do not register in inlineFragmentsByDepth, so a gap marks the enclosing field
-        for ($depth = $this->selectionNestingDepth - 1; isset($this->inlineFragmentsByDepth[$depth]); --$depth) {
-            if (self::hasSkipOrIncludeDirective($this->inlineFragmentsByDepth[$depth]->directives)) {
+        if (self::hasSkipOrIncludeDirective($field->directives)) {
+            return true;
+        }
+
+        foreach (array_reverse($ancestors) as $ancestor) {
+            if ($ancestor instanceof FieldNode) {
+                return false;
+            }
+
+            if ($ancestor instanceof InlineFragmentNode && self::hasSkipOrIncludeDirective($ancestor->directives)) {
                 return true;
             }
         }

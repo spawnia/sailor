@@ -15,6 +15,8 @@ use Spawnia\Sailor\Simple\Operations\ClientDirectiveQuery;
 use Spawnia\Sailor\Simple\Operations\IncludeNonNullable;
 use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery;
+use Spawnia\Sailor\Simple\Operations\SkipMultipleNonNullableFragmentSpread;
+use Spawnia\Sailor\Simple\Operations\SkipMultipleNonNullableInlineFragment;
 use Spawnia\Sailor\Simple\Operations\SkipNonNullable;
 use Spawnia\Sailor\Simple\Operations\SkipNonNullableFragmentSpread;
 use Spawnia\Sailor\Simple\Operations\SkipNonNullableNestedInlineFragment;
@@ -248,6 +250,26 @@ final class SimpleTest extends TestCase
         ]);
 
         self::assertNull($result->nonNullable);
+    }
+
+    public function testSkipMultipleNonNullableFieldsInFragmentSpreadOmittedByServer(): void
+    {
+        $result = SkipMultipleNonNullableFragmentSpread\SkipMultipleNonNullableFragmentSpread::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->nonNullable);
+        self::assertNull($result->secondNonNullable);
+    }
+
+    public function testSkipMultipleNonNullableFieldsInInlineFragmentOmittedByServer(): void
+    {
+        $result = SkipMultipleNonNullableInlineFragment\SkipMultipleNonNullableInlineFragment::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->nonNullable);
+        self::assertNull($result->secondNonNullable);
     }
 
     public function testIncludeNonNullableFieldOmittedByServer(): void
