@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v1.3.0
+
+### Added
+
+- Add `Spawnia\Sailor\Client\ReactPhp` for non-blocking GraphQL calls https://github.com/spawnia/sailor/pull/137
+
 ## v1.2.2
 
 ### Fixed
