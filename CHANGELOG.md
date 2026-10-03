@@ -15,8 +15,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Escape single quotes and backslashes in generated operation documents https://github.com/spawnia/sailor/pull/142
 - Accept responses that omit fields through `@skip` or `@include` https://github.com/spawnia/sailor/pull/79
+
+## v1.4.2
+
+### Fixed
+
+- Escape single quotes and backslashes in generated operation documents https://github.com/spawnia/sailor/pull/142
 
 ## v1.4.1
 
