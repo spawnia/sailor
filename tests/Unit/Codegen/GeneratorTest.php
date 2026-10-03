@@ -103,7 +103,7 @@ final class GeneratorTest extends TestCase
     }
 
     /** @dataProvider configPaths */
-    public function testConfigPath(string $configFile, string $directory, string $expected): void
+    public function testComputesRelativeConfigPath(string $configFile, string $directory, string $expected): void
     {
         $endpointConfig = \Mockery::mock(EndpointConfig::class);
         $generator = new class($endpointConfig, $configFile, 'foo') extends Generator {
