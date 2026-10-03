@@ -4,6 +4,7 @@ namespace Spawnia\Sailor\Codegen;
 
 use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\AST\FieldNode;
+use GraphQL\Language\AST\FragmentDefinitionNode;
 use GraphQL\Language\AST\InlineFragmentNode;
 use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\AST\SelectionSetNode;
@@ -17,6 +18,8 @@ class AddTypename
         foreach ($document->definitions as $definition) {
             if ($definition instanceof OperationDefinitionNode) {
                 static::ensurePresent($definition->selectionSet);
+            } elseif ($definition instanceof FragmentDefinitionNode) {
+                static::purgeRedundant($definition->selectionSet);
             }
         }
     }

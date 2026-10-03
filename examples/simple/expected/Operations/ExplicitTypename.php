@@ -28,10 +28,12 @@ class ExplicitTypename extends \Spawnia\Sailor\Operation
           __typename
           singleObject {
             __typename
-            ... on SomeObject {
-              value
-            }
+            ...ObjectWithTypename
           }
+        }
+
+        fragment ObjectWithTypename on SomeObject {
+          value
         }';
     }
 
