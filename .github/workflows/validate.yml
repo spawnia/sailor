@@ -99,6 +99,9 @@ jobs:
           extensions: mbstring
           php-version: ${{ matrix.php-version }}
 
+      - if: ${{ matrix.php-version < '8.1' }}
+        run: composer remove --dev --no-update react/async react/http
+
       - uses: ramsey/composer-install@v3
         with:
           dependency-versions: "${{ matrix.dependencies }}"

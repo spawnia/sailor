@@ -45,6 +45,8 @@
     "phpstan/phpstan-phpunit": "^1 || ^2",
     "phpstan/phpstan-strict-rules": "^1 || ^2",
     "phpunit/phpunit": "^9.6.22 || ^10.5.45 || ^11.5.10 || ^12.0.5",
+    "react/async": "^4",
+    "react/http": "^1",
     "spawnia/phpunit-assert-directory": "^2.1",
     "symfony/var-dumper": "^5.2.3 || ^6 || ^7 || ^8",
     "thecodingmachine/phpstan-safe-rule": "^1.1"
@@ -53,7 +55,9 @@
     "bensampo/laravel-enum": "Use with BenSampoEnumTypeConfig",
     "guzzlehttp/guzzle": "Enables using the built-in default Client",
     "mockery/mockery": "Used in Operation::mock()",
-    "nesbot/carbon": "Use with CarbonTypeConfig"
+    "nesbot/carbon": "Use with CarbonTypeConfig",
+    "react/async": "Required for the ReactPhp client",
+    "react/http": "Required for the ReactPhp client"
   },
   "minimum-stability": "dev",
   "autoload": {
