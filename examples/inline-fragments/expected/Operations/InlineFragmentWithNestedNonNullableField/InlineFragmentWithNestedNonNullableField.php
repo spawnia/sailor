@@ -31,10 +31,10 @@ class InlineFragmentWithNestedNonNullableField extends \Spawnia\Sailor\ObjectLik
 
         return $converters ??= [
             '__typename' => new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\StringConverter),
-            'search' => new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\ListConverter(new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\PolymorphicConverter([
+            'search' => new \Spawnia\Sailor\Convert\OmittableConverter(new \Spawnia\Sailor\Convert\NullConverter(new \Spawnia\Sailor\Convert\ListConverter(new \Spawnia\Sailor\Convert\NonNullConverter(new \Spawnia\Sailor\Convert\PolymorphicConverter([
             'Article' => '\\Spawnia\\Sailor\\InlineFragments\\Operations\\InlineFragmentWithNestedNonNullableField\\Search\\Article',
             'Video' => '\\Spawnia\\Sailor\\InlineFragments\\Operations\\InlineFragmentWithNestedNonNullableField\\Search\\Video',
-        ])))),
+        ]))))),
         ];
     }
 

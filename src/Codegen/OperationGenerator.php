@@ -216,16 +216,14 @@ class OperationGenerator implements ClassGenerator
                     $type = $typeInfo->getType();
                     assert($type !== null, 'schema is validated');
 
-                    // @skip and @include directives mean the server may omit the field,
-                    // even if the schema type is non-null. Only unwrap for direct children of fragments with directives.
-                    // Exception: __typename is always available and non-nullable
-                    if ($type instanceof NonNull
+                    // __typename is always available and non-nullable
+                    $isOmittable = $fieldName !== Introspection::TYPE_NAME_FIELD_NAME
                         && (
                             self::fieldHasSkipOrInclude($field)
                             || $this->parentInlineFragmentHasSkipOrInclude()
-                        )
-                        && $fieldName !== Introspection::TYPE_NAME_FIELD_NAME
-                    ) {
+                        );
+
+                    if ($isOmittable && $type instanceof NonNull) {
                         $type = $type->getWrappedType();
                     }
 
@@ -310,7 +308,7 @@ class OperationGenerator implements ClassGenerator
                                 ? $selectionType->name
                                 : null;
 
-                            $selection->addProperty($fieldName, $type, $phpDocType, $typeConverter, $defaultValue);
+                            $selection->addProperty($fieldName, $type, $phpDocType, $typeConverter, $defaultValue, $isOmittable);
                         }
                     }
 

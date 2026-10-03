@@ -50,6 +50,16 @@ final class ObjectLikeTest extends TestCase
         MyScalarQuery::fromStdClass((object) []);
     }
 
+    public function testMissingNullableField(): void
+    {
+        $this->expectExceptionObject(new InvalidDataException(
+            'simple: Missing field scalarWithArg.'
+        ));
+        MyScalarQuery::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+    }
+
     public function testMissingRequiredValue(): void
     {
         $this->expectExceptionObject(new InvalidDataException(
