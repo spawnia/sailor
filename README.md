@@ -256,6 +256,7 @@ query UserProfile($skipEmail: Boolean!) {
 
 The generated `email` field will be nullable, even if it was non-nullable in the schema.
 When skipped (or not included), the property will always be `null`, but can be accessed without error.
+Literal arguments that always include the field, such as `@skip(if: false)` or `@include(if: true)`, keep it non-nullable.
 
 ```php
 UserProfile::execute(skipEmail: true)

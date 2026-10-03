@@ -14,8 +14,11 @@ use Spawnia\Sailor\Simple\Operations\ClientDirectiveFragmentSpreadQuery;
 use Spawnia\Sailor\Simple\Operations\ClientDirectiveInlineFragmentQuery;
 use Spawnia\Sailor\Simple\Operations\ClientDirectiveQuery;
 use Spawnia\Sailor\Simple\Operations\IncludeNonNullable;
+use Spawnia\Sailor\Simple\Operations\IncludeTrueInlineFragmentNonNullable;
 use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery;
+use Spawnia\Sailor\Simple\Operations\SkipFalseIncludeVariableNonNullable;
+use Spawnia\Sailor\Simple\Operations\SkipFalseNonNullable;
 use Spawnia\Sailor\Simple\Operations\SkipMultipleNonNullableFragmentSpread;
 use Spawnia\Sailor\Simple\Operations\SkipMultipleNonNullableInlineFragment;
 use Spawnia\Sailor\Simple\Operations\SkipNonNullable;
@@ -280,6 +283,31 @@ final class SimpleTest extends TestCase
         SkipThenSelectNonNullable\SkipThenSelectNonNullable::fromStdClass((object) [
             '__typename' => 'Query',
         ]);
+    }
+
+    public function testRequiresNonNullableFieldWithLiteralSkipFalse(): void
+    {
+        $this->expectExceptionObject(new InvalidDataException('simple: Missing field nonNullable.'));
+        SkipFalseNonNullable\SkipFalseNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+    }
+
+    public function testRequiresNonNullableFieldInInlineFragmentWithLiteralIncludeTrue(): void
+    {
+        $this->expectExceptionObject(new InvalidDataException('simple: Missing field nonNullable.'));
+        IncludeTrueInlineFragmentNonNullable\IncludeTrueInlineFragmentNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+    }
+
+    public function testSkipFalseCombinedWithIncludeVariableOmittedByServer(): void
+    {
+        $result = SkipFalseIncludeVariableNonNullable\SkipFalseIncludeVariableNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->nonNullable);
     }
 
     public function testIncludeNonNullableFieldOmittedByServer(): void

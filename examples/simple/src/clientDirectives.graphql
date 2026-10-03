@@ -63,3 +63,17 @@ query SkipThenSelectNonNullable($value: Boolean!) {
     }
     nonNullable
 }
+
+query SkipFalseNonNullable {
+    nonNullable @skip(if: false)
+}
+
+query IncludeTrueInlineFragmentNonNullable {
+    ... on Query @include(if: true) {
+        nonNullable
+    }
+}
+
+query SkipFalseIncludeVariableNonNullable($value: Boolean!) {
+    nonNullable @skip(if: false) @include(if: $value)
+}

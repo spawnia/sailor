@@ -2,6 +2,7 @@
 
 namespace Spawnia\Sailor\Codegen;
 
+use GraphQL\Language\AST\BooleanValueNode;
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\AST\FieldNode;
@@ -349,12 +350,28 @@ class OperationGenerator implements ClassGenerator
     }
 
     /** @param iterable<DirectiveNode> $directives */
-    protected static function hasSkipOrIncludeDirective(iterable $directives): bool
+    protected static function hasConditionalDirective(iterable $directives): bool
     {
         foreach ($directives as $directive) {
             $name = $directive->name->value;
-            if ($name === Directive::SKIP_NAME || $name === Directive::INCLUDE_NAME) {
+            if ($name === Directive::SKIP_NAME && ! self::hasLiteralIfArgument($directive, false)) {
                 return true;
+            }
+
+            if ($name === Directive::INCLUDE_NAME && ! self::hasLiteralIfArgument($directive, true)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected static function hasLiteralIfArgument(DirectiveNode $directive, bool $literal): bool
+    {
+        foreach ($directive->arguments as $argument) {
+            if ($argument->name->value === Directive::IF_ARGUMENT_NAME) {
+                return $argument->value instanceof BooleanValueNode
+                    && $argument->value->value === $literal;
             }
         }
 
@@ -369,7 +386,7 @@ class OperationGenerator implements ClassGenerator
             return false;
         }
 
-        if (self::hasSkipOrIncludeDirective($field->directives)) {
+        if (self::hasConditionalDirective($field->directives)) {
             return true;
         }
 
@@ -378,7 +395,7 @@ class OperationGenerator implements ClassGenerator
                 return false;
             }
 
-            if ($ancestor instanceof InlineFragmentNode && self::hasSkipOrIncludeDirective($ancestor->directives)) {
+            if ($ancestor instanceof InlineFragmentNode && self::hasConditionalDirective($ancestor->directives)) {
                 return true;
             }
         }
