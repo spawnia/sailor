@@ -265,6 +265,8 @@ UserProfile::execute(skipEmail: true)
     ->email // null
 ```
 
+Sailor does not evaluate the directive arguments at runtime, so it accepts a response that lacks such a field even when the directive included it.
+
 ### Queries with arguments
 
 Your generated operation classes will be annotated with the arguments your query defines.
