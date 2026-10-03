@@ -14,6 +14,8 @@ use Spawnia\Sailor\ObjectLike;
 /** @phpstan-type PropertyArgs array{string, Type, string, string, mixed, bool} */
 class ObjectLikeBuilder
 {
+    protected const IS_OMITTABLE_INDEX = 5;
+
     private bool $isInputType;
 
     private ClassType $class;
@@ -55,13 +57,16 @@ class ObjectLikeBuilder
         $this->isInputType = $isInputType;
     }
 
-    /** @param mixed $defaultValue any value */
+    /**
+     * @param mixed $defaultValue any value
+     * @param bool $isOmittable property data, merged across selections of the same field
+     */
     public function addProperty(string $name, Type $type, string $phpDocType, string $typeConverter, $defaultValue, bool $isOmittable = false): void
     {
         // Fields may be referenced multiple times in a query through fragments, but they
         // are only included once in the result sent from the server, thus we eliminate duplicates here.
         if (isset($this->properties[$name])) {
-            $this->properties[$name][5] = $this->properties[$name][5] && $isOmittable;
+            $this->properties[$name][self::IS_OMITTABLE_INDEX] = $this->properties[$name][self::IS_OMITTABLE_INDEX] && $isOmittable;
 
             return;
         }
