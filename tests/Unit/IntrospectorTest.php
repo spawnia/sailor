@@ -62,9 +62,13 @@ final class IntrospectorTest extends TestCase
             ->makeIntrospector(static function (string $query) use (&$queries): Response {
                 $queries[] = $query;
 
-                return count($queries) === 1
-                    ? self::responseWithErrorsMock()
-                    : self::successfulIntrospectionMock();
+                static $called = false;
+                $response = $called
+                    ? self::successfulIntrospectionMock()
+                    : self::responseWithErrorsMock();
+                $called = true;
+
+                return $response;
             })
             ->introspect();
         unlink(self::PATH);
