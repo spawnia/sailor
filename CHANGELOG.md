@@ -11,7 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Escape single quotes and backslashes in generated operation documents
+- Escape single quotes and backslashes in generated operation documents https://github.com/spawnia/sailor/pull/142
+
+## v1.4.0
+
+### Added
+
+- Include scalar `specifiedByURL` in introspection with `webonyx/graphql-php:^15.33` https://github.com/spawnia/sailor/pull/138
 
 ## v1.3.0
 
