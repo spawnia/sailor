@@ -204,8 +204,6 @@ class OperationGenerator implements ClassGenerator
                     $type = $typeInfo->getType();
                     assert($type !== null, 'schema is validated');
 
-                    $isOmittable = $this->isOmittable($fieldName, $field, $ancestors);
-
                     $namedType = Type::getNamedType($type);
                     assert($namedType !== null, 'schema is validated'); // @phpstan-ignore function.alreadyNarrowedType, notIdentical.alwaysTrue (keep for safety across graphql-php versions)
 
@@ -273,6 +271,7 @@ class OperationGenerator implements ClassGenerator
                     $parentType = $typeInfo->getParentType();
                     assert($parentType !== null);
 
+                    $isOmittable = $this->isOmittable($fieldName, $field, $ancestors);
                     foreach ($selectionClasses as $name => $selection) {
                         $selectionType = $this->schema->getType($name);
                         if ($selectionType === null) {
@@ -353,35 +352,6 @@ class OperationGenerator implements ClassGenerator
         return implode('\\', $this->namespaceStack);
     }
 
-    /** @param iterable<DirectiveNode> $directives */
-    protected static function hasConditionalDirective(iterable $directives): bool
-    {
-        foreach ($directives as $directive) {
-            $name = $directive->name->value;
-            if ($name === Directive::SKIP_NAME && ! self::hasLiteralIfArgument($directive, false)) {
-                return true;
-            }
-
-            if ($name === Directive::INCLUDE_NAME && ! self::hasLiteralIfArgument($directive, true)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    protected static function hasLiteralIfArgument(DirectiveNode $directive, bool $literal): bool
-    {
-        foreach ($directive->arguments as $argument) {
-            if ($argument->name->value === Directive::IF_ARGUMENT_NAME) {
-                return $argument->value instanceof BooleanValueNode
-                    && $argument->value->value === $literal;
-            }
-        }
-
-        return false;
-    }
-
     /** @return array<string, int> */
     protected function countSelectionsByResponsePath(): array
     {
@@ -443,5 +413,32 @@ class OperationGenerator implements ClassGenerator
         }
 
         return implode('.', $responseNames);
+    }
+
+    /** @param iterable<DirectiveNode> $directives */
+    protected static function hasConditionalDirective(iterable $directives): bool
+    {
+        foreach ($directives as $directive) {
+            $name = $directive->name->value;
+            if (($name === Directive::SKIP_NAME || $name === Directive::INCLUDE_NAME) && ! self::isAlwaysIncluded($directive)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected static function isAlwaysIncluded(DirectiveNode $directive): bool
+    {
+        foreach ($directive->arguments as $argument) {
+            if ($argument->name->value === Directive::IF_ARGUMENT_NAME) {
+                $includingValue = $directive->name->value === Directive::INCLUDE_NAME;
+
+                return $argument->value instanceof BooleanValueNode
+                    && $argument->value->value === $includingValue;
+            }
+        }
+
+        return false;
     }
 }
