@@ -16,3 +16,130 @@ query ClientDirectiveInlineFragmentQuery($value: Boolean!) {
         twoArgs
     }
 }
+
+query SkipNonNullable($value: Boolean!) {
+    nonNullable @skip(if: $value)
+}
+
+query IncludeNonNullable($value: Boolean!) {
+    nonNullable @include(if: $value)
+}
+
+fragment NonNullableFragment on Query {
+    nonNullable
+}
+
+query SkipNonNullableFragmentSpread($value: Boolean!) {
+    ...NonNullableFragment @skip(if: $value)
+}
+
+query SkipNonNullableNestedInlineFragment($value: Boolean!) {
+    ... @skip(if: $value) {
+        ... on Query {
+            nonNullable
+        }
+    }
+}
+
+fragment MultipleNonNullableFragment on Query {
+    nonNullable
+    secondNonNullable: nonNullable
+}
+
+query SkipMultipleNonNullableFragmentSpread($value: Boolean!) {
+    ...MultipleNonNullableFragment @skip(if: $value)
+}
+
+query SkipMultipleNonNullableInlineFragment($value: Boolean!) {
+    ... on Query @skip(if: $value) {
+        nonNullable
+        secondNonNullable: nonNullable
+    }
+}
+
+query SkipThenSelectNonNullable($value: Boolean!) {
+    ... on Query @skip(if: $value) {
+        nonNullable
+    }
+    nonNullable
+}
+
+query SkipFalseNonNullable {
+    nonNullable @skip(if: false)
+}
+
+query IncludeTrueInlineFragmentNonNullable {
+    ... on Query @include(if: true) {
+        nonNullable
+    }
+}
+
+query SkipFalseIncludeVariableNonNullable($value: Boolean!) {
+    nonNullable @skip(if: false) @include(if: $value)
+}
+
+query SkipObjectThenSelect($value: Boolean!) {
+    singleObject @skip(if: $value) {
+        value
+    }
+    singleObject {
+        nested {
+            value
+        }
+    }
+}
+
+query SkipObjectTwiceWithSameCondition($value: Boolean!) {
+    singleObject @skip(if: $value) {
+        value
+    }
+    singleObject @skip(if: $value) {
+        nested {
+            value
+        }
+    }
+}
+
+query SkipGrandparentThenSelect($value: Boolean!) {
+    singleObject @skip(if: $value) {
+        nested {
+            value
+        }
+    }
+    singleObject {
+        nested {
+            nested {
+                value
+            }
+        }
+    }
+}
+
+query IncludeObject($value: Boolean!) {
+    singleObject @include(if: $value) {
+        value
+    }
+}
+
+query SkipBeforeRequiredNonNullable($value: Boolean!) {
+    nonNullable @skip(if: $value)
+    required: nonNullable
+}
+
+query SelectThenSkipNonNullable($value: Boolean!) {
+    nonNullable
+    ... on Query @skip(if: $value) {
+        nonNullable
+    }
+}
+
+query SkipAndIncludeNonNullable($skip: Boolean!, $include: Boolean!) {
+    nonNullable @skip(if: $skip)
+    ... on Query @include(if: $include) {
+        nonNullable
+    }
+}
+
+query IncludeFalseNonNullable {
+    nonNullable @include(if: false)
+}

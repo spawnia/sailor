@@ -2,6 +2,7 @@ type Query {
     scalarWithArg(arg: String): ID
     twoArgs(first: String, second: Int): ID
     singleObject: SomeObject
+    nonNullable: String!
 }
 
 type SomeObject {

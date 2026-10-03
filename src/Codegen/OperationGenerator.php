@@ -208,8 +208,9 @@ class OperationGenerator implements ClassGenerator
         foreach ($selection->fields as $typeName => $fields) {
             $builder = new ObjectLikeBuilder($rootClassName ?? $typeName, $namespace, false);
 
-            foreach ([$typename, ...array_values($fields)] as $field) {
-                $this->addProperty($builder, $namespace, $typeName, $field);
+            $this->addProperty($builder, $namespace, $typeName, $typename, false);
+            foreach ($fields as $field) {
+                $this->addProperty($builder, $namespace, $typeName, $field, $selection->isOmittable($typeName, $field));
             }
 
             yield $builder->build();
@@ -220,7 +221,7 @@ class OperationGenerator implements ClassGenerator
         }
     }
 
-    protected function addProperty(ObjectLikeBuilder $builder, string $namespace, string $typeName, CollectedField $field): void
+    protected function addProperty(ObjectLikeBuilder $builder, string $namespace, string $typeName, CollectedField $field, bool $isOmittable): void
     {
         $namedType = Type::getNamedType($field->type);
         assert($namedType !== null, 'schema is validated'); // @phpstan-ignore function.alreadyNarrowedType, notIdentical.alwaysTrue (keep for safety across graphql-php versions)
@@ -253,7 +254,7 @@ class OperationGenerator implements ClassGenerator
             ? $typeName
             : null;
 
-        $builder->addProperty($field->responseName, $field->type, $phpDocType, $typeConverter, $defaultValue);
+        $builder->addProperty($field->responseName, $field->type, $phpDocType, $typeConverter, $defaultValue, $isOmittable);
     }
 
     protected function inputType(TypeNode $typeNode): Type
