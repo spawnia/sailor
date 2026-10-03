@@ -14,6 +14,7 @@ use GraphQL\Language\AST\VariableDefinitionNode;
 use GraphQL\Language\Printer;
 use GraphQL\Language\Visitor;
 use GraphQL\Language\VisitorOperation;
+use GraphQL\Type\Definition\AbstractType;
 use GraphQL\Type\Definition\CompositeType;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\InterfaceType;
@@ -62,7 +63,7 @@ class OperationGenerator implements ClassGenerator
     /** @var array<int, string> */
     protected array $namespaceStack;
 
-    /** @var array<string, int> */
+    /** @var array<string, array<string, int>> */
     protected array $selectionCountByResponsePath;
 
     public function generate(): iterable
@@ -352,14 +353,16 @@ class OperationGenerator implements ClassGenerator
         return implode('\\', $this->namespaceStack);
     }
 
-    /** @return array<string, int> */
+    /** @return array<string, array<string, int>> selection counts by response path and possible parent object type */
     protected function countSelectionsByResponsePath(): array
     {
         $selectionCountByResponsePath = [];
         Visitor::visit($this->document, [ // @phpstan-ignore argument.type (specific node types in callables are not typed well yet)
             NodeKind::FIELD => function (FieldNode $field, $key, $parent, array $path, array $ancestors) use (&$selectionCountByResponsePath): void {
                 $responsePath = self::responsePath([...$ancestors, $field]);
-                $selectionCountByResponsePath[$responsePath] = ($selectionCountByResponsePath[$responsePath] ?? 0) + 1;
+                foreach ($this->possibleParentTypeNames($ancestors) as $parentTypeName) {
+                    $selectionCountByResponsePath[$responsePath][$parentTypeName] = ($selectionCountByResponsePath[$responsePath][$parentTypeName] ?? 0) + 1;
+                }
             },
         ]);
 
@@ -386,8 +389,7 @@ class OperationGenerator implements ClassGenerator
                 }
 
                 // Conditions further up only omit this field when another selection still provides its parent
-                $ancestorResponsePath = self::responsePath(array_slice($ancestors, 0, $index + 1));
-                if ($this->selectionCountByResponsePath[$ancestorResponsePath] < 2) {
+                if (! $this->isSelectedAgain(array_slice($ancestors, 0, $index), $ancestor)) {
                     return false;
                 }
 
@@ -396,6 +398,67 @@ class OperationGenerator implements ClassGenerator
         }
 
         return $isConditional;
+    }
+
+    /** @param array<mixed> $ancestors */
+    protected function isSelectedAgain(array $ancestors, FieldNode $field): bool
+    {
+        $selectionCountByParentTypeName = $this->selectionCountByResponsePath[self::responsePath([...$ancestors, $field])];
+        foreach ($this->possibleParentTypeNames($ancestors) as $parentTypeName) {
+            if ($selectionCountByParentTypeName[$parentTypeName] > 1) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param array<mixed> $ancestors
+     *
+     * @return array<int, string>
+     */
+    protected function possibleParentTypeNames(array $ancestors): array
+    {
+        $possibleTypeNames = [];
+        $parentType = null;
+        foreach ($ancestors as $ancestor) {
+            if ($ancestor instanceof OperationDefinitionNode) {
+                $parentType = $this->schema->getOperationType($ancestor->operation);
+                assert($parentType !== null, 'schema is validated');
+                $possibleTypeNames = $this->possibleTypeNames($parentType);
+            }
+
+            if ($ancestor instanceof FieldNode) {
+                assert($parentType instanceof ObjectType || $parentType instanceof InterfaceType, 'only those have fields with selections');
+                $parentType = Type::getNamedType($parentType->getField($ancestor->name->value)->getType());
+                assert($parentType !== null, 'schema is validated'); // @phpstan-ignore function.alreadyNarrowedType, notIdentical.alwaysTrue (keep for safety across graphql-php versions)
+                $possibleTypeNames = $this->possibleTypeNames($parentType);
+            }
+
+            if ($ancestor instanceof InlineFragmentNode && $ancestor->typeCondition !== null) {
+                $parentType = $this->schema->getType($ancestor->typeCondition->name->value);
+                assert($parentType !== null, 'schema is validated');
+                $possibleTypeNames = array_values(array_intersect($possibleTypeNames, $this->possibleTypeNames($parentType)));
+            }
+        }
+
+        return $possibleTypeNames;
+    }
+
+    /** @return array<int, string> */
+    protected function possibleTypeNames(Type $namedType): array
+    {
+        if ($namedType instanceof ObjectType) {
+            return [$namedType->name];
+        }
+
+        assert($namedType instanceof AbstractType, 'fields with selections and type conditions are composite');
+
+        return array_values(array_map(
+            static fn (ObjectType $objectType): string => $objectType->name,
+            $this->schema->getPossibleTypes($namedType),
+        ));
     }
 
     /** @param array<mixed> $nodes */

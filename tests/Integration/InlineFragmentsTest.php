@@ -5,6 +5,7 @@ namespace Spawnia\Sailor\Tests\Integration;
 use Spawnia\Sailor\Error\InvalidDataException;
 use Spawnia\Sailor\InlineFragments\Operations\InlineFragmentWithDirectNonNullableField;
 use Spawnia\Sailor\InlineFragments\Operations\InlineFragmentWithNestedNonNullableField;
+use Spawnia\Sailor\InlineFragments\Operations\SkipArticleContentSelectVideoContent;
 use Spawnia\Sailor\InlineFragments\Operations\SkipInterfaceField;
 use Spawnia\Sailor\InlineFragments\Operations\SkipList;
 use Spawnia\Sailor\Tests\TestCase;
@@ -153,5 +154,23 @@ final class InlineFragmentsTest extends TestCase
         self::assertNull($article->id);
         self::assertInstanceOf(SkipInterfaceField\Search\Video::class, $video);
         self::assertNull($video->id);
+    }
+
+    public function testRequiresSubfieldOfSelectionOnlyMergedForOtherConcreteType(): void
+    {
+        $this->expectExceptionObject(new InvalidDataException('inline-fragments: Invalid value for field search. inline-fragments: Invalid value for field content. inline-fragments: Missing field text.'));
+        SkipArticleContentSelectVideoContent\SkipArticleContentSelectVideoContentResult::fromStdClass((object) [
+            'data' => (object) [
+                '__typename' => 'Query',
+                'search' => [
+                    (object) [
+                        '__typename' => 'Article',
+                        'content' => (object) [
+                            '__typename' => 'ArticleContent',
+                        ],
+                    ],
+                ],
+            ],
+        ]);
     }
 }

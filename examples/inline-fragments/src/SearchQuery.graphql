@@ -48,3 +48,18 @@ query SkipInterfaceField($skip: Boolean!) {
         id @skip(if: $skip)
     }
 }
+
+query SkipArticleContentSelectVideoContent($skip: Boolean!) {
+    search(query: "test") {
+        ... on Article @skip(if: $skip) {
+            content {
+                text
+            }
+        }
+        ... on Video {
+            content {
+                url
+            }
+        }
+    }
+}
