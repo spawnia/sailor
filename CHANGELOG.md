@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- Fail codegen for operations using `@skip` or `@include` instead of generating types that break at runtime https://github.com/spawnia/sailor/pull/PR_NUMBER
+
 ## v1.4.2
 
 ### Fixed

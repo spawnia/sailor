@@ -179,6 +179,15 @@ mutation Foo { ... }
 query camelCase { ... }
 ```
 
+### Client directives
+
+Sailor does not support the client directives `@skip` and `@include`.
+Code generation fails when it finds them.
+
+Sailor generates one static result type per operation.
+A field that the server omits conditionally has no place in that type.
+Query the data unconditionally and decide in your application, or write separate operations.
+
 ### Generate code
 
 Run `vendor/bin/sailor` to generate PHP code for your operations.
