@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+
+- Compute relative config path with Windows separators https://github.com/spawnia/sailor/pull/141
+
 ## v1.4.0
 
 ### Added
