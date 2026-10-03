@@ -24,7 +24,7 @@ abstract class ErrorFreeResult
         $instance = new static();
 
         $instance->data = $result->data;
-        $instance->extensions = $result->extensions ?? null;
+        $instance->extensions = $result->extensions;
 
         return $instance;
     }
