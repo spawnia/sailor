@@ -9,7 +9,6 @@ use Spawnia\Sailor\Error\Error;
 use Spawnia\Sailor\Error\ResultErrorsException;
 use stdClass;
 
-/** @phpstan-import-type IntrospectionOptions from Introspection */
 class Introspector
 {
     protected EndpointConfig $endpointConfig;
@@ -54,7 +53,8 @@ class Introspector
         );
     }
 
-    /** @param IntrospectionOptions $introspectionQueryOptions */
+    // TODO use @phpstan-import-type IntrospectionOptions from Introspection after requiring webonyx/graphql-php ^15.33
+    /** @param array{directiveIsRepeatable: bool, specifiedByURL: bool} $introspectionQueryOptions */
     protected function fetchIntrospectionResult(Client $client, array $introspectionQueryOptions): Response
     {
         $response = $client->request(
