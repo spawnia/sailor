@@ -113,8 +113,8 @@ class Generator
     /** @see https://stackoverflow.com/a/2638272 */
     protected function configPath(string $directory): string
     {
-        $from = explode('/', $directory);
-        $to = explode('/', $this->configFile);
+        $from = explode('/', str_replace('\\', '/', $directory));
+        $to = explode('/', str_replace('\\', '/', $this->configFile));
 
         $relativeParts = $to;
 

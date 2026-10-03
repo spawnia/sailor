@@ -5,7 +5,9 @@ namespace Spawnia\Sailor\Tests\Unit\Codegen;
 use GraphQL\Language\AST\FragmentDefinitionNode;
 use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\OperationDefinitionNode;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Spawnia\Sailor\Codegen\Generator;
+use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Tests\TestCase;
 
 final class GeneratorTest extends TestCase
@@ -99,5 +101,35 @@ final class GeneratorTest extends TestCase
 
         self::expectExceptionMessageMatches("/{$path}/");
         Generator::parseDocuments($documents);
+    }
+
+    /** @dataProvider configPaths */
+    #[DataProvider('configPaths')]
+    public function testConfigPath(string $configFile, string $directory, string $expected): void
+    {
+        $endpointConfig = \Mockery::mock(EndpointConfig::class);
+        $generator = new class($endpointConfig, $configFile, 'foo') extends Generator {
+            public function publicConfigPath(string $directory): string
+            {
+                return $this->configPath($directory);
+            }
+        };
+
+        self::assertSame($expected, $generator->publicConfigPath($directory));
+    }
+
+    /** @return iterable<array{string, string, string}> */
+    public static function configPaths(): iterable
+    {
+        yield 'unix' => [
+            '/home/user/project/sailor.php',
+            '/home/user/project/generated/Operations',
+            "\\Safe\\realpath(__DIR__ . '/../../sailor.php')",
+        ];
+        yield 'windows' => [
+            'C:\Users\user\project\sailor.php',
+            'C:\Users\user\project/generated/Operations',
+            "\\Safe\\realpath(__DIR__ . '/../../sailor.php')",
+        ];
     }
 }
