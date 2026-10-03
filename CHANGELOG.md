@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Fail codegen for operations using `@skip` or `@include` instead of generating types that break at runtime https://github.com/spawnia/sailor/pull/PR_NUMBER
+- Fail codegen for operations using `@skip` or `@include` instead of generating types that break at runtime https://github.com/spawnia/sailor/pull/143
 
 ## v1.4.2
 
