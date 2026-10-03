@@ -25,7 +25,7 @@ class ObjectLikeBuilder
     private Method $converters;
 
     /** @var array<string, PropertyArgs> */
-    private array $properties = [];
+    protected array $properties = [];
 
     public function __construct(string $name, string $namespace, bool $isInputType)
     {
@@ -59,7 +59,7 @@ class ObjectLikeBuilder
 
     /**
      * @param mixed $defaultValue any value
-     * @param bool $isOmittable property data, merged across selections of the same field
+     * @param bool $isOmittable whether this selection may be omitted, the field is only omittable if all its selections are
      */
     public function addProperty(string $name, Type $type, string $phpDocType, string $typeConverter, $defaultValue, bool $isOmittable = false): void
     {
