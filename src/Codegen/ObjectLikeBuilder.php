@@ -2,7 +2,6 @@
 
 namespace Spawnia\Sailor\Codegen;
 
-use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Introspection;
 use Nette\PhpGenerator\ClassType;
@@ -11,11 +10,8 @@ use Nette\PhpGenerator\PhpNamespace;
 use Spawnia\Sailor\Convert\OmittableConverter;
 use Spawnia\Sailor\ObjectLike;
 
-/** @phpstan-type PropertyArgs array{string, Type, string, string, mixed, bool} */
 class ObjectLikeBuilder
 {
-    protected const IS_OMITTABLE_INDEX = 5;
-
     private bool $isInputType;
 
     private ClassType $class;
@@ -24,7 +20,7 @@ class ObjectLikeBuilder
 
     private Method $converters;
 
-    /** @var array<string, PropertyArgs> */
+    /** @var array<string, PropertyDefinition> */
     protected array $properties = [];
 
     public function __construct(string $name, string $namespace, bool $isInputType)
@@ -65,30 +61,30 @@ class ObjectLikeBuilder
     {
         // Fields may be referenced multiple times in a query through fragments, but they
         // are only included once in the result sent from the server, thus we eliminate duplicates here.
-        if (isset($this->properties[$name])) {
-            $this->properties[$name][self::IS_OMITTABLE_INDEX] = $this->properties[$name][self::IS_OMITTABLE_INDEX] && $isOmittable;
+        $existingProperty = $this->properties[$name] ?? null;
+        if ($existingProperty !== null) {
+            $existingProperty->isOmittable = $existingProperty->isOmittable && $isOmittable;
 
             return;
         }
 
-        $this->properties[$name] = [$name, $type, $phpDocType, $typeConverter, $defaultValue, $isOmittable];
+        $this->properties[$name] = new PropertyDefinition($name, $type, $phpDocType, $typeConverter, $defaultValue, $isOmittable);
     }
 
     public function build(): ClassType
     {
         $requiredProperties = [];
         $optionalProperties = [];
-        foreach ($this->properties as $args) {
-            [, $type, , , $defaultValue, $isOmittable] = $args;
-            if (self::resultType($type, $isOmittable) instanceof NonNull && $defaultValue === null) {
-                $requiredProperties[] = $args;
+        foreach ($this->properties as $property) {
+            if ($property->isRequired()) {
+                $requiredProperties[] = $property;
             } else {
-                $optionalProperties[] = $args;
+                $optionalProperties[] = $property;
             }
         }
 
-        foreach (array_merge($requiredProperties, $optionalProperties) as $args) {
-            $this->buildProperty(...$args);
+        foreach (array_merge($requiredProperties, $optionalProperties) as $property) {
+            $this->buildProperty($property);
         }
 
         $this->converters->addBody(/** @lang PHP */ '];');
@@ -97,29 +93,29 @@ class ObjectLikeBuilder
         return $this->class;
     }
 
-    /** @param mixed $defaultValue any value */
-    protected function buildProperty(string $name, Type $type, string $phpDocType, string $typeConverter, $defaultValue, bool $isOmittable): void
+    protected function buildProperty(PropertyDefinition $property): void
     {
-        $resultType = self::resultType($type, $isOmittable);
-        $wrappedPhpDocType = TypeWrapper::phpDoc($resultType, $phpDocType, $this->isInputType);
+        $name = $property->name;
+        $wrappedPhpDocType = TypeWrapper::phpDoc($property->resultType(), $property->phpDocType, $this->isInputType);
 
         $this->class->addComment("@property {$wrappedPhpDocType} \${$name}");
 
-        $wrappedTypeConverter = TypeWrapper::converter($type, "new \\{$typeConverter}");
+        $wrappedTypeConverter = TypeWrapper::converter($property->type, "new \\{$property->typeConverter}");
         $omittableConverterClass = OmittableConverter::class;
-        $fieldConverter = $isOmittable
+        $fieldConverter = $property->isOmittable
             ? "new \\{$omittableConverterClass}({$wrappedTypeConverter})"
             : $wrappedTypeConverter;
         $this->converters->addBody(/** @lang PHP */ "    '{$name}' => {$fieldConverter},");
 
         if ($name === Introspection::TYPE_NAME_FIELD_NAME) {
-            assert(is_string($defaultValue), 'set to parent type name in OperationGenerator');
-            $this->make->addBody("\$instance->{$name} = '{$defaultValue}';");
+            $typeName = $property->defaultValue;
+            assert(is_string($typeName), 'set to parent type name in OperationGenerator');
+            $this->make->addBody("\$instance->{$name} = '{$typeName}';");
         } else {
             $this->make->addComment("@param {$wrappedPhpDocType} \${$name}");
 
             $parameter = $this->make->addParameter($name);
-            if (! $resultType instanceof NonNull || $defaultValue !== null) {
+            if (! $property->isRequired()) {
                 $parameter->setNullable(true);
                 $parameter->setDefaultValue(ObjectLike::UNDEFINED);
             }
@@ -133,13 +129,5 @@ class ObjectLikeBuilder
             }
             PHP);
         }
-    }
-
-    /** Omitted fields are null in the result, but present ones keep the non-null check of their converter. */
-    protected static function resultType(Type $type, bool $isOmittable): Type
-    {
-        return $isOmittable && $type instanceof NonNull
-            ? $type->getWrappedType()
-            : $type;
     }
 }
