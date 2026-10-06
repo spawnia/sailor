@@ -8,9 +8,10 @@ use GraphQL\Type\Introspection;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpNamespace;
+use Spawnia\Sailor\Convert\OmittableConverter;
 use Spawnia\Sailor\ObjectLike;
 
-/** @phpstan-type PropertyArgs array{string, Type, string, string, mixed} */
+/** @phpstan-type PropertyArgs array{string, Type, string, string, mixed, bool} */
 class ObjectLikeBuilder
 {
     private bool $isInputType;
@@ -58,11 +59,11 @@ class ObjectLikeBuilder
     }
 
     /** @param mixed $defaultValue any value */
-    public function addProperty(string $name, Type $type, string $phpDocType, string $typeConverter, $defaultValue): void
+    public function addProperty(string $name, Type $type, string $phpDocType, string $typeConverter, $defaultValue, bool $isOmittable): void
     {
-        $args = [$name, $type, $phpDocType, $typeConverter, $defaultValue];
+        $args = [$name, $type, $phpDocType, $typeConverter, $defaultValue, $isOmittable];
 
-        if ($type instanceof NonNull && $defaultValue === null) {
+        if ($type instanceof NonNull && $defaultValue === null && ! $isOmittable) {
             $this->requiredProperties[] = $args;
         } else {
             $this->optionalProperties[] = $args;
@@ -86,13 +87,20 @@ class ObjectLikeBuilder
     }
 
     /** @param mixed $defaultValue any value */
-    protected function buildProperty(string $name, Type $type, string $phpDocType, string $typeConverter, $defaultValue): void
+    protected function buildProperty(string $name, Type $type, string $phpDocType, string $typeConverter, $defaultValue, bool $isOmittable): void
     {
-        $wrappedPhpDocType = TypeWrapper::phpDoc($type, $phpDocType, $this->isInputType);
+        $resultType = $isOmittable
+            ? Type::getNullableType($type)
+            : $type;
+        $wrappedPhpDocType = TypeWrapper::phpDoc($resultType, $phpDocType, $this->isInputType);
 
         $this->class->addComment("@property {$wrappedPhpDocType} \${$name}");
 
         $wrappedTypeConverter = TypeWrapper::converter($type, "new \\{$typeConverter}");
+        if ($isOmittable) {
+            $omittableConverter = OmittableConverter::class;
+            $wrappedTypeConverter = "new \\{$omittableConverter}({$wrappedTypeConverter})";
+        }
         $this->converters->addBody(/** @lang PHP */ "    '{$name}' => {$wrappedTypeConverter},");
 
         if ($name === Introspection::TYPE_NAME_FIELD_NAME) {
@@ -102,7 +110,7 @@ class ObjectLikeBuilder
             $this->make->addComment("@param {$wrappedPhpDocType} \${$name}");
 
             $parameter = $this->make->addParameter($name);
-            if (! $type instanceof NonNull || $defaultValue !== null) {
+            if (! $resultType instanceof NonNull || $defaultValue !== null) {
                 $parameter->setNullable(true);
                 $parameter->setDefaultValue(ObjectLike::UNDEFINED);
             }

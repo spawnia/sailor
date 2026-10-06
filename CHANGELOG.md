@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Send fragment definitions with operations instead of inlining them https://github.com/spawnia/sailor/pull/145
+- Generate fields under `@skip` or `@include` as nullable https://github.com/spawnia/sailor/pull/148
+
+### Fixed
+
+- Accept responses that omit fields through `@skip` or `@include` https://github.com/spawnia/sailor/pull/148
 
 ## v1.4.2
 

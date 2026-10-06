@@ -240,6 +240,33 @@ the following is more efficient as it does not instantiate a new object:
     ->assertErrorFree(); // Throws if there are errors
 ```
 
+### Client directives
+
+When using GraphQL's `@skip` or `@include` directives in your operations, fields can be omitted from the server response.
+Sailor marks such fields as nullable in the generated result classes, including fields in fragments that carry the directives:
+
+```graphql
+query UserProfile($skipEmail: Boolean!) {
+  user {
+    name
+    email @skip(if: $skipEmail)
+  }
+}
+```
+
+When skipped (or not included), the property is `null`.
+Literal arguments that always include the field, such as `@skip(if: false)` or `@include(if: true)`, keep it non-nullable.
+
+```php
+UserProfile::execute(skipEmail: true)
+    ->errorFree()
+    ->data
+    ->user
+    ->email // null
+```
+
+Sailor does not evaluate the directive arguments at runtime, so it accepts a response that lacks such a field even when the directive included it.
+
 ### Queries with arguments
 
 Your generated operation classes will be annotated with the arguments your query defines.

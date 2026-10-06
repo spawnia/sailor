@@ -2,6 +2,8 @@
 
 namespace Spawnia\Sailor\Codegen;
 
+use GraphQL\Language\AST\BooleanValueNode;
+use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\AST\FieldNode;
 use GraphQL\Language\AST\FragmentDefinitionNode;
@@ -10,7 +12,9 @@ use GraphQL\Language\AST\InlineFragmentNode;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\AST\SelectionSetNode;
+use GraphQL\Language\Printer;
 use GraphQL\Type\Definition\CompositeType;
+use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
@@ -51,31 +55,35 @@ class FieldCollector
         assert($rootType instanceof ObjectType, 'validated against the schema');
 
         $selection = new Selection();
-        $selection->addObjectTypes([$rootType]);
-        $this->collectFields($selection, $operation->selectionSet, $rootType);
+        $selection->addObjectTypes([$rootType], []);
+        $this->collectFields($selection, $operation->selectionSet, $rootType, []);
 
         return $selection;
     }
 
-    protected function collectFields(Selection $selection, SelectionSetNode $selectionSet, CompositeType $scope): void
+    /** @param array<string, true> $conditions */
+    protected function collectFields(Selection $selection, SelectionSetNode $selectionSet, CompositeType $scope, array $conditions): void
     {
         foreach ($selectionSet->selections as $node) {
+            assert($node instanceof FieldNode || $node instanceof InlineFragmentNode || $node instanceof FragmentSpreadNode);
+            $nodeConditions = $conditions + self::conditions($node->directives);
             if ($node instanceof FieldNode) {
-                $this->collectField($selection, $node, $scope);
+                $this->collectField($selection, $node, $scope, $nodeConditions);
             } elseif ($node instanceof InlineFragmentNode) {
                 $typeCondition = $node->typeCondition;
                 $fragmentScope = $typeCondition === null
                     ? $scope
                     : $this->compositeType($typeCondition);
-                $this->collectFields($selection, $node->selectionSet, $fragmentScope);
-            } elseif ($node instanceof FragmentSpreadNode) {
+                $this->collectFields($selection, $node->selectionSet, $fragmentScope, $nodeConditions);
+            } else {
                 $fragment = $this->fragments[$node->name->value];
-                $this->collectFields($selection, $fragment->selectionSet, $this->compositeType($fragment->typeCondition));
+                $this->collectFields($selection, $fragment->selectionSet, $this->compositeType($fragment->typeCondition), $nodeConditions);
             }
         }
     }
 
-    protected function collectField(Selection $selection, FieldNode $node, CompositeType $scope): void
+    /** @param array<string, true> $conditions */
+    protected function collectField(Selection $selection, FieldNode $node, CompositeType $scope, array $conditions): void
     {
         $fieldName = $node->name->value;
         if ($fieldName === Introspection::TYPE_NAME_FIELD_NAME) {
@@ -88,7 +96,8 @@ class FieldCollector
 
         foreach ($selection->objectTypes as $typeName => $objectType) {
             if (TypeComparators::isTypeSubTypeOf($this->schema, $objectType, $scope)) {
-                $selection->fields[$typeName][$responseName] ??= new CollectedField($responseName, $type);
+                $field = $selection->fields[$typeName][$responseName] ??= new CollectedField($responseName, $type);
+                $field->conditions[] = $conditions;
             }
         }
 
@@ -109,8 +118,8 @@ class FieldCollector
         assert($subSelectionSet instanceof SelectionSetNode, 'validated against the schema');
 
         $subSelection = $selection->subSelections[$responseName] ??= new Selection();
-        $subSelection->addObjectTypes($objectTypes);
-        $this->collectFields($subSelection, $subSelectionSet, $namedType);
+        $subSelection->addObjectTypes($objectTypes, $conditions);
+        $this->collectFields($subSelection, $subSelectionSet, $namedType, $conditions);
     }
 
     /** @param ObjectType|InterfaceType $scope */
@@ -132,5 +141,31 @@ class FieldCollector
         assert($type instanceof CompositeType, 'validated against the schema');
 
         return $type;
+    }
+
+    /**
+     * @param iterable<DirectiveNode> $directives
+     *
+     * @return array<string, true>
+     */
+    protected static function conditions(iterable $directives): array
+    {
+        $conditions = [];
+        foreach ($directives as $directive) {
+            $name = $directive->name->value;
+            if ($name !== Directive::SKIP_NAME && $name !== Directive::INCLUDE_NAME) {
+                continue;
+            }
+
+            foreach ($directive->arguments as $argument) {
+                $alwaysIncluded = $argument->value instanceof BooleanValueNode
+                    && $argument->value->value === ($name === Directive::INCLUDE_NAME);
+                if (! $alwaysIncluded) {
+                    $conditions[Printer::doPrint($directive)] = true;
+                }
+            }
+        }
+
+        return $conditions;
     }
 }

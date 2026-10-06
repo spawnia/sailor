@@ -72,6 +72,7 @@ class InputObjectTypeConfig implements TypeConfig, InputTypeConfig
                 $typeConfig->inputTypeReference(),
                 $typeConfig->typeConverter(),
                 $field->defaultValue,
+                false,
             );
         }
 

@@ -5,13 +5,35 @@ namespace Spawnia\Sailor\Tests\Integration;
 use Spawnia\Sailor\Client;
 use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\EndpointConfig;
+use Spawnia\Sailor\Error\InvalidDataException;
 use Spawnia\Sailor\Error\ResultErrorsException;
 use Spawnia\Sailor\Events\ReceiveResponse;
 use Spawnia\Sailor\Events\StartRequest;
 use Spawnia\Sailor\Response;
+use Spawnia\Sailor\Simple\Operations\ClientDirectiveFragmentSpreadQuery;
+use Spawnia\Sailor\Simple\Operations\ClientDirectiveInlineFragmentQuery;
+use Spawnia\Sailor\Simple\Operations\ClientDirectiveQuery;
+use Spawnia\Sailor\Simple\Operations\IncludeFalseNonNullable;
+use Spawnia\Sailor\Simple\Operations\IncludeNonNullable;
+use Spawnia\Sailor\Simple\Operations\IncludeObject;
+use Spawnia\Sailor\Simple\Operations\IncludeTrueInlineFragmentNonNullable;
 use Spawnia\Sailor\Simple\Operations\MyObjectNestedQuery;
 use Spawnia\Sailor\Simple\Operations\MyScalarQuery;
 use Spawnia\Sailor\Simple\Operations\MyStringLiteralsQuery;
+use Spawnia\Sailor\Simple\Operations\SelectThenSkipNonNullable;
+use Spawnia\Sailor\Simple\Operations\SkipAndIncludeNonNullable;
+use Spawnia\Sailor\Simple\Operations\SkipBeforeRequiredNonNullable;
+use Spawnia\Sailor\Simple\Operations\SkipFalseIncludeVariableNonNullable;
+use Spawnia\Sailor\Simple\Operations\SkipFalseNonNullable;
+use Spawnia\Sailor\Simple\Operations\SkipGrandparentThenSelect;
+use Spawnia\Sailor\Simple\Operations\SkipMultipleNonNullableFragmentSpread;
+use Spawnia\Sailor\Simple\Operations\SkipMultipleNonNullableInlineFragment;
+use Spawnia\Sailor\Simple\Operations\SkipNonNullable;
+use Spawnia\Sailor\Simple\Operations\SkipNonNullableFragmentSpread;
+use Spawnia\Sailor\Simple\Operations\SkipNonNullableNestedInlineFragment;
+use Spawnia\Sailor\Simple\Operations\SkipObjectThenSelect;
+use Spawnia\Sailor\Simple\Operations\SkipObjectTwiceWithSameCondition;
+use Spawnia\Sailor\Simple\Operations\SkipThenSelectNonNullable;
 use Spawnia\Sailor\Tests\TestCase;
 
 final class SimpleTest extends TestCase
@@ -205,6 +227,329 @@ final class SimpleTest extends TestCase
         $object = $result->data->singleObject;
         self::assertNotNull($object);
         self::assertNull($object->nested);
+    }
+
+    public function testSkipNonNullableFieldOmittedByServer(): void
+    {
+        $result = SkipNonNullable\SkipNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->nonNullable);
+    }
+
+    public function testSkipNonNullableFieldPresentWhenSkipConditionFalse(): void
+    {
+        $result = SkipNonNullable\SkipNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+            'nonNullable' => 'value',
+        ]);
+
+        self::assertSame('value', $result->nonNullable);
+    }
+
+    public function testSkipNonNullableFieldInFragmentSpreadOmittedByServer(): void
+    {
+        $result = SkipNonNullableFragmentSpread\SkipNonNullableFragmentSpread::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->nonNullable);
+    }
+
+    public function testSkipNonNullableFieldInNestedInlineFragmentOmittedByServer(): void
+    {
+        $result = SkipNonNullableNestedInlineFragment\SkipNonNullableNestedInlineFragment::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->nonNullable);
+    }
+
+    public function testSkipMultipleNonNullableFieldsInFragmentSpreadOmittedByServer(): void
+    {
+        $result = SkipMultipleNonNullableFragmentSpread\SkipMultipleNonNullableFragmentSpread::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->nonNullable);
+        self::assertNull($result->secondNonNullable);
+    }
+
+    public function testSkipMultipleNonNullableFieldsInInlineFragmentOmittedByServer(): void
+    {
+        $result = SkipMultipleNonNullableInlineFragment\SkipMultipleNonNullableInlineFragment::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->nonNullable);
+        self::assertNull($result->secondNonNullable);
+    }
+
+    public function testRequiresNonNullableFieldAlsoSelectedUnconditionally(): void
+    {
+        $this->expectExceptionObject(new InvalidDataException('simple: Missing field nonNullable.'));
+        SkipThenSelectNonNullable\SkipThenSelectNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+    }
+
+    public function testRequiresNonNullableFieldWithLiteralSkipFalse(): void
+    {
+        $this->expectExceptionObject(new InvalidDataException('simple: Missing field nonNullable.'));
+        SkipFalseNonNullable\SkipFalseNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+    }
+
+    public function testRequiresNonNullableFieldInInlineFragmentWithLiteralIncludeTrue(): void
+    {
+        $this->expectExceptionObject(new InvalidDataException('simple: Missing field nonNullable.'));
+        IncludeTrueInlineFragmentNonNullable\IncludeTrueInlineFragmentNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+    }
+
+    public function testSkipFalseCombinedWithIncludeVariableOmittedByServer(): void
+    {
+        $result = SkipFalseIncludeVariableNonNullable\SkipFalseIncludeVariableNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->nonNullable);
+    }
+
+    public function testSubfieldOfSkippedObjectSelectionOmittedWhenSelectedAgain(): void
+    {
+        $result = SkipObjectThenSelect\SkipObjectThenSelect::fromStdClass((object) [
+            '__typename' => 'Query',
+            'singleObject' => (object) [
+                '__typename' => 'SomeObject',
+                'nested' => null,
+            ],
+        ]);
+
+        $singleObject = $result->singleObject;
+        self::assertNotNull($singleObject);
+        self::assertNull($singleObject->value);
+    }
+
+    public function testSubfieldBelowSkippedGrandparentSelectionOmittedWhenSelectedAgain(): void
+    {
+        $result = SkipGrandparentThenSelect\SkipGrandparentThenSelect::fromStdClass((object) [
+            '__typename' => 'Query',
+            'singleObject' => (object) [
+                '__typename' => 'SomeObject',
+                'nested' => (object) [
+                    '__typename' => 'SomeObject',
+                    'nested' => null,
+                ],
+            ],
+        ]);
+
+        $nested = $result->singleObject->nested ?? null;
+        self::assertNotNull($nested);
+        self::assertNull($nested->value);
+    }
+
+    public function testRequiresSubfieldOfSingleConditionalObjectSelection(): void
+    {
+        $this->expectExceptionObject(new InvalidDataException('simple: Invalid value for field singleObject. simple: Missing field value.'));
+        IncludeObject\IncludeObject::fromStdClass((object) [
+            '__typename' => 'Query',
+            'singleObject' => (object) [
+                '__typename' => 'SomeObject',
+            ],
+        ]);
+    }
+
+    public function testRequiresSubfieldOfObjectSelectionsSharingCondition(): void
+    {
+        $this->expectExceptionObject(new InvalidDataException('simple: Invalid value for field singleObject. simple: Missing field value.'));
+        SkipObjectTwiceWithSameCondition\SkipObjectTwiceWithSameCondition::fromStdClass((object) [
+            '__typename' => 'Query',
+            'singleObject' => (object) [
+                '__typename' => 'SomeObject',
+                'nested' => null,
+            ],
+        ]);
+    }
+
+    public function testRejectsExplicitNullForSkippableNonNullableField(): void
+    {
+        $this->expectExceptionObject(new InvalidDataException('simple: Invalid value for field nonNullable. Expected non-null value, got null'));
+        SkipNonNullable\SkipNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+            'nonNullable' => null,
+        ]);
+    }
+
+    public function testMakePutsOmittableParameterBehindRequired(): void
+    {
+        $result = SkipBeforeRequiredNonNullable\SkipBeforeRequiredNonNullable::make('required');
+
+        self::assertSame('required', $result->required);
+        self::assertNull($result->nonNullable);
+    }
+
+    public function testMakeLeavesOutOmittedField(): void
+    {
+        $data = SkipNonNullable\SkipNonNullable::make()->toStdClass();
+
+        self::assertEquals((object) ['__typename' => 'Query'], $data);
+        self::assertNull(SkipNonNullable\SkipNonNullable::fromStdClass($data)->nonNullable);
+    }
+
+    public function testRequiresNonNullableFieldSelectedUnconditionallyFirst(): void
+    {
+        $this->expectExceptionObject(new InvalidDataException('simple: Missing field nonNullable.'));
+        SelectThenSkipNonNullable\SelectThenSkipNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+    }
+
+    public function testNonNullableFieldWithOnlyConditionalSelectionsOmittedByServer(): void
+    {
+        $result = SkipAndIncludeNonNullable\SkipAndIncludeNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->nonNullable);
+    }
+
+    public function testNonNullableFieldWithLiteralIncludeFalseOmittedByServer(): void
+    {
+        $result = IncludeFalseNonNullable\IncludeFalseNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->nonNullable);
+    }
+
+    public function testIncludeNonNullableFieldOmittedByServer(): void
+    {
+        $result = IncludeNonNullable\IncludeNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->nonNullable);
+    }
+
+    public function testIncludeNonNullableFieldPresentWhenIncludeConditionTrue(): void
+    {
+        $result = IncludeNonNullable\IncludeNonNullable::fromStdClass((object) [
+            '__typename' => 'Query',
+            'nonNullable' => 'value',
+        ]);
+
+        self::assertSame('value', $result->nonNullable);
+    }
+
+    public function testSkipNullableFieldOmitted(): void
+    {
+        $result = ClientDirectiveQuery\ClientDirectiveQuery::fromStdClass((object) [
+            '__typename' => 'Query',
+            'twoArgs' => 'present',
+        ]);
+
+        self::assertNull($result->scalarWithArg);
+        self::assertSame('present', $result->twoArgs);
+    }
+
+    public function testIncludeNullableFieldOmitted(): void
+    {
+        $result = ClientDirectiveQuery\ClientDirectiveQuery::fromStdClass((object) [
+            '__typename' => 'Query',
+            'scalarWithArg' => 'present',
+        ]);
+
+        self::assertNull($result->twoArgs);
+        self::assertSame('present', $result->scalarWithArg);
+    }
+
+    public function testClientDirectiveAllFieldsOmitted(): void
+    {
+        $result = ClientDirectiveQuery\ClientDirectiveQuery::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->scalarWithArg);
+        self::assertNull($result->twoArgs);
+    }
+
+    public function testClientDirectiveAllFieldsPresent(): void
+    {
+        $result = ClientDirectiveQuery\ClientDirectiveQuery::fromStdClass((object) [
+            '__typename' => 'Query',
+            'scalarWithArg' => 'foo',
+            'twoArgs' => 'bar',
+        ]);
+
+        self::assertSame('foo', $result->scalarWithArg);
+        self::assertSame('bar', $result->twoArgs);
+    }
+
+    public function testFragmentSpreadSkipOmitsField(): void
+    {
+        $result = ClientDirectiveFragmentSpreadQuery\ClientDirectiveFragmentSpreadQuery::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->twoArgs);
+    }
+
+    public function testFragmentSpreadSkipFieldPresentWhenConditionFalse(): void
+    {
+        $result = ClientDirectiveFragmentSpreadQuery\ClientDirectiveFragmentSpreadQuery::fromStdClass((object) [
+            '__typename' => 'Query',
+            'twoArgs' => 'value',
+        ]);
+
+        self::assertSame('value', $result->twoArgs);
+    }
+
+    public function testInlineFragmentSkipOmitsField(): void
+    {
+        $result = ClientDirectiveInlineFragmentQuery\ClientDirectiveInlineFragmentQuery::fromStdClass((object) [
+            '__typename' => 'Query',
+        ]);
+
+        self::assertNull($result->twoArgs);
+    }
+
+    public function testInlineFragmentSkipFieldPresentWhenConditionFalse(): void
+    {
+        $result = ClientDirectiveInlineFragmentQuery\ClientDirectiveInlineFragmentQuery::fromStdClass((object) [
+            '__typename' => 'Query',
+            'twoArgs' => 'value',
+        ]);
+
+        self::assertSame('value', $result->twoArgs);
+    }
+
+    public function testSkipNonNullableViaResultFieldOmitted(): void
+    {
+        $result = SkipNonNullable\SkipNonNullableResult::fromStdClass((object) [
+            'data' => (object) [
+                '__typename' => 'Query',
+            ],
+        ]);
+
+        self::assertNotNull($result->data);
+        self::assertNull($result->data->nonNullable);
+    }
+
+    public function testSkipNonNullableViaResultFieldPresent(): void
+    {
+        $result = SkipNonNullable\SkipNonNullableResult::fromStdClass((object) [
+            'data' => (object) [
+                '__typename' => 'Query',
+                'nonNullable' => 'hello',
+            ],
+        ]);
+
+        self::assertNotNull($result->data);
+        self::assertSame('hello', $result->data->nonNullable);
     }
 
     public function testDocumentPreservesStringLiterals(): void
