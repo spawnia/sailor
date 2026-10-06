@@ -47,7 +47,7 @@ class Generator
         // message that is more closely related to their source code
         Validator::validateDocumentWithSchema($schema, $document);
 
-        $wireDocument = (new FoldFragments($document->cloneDeep()))->modify();
+        $wireDocument = $document->cloneDeep();
         AddTypename::modify($wireDocument);
 
         // Validate again to ensure the modifications we made were safe

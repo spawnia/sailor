@@ -30,30 +30,23 @@ class NestedWithFragments extends \Spawnia\Sailor\Operation
             __typename
             nested {
               __typename
-              ... on SomeObject {
-                nested {
-                  __typename
-                  ... on SomeObject {
-                    value
-                  }
-                }
-              }
-              ... on SomeObject {
-                value
-              }
+              ...NestedFragment
+              ...SimpleFragment
             }
-            ... on SomeObject {
-              nested {
-                __typename
-                ... on SomeObject {
-                  value
-                }
-              }
-            }
-            ... on SomeObject {
-              value
-            }
+            ...NestedFragment
+            ...SimpleFragment
           }
+        }
+
+        fragment NestedFragment on SomeObject {
+          nested {
+            __typename
+            ...SimpleFragment
+          }
+        }
+
+        fragment SimpleFragment on SomeObject {
+          value
         }';
     }
 

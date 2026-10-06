@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- Send fragment definitions with operations instead of inlining them https://github.com/spawnia/sailor/pull/145
+
 ## v1.4.2
 
 ### Fixed

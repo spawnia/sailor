@@ -32,9 +32,11 @@ class ClientDirectiveFragmentSpreadQuery extends \Spawnia\Sailor\Operation
     {
         return /* @lang GraphQL */ 'query ClientDirectiveFragmentSpreadQuery($value: Boolean!) {
           __typename
-          ... on Query @skip(if: $value) {
-            twoArgs
-          }
+          ...ClientDirectiveFragment @skip(if: $value)
+        }
+
+        fragment ClientDirectiveFragment on Query {
+          twoArgs
         }';
     }
 

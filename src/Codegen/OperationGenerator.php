@@ -3,11 +3,16 @@
 namespace Spawnia\Sailor\Codegen;
 
 use GraphQL\Language\AST\DocumentNode;
+use GraphQL\Language\AST\FieldNode;
+use GraphQL\Language\AST\FragmentDefinitionNode;
+use GraphQL\Language\AST\FragmentSpreadNode;
+use GraphQL\Language\AST\InlineFragmentNode;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\OperationDefinitionNode;
+use GraphQL\Language\AST\SelectionSetNode;
 use GraphQL\Language\AST\TypeNode;
 use GraphQL\Language\Printer;
 use GraphQL\Type\Definition\AbstractType;
@@ -37,6 +42,9 @@ class OperationGenerator implements ClassGenerator
     /** @var array<string, OperationDefinitionNode> keyed by operation name */
     protected array $wireOperations = [];
 
+    /** @var array<string, FragmentDefinitionNode> keyed by fragment name */
+    protected array $wireFragments = [];
+
     protected EndpointConfig $endpointConfig;
 
     /** @var array<string, TypeConfig> */
@@ -51,6 +59,8 @@ class OperationGenerator implements ClassGenerator
         foreach ($wireDocument->definitions as $definition) {
             if ($definition instanceof OperationDefinitionNode) {
                 $this->wireOperations[self::operationName($definition)] = $definition;
+            } elseif ($definition instanceof FragmentDefinitionNode) {
+                $this->wireFragments[$definition->name->value] = $definition;
             }
         }
     }
@@ -76,7 +86,7 @@ class OperationGenerator implements ClassGenerator
         $builder = new OperationBuilder($operationName, $this->endpointConfig->operationsNamespace());
         $builder->extendOperation("{$namespace}\\{$operationName}Result");
         // TODO minify the query string https://github.com/webonyx/graphql-php/issues/1028
-        $builder->storeDocument(Printer::doPrint($this->wireOperations[self::operationName($operation)]));
+        $builder->storeDocument($this->wireDocument($this->wireOperations[self::operationName($operation)]));
 
         foreach ($operation->variableDefinitions as $variableDefinition) {
             $type = $this->inputType($variableDefinition->type);
@@ -97,6 +107,36 @@ class OperationGenerator implements ClassGenerator
         yield $this->resultClass($operationName, $namespace);
         yield $this->errorFreeResultClass($operationName, $namespace);
         yield from $this->selectionClasses($selection, $namespace, $operationName);
+    }
+
+    protected function wireDocument(OperationDefinitionNode $operation): string
+    {
+        $fragments = [];
+        $this->collectFragments($operation->selectionSet, $fragments);
+
+        return implode("\n\n", array_map(
+            [Printer::class, 'doPrint'],
+            [$operation, ...array_values($fragments)]
+        ));
+    }
+
+    /** @param array<string, FragmentDefinitionNode> $fragments */
+    protected function collectFragments(SelectionSetNode $selectionSet, array &$fragments): void
+    {
+        foreach ($selectionSet->selections as $node) {
+            if ($node instanceof FragmentSpreadNode) {
+                $name = $node->name->value;
+                if (! isset($fragments[$name])) {
+                    $fragments[$name] = $this->wireFragments[$name];
+                    $this->collectFragments($fragments[$name]->selectionSet, $fragments);
+                }
+            } elseif ($node instanceof FieldNode || $node instanceof InlineFragmentNode) {
+                $subSelectionSet = $node->selectionSet;
+                if ($subSelectionSet !== null) {
+                    $this->collectFragments($subSelectionSet, $fragments);
+                }
+            }
+        }
     }
 
     protected function resultClass(string $operationName, string $namespace): ClassType

@@ -34,13 +34,15 @@ class UserOrPost extends \Spawnia\Sailor\Operation
           node(id: $id) {
             __typename
             id
-            ... on User {
-              name
-            }
+            ...UserWithName
             ... on Post {
               title
             }
           }
+        }
+
+        fragment UserWithName on User {
+          name
         }';
     }
 

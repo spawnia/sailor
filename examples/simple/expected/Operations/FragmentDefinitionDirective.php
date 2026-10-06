@@ -3,11 +3,11 @@
 namespace Spawnia\Sailor\Simple\Operations;
 
 /**
- * @extends \Spawnia\Sailor\Operation<\Spawnia\Sailor\Simple\Operations\ExplicitTypename\ExplicitTypenameResult>
+ * @extends \Spawnia\Sailor\Operation<\Spawnia\Sailor\Simple\Operations\FragmentDefinitionDirective\FragmentDefinitionDirectiveResult>
  */
-class ExplicitTypename extends \Spawnia\Sailor\Operation
+class FragmentDefinitionDirective extends \Spawnia\Sailor\Operation
 {
-    public static function execute(): ExplicitTypename\ExplicitTypenameResult
+    public static function execute(): FragmentDefinitionDirective\FragmentDefinitionDirectiveResult
     {
         return self::executeOperation(
         );
@@ -24,16 +24,13 @@ class ExplicitTypename extends \Spawnia\Sailor\Operation
 
     public static function document(): string
     {
-        return /* @lang GraphQL */ 'query ExplicitTypename {
+        return /* @lang GraphQL */ 'query FragmentDefinitionDirective {
           __typename
-          singleObject {
-            __typename
-            ...ObjectWithTypename
-          }
+          ...MarkedFragment
         }
 
-        fragment ObjectWithTypename on SomeObject {
-          value
+        fragment MarkedFragment on Query @fragmentMarker {
+          twoArgs
         }';
     }
 

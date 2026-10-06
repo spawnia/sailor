@@ -1,0 +1,7 @@
+query FragmentDefinitionDirective {
+    ...MarkedFragment
+}
+
+fragment MarkedFragment on Query @fragmentMarker {
+    twoArgs
+}
