@@ -47,13 +47,13 @@ class Generator
         // message that is more closely related to their source code
         Validator::validateDocumentWithSchema($schema, $document);
 
-        $document = (new FoldFragments($document))->modify();
-        AddTypename::modify($document);
+        $wireDocument = (new FoldFragments($document->cloneDeep()))->modify();
+        AddTypename::modify($wireDocument);
 
         // Validate again to ensure the modifications we made were safe
-        Validator::validateDocumentWithSchema($schema, $document);
+        Validator::validateDocumentWithSchema($schema, $wireDocument);
 
-        foreach ((new OperationGenerator($schema, $document, $this->endpointConfig))->generate() as $class) {
+        foreach ((new OperationGenerator($schema, $document, $wireDocument, $this->endpointConfig))->generate() as $class) {
             yield $this->makeFile($class);
         }
 
@@ -63,7 +63,7 @@ class Generator
             }
         }
 
-        foreach ($this->endpointConfig->generateClasses($schema, $document) as $class) {
+        foreach ($this->endpointConfig->generateClasses($schema, $wireDocument) as $class) {
             yield $this->makeFile($class);
         }
     }
