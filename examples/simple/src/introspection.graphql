@@ -1,0 +1,10 @@
+query Introspection {
+    __schema {
+        queryType {
+            name
+        }
+    }
+    __type(name: "Query") {
+        name
+    }
+}
