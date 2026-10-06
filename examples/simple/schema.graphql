@@ -9,3 +9,5 @@ type SomeObject {
     value: Int
     nested: SomeObject
 }
+
+directive @fragmentMarker on FRAGMENT_DEFINITION
