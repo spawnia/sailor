@@ -15,6 +15,7 @@ use GraphQL\Language\AST\SelectionSetNode;
 use GraphQL\Language\Printer;
 use GraphQL\Type\Definition\CompositeType;
 use GraphQL\Type\Definition\Directive;
+use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
@@ -90,7 +91,7 @@ class FieldCollector
         }
 
         assert($scope instanceof ObjectType || $scope instanceof InterfaceType, 'unions have no fields besides __typename');
-        $type = $scope->getField($fieldName)->getType();
+        $type = $this->fieldDefinition($scope, $fieldName)->getType();
         $responseName = $node->alias->value ?? $fieldName;
 
         foreach ($selection->objectTypes as $typeName => $objectType) {
@@ -119,6 +120,19 @@ class FieldCollector
         $subSelection = $selection->subSelections[$responseName] ??= new Selection();
         $subSelection->addObjectTypes($objectTypes, $conditions);
         $this->collectFields($subSelection, $subSelectionSet, $namedType, $conditions);
+    }
+
+    /** @param ObjectType|InterfaceType $scope */
+    protected function fieldDefinition(Type $scope, string $fieldName): FieldDefinition
+    {
+        if ($fieldName === Introspection::SCHEMA_FIELD_NAME) {
+            return Introspection::schemaMetaFieldDef();
+        }
+        if ($fieldName === Introspection::TYPE_FIELD_NAME) {
+            return Introspection::typeMetaFieldDef();
+        }
+
+        return $scope->getField($fieldName);
     }
 
     protected function compositeType(NamedTypeNode $typeCondition): CompositeType
