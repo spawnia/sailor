@@ -10,3 +10,6 @@
 /phpstan.neon export-ignore
 /phpunit.xml export-ignore
 /sailor.png export-ignore
+/package.json export-ignore
+/package-lock.json export-ignore
+/.releaserc.json export-ignore

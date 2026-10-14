@@ -1,6 +1,5 @@
 - [ ] Added automated tests
 - [ ] Documented for all relevant versions
-- [ ] Updated the changelog
 
 <!-- Link to related issues this PR resolves, e.g. "Resolves #236"-->
 
