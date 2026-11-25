@@ -55,34 +55,34 @@ final class IntrospectorTest extends TestCase
             ->introspect();
     }
 
-    public function testRequestsSpecifiedByURLAndFallsBackWithout(): void
+    public function testFallsBackWhenOptionalIntrospectionFieldsAreUnsupported(): void
     {
+        $extended = Introspection::getIntrospectionQuery([
+            'directiveIsRepeatable' => true,
+            'specifiedByURL' => true,
+        ]);
+        $withOneOf = Introspection::getIntrospectionQuery([
+            'directiveIsRepeatable' => true,
+            'specifiedByURL' => true,
+            'typeIsOneOf' => true,
+        ]);
+        $legacy = Introspection::getIntrospectionQuery([
+            'directiveIsRepeatable' => false,
+            'specifiedByURL' => false,
+        ]);
         $queries = [];
         $this
-            ->makeIntrospector(static function (string $query) use (&$queries): Response {
+            ->makeIntrospector(static function (string $query) use (&$queries, $legacy): Response {
                 $queries[] = $query;
 
-                static $called = false;
-                $response = $called
+                return $query === $legacy
                     ? self::successfulIntrospectionMock()
                     : self::responseWithErrorsMock();
-                $called = true;
-
-                return $response;
             })
             ->introspect();
         unlink(self::PATH);
 
-        self::assertSame([
-            Introspection::getIntrospectionQuery([
-                'directiveIsRepeatable' => true,
-                'specifiedByURL' => true,
-            ]),
-            Introspection::getIntrospectionQuery([
-                'directiveIsRepeatable' => false,
-                'specifiedByURL' => false,
-            ]),
-        ], $queries);
+        self::assertSame($withOneOf === $extended ? [$extended, $legacy] : [$withOneOf, $extended, $legacy], $queries);
     }
 
     /** @return iterable<array{Request}> */
@@ -95,7 +95,7 @@ final class IntrospectorTest extends TestCase
         yield [
             static function (): Response {
                 static $called = false;
-                $response = $called
+                $response = $called === true
                     ? self::responseWithErrorsMock()
                     : self::successfulIntrospectionMock();
                 $called = true;
@@ -107,7 +107,7 @@ final class IntrospectorTest extends TestCase
         yield [
             static function (): Response {
                 static $called = false;
-                $response = $called
+                $response = $called === true
                     ? self::misbehavedServerMock()
                     : self::successfulIntrospectionMock();
                 $called = true;

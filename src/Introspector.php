@@ -27,18 +27,7 @@ class Introspector
     public function introspect(): void
     {
         $client = $this->endpointConfig->makeClient();
-
-        try {
-            $introspectionResult = $this->fetchIntrospectionResult($client, [
-                'directiveIsRepeatable' => true,
-                'specifiedByURL' => true,
-            ]);
-        } catch (\Throwable $_) {
-            $introspectionResult = $this->fetchIntrospectionResult($client, [
-                'directiveIsRepeatable' => false,
-                'specifiedByURL' => false,
-            ]);
-        }
+        $introspectionResult = $this->fetchWithFallback($client);
 
         $schema = BuildClientSchema::build(
             // @phpstan-ignore argument.type (we know a stdClass converts to an associative array)
@@ -53,8 +42,35 @@ class Introspector
         );
     }
 
+    protected function fetchWithFallback(Client $client): Response
+    {
+        $options = [
+            'directiveIsRepeatable' => true,
+            'specifiedByURL' => true,
+        ];
+        $oneOfOptions = $options + ['typeIsOneOf' => true];
+
+        // Older graphql-php versions ignore the typeIsOneOf option.
+        if (Introspection::getIntrospectionQuery($oneOfOptions) !== Introspection::getIntrospectionQuery($options)) {
+            try {
+                return $this->fetchIntrospectionResult($client, $oneOfOptions);
+            } catch (\Throwable $_) {
+                // Retry without isOneOf while still requesting the other optional fields.
+            }
+        }
+
+        try {
+            return $this->fetchIntrospectionResult($client, $options);
+        } catch (\Throwable $_) {
+            return $this->fetchIntrospectionResult($client, [
+                'directiveIsRepeatable' => false,
+                'specifiedByURL' => false,
+            ]);
+        }
+    }
+
     // TODO use @phpstan-import-type IntrospectionOptions from Introspection after requiring webonyx/graphql-php ^15.33
-    /** @param array{directiveIsRepeatable: bool, specifiedByURL: bool} $introspectionQueryOptions */
+    /** @param array{directiveIsRepeatable: bool, specifiedByURL: bool, typeIsOneOf?: bool} $introspectionQueryOptions */
     protected function fetchIntrospectionResult(Client $client, array $introspectionQueryOptions): Response
     {
         $response = $client->request(
