@@ -65,10 +65,8 @@ final class IntrospectorTest extends TestCase
         $schema = BuildSchema::build(<<<'GRAPHQL'
         directive @tag repeatable on FIELD_DEFINITION
 
-        scalar Date @specifiedBy(url: "https://example.test/date")
-
         type Query {
-          today: Date
+          today: String
         }
         GRAPHQL);
         $queries = [];
@@ -86,8 +84,10 @@ final class IntrospectorTest extends TestCase
 
         self::assertCount(2, $queries);
         self::assertStringContainsString('isOneOf', $queries[0]);
+        self::assertStringNotContainsString('isOneOf', $queries[1]);
+        self::assertStringContainsString('specifiedByURL', $queries[1]);
+        self::assertStringContainsString('isRepeatable', $queries[1]);
         self::assertStringContainsString('directive @tag repeatable on FIELD_DEFINITION', $printed);
-        self::assertStringContainsString('scalar Date @specifiedBy(url: "https://example.test/date")', $printed);
     }
 
     public function testFallsBackWhenOptionalIntrospectionFieldsAreUnsupported(): void
