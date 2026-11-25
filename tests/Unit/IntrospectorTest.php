@@ -2,6 +2,7 @@
 
 namespace Spawnia\Sailor\Tests\Unit;
 
+use GraphQL\GraphQL;
 use GraphQL\Type\Introspection;
 use GraphQL\Utils\BuildSchema;
 use Spawnia\Sailor\Client;
@@ -53,6 +54,40 @@ final class IntrospectorTest extends TestCase
         $this
             ->makeIntrospector(static fn (): Response => self::responseWithErrorsMock())
             ->introspect();
+    }
+
+    public function testRetainsSupportedIntrospectionMetadataWhenOneOfIsUnsupported(): void
+    {
+        if (strpos(Introspection::getIntrospectionQuery(['typeIsOneOf' => true]), 'isOneOf') === false) {
+            self::markTestSkipped('The installed graphql-php cannot request isOneOf.');
+        }
+
+        $schema = BuildSchema::build(<<<'GRAPHQL'
+        directive @tag repeatable on FIELD_DEFINITION
+
+        scalar Date @specifiedBy(url: "https://example.test/date")
+
+        type Query {
+          today: Date
+        }
+        GRAPHQL);
+        $queries = [];
+        $this
+            ->makeIntrospector(static function (string $query) use ($schema, &$queries): Response {
+                $queries[] = $query;
+
+                return strpos($query, 'isOneOf') !== false
+                    ? self::responseWithErrorsMock()
+                    : Response::fromExecutionResult(GraphQL::executeQuery($schema, $query));
+            })
+            ->introspect();
+        $printed = file_get_contents(self::PATH);
+        unlink(self::PATH);
+
+        self::assertCount(2, $queries);
+        self::assertStringContainsString('isOneOf', $queries[0]);
+        self::assertStringContainsString('directive @tag repeatable on FIELD_DEFINITION', $printed);
+        self::assertStringContainsString('scalar Date @specifiedBy(url: "https://example.test/date")', $printed);
     }
 
     public function testFallsBackWhenOptionalIntrospectionFieldsAreUnsupported(): void
