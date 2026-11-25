@@ -58,7 +58,13 @@ final class IntrospectorTest extends TestCase
 
     public function testRetainsSupportedIntrospectionMetadataWhenOneOfIsUnsupported(): void
     {
-        if (strpos(Introspection::getIntrospectionQuery(['typeIsOneOf' => true]), 'isOneOf') === false) {
+        $options = [
+            'directiveIsRepeatable' => true,
+            'specifiedByURL' => true,
+        ];
+        $extended = Introspection::getIntrospectionQuery($options);
+        $withOneOf = Introspection::getIntrospectionQuery($options + ['typeIsOneOf' => true]);
+        if ($withOneOf === $extended) {
             self::markTestSkipped('The installed graphql-php cannot request isOneOf.');
         }
 
@@ -82,11 +88,7 @@ final class IntrospectorTest extends TestCase
         $printed = file_get_contents(self::PATH);
         unlink(self::PATH);
 
-        self::assertCount(2, $queries);
-        self::assertStringContainsString('isOneOf', $queries[0]);
-        self::assertStringNotContainsString('isOneOf', $queries[1]);
-        self::assertStringContainsString('specifiedByURL', $queries[1]);
-        self::assertStringContainsString('isRepeatable', $queries[1]);
+        self::assertSame([$withOneOf, $extended], $queries);
         self::assertStringContainsString('directive @tag repeatable on FIELD_DEFINITION', $printed);
     }
 
