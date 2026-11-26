@@ -116,6 +116,30 @@ final class InputTest extends TestCase
         self::assertSame('4', $byId->id);
     }
 
+    public function testRejectsOneOfInputWithNoField(): void
+    {
+        $this->assertRejectsOneOfInput(new \stdClass());
+    }
+
+    public function testRejectsOneOfInputWithBothFields(): void
+    {
+        $this->assertRejectsOneOfInput((object) ['id' => '1', 'ids' => ['2']]);
+    }
+
+    public function testRejectsOneOfInputWithUnknownField(): void
+    {
+        $this->assertRejectsOneOfInput((object) ['unknown' => '1']);
+    }
+
+    protected function assertRejectsOneOfInput(\stdClass $lookup): void
+    {
+        $this->expectExceptionObject(new InvalidDataException(
+            'input: Invalid value for field lookups. Expected exactly one field of the OneOf input object.'
+        ));
+
+        LookupBatch::fromStdClass((object) ['lookups' => [$lookup]]);
+    }
+
     public function testMake(): void
     {
         // TODO use named arguments in PHP 8
