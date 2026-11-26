@@ -1,0 +1,3 @@
+mutation TakeLookup($batch: LookupBatch!, $lookup: Lookup) {
+    takeLookup(batch: $batch, lookup: $lookup)
+}

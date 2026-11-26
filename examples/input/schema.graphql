@@ -1,6 +1,9 @@
+directive @oneOf on INPUT_OBJECT
+
 type Mutation {
     takeList(values: [Int]): [Int]
     takeSomeInput(input: SomeInput): Int
+    takeLookup(batch: LookupBatch!, lookup: Lookup): Int
 }
 
 input SomeInput {
@@ -9,4 +12,13 @@ input SomeInput {
     properties: [String!]
     matrix: [[Int]!]!
     nested: SomeInput
+}
+
+input LookupBatch {
+    lookups: [Lookup!]!
+}
+
+input Lookup @oneOf {
+    id: ID
+    ids: [ID!]
 }

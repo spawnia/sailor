@@ -2,6 +2,7 @@
 
 namespace Spawnia\Sailor\Tests\Unit;
 
+use GraphQL\GraphQL;
 use GraphQL\Type\Introspection;
 use GraphQL\Utils\BuildSchema;
 use Spawnia\Sailor\Client;
@@ -55,34 +56,70 @@ final class IntrospectorTest extends TestCase
             ->introspect();
     }
 
-    public function testRequestsSpecifiedByURLAndFallsBackWithout(): void
+    public function testRetainsSupportedIntrospectionMetadataWhenOneOfIsUnsupported(): void
     {
+        $options = [
+            'directiveIsRepeatable' => true,
+            'specifiedByURL' => true,
+        ];
+        $extended = Introspection::getIntrospectionQuery($options);
+        $withOneOf = Introspection::getIntrospectionQuery($options + ['typeIsOneOf' => true]);
+        if ($withOneOf === $extended) {
+            self::markTestSkipped('The installed graphql-php cannot request isOneOf.');
+        }
+
+        $schema = BuildSchema::build(<<<'GRAPHQL'
+        directive @tag repeatable on FIELD_DEFINITION
+
+        type Query {
+          today: String
+        }
+        GRAPHQL);
         $queries = [];
         $this
-            ->makeIntrospector(static function (string $query) use (&$queries): Response {
+            ->makeIntrospector(static function (string $query) use ($schema, &$queries): Response {
                 $queries[] = $query;
 
-                static $called = false;
-                $response = $called
+                return strpos($query, 'isOneOf') !== false
+                    ? self::responseWithErrorsMock()
+                    : Response::fromExecutionResult(GraphQL::executeQuery($schema, $query));
+            })
+            ->introspect();
+        $printed = file_get_contents(self::PATH);
+        unlink(self::PATH);
+
+        self::assertSame([$withOneOf, $extended], $queries);
+        self::assertStringContainsString('directive @tag repeatable on FIELD_DEFINITION', $printed);
+    }
+
+    public function testFallsBackWhenOptionalIntrospectionFieldsAreUnsupported(): void
+    {
+        $extended = Introspection::getIntrospectionQuery([
+            'directiveIsRepeatable' => true,
+            'specifiedByURL' => true,
+        ]);
+        $withOneOf = Introspection::getIntrospectionQuery([
+            'directiveIsRepeatable' => true,
+            'specifiedByURL' => true,
+            'typeIsOneOf' => true,
+        ]);
+        $legacy = Introspection::getIntrospectionQuery([
+            'directiveIsRepeatable' => false,
+            'specifiedByURL' => false,
+        ]);
+        $queries = [];
+        $this
+            ->makeIntrospector(static function (string $query) use (&$queries, $legacy): Response {
+                $queries[] = $query;
+
+                return $query === $legacy
                     ? self::successfulIntrospectionMock()
                     : self::responseWithErrorsMock();
-                $called = true;
-
-                return $response;
             })
             ->introspect();
         unlink(self::PATH);
 
-        self::assertSame([
-            Introspection::getIntrospectionQuery([
-                'directiveIsRepeatable' => true,
-                'specifiedByURL' => true,
-            ]),
-            Introspection::getIntrospectionQuery([
-                'directiveIsRepeatable' => false,
-                'specifiedByURL' => false,
-            ]),
-        ], $queries);
+        self::assertSame($withOneOf === $extended ? [$extended, $legacy] : [$withOneOf, $extended, $legacy], $queries);
     }
 
     /** @return iterable<array{Request}> */
@@ -95,7 +132,7 @@ final class IntrospectorTest extends TestCase
         yield [
             static function (): Response {
                 static $called = false;
-                $response = $called
+                $response = $called === true
                     ? self::responseWithErrorsMock()
                     : self::successfulIntrospectionMock();
                 $called = true;
@@ -107,7 +144,7 @@ final class IntrospectorTest extends TestCase
         yield [
             static function (): Response {
                 static $called = false;
-                $response = $called
+                $response = $called === true
                     ? self::misbehavedServerMock()
                     : self::successfulIntrospectionMock();
                 $called = true;
