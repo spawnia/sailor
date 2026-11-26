@@ -10,11 +10,16 @@ use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpNamespace;
 use Spawnia\Sailor\Convert\OmittableConverter;
 use Spawnia\Sailor\ObjectLike;
+use Spawnia\Sailor\OneOfInput;
+use Spawnia\Sailor\Type\InputTypeConfig;
+use Spawnia\Sailor\Type\TypeConfig;
 
 /** @phpstan-type PropertyArgs array{string, Type, string, string, mixed, bool} */
 class ObjectLikeBuilder
 {
     private bool $isInputType;
+
+    private bool $isOneOfVariant;
 
     private ClassType $class;
 
@@ -28,14 +33,15 @@ class ObjectLikeBuilder
     /** @var array<PropertyArgs> */
     private array $optionalProperties = [];
 
-    public function __construct(string $name, string $namespace, bool $isInputType)
+    public function __construct(string $name, string $namespace, bool $isInputType, bool $isOneOfVariant = false)
     {
         $class = new ClassType(
             Escaper::escapeClassName($name),
             new PhpNamespace($namespace) // TODO drop escape when min PHP version is 8.0+
         );
 
-        $class->setExtends(ObjectLike::class);
+        $class->setExtends($isOneOfVariant ? OneOfInput::class : ObjectLike::class);
+        $class->setFinal($isOneOfVariant);
 
         $make = $class->addMethod('make');
         $make->setStatic(true);
@@ -56,6 +62,7 @@ class ObjectLikeBuilder
 
         $this->class = $class;
         $this->isInputType = $isInputType;
+        $this->isOneOfVariant = $isOneOfVariant;
     }
 
     /** @param mixed $defaultValue any value */
@@ -68,6 +75,28 @@ class ObjectLikeBuilder
         } else {
             $this->optionalProperties[] = $args;
         }
+    }
+
+    /**
+     * @param array<string, TypeConfig> $typeConfigs
+     * @param mixed $defaultValue any value
+     */
+    public function addInputField(string $name, Type $type, array $typeConfigs, $defaultValue): void
+    {
+        $namedType = Type::getNamedType($type);
+        assert($namedType !== null, 'guaranteed since we pass in a non-null type'); // @phpstan-ignore function.alreadyNarrowedType, notIdentical.alwaysTrue (keep for safety across graphql-php versions)
+
+        $typeConfig = $typeConfigs[$namedType->name]; // @phpstan-ignore offsetAccess.invalidOffset (name is string, but typed as mixed in older graphql-php)
+        assert($typeConfig instanceof InputTypeConfig);
+
+        $this->addProperty(
+            $name,
+            $type,
+            $typeConfig->inputTypeReference(),
+            $typeConfig->typeConverter(),
+            $defaultValue,
+            false,
+        );
     }
 
     public function build(): ClassType
@@ -103,7 +132,11 @@ class ObjectLikeBuilder
         }
         $this->converters->addBody(/** @lang PHP */ "    '{$name}' => {$wrappedTypeConverter},");
 
-        if ($name === Introspection::TYPE_NAME_FIELD_NAME) {
+        if ($this->isOneOfVariant) {
+            $this->make->addComment("@param {$wrappedPhpDocType} \$value");
+            $this->make->addParameter('value');
+            $this->make->addBody("\$instance->__set('{$name}', \$value);");
+        } elseif ($name === Introspection::TYPE_NAME_FIELD_NAME) {
             assert(is_string($defaultValue), 'set to parent type name in OperationGenerator');
             $this->make->addBody("\$instance->{$name} = '{$defaultValue}';");
         } else {

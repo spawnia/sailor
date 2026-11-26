@@ -414,6 +414,19 @@ $input = SomeInput::make(requiredID: 1);
 $input->secondOptional = Spawnia\Sailor\ObjectLike::UNDEFINED;
 ```
 
+### OneOf inputs
+
+For an input object marked `@oneOf`, Sailor generates one class per field.
+For `input Lookup @oneOf { id: ID, ids: [ID!] }`, use `Types\Lookup\ById::make(1)`
+or `Types\Lookup\ByIds::make([1, 2])`. Sailor documents both alternatives as a union
+and sends only the selected field. The selected value must be non-null.
+
+If you previously used `Types\Lookup::make(...)` for this input, switch to the variant
+for the field you set when you regenerate the code.
+
+With graphql-php versions that do not have a built-in `@oneOf` directive, declare
+`directive @oneOf on INPUT_OBJECT` in the schema and mark the input definition itself.
+
 ### Events
 
 Sailor calls `EndpointConfig::handleEvent()` with the following events during the execution lifecycle:
@@ -579,4 +592,3 @@ You can find examples of how a project would use Sailor within [examples](exampl
 ## Changelog
 
 See [`CHANGELOG.md`](CHANGELOG.md).
-

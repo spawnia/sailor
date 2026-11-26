@@ -3,7 +3,6 @@
 namespace Spawnia\Sailor\Type;
 
 use GraphQL\Type\Definition\InputObjectType;
-use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use Nette\PhpGenerator\ClassType;
 use Spawnia\Sailor\Codegen\Escaper;
@@ -58,22 +57,7 @@ class InputObjectTypeConfig implements TypeConfig, InputTypeConfig
         );
 
         foreach ($this->inputObjectType->getFields() as $name => $field) {
-            $fieldType = $field->getType();
-
-            $namedType = Type::getNamedType($fieldType);
-            assert($namedType !== null, 'guaranteed since we pass in a non-null type'); // @phpstan-ignore function.alreadyNarrowedType, notIdentical.alwaysTrue (keep for safety across graphql-php versions)
-
-            $typeConfig = $typeConfigs[$namedType->name]; // @phpstan-ignore offsetAccess.invalidOffset (name is string, but typed as mixed in older graphql-php)
-            assert($typeConfig instanceof InputTypeConfig);
-
-            $builder->addProperty(
-                $name,
-                $field->getType(),
-                $typeConfig->inputTypeReference(),
-                $typeConfig->typeConverter(),
-                $field->defaultValue,
-                false,
-            );
+            $builder->addInputField($name, $field->getType(), $typeConfigs, $field->defaultValue);
         }
 
         yield $builder->build();

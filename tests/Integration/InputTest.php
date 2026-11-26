@@ -7,9 +7,14 @@ use Spawnia\Sailor\Configuration;
 use Spawnia\Sailor\EndpointConfig;
 use Spawnia\Sailor\Error\InvalidDataException;
 use Spawnia\Sailor\Input\Operations\TakeList;
+use Spawnia\Sailor\Input\Operations\TakeLookup;
 use Spawnia\Sailor\Input\Operations\TakeSomeInput;
+use Spawnia\Sailor\Input\Types\Lookup\ById;
+use Spawnia\Sailor\Input\Types\Lookup\ByIds;
+use Spawnia\Sailor\Input\Types\LookupBatch;
 use Spawnia\Sailor\Input\Types\SomeInput;
 use Spawnia\Sailor\Response;
+use Spawnia\Sailor\Testing\MockClient;
 use Spawnia\Sailor\Tests\TestCase;
 
 final class InputTest extends TestCase
@@ -70,6 +75,45 @@ final class InputTest extends TestCase
 
         $result = TakeList::execute($values);
         self::assertNull($result->data);
+    }
+
+    public function testOneOfVariables(): void
+    {
+        $client = new MockClient(static fn (): Response => Response::fromStdClass((object) [
+            'data' => null,
+        ]));
+
+        $endpoint = \Mockery::mock(EndpointConfig::class);
+        $endpoint->allows('makeClient')->andReturn($client);
+        $endpoint->allows('handleEvent');
+        Configuration::setEndpointFor(TakeLookup::class, $endpoint);
+
+        TakeLookup::execute(
+            LookupBatch::make([ByIds::make([2, 3]), ById::make(4)]),
+            ById::make(1),
+        );
+
+        self::assertCount(1, $client->storedRequests);
+        self::assertJsonStringEqualsJsonString(
+            '{"batch":{"lookups":[{"ids":["2","3"]},{"id":"4"}]},"lookup":{"id":"1"}}',
+            \Safe\json_encode($client->storedRequests[0]->variables),
+        );
+    }
+
+    public function testOneOfInputFromStdClass(): void
+    {
+        $input = LookupBatch::fromStdClass((object) [
+            'lookups' => [
+                (object) ['ids' => ['2', '3']],
+                (object) ['id' => '4'],
+            ],
+        ]);
+
+        [$byIds, $byId] = $input->lookups;
+        self::assertInstanceOf(ByIds::class, $byIds);
+        self::assertSame(['2', '3'], $byIds->ids);
+        self::assertInstanceOf(ById::class, $byId);
+        self::assertSame('4', $byId->id);
     }
 
     public function testMake(): void
