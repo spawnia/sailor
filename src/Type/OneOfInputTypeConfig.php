@@ -107,7 +107,8 @@ class OneOfInputTypeConfig implements TypeConfig, InputTypeConfig
         $names = [];
         $used = [];
         $fields = array_keys($this->inputObjectType->getFields());
-        sort($fields, SORT_STRING); // @phpstan-ignore theCodingMachineSafe.function (sorting strings with SORT_STRING cannot fail, and recent Safe versions removed the wrapper)
+        // Sorting strings cannot fail; phpstan-safe-rule 1.1 has no error identifier.
+        sort($fields, SORT_STRING); // @phpstan-ignore-line
         foreach ($fields as $name) {
             $variant = 'By' . ucfirst($name);
             // GraphQL field names are case-sensitive; PHP class names are not.
